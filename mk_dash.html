@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>M.A.A.S.C |ERP| STAFF PORTAL </title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: url('college-watercolor-bg.png') no-repeat center center fixed;
+      background-size: cover;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    /* Header */
+    .header {
+      background: #004d40;
+      color: #fff;
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .header h1 {
+      margin: 0;
+      font-size: 18px;
+    }
+    .nav {
+      display: flex;
+      gap: 15px;
+      position: relative;
+    }
+    .nav a {
+      color: #fff;
+      text-decoration: none;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    /* Dropdown */
+    .dropdown {
+      position: relative;
+    }
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      background: #fff;
+      min-width: 200px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      z-index: 1;
+    }
+    .dropdown-content a {
+      color: #333;
+      padding: 10px;
+      text-decoration: none;
+      display: block;
+    }
+    .dropdown-content a:hover {
+      background: #e0f7fa;
+    }
+
+    /* Sub-dropdown */
+    .sub-dropdown {
+      position: relative;
+    }
+    .sub-dropdown-content {
+      display: none;
+      position: absolute;
+      left: 200px;
+      top: 0;
+      background: #fff;
+      min-width: 200px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+    .sub-dropdown-content a {
+      padding: 10px;
+      display: block;
+      color: #333;
+      text-decoration: none;
+    }
+    .sub-dropdown-content a:hover {
+      background: #f1f1f1;
+    }
+
+    /* Main container */
+    .container {
+      background: rgba(255, 255, 255, 0.95);
+      margin: 20px auto;
+      padding: 20px;
+      max-width: 900px;
+      border-radius: 8px;
+      flex: 1; /* pushes footer down */
+    }
+    h2 {
+      margin-top: 0;
+      color: #333;
+      font-size: 18px;
+      border-bottom: 1px solid #ccc;
+      padding-bottom: 5px;
+    }
+    .section {
+      margin-bottom: 20px;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      background: #fafafa;
+    }
+    .section p {
+      margin: 5px 0;
+    }
+
+    /* Salary Table */
+    .salary-table {
+      display: none;
+      margin: 20px;
+      background: #fafafa;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      padding: 15px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    table, th, td {
+      border: 1px solid #333;
+    }
+    th, td {
+      padding: 8px;
+      text-align: center;
+    }
+
+    /* Footer */
+    .footer {
+      background: #004d40;
+      color: #fff;
+      text-align: center;
+      padding: 10px;
+      font-size: 14px;
+    }
+    .footer a {
+      color: #ffeb3b;
+      text-decoration: none;
+      margin: 0 5px;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+        <div class="nav">
+      <a href="#">Home</a>
+      <div class="dropdown">
+        <a onclick="toggleDropdown()">Menu ▼</a>
+        <div class="dropdown-content" id="menuDropdown">
+          <div class="sub-dropdown">
+            <a onclick="toggleSub('academics')">Academics ▶</a>
+            <div class="sub-dropdown-content" id="academics">
+              <a href="https://www.myattendancetracker.com/dashboard">Attendance Entry </a>
+              <a href="https://www.myattendancetracker.com/reporting/main">Reporting</a>
+            </div>
+          </div>
+          <div class="sub-dropdown">
+            <a onclick="toggleSub('leave')">Leave Entry ▶</a>
+            <div class="sub-dropdown-content" id="leave">
+              <a href="#">Apply Leave</a>
+              <a href="#">Track Leave</a>
+            </div>
+          </div>
+          <div class="sub-dropdown">
+            <a onclick="showSalary()">Salary Details ▶</a>
+          </div>
+        </div>
+      </div>
+      <a href="#">Chat</a>
+      <a href="#">Favorites menu</a>
+      <a href="staff_login.html">Logout</a>
+      <a href="#">Help</a>
+    </div>
+    <h1>MURALI ARTS AND SCIENCE COLLEGE || STAFF LOGIN</h1>
+  </div>
+
+  <div class="container">
+    <div class="section">
+      <h2>Profile</h2>
+      <p><strong>Name:</strong>Muralikrishnan R</p>
+      <p><strong>Group:</strong> Colleges</p>
+      <p><strong>Institution/Unit:</strong> Murali Arts And Science College</p>
+      <p><strong>Designation:</strong> Admin - Founder/p>
+      <p><strong>Division:</strong> Computer Application</p>
+      </div>
+
+    <!-- Actions Box -->
+    <div class="section">
+      <h2>Actions</h2>
+      <p>No pending actions!</p>
+    </div>
+  </div>
+
+  <!-- Salary Table -->
+  <div class="salary-table" id="salaryTable">
+    <h2>Salary Details</h2>
+    <table>
+      <tr>
+        <th>Month</th>
+        <th>Payment Date</th>
+        <th>Purpose of Payment</th>
+        <th>Amount</th>
+      </tr>
+      <tr>
+        <td>May 2026 </td>
+        <td>02.05.2026</td>
+        <td>Salary</td>
+        <td>₹37,000</td>
+      </tr>
+      <tr>
+        <td>May 2026</td>
+        <td>11.05.2026</td>
+        <td>Admission Duty Payout</td>
+        <td>₹2400</td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="footer">
+    <p>Developed by M.A.A.S.C FOUNDER | Using ERP </p>
+    <p>Follow eVarsity</p>
+  </div>
+
+  <script>
+    function toggleDropdown() {
+      const menu = document.getElementById("menuDropdown");
+      menu.style.display = menu.style.display === "block" ? "none" : "block";
+    }
+
+    function toggleSub(id) {
+      const sub = document.getElementById(id);
+      sub.style.display = sub.style.display === "block" ? "none" : "block";
+    }
+
+    function showSalary() {
+      document.getElementById("salaryTable").style.display = "block";
+    }
+  </script>
+</body>
+</html>
