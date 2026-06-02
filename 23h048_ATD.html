@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Student Attendance Dashboard</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f9f9f9;
+    }
+
+     body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f9f9f9;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 250px;
+      height: 100vh;
+      background: #500454;
+      color: #fff;
+      position: fixed;
+      top: 0;
+      left: 0;
+      padding: 20px;
+      overflow-y: auto;
+    }
+    .sidebar h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      font-size: 18px;
+      border-bottom: 1px solid #444;
+      padding-bottom: 10px;
+    }
+    .sidebar ul {
+      list-style: none;
+      padding: 0;
+    }
+    .sidebar ul li {
+      margin: 12px 0;
+    }
+    .sidebar ul li a {
+      color: #fff;
+      text-decoration: none;
+      display: block;
+      padding: 8px;
+      border-radius: 4px;
+    }
+    .sidebar ul li a:hover {
+      background: #bcb308;
+    }
+
+
+    /* Main content */
+    .main {
+      margin-left: 300px;
+      padding: 30px;
+    }
+    h1 {
+      color: #333;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 30px;
+    }
+    table, th, td {
+      border: 1px solid #ccc;
+    }
+    th, td {
+      padding: 10px;
+      text-align: center;
+    }
+    th {
+      background: #f1f1f1;
+    }
+    .total-row {
+      font-weight: bold;
+      background: #e6f7ff;
+    }
+  </style>
+</head>
+<body>
+ <div class="sidebar">
+    <div class="menu">
+      <h2>Application Menus</h2>
+      <ul>
+        <li><a href="23h048.html">Dashboard</a></li>
+        <li><a href="23h048_profile.html">Personal Details</a></li>
+        <li><a href="#">Subjects Assigned</a></li>
+        <li><a href="#">Academic Calendar</a></li>
+        <li><a href="23h048_ATD.html">Attendance Details</a></li>
+        <li><a href="23H048_hour.html">Hour Wise Attendance</a></li>
+        <li><a href="#">Internal Mark Details</a></li>
+        <li><a href="#">Exam Mark Details</a></li>
+        <li><a href="#">Fee Paid Details</a></li>
+        <li><a href="#">Fee Due Details</a></li>
+        <li><a href="#">Leave Application</a></li>
+        <li><a href="#">Online Payment Details</a></li>
+        <li><a href="#">Grievance Entry</a></li>
+        <li><a href="#">View Grievance</a></li>
+        <li><a href="#">Achievement Request</a></li>
+        <li><a href="#">Feedback Entry</a></li>
+        <li><a href="#">Book Search</a></li>
+        <li><a href="#">LMS</a></li>
+        <li><a href="#">Student Out Pass</a></li>
+        <li><a href="stu_login.html">Log Out</a></li>
+      </ul>
+    </div>
+    <div class="student-info">
+      <p><strong>Muralikrishnan R</strong></p>
+      <p>B.C.A – Computer Applications [U.G.]</p>
+      <p>Passed Out</p>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main">
+    <h1>Attendance Details</h1>
+    <p><strong>Student:</strong> Muralikrishnan R | <strong>Course:</strong> B.C.A. Computer Applications (U.G.) | <strong>Passed Out</strong> II</p>
+    <p><strong>Period:</strong> 11/Oct/2025 to 10/Apr/2026</p>
+
+    <!-- Subject-wise Attendance -->
+    <h2>Subject-wise Attendance</h2>
+    <table id="subjectTable">
+      <tr>
+        <th>Subject Code</th>
+        <th>Subject Description</th>
+        <th>Total Hrs.</th>
+        <th>Present Hrs.</th>
+        <th>Absent Hrs.</th>
+        <th>Attendance (%)</th>
+      </tr>
+      <tr><td>100L2A</td><td>TAMIL-II</td><td>69</td><td>64</td><td>5</td><td></td></tr>
+      <tr><td>100L2Z</td><td>ENGLISH-II</td><td>69</td><td>61</td><td>8</td><td></td></tr>
+      <tr><td>120C21</td><td>OOP using CPP Practical</td><td>84</td><td>82</td><td>2</td><td></td></tr>
+      <tr><td>120C2A</td><td>OOP using CPP</td><td>70</td><td>68</td><td>2</td><td></td></tr>
+      <tr><td>120E2B</td><td>Statistics-II</td><td>67</td><td>64</td><td>3</td><td></td></tr>
+      <tr><td>120S21</td><td>Office Automation Practical</td><td>28</td><td>26</td><td>2</td><td></td></tr>
+      <tr><td>120S2A</td><td>Quantitative Aptitude</td><td>27</td><td>26</td><td>1</td><td></td></tr>
+      <tr class="total-row"><td>Total</td><td></td><td></td><td></td><td></td><td></td></tr>
+    </table>
+
+    <!-- Cumulative Attendance -->
+    <h2>Cumulative Attendance</h2>
+    <table>
+      <tr>
+        <th>Month / Year</th>
+        <th>Present</th>
+        <th>Absent</th>
+        <th>OD (Present)</th>
+        <th>OD (Absent)</th>
+        <th>Medical</th>
+      </tr>
+      <tr><td>Oct-2025</td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+      <tr><td>Dec-2025</td><td>68</td><td>2</td><td>0</td><td>0</td><td>0</td></tr>
+      <tr><td>Jan-2026</td><td>86</td><td>4</td><td>0</td><td>0</td><td>0</td></tr>
+      <tr><td>Feb-2026</td><td>105</td><td>10</td><td>0</td><td>0</td><td>0</td></tr>
+      <tr><td>Mar-2026</td><td>101</td><td>7</td><td>0</td><td>0</td><td>0</td></tr>
+      <tr><td>Apr-2026</td><td>30</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+      <tr class="total-row"><td>Total</td><td>391</td><td>23</td><td>0</td><td>0</td><td>0</td></tr>
+    </table>
+  </div>
+
+  <script>
+    // Calculate attendance percentages and totals
+    const table = document.getElementById("subjectTable");
+    let totalHrs = 0, totalPresent = 0, totalAbsent = 0;
+
+    for (let i = 1; i < table.rows.length - 1; i++) {
+      let row = table.rows[i];
+      let total = parseInt(row.cells[2].innerText);
+      let present = parseInt(row.cells[3].innerText);
+      let absent = parseInt(row.cells[4].innerText);
+      let percent = ((present / total) * 100).toFixed(2);
+      row.cells[5].innerText = percent + "%";
+
+      totalHrs += total;
+      totalPresent += present;
+      totalAbsent += absent;
+    }
+
+    // Fill totals row
+    let totalRow = table.rows[table.rows.length - 1];
+    totalRow.cells[2].innerText = totalHrs;
+    totalRow.cells[3].innerText = totalPresent;
+    totalRow.cells[4].innerText = totalAbsent;
+    totalRow.cells[5].innerText = ((totalPresent / totalHrs) * 100).toFixed(2) + "%";
+  </script>
+</body>
+</html>
