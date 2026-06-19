@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Update Exam Schedule</title>
+
+<style>
+body{
+    font-family:Arial,sans-serif;
+    background:#f4f6f9;
+    padding:20px;
+}
+
+.container{
+    max-width:1100px;
+    margin:auto;
+    background:#fff;
+    padding:20px;
+    border-radius:10px;
+    box-shadow:0 0 10px rgba(0,0,0,0.1);
+}
+
+h2{
+    text-align:center;
+}
+
+select,input{
+    width:100%;
+    padding:8px;
+    box-sizing:border-box;
+}
+
+.controls{
+    display:grid;
+    grid-template-columns:1fr 1fr auto;
+    gap:10px;
+    margin-bottom:20px;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    table-layout:fixed;
+}
+
+th,td{
+    border:1px solid #ccc;
+    padding:10px;
+    text-align:center;
+}
+
+th{
+    background:#f0f0f0;
+}
+
+button{
+    padding:10px 15px;
+    border:none;
+    cursor:pointer;
+}
+
+.load{
+    background:#007bff;
+    color:white;
+}
+
+.update{
+    background:green;
+    color:white;
+    margin-top:15px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h2>Update Exam Schedule</h2>
+
+<div class="controls">
+
+<select id="dept" onchange="loadExam()">
+
+    <option value="BCOM-GENERAL">B.Com General</option>
+    <option value="BCOM-BM">B.Com BM</option>
+    <option value="BCOM-MM">B.Com MM</option>
+    <option value="BCOM-CS">B.Com CS</option>
+    <option value="BCOM-AF">B.Com A&F</option>
+    <option value="BCOM-ISM">B.Com ISM</option>
+    <option value="BCOM-CA">B.Com CA</option>
+    <option value="BCOM-BUSAD">B.Com BUS.AD</option>
+
+    <option value="BA-DEFENCE">B.A DEFENCE</option>
+    <option value="BA-PUBAD">B.A PUB.AD</option>
+    <option value="BA-TAMIL">B.A TAMIL</option>
+    <option value="BA-TOURISM">B.A TOURISM</option>
+
+    <option value="BSC-CS">B.Sc CS</option>
+    <option value="BSC-CS-AI">B.Sc CS WITH AI</option>
+    <option value="BSC-CRIMINOLOGY">B.Sc CRIMINOLOGY</option>
+    <option value="BSC-SA">B.Sc SA</option>
+    <option value="BSC-PHYS-CA">B.Sc PHYS WITH CA</option>
+    <option value="BSC-MATHS-CA">B.Sc MATHS WITH CA</option>
+    <option value="BSC-ELEC-AI">B.Sc ELECTRONICS WITH AI</option>
+    <option value="BSC-VISCOM">B.Sc VISCOM</option>
+    <option value="BSC-ELECTRONIC-MEDIA">B.Sc ELECTRONIC MEDIA</option>
+    <option value="BSC-IDD">B.Sc IDD</option>
+    <option value="BSC-PHYSICS">B.Sc PHYSICS</option>
+
+    <option value="BCA">BCA COMPUTER APPLICATION</option>
+
+</select>
+
+<select id="examType" onchange="loadExam()">
+
+    <option value="CYCLIC-TEST-01">CYCLIC TEST 01</option>
+    <option value="CYCLIC-TEST-02">CYCLIC TEST 02</option>
+
+    <option value="INTERNAL-TEST-01">INTERNAL TEST 01</option>
+    <option value="INTERNAL-TEST-02">INTERNAL TEST 02</option>
+
+    <option value="MODEL-EXAM">MODEL EXAM</option>
+
+    <option value="SEMESTER-EXAM">SEMESTER EXAM</option>
+
+</select>
+
+<button class="load" onclick="loadSchedule()">Load</button>
+
+</div>
+
+<table>
+
+<thead>
+<tr>
+<th>Subject Code</th>
+<th>Subject Name</th>
+<th>Date</th>
+<th>Timing</th>
+<th>Platform</th>
+</tr>
+</thead>
+
+<tbody id="tbody"></tbody>
+
+</table>
+
+<button class="update" onclick="updateSchedule()">
+Update Schedule
+</button>
+
+</div>
+
+<script type="module">
+
+import { db } from "./firebase-config.js";
+import {
+    doc,
+    getDoc,
+    setDoc
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+let loadedData = {};
+
+window.loadSchedule = async function(){
+
+    const dept =
+        document.getElementById("dept").value;
+
+    const examType =
+        document.getElementById("examType").value;
+
+    const ref =
+        doc(db,"exams",dept,examType,"schedule");
+
+    const snap =
+        await getDoc(ref);
+
+    const tbody =
+        document.getElementById("tbody");
+
+    tbody.innerHTML = "";
+
+    if(!snap.exists()){
+
+        alert("No Schedule Found");
+        return;
+    }
+
+    loadedData = snap.data();
+
+    for(let key in loadedData){
+
+        let exam = loadedData[key];
+
+        tbody.innerHTML += `
+        <tr>
+            <td>
+                <input id="code_${key}"
+                value="${exam.SubjectCode}">
+            </td>
+
+            <td>
+                <input id="name_${key}"
+                value="${exam.SubjectName}">
+            </td>
+
+            <td>
+                <input type="date"
+                id="date_${key}"
+                value="${exam.Date}">
+            </td>
+
+            <td>
+                <input id="time_${key}"
+                value="${exam.Timing}">
+            </td>
+
+            <td>
+                <select id="platform_${key}">
+                    <option value="Google Classroom"
+                    ${exam.Platform==="Google Classroom"?"selected":""}>
+                    Google Classroom
+                    </option>
+
+                    <option value="Zoom"
+                    ${exam.Platform==="Zoom"?"selected":""}>
+                    Zoom
+                    </option>
+                </select>
+            </td>
+        </tr>
+        `;
+    }
+};
+
+window.updateSchedule = async function(){
+
+    const dept =
+        document.getElementById("dept").value;
+
+    const examType =
+        document.getElementById("examType").value;
+
+    let updatedData = {};
+
+    for(let key in loadedData){
+
+        updatedData[key] = {
+
+            SubjectCode:
+            document.getElementById("code_"+key).value,
+
+            SubjectName:
+            document.getElementById("name_"+key).value,
+
+            Date:
+            document.getElementById("date_"+key).value,
+
+            Timing:
+            document.getElementById("time_"+key).value,
+
+            Platform:
+            document.getElementById("platform_"+key).value
+        };
+    }
+
+    await setDoc(
+        doc(db,"exams",dept,examType,"schedule"),
+        updatedData
+    );
+
+    alert("Schedule Updated Successfully");
+};
+
+</script>
+
+</body>
+</html>
