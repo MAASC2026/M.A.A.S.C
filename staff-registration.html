@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Staff Registration</title>
+
+<style>
+body{
+    font-family:Arial;
+    background:#f4f6f9;
+    padding:20px;
+}
+
+.container{
+    max-width:600px;
+    margin:auto;
+    background:white;
+    padding:20px;
+    border-radius:10px;
+    box-shadow:0 0 10px rgba(0,0,0,.1);
+}
+
+h2{
+    text-align:center;
+    color:#500454;
+}
+
+input,select{
+    width:100%;
+    padding:12px;
+    margin:10px 0;
+    box-sizing:border-box;
+}
+
+button{
+    width:100%;
+    padding:12px;
+    background:#500454;
+    color:white;
+    border:none;
+    cursor:pointer;
+    font-size:16px;
+}
+
+button:hover{
+    background:#6b0c72;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h2>Staff Registration</h2>
+
+<input type="text" id="staffId" placeholder="Staff ID (Example: BC001)">
+<input type="text" id="staffName" placeholder="Staff Name">
+
+<select id="department">
+<option>B.Com General</option>
+<option>B.Com BM</option>
+<option>B.Com MM</option>
+<option>B.Com CS</option>
+<option>B.Com A&F</option>
+<option>B.Com ISM</option>
+<option>B.Com CA</option>
+<option>B.Com BUS.AD</option>
+
+<option>B.A DEFENCE</option>
+<option>B.A PUB.AD</option>
+<option>B.A TAMIL</option>
+<option>B.A TOURISM</option>
+
+<option>B.Sc CS</option>
+<option>B.Sc CS WITH AI</option>
+<option>B.Sc CRIMINOLOGY</option>
+<option>B.Sc SA</option>
+<option>B.Sc PHYS WITH CA</option>
+<option>B.Sc MATHS WITH CA</option>
+<option>B.Sc ELECTRONICS WITH AI</option>
+<option>B.Sc VISCOM</option>
+<option>B.Sc ELECTRONIC MEDIA</option>
+<option>B.Sc IDD</option>
+<option>B.Sc PHYSICS</option>
+
+<option>BCA COMPUTER APPLICATION</option>
+</select>
+
+<input type="password" id="password" placeholder="Password">
+
+<button onclick="saveStaff()">Register Staff</button>
+
+</div>
+
+<script type="module">
+import { db } from "./firebase-config.js";
+
+import {
+doc,
+setDoc
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+window.saveStaff = async function () {
+try {
+
+const staffId = document.getElementById("staffId").value.trim().toUpperCase();
+const name = document.getElementById("staffName").value.trim();
+const department = document.getElementById("department").value;
+const password = document.getElementById("password").value.trim();
+
+if (!staffId || !name || !password) {
+alert("Please fill all fields");
+return;
+}
+
+await setDoc(doc(db, "staff", staffId), {
+staffId,
+name,
+department,
+password,
+createdAt: new Date()
+});
+
+alert("Staff Registered Successfully");
+
+document.getElementById("staffId").value = "";
+document.getElementById("staffName").value = "";
+document.getElementById("password").value = "";
+
+} catch (error) {
+console.error(error);
+alert("Error: " + error.message);
+}
+};
+</script>
+
+</body>
+</html>

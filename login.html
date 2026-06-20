@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>M.A.A.S College Login</title>
+
+<style>
+
+body{
+    margin:0;
+    font-family:Arial,sans-serif;
+    background:#f4f6f9;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+}
+
+.login-box{
+    width:400px;
+    background:white;
+    padding:30px;
+    border-radius:10px;
+    box-shadow:0 0 15px rgba(0,0,0,0.2);
+}
+
+.logo{
+    text-align:center;
+}
+
+.logo img{
+    width:100px;
+}
+
+h2{
+    text-align:center;
+    color:#500454;
+}
+
+input{
+    width:100%;
+    padding:12px;
+    margin:10px 0;
+    box-sizing:border-box;
+}
+
+button{
+    width:100%;
+    padding:12px;
+    background:#500454;
+    color:white;
+    border:none;
+    cursor:pointer;
+    font-size:16px;
+}
+
+button:hover{
+    background:#6e096f;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="login-box">
+
+<div class="logo">
+<img src="logo.png" alt="College Logo">
+</div>
+
+<h2>M.A.A.S COLLEGE PORTAL</h2>
+
+<input
+type="text"
+id="userid"
+placeholder="User ID">
+
+<input
+type="password"
+id="password"
+placeholder="Password">
+
+<button onclick="login()">
+Login
+</button>
+
+</div>
+
+<script>
+
+function login(){
+
+    const userid =
+    document.getElementById("userid")
+    .value
+    .trim()
+    .toUpperCase();
+
+    const password =
+    document.getElementById("password")
+    .value
+    .trim();
+
+    /* ADMIN */
+
+    if(
+        userid === "ADMIN" &&
+        password === "admin@maasc"
+    ){
+
+        alert("Admin Login Success");
+
+        window.location.href =
+        "admin-dashboard.html";
+
+        return;
+    }
+
+    /* STAFF */
+
+    if(
+        userid === "BC001" &&
+        password === "1234"
+    ){
+
+        window.location.href =
+        "staff-dashboard.html";
+
+        return;
+    }
+
+    /* STUDENT */
+
+    if(
+        userid === "26H001" &&
+        password === "1234"
+    ){
+
+        window.location.href =
+        "student-dashboard.html";
+
+        return;
+    }
+
+    alert("Invalid User ID or Password");
+}
+
+</script>
+
+</body>
+</html>
