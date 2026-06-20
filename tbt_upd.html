@@ -69,6 +69,12 @@ button{
     color:white;
     margin-top:15px;
 }
+
+.deleteBtn{
+    background:red;
+    color:white;
+    padding:6px;
+}
 </style>
 </head>
 
@@ -80,8 +86,7 @@ button{
 
 <div class="controls">
 
-<select id="dept" onchange="loadExam()">
-
+<select id="dept">
     <option value="BCOM-GENERAL">B.Com General</option>
     <option value="BCOM-BM">B.Com BM</option>
     <option value="BCOM-MM">B.Com MM</option>
@@ -109,21 +114,15 @@ button{
     <option value="BSC-PHYSICS">B.Sc PHYSICS</option>
 
     <option value="BCA">BCA COMPUTER APPLICATION</option>
-
 </select>
 
-<select id="examType" onchange="loadExam()">
-
+<select id="examType">
     <option value="CYCLIC-TEST-01">CYCLIC TEST 01</option>
     <option value="CYCLIC-TEST-02">CYCLIC TEST 02</option>
-
     <option value="INTERNAL-TEST-01">INTERNAL TEST 01</option>
     <option value="INTERNAL-TEST-02">INTERNAL TEST 02</option>
-
     <option value="MODEL-EXAM">MODEL EXAM</option>
-
     <option value="SEMESTER-EXAM">SEMESTER EXAM</option>
-
 </select>
 
 <button class="load" onclick="loadSchedule()">Load</button>
@@ -131,7 +130,6 @@ button{
 </div>
 
 <table>
-
 <thead>
 <tr>
 <th>Subject Code</th>
@@ -139,11 +137,11 @@ button{
 <th>Date</th>
 <th>Timing</th>
 <th>Platform</th>
+<th>Action</th>
 </tr>
 </thead>
 
 <tbody id="tbody"></tbody>
-
 </table>
 
 <button class="update" onclick="updateSchedule()">
@@ -162,28 +160,23 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 let loadedData = {};
+window.deletedKeys = [];
 
 window.loadSchedule = async function(){
 
-    const dept =
-        document.getElementById("dept").value;
+    const dept = document.getElementById("dept").value;
+    const examType = document.getElementById("examType").value;
 
-    const examType =
-        document.getElementById("examType").value;
+    const ref = doc(db,"exams",dept,examType,"schedule");
+    const snap = await getDoc(ref);
 
-    const ref =
-        doc(db,"exams",dept,examType,"schedule");
-
-    const snap =
-        await getDoc(ref);
-
-    const tbody =
-        document.getElementById("tbody");
-
+    const tbody = document.getElementById("tbody");
     tbody.innerHTML = "";
 
-    if(!snap.exists()){
+    loadedData = {};
+    window.deletedKeys = [];
 
+    if(!snap.exists()){
         alert("No Schedule Found");
         return;
     }
@@ -195,74 +188,49 @@ window.loadSchedule = async function(){
         let exam = loadedData[key];
 
         tbody.innerHTML += `
-        <tr>
-            <td>
-                <input id="code_${key}"
-                value="${exam.SubjectCode}">
-            </td>
-
-            <td>
-                <input id="name_${key}"
-                value="${exam.SubjectName}">
-            </td>
-
-            <td>
-                <input type="date"
-                id="date_${key}"
-                value="${exam.Date}">
-            </td>
-
-            <td>
-                <input id="time_${key}"
-                value="${exam.Timing}">
-            </td>
-
+        <tr id="row_${key}">
+            <td><input id="code_${key}" value="${exam.SubjectCode}"></td>
+            <td><input id="name_${key}" value="${exam.SubjectName}"></td>
+            <td><input type="date" id="date_${key}" value="${exam.Date}"></td>
+            <td><input id="time_${key}" value="${exam.Timing}"></td>
             <td>
                 <select id="platform_${key}">
-                    <option value="Google Classroom"
-                    ${exam.Platform==="Google Classroom"?"selected":""}>
-                    Google Classroom
-                    </option>
-
-                    <option value="Zoom"
-                    ${exam.Platform==="Zoom"?"selected":""}>
-                    Zoom
-                    </option>
+                    <option value="Google Classroom" ${exam.Platform==="Google Classroom"?"selected":""}>Google Classroom</option>
+                    <option value="Zoom" ${exam.Platform==="Zoom"?"selected":""}>Zoom</option>
                 </select>
+            </td>
+            <td>
+                <button class="deleteBtn" onclick="deleteRow('${key}')">Delete</button>
             </td>
         </tr>
         `;
     }
 };
 
+window.deleteRow = function(key){
+    if(confirm("Delete this subject?")){
+        document.getElementById("row_" + key).remove();
+        window.deletedKeys.push(key);
+    }
+};
+
 window.updateSchedule = async function(){
 
-    const dept =
-        document.getElementById("dept").value;
-
-    const examType =
-        document.getElementById("examType").value;
+    const dept = document.getElementById("dept").value;
+    const examType = document.getElementById("examType").value;
 
     let updatedData = {};
 
     for(let key in loadedData){
 
+        if(window.deletedKeys.includes(key)) continue;
+
         updatedData[key] = {
-
-            SubjectCode:
-            document.getElementById("code_"+key).value,
-
-            SubjectName:
-            document.getElementById("name_"+key).value,
-
-            Date:
-            document.getElementById("date_"+key).value,
-
-            Timing:
-            document.getElementById("time_"+key).value,
-
-            Platform:
-            document.getElementById("platform_"+key).value
+            SubjectCode: document.getElementById("code_"+key).value,
+            SubjectName: document.getElementById("name_"+key).value,
+            Date: document.getElementById("date_"+key).value,
+            Timing: document.getElementById("time_"+key).value,
+            Platform: document.getElementById("platform_"+key).value
         };
     }
 
