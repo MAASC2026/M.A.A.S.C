@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>MAASC Hall Ticket Generator</title>
+
+<style>
+body{
+    font-family:Arial,sans-serif;
+    background:#f4f4f4;
+    margin:20px;
+}
+.container{
+    max-width:1000px;
+    margin:auto;
+    background:#fff;
+    padding:20px;
+    border-radius:10px;
+    box-shadow:0 0 10px #ccc;
+}
+h2{
+    text-align:center;
+    color:#003366;
+}
+label{
+    font-weight:bold;
+}
+input,select{
+    width:100%;
+    padding:10px;
+    margin-top:5px;
+    margin-bottom:15px;
+}
+#subjects{
+    border:1px solid #ccc;
+    padding:10px;
+    border-radius:5px;
+    margin-bottom:20px;
+}
+button{
+    background:#003366;
+    color:white;
+    border:none;
+    padding:10px 20px;
+    cursor:pointer;
+    margin-right:10px;
+}
+button:hover{
+    background:#0055aa;
+}
+#hallTicket{
+    display:none;
+    border:2px solid black;
+    padding:20px;
+    margin-top:30px;
+}
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+td{
+    padding:8px;
+}
+.sign{
+    margin-top:50px;
+    text-align:right;
+}
+.sign img{
+    width:180px;
+}
+@media print{
+    body *{
+        visibility:hidden;
+    }
+    #hallTicket,#hallTicket *{
+        visibility:visible;
+    }
+    #hallTicket{
+        position:absolute;
+        left:0;
+        top:0;
+        width:100%;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h2>MURALI ARTS AND SCIENCE COLLEGE</h2>
+<h3 align="center">Hall Ticket Generator</h3>
+
+<label>Register Number</label>
+<input type="text" id="regno" placeholder="MC26H001">
+
+<label>Student Name</label>
+<input type="text" id="name">
+
+<label>Department</label>
+<select id="department" onchange="loadSubjects()">
+
+<option value="">Select Department</option>
+
+<option value="BCOM-GENERAL">B.Com General</option>
+<option value="BCOM-BM">B.Com BM</option>
+<option value="BCOM-MM">B.Com MM</option>
+<option value="BCOM-CS">B.Com CS</option>
+<option value="BCOM-AF">B.Com A&F</option>
+<option value="BCOM-ISM">B.Com ISM</option>
+<option value="BCOM-CA">B.Com CA</option>
+<option value="BCOM-BUSAD">B.Com BUS.AD</option>
+
+<option value="BA-DEFENCE">B.A DEFENCE</option>
+<option value="BA-PUBAD">B.A PUB.AD</option>
+<option value="BA-TAMIL">B.A TAMIL</option>
+<option value="BA-TOURISM">B.A TOURISM</option>
+
+<option value="BSC-CS">B.Sc CS</option>
+<option value="BSC-CS-AI">B.Sc CS WITH AI</option>
+<option value="BSC-CRIMINOLOGY">B.Sc CRIMINOLOGY</option>
+<option value="BSC-SA">B.Sc SA</option>
+<option value="BSC-PHYS-CA">B.Sc PHYS WITH CA</option>
+<option value="BSC-MATHS-CA">B.Sc MATHS WITH CA</option>
+<option value="BSC-ELEC-AI">B.Sc ELECTRONICS WITH AI</option>
+<option value="BSC-VISCOM">B.Sc VISCOM</option>
+<option value="BSC-ELECTRONIC-MEDIA">B.Sc ELECTRONIC MEDIA</option>
+<option value="BSC-IDD">B.Sc IDD</option>
+<option value="BSC-PHYSICS">B.Sc PHYSICS</option>
+
+<option value="BCA">BCA COMPUTER APPLICATION</option>
+
+</select>
+
+<label>Exam Type</label>
+<select id="examType">
+
+<option value="CYCLIC TEST 01">CYCLIC TEST 01</option>
+<option value="CYCLIC TEST 02">CYCLIC TEST 02</option>
+<option value="INTERNAL TEST 01">INTERNAL TEST 01</option>
+<option value="INTERNAL TEST 02">INTERNAL TEST 02</option>
+<option value="MODEL EXAM">MODEL EXAM</option>
+<option value="SEMESTER EXAM">SEMESTER EXAM</option>
+
+</select>
+
+<div id="subjects">
+Select Department to Load Subjects
+</div>
+
+<button onclick="generateHallTicket()">Generate Hall Ticket</button>
+<button onclick="window.print()">Print Hall Ticket</button>
+
+<div id="hallTicket">
+
+<center>
+<h1>MURALI ARTS AND SCIENCE COLLEGE</h1>
+<h2>HALL TICKET</h2>
+</center>
+
+<table border="1">
+
+<tr>
+<td><b>Register Number</b></td>
+<td id="htReg"></td>
+</tr>
+
+<tr>
+<td><b>Student Name</b></td>
+<td id="htName"></td>
+</tr>
+
+<tr>
+<td><b>Department</b></td>
+<td id="htDept"></td>
+</tr>
+
+<tr>
+<td><b>Exam Type</b></td>
+<td id="htExam"></td>
+</tr>
+
+</table>
+
+<h3>Subjects</h3>
+<ul id="htSubjects"></ul>
+
+<div class="sign">
+<img src="principal-signature.jpeg">
+<br>
+<b>FOUNDER    </b><br>
+<b>Dr.R.Muralikrishnan</b>
+</div>
+
+</div>
+
+</div>
+
+<script>
+
+const departmentSubjects={
+
+"BCA":[
+"Programming in C",
+"Python Programming",
+"Data Structures",
+"DBMS",
+"Computer Networks"
+],
+
+"BSC-CS":[
+"Programming in C",
+"Computer Architecture",
+"Python",
+"Operating System",
+"Mathematics"
+],
+
+"BSC-CS-AI":[
+"Artificial Intelligence",
+"Python",
+"Machine Learning",
+"Data Analytics",
+"Statistics"
+],
+
+"BCOM-GENERAL":[
+"Financial Accounting",
+"Business Economics",
+"Business Management",
+"Marketing",
+"Banking"
+],
+
+"BCOM-CS":[
+"Financial Accounting",
+"Programming Fundamentals",
+"DBMS",
+"Corporate Accounting",
+"E-Commerce"
+],
+
+"default":[
+"Subject 1",
+"Subject 2",
+"Subject 3",
+"Subject 4",
+"Subject 5"
+]
+
+};
+
+function loadSubjects(){
+
+let dept=document.getElementById("department").value;
+
+let list=departmentSubjects[dept] || departmentSubjects["default"];
+
+let html="";
+
+list.forEach(sub=>{
+html+=`
+<label>
+<input type="checkbox" value="${sub}">
+${sub}
+</label><br>`;
+});
+
+document.getElementById("subjects").innerHTML=html;
+}
+
+function generateHallTicket(){
+
+let reg=document.getElementById("regno").value;
+let name=document.getElementById("name").value;
+let dept=document.getElementById("department").options[
+document.getElementById("department").selectedIndex].text;
+
+let exam=document.getElementById("examType").value;
+
+if(reg===""||name===""){
+alert("Enter Register Number and Name");
+return;
+}
+
+document.getElementById("htReg").innerText=reg;
+document.getElementById("htName").innerText=name;
+document.getElementById("htDept").innerText=dept;
+document.getElementById("htExam").innerText=exam;
+
+let list=document.getElementById("htSubjects");
+list.innerHTML="";
+
+document.querySelectorAll("#subjects input:checked").forEach(cb=>{
+let li=document.createElement("li");
+li.innerText=cb.value;
+list.appendChild(li);
+});
+
+document.getElementById("hallTicket").style.display="block";
+}
+
+</script>
+
+</body>
+</html>
