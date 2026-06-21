@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html>
 <head>
@@ -12,7 +13,7 @@ body{
 }
 
 .container{
-    max-width:1100px;
+    max-width:1200px;
     margin:auto;
     background:#fff;
     padding:20px;
@@ -44,7 +45,7 @@ table{
 }
 
 th,td{
-    border:1px solid #ccc;
+    border:10px solid #ccc;
     padding:10px;
     text-align:center;
 }
@@ -74,6 +75,10 @@ button{
     background:red;
     color:white;
     padding:6px;
+}
+
+.linkInput{
+    min-width:250px;
 }
 </style>
 </head>
@@ -136,7 +141,7 @@ button{
 <th>Subject Name</th>
 <th>Date</th>
 <th>Timing</th>
-<th>Platform</th>
+<th>Test Link</th>
 <th>Action</th>
 </tr>
 </thead>
@@ -153,6 +158,7 @@ Update Schedule
 <script type="module">
 
 import { db } from "./firebase-config.js";
+
 import {
     doc,
     getDoc,
@@ -189,48 +195,95 @@ window.loadSchedule = async function(){
 
         tbody.innerHTML += `
         <tr id="row_${key}">
-            <td><input id="code_${key}" value="${exam.SubjectCode}"></td>
-            <td><input id="name_${key}" value="${exam.SubjectName}"></td>
-            <td><input type="date" id="date_${key}" value="${exam.Date}"></td>
-            <td><input id="time_${key}" value="${exam.Timing}"></td>
+
             <td>
-                <select id="platform_${key}">
-                    <option value="Google Classroom" ${exam.Platform==="Google Classroom"?"selected":""}>Google Classroom</option>
-                    <option value="Zoom" ${exam.Platform==="Zoom"?"selected":""}>Zoom</option>
-                </select>
+                <input id="code_${key}"
+                value="${exam.SubjectCode || ''}">
             </td>
+
             <td>
-                <button class="deleteBtn" onclick="deleteRow('${key}')">Delete</button>
+                <input id="name_${key}"
+                value="${exam.SubjectName || ''}">
             </td>
+
+            <td>
+                <input type="date"
+                id="date_${key}"
+                value="${exam.Date || ''}">
+            </td>
+
+            <td>
+                <input id="time_${key}"
+                value="${exam.Timing || ''}">
+            </td>
+
+            <td>
+                <input
+                    type="url"
+                    class="linkInput"
+                    id="link_${key}"
+                    value="${exam.TestLink || ''}"
+                    placeholder="https://forms.google.com/..."
+                >
+            </td>
+
+            <td>
+                <button
+                    class="deleteBtn"
+                    onclick="deleteRow('${key}')">
+                    Delete
+                </button>
+            </td>
+
         </tr>
         `;
     }
 };
 
 window.deleteRow = function(key){
+
     if(confirm("Delete this subject?")){
-        document.getElementById("row_" + key).remove();
+
+        document
+        .getElementById("row_" + key)
+        .remove();
+
         window.deletedKeys.push(key);
     }
 };
 
 window.updateSchedule = async function(){
 
-    const dept = document.getElementById("dept").value;
-    const examType = document.getElementById("examType").value;
+    const dept =
+    document.getElementById("dept").value;
+
+    const examType =
+    document.getElementById("examType").value;
 
     let updatedData = {};
 
     for(let key in loadedData){
 
-        if(window.deletedKeys.includes(key)) continue;
+        if(window.deletedKeys.includes(key))
+            continue;
 
         updatedData[key] = {
-            SubjectCode: document.getElementById("code_"+key).value,
-            SubjectName: document.getElementById("name_"+key).value,
-            Date: document.getElementById("date_"+key).value,
-            Timing: document.getElementById("time_"+key).value,
-            Platform: document.getElementById("platform_"+key).value
+
+            SubjectCode:
+            document.getElementById("code_"+key).value,
+
+            SubjectName:
+            document.getElementById("name_"+key).value,
+
+            Date:
+            document.getElementById("date_"+key).value,
+
+            Timing:
+            document.getElementById("time_"+key).value,
+
+            TestLink:
+            document.getElementById("link_"+key).value
+
         };
     }
 
@@ -246,3 +299,4 @@ window.updateSchedule = async function(){
 
 </body>
 </html>
+
