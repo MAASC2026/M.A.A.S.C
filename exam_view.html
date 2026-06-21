@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html>
 <head>
@@ -51,12 +52,25 @@ th{
     background:#f0f0f0;
 }
 
-/* column alignment */
 th:nth-child(1), td:nth-child(1){width:15%;}
 th:nth-child(2), td:nth-child(2){width:25%;}
 th:nth-child(3), td:nth-child(3){width:15%;}
 th:nth-child(4), td:nth-child(4){width:20%;}
 th:nth-child(5), td:nth-child(5){width:25%;}
+
+.attend-btn{
+    background:#28a745;
+    color:white;
+    border:none;
+    padding:8px 14px;
+    border-radius:5px;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+.attend-btn:hover{
+    background:#218838;
+}
 </style>
 </head>
 
@@ -111,6 +125,7 @@ th:nth-child(5), td:nth-child(5){width:25%;}
     <option value="SEMESTER-EXAM">SEMESTER EXAM</option>
 
 </select>
+
 <div class="table-wrapper">
 
 <table>
@@ -120,7 +135,7 @@ th:nth-child(5), td:nth-child(5){width:25%;}
 <th>Subject Name</th>
 <th>Date</th>
 <th>Timing</th>
-<th>Platform</th>
+<th>Action</th>
 </tr>
 </thead>
 
@@ -137,7 +152,6 @@ th:nth-child(5), td:nth-child(5){width:25%;}
 import { db } from "./firebase-config.js";
 import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-/* ✅ DATE FORMAT FUNCTION */
 function formatDate(dateStr){
 
     if(!dateStr) return "";
@@ -151,21 +165,35 @@ function formatDate(dateStr){
     return `${day}.${month}.${year}`;
 }
 
+window.attendTest = function(link){
+
+    if(!link){
+        alert("Test Link Not Available");
+        return;
+    }
+
+    window.open(link,"_blank");
+};
+
 window.loadExam = async function(){
 
     const dept = document.getElementById("dept").value;
     const examType = document.getElementById("examType").value;
 
-    const snap = await getDoc(doc(db,"exams",dept,examType,"schedule"));
+    const snap = await getDoc(
+        doc(db,"exams",dept,examType,"schedule")
+    );
 
     const tbody = document.getElementById("tbody");
     tbody.innerHTML = "";
 
     if(!snap.exists()){
+
         tbody.innerHTML = `
         <tr>
             <td colspan="5">No Exam Schedule Found</td>
-        </tr>`;
+        </tr>
+        `;
         return;
     }
 
@@ -177,20 +205,26 @@ window.loadExam = async function(){
 
         tbody.innerHTML += `
         <tr>
-            <td>${d.SubjectCode}</td>
-            <td>${d.SubjectName}</td>
+            <td>${d.SubjectCode || ""}</td>
+            <td>${d.SubjectName || ""}</td>
             <td>${formatDate(d.Date)}</td>
-            <td>${d.Timing}</td>
-            <td>${d.Platform}</td>
+            <td>${d.Timing || ""}</td>
+            <td>
+                <button
+                    class="attend-btn"
+                    onclick="attendTest('${d.TestLink || ""}')">
+                    Attend Test
+                </button>
+            </td>
         </tr>
         `;
     }
 };
 
-/* auto load */
 loadExam();
 
 </script>
 
 </body>
 </html>
+```
