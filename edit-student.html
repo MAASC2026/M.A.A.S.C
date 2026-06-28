@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Edit Student</title>
+
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial;
+}
+
+body{
+background:#f4f6f9;
+padding:20px;
+}
+
+.container{
+max-width:1000px;
+margin:auto;
+background:white;
+padding:25px;
+border-radius:10px;
+box-shadow:0 0 10px rgba(0,0,0,.15);
+}
+
+h2{
+text-align:center;
+color:#500454;
+margin-bottom:25px;
+}
+
+.searchBox{
+display:flex;
+gap:10px;
+margin-bottom:25px;
+}
+
+.searchBox input{
+flex:1;
+padding:12px;
+font-size:16px;
+border:1px solid #ccc;
+border-radius:5px;
+}
+
+.searchBox button{
+padding:12px 25px;
+background:#500454;
+color:white;
+border:none;
+border-radius:5px;
+cursor:pointer;
+}
+
+.searchBox button:hover{
+background:#730770;
+}
+
+.form{
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:18px;
+}
+
+.group{
+display:flex;
+flex-direction:column;
+}
+
+label{
+margin-bottom:6px;
+font-weight:bold;
+}
+
+input,select{
+padding:10px;
+border:1px solid #ccc;
+border-radius:5px;
+font-size:15px;
+}
+
+.saveBtn{
+margin-top:30px;
+width:100%;
+padding:15px;
+background:green;
+color:white;
+border:none;
+font-size:18px;
+border-radius:6px;
+cursor:pointer;
+}
+
+.saveBtn:hover{
+background:#0b7a0b;
+}
+
+#msg{
+margin-top:20px;
+text-align:center;
+font-weight:bold;
+color:red;
+}
+
+@media(max-width:800px){
+.form{
+grid-template-columns:1fr;
+}
+.searchBox{
+flex-direction:column;
+}
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h2>EDIT STUDENT INFORMATION</h2>
+
+<div class="searchBox">
+<input type="text" id="searchRegNo" placeholder="Enter Register Number">
+<button onclick="loadStudent()">SEARCH</button>
+</div>
+
+<div class="form">
+
+<div class="group">
+<label>Register Number</label>
+<input type="text" id="regNo" readonly>
+</div>
+
+<div class="group">
+<label>Name</label>
+<input type="text" id="name">
+</div>
+
+<div class="group">
+<label>Mobile</label>
+<input type="text" id="mobile">
+</div>
+
+<div class="group">
+<label>Email</label>
+<input type="email" id="email">
+</div>
+
+<div class="group">
+<label>Date of Birth</label>
+<input type="text" id="dob">
+</div>
+
+<div class="group">
+<label>Address</label>
+<input type="text" id="address">
+</div>
+
+<div class="group">
+<label>Department</label>
+<input type="text" id="department">
+</div>
+
+<div class="group">
+<label>Year</label>
+<select id="year">
+<option>I</option>
+<option>II</option>
+<option>III</option>
+</select>
+</div>
+
+<div class="group">
+<label>Semester</label>
+<select id="semester">
+<option>1</option>
+<option>2</option>
+<option>3</option>
+<option>4</option>
+<option>5</option>
+<option>6</option>
+</select>
+</div>
+
+<div class="group">
+<label>Section</label>
+<select id="section">
+<option>A</option>
+<option>B</option>
+<option>C</option>
+<option>D</option>
+<option>E</option>
+<option>F</option>
+</select>
+</div>
+
+<div class="group">
+<label>Status</label>
+<select id="status">
+<option>ACTIVE</option>
+<option>INACTIVE</option>
+</select>
+</div>
+
+</div>
+
+<button class="saveBtn" onclick="updateStudent()">
+UPDATE STUDENT
+</button>
+
+<div id="msg"></div>
+
+</div>
+
+<script type="module">
+
+// ================= FIREBASE =================
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+import {
+getFirestore,
+doc,
+getDoc,
+updateDoc,
+deleteDoc
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+// 🔴 YOUR FIREBASE CONFIG
+const firebaseConfig = {
+apiKey: "YOUR_API_KEY",
+authDomain: "YOUR_AUTH_DOMAIN",
+projectId: "YOUR_PROJECT_ID"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+import { enableNetwork } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+enableNetwork(db);
+
+// ================= SEARCH =================
+
+window.loadStudent = async function () {
+
+const regNo = document.getElementById("searchRegNo").value.trim();
+
+if (!regNo) {
+document.getElementById("msg").innerText = "Enter Register Number";
+return;
+}
+
+try {
+
+const ref = doc(db, "students", regNo);
+const snap = await getDoc(ref);
+
+if (snap.exists()) {
+
+const data = snap.data();
+
+document.getElementById("regNo").value = regNo;
+document.getElementById("name").value = data.name || "";
+document.getElementById("mobile").value = data.mobile || "";
+document.getElementById("email").value = data.email || "";
+document.getElementById("dob").value = data.dob || "";
+document.getElementById("address").value = data.address || "";
+document.getElementById("department").value = data.department || "";
+document.getElementById("year").value = data.year || "I";
+document.getElementById("semester").value = data.semester || "1";
+document.getElementById("section").value = data.section || "A";
+document.getElementById("status").value = data.status || "ACTIVE";
+
+document.getElementById("msg").style.color = "green";
+document.getElementById("msg").innerText = "Student loaded";
+
+} else {
+document.getElementById("msg").style.color = "red";
+document.getElementById("msg").innerText = "Student not found";
+}
+
+} catch (error) {
+console.error(error);
+document.getElementById("msg").innerText = "Firebase error";
+}
+};
+
+// ================= UPDATE =================
+
+window.updateStudent = async function () {
+
+const regNo = document.getElementById("regNo").value.trim();
+
+if (!regNo) return;
+
+try {
+
+await updateDoc(doc(db, "students", regNo), {
+
+name: document.getElementById("name").value,
+mobile: document.getElementById("mobile").value,
+email: document.getElementById("email").value,
+dob: document.getElementById("dob").value,
+address: document.getElementById("address").value,
+department: document.getElementById("department").value,
+year: document.getElementById("year").value,
+semester: document.getElementById("semester").value,
+section: document.getElementById("section").value,
+status: document.getElementById("status").value,
+updatedAt: new Date().toISOString()
+
+});
+
+document.getElementById("msg").style.color = "green";
+document.getElementById("msg").innerText = "Updated successfully";
+
+} catch (e) {
+console.error(e);
+document.getElementById("msg").innerText = "Update failed";
+}
+};
+
+// ================= DELETE =================
+
+window.deleteStudent = async function () {
+
+const regNo = document.getElementById("regNo").value.trim();
+
+if (!regNo) return;
+
+if (!confirm("Delete this student?")) return;
+
+try {
+
+await deleteDoc(doc(db, "students", regNo));
+
+document.getElementById("msg").style.color = "green";
+document.getElementById("msg").innerText = "Deleted successfully";
+
+document.querySelectorAll("input").forEach(i => i.value = "");
+
+} catch (e) {
+console.error(e);
+document.getElementById("msg").innerText = "Delete failed";
+}
+};
+
+</script>
+
+</body>
+</html>

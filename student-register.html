@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>
+
+Student Registration
+
+</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
+
+body{
+background:#f4f6f9;
+padding:20px;
+}
+
+.container{
+
+max-width:1000px;
+
+margin:auto;
+
+background:white;
+
+padding:25px;
+
+border-radius:10px;
+
+box-shadow:0 0 15px rgba(0,0,0,.15);
+
+}
+
+h2{
+
+text-align:center;
+
+color:#500454;
+
+margin-bottom:20px;
+
+}
+
+.grid{
+
+display:grid;
+
+grid-template-columns:
+
+repeat(2,1fr);
+
+gap:15px;
+
+}
+
+input,select,textarea{
+
+width:100%;
+
+padding:12px;
+
+border:1px solid #ccc;
+
+border-radius:5px;
+
+font-size:15px;
+
+}
+
+textarea{
+
+height:80px;
+
+resize:none;
+
+}
+
+.photo{
+
+grid-column:span 2;
+
+}
+
+.buttons{
+
+margin-top:20px;
+
+display:grid;
+
+grid-template-columns:
+
+repeat(4,1fr);
+
+gap:15px;
+
+}
+
+button{
+
+padding:12px;
+
+font-size:16px;
+
+border:none;
+
+border-radius:6px;
+
+cursor:pointer;
+
+color:white;
+
+font-weight:bold;
+
+}
+
+.save{
+
+background:#28a745;
+
+}
+
+.update{
+
+background:#007bff;
+
+}
+
+.delete{
+
+background:#dc3545;
+
+}
+
+.clear{
+
+background:#500454;
+
+}
+
+button:hover{
+
+opacity:.9;
+
+}
+
+img{
+
+width:120px;
+
+height:140px;
+
+border:1px solid #ccc;
+
+object-fit:cover;
+
+margin-top:10px;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h2>
+
+Student Registration
+
+</h2>
+
+<div class="grid">
+
+<input
+type="text"
+id="regNo"
+placeholder="Register Number">
+
+<input
+type="text"
+id="studentName"
+placeholder="Student Name">
+
+<select id="gender">
+
+<option>Male</option>
+
+<option>Female</option>
+
+<option>Other</option>
+
+</select>
+
+<input
+type="date"
+id="dob">
+
+<input
+type="text"
+id="mobile"
+placeholder="Mobile Number">
+
+<input
+type="email"
+id="email"
+placeholder="Email">
+
+<input
+type="text"
+id="parentName"
+placeholder="Parent Name">
+
+<input
+type="text"
+id="parentMobile"
+placeholder="Parent Mobile">
+
+<select id="department">
+
+<option>B.Com General</option>
+<option>B.Com BM</option>
+<option>B.Com MM</option>
+<option>B.Com CS</option>
+<option>B.Com A&F</option>
+<option>B.Com ISM</option>
+<option>B.Com CA</option>
+<option>B.Com BUS.AD</option>
+
+<option>B.A DEFENCE</option>
+<option>B.A PUB.AD</option>
+<option>B.A TAMIL</option>
+<option>B.A TOURISM</option>
+
+<option>B.Sc CS</option>
+<option>B.Sc CS WITH AI</option>
+<option>B.Sc CRIMINOLOGY</option>
+<option>B.Sc SA</option>
+<option>B.Sc PHYS WITH CA</option>
+<option>B.Sc MATHS WITH CA</option>
+<option>B.Sc ELECTRONICS WITH AI</option>
+<option>B.Sc VISCOM</option>
+<option>B.Sc ELECTRONIC MEDIA</option>
+<option>B.Sc IDD</option>
+<option>B.Sc PHYSICS</option>
+
+<option>BCA COMPUTER APPLICATION</option>
+
+</select>
+
+<select id="year">
+
+<option>I</option>
+
+<option>II</option>
+
+<option>III</option>
+
+</select>
+
+<select id="section">
+
+<option>A</option>
+
+<option>B</option>
+
+<option>C</option>
+
+</select>
+
+<select id="semester">
+
+<option>I</option>
+<option>II</option>
+<option>III</option>
+<option>IV</option>
+<option>V</option>
+<option>VI</option>
+
+</select>
+
+<input
+type="password"
+id="password"
+placeholder="Student Password">
+
+<textarea
+id="address"
+placeholder="Address"></textarea>
+
+<div class="photo">
+
+<label>
+
+Student Photo
+
+</label>
+
+<input
+type="file"
+id="photo"
+accept="image/*">
+
+<br>
+
+<img
+id="preview"
+src="images/default-profile.png">
+
+</div>
+
+</div>
+
+<div class="buttons">
+
+<button
+class="save"
+onclick="saveStudent()">
+
+Save
+
+</button>
+
+<button
+class="update"
+onclick="updateStudent()">
+
+Update
+
+</button>
+
+<button
+class="delete"
+onclick="deleteStudent()">
+
+Delete
+
+</button>
+
+<button
+class="clear"
+onclick="clearForm()">
+
+Clear
+
+</button>
+
+</div>
+
+</div>
+<script type="module">
+
+import { db, storage } from "./firebase-config.js";
+
+import {
+doc,
+setDoc,
+getDoc,
+updateDoc,
+deleteDoc
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+import {
+ref,
+uploadBytes,
+getDownloadURL
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
+
+/* ===========================
+   PHOTO PREVIEW
+=========================== */
+
+const photoInput = document.getElementById("photo");
+
+photoInput.addEventListener("change",function(){
+
+const file=this.files[0];
+
+if(file){
+
+document.getElementById("preview").src=
+URL.createObjectURL(file);
+
+}
+
+});
+
+/* ===========================
+   UPLOAD PHOTO
+=========================== */
+
+async function uploadPhoto(regNo){
+
+const file=photoInput.files[0];
+
+if(!file){
+
+return "";
+
+}
+
+const storageRef=ref(
+storage,
+"students/"+regNo+".jpg"
+);
+
+await uploadBytes(storageRef,file);
+
+return await getDownloadURL(storageRef);
+
+}
+
+/* ===========================
+   SAVE STUDENT
+=========================== */
+
+window.saveStudent=async function(){
+
+try{
+
+const regNo=document.getElementById("regNo").value.trim().toUpperCase();
+
+if(regNo==""){
+
+alert("Enter Register Number");
+
+return;
+
+}
+
+const photoURL=await uploadPhoto(regNo);
+
+await setDoc(doc(db,"students",regNo),{
+
+regNo:regNo,
+
+name:document.getElementById("studentName").value,
+
+gender:document.getElementById("gender").value,
+
+dob:document.getElementById("dob").value,
+
+mobile:document.getElementById("mobile").value,
+
+email:document.getElementById("email").value,
+
+parentName:document.getElementById("parentName").value,
+
+parentMobile:document.getElementById("parentMobile").value,
+
+department:document.getElementById("department").value,
+
+year:document.getElementById("year").value,
+
+section:document.getElementById("section").value,
+
+semester:document.getElementById("semester").value,
+
+password:document.getElementById("password").value,
+
+address:document.getElementById("address").value,
+
+photo:photoURL,
+
+createdAt:new Date()
+
+});
+
+alert("Student Registered Successfully");
+
+clearForm();
+
+}catch(e){
+
+console.log(e);
+
+alert(e.message);
+
+}
+
+}
+
+/* ===========================
+   SEARCH STUDENT
+=========================== */
+
+window.searchStudent=async function(){
+
+const regNo=document.getElementById("regNo").value.trim().toUpperCase();
+
+if(regNo==""){
+
+alert("Enter Register Number");
+
+return;
+
+}
+
+const snap=await getDoc(doc(db,"students",regNo));
+
+if(!snap.exists()){
+
+alert("Student Not Found");
+
+return;
+
+}
+
+const s=snap.data();
+
+document.getElementById("studentName").value=s.name||"";
+document.getElementById("gender").value=s.gender||"Male";
+document.getElementById("dob").value=s.dob||"";
+document.getElementById("mobile").value=s.mobile||"";
+document.getElementById("email").value=s.email||"";
+document.getElementById("parentName").value=s.parentName||"";
+document.getElementById("parentMobile").value=s.parentMobile||"";
+document.getElementById("department").value=s.department||"";
+document.getElementById("year").value=s.year||"I";
+document.getElementById("section").value=s.section||"A";
+document.getElementById("semester").value=s.semester||"I";
+document.getElementById("password").value=s.password||"";
+document.getElementById("address").value=s.address||"";
+
+if(s.photo){
+
+document.getElementById("preview").src=s.photo;
+
+}
+
+}
+
+/* ===========================
+   UPDATE STUDENT
+=========================== */
+
+window.updateStudent=async function(){
+
+const regNo=document.getElementById("regNo").value.trim().toUpperCase();
+
+if(regNo==""){
+
+alert("Enter Register Number");
+
+return;
+
+}
+
+let photoURL=document.getElementById("preview").src;
+
+if(photoInput.files.length>0){
+
+photoURL=await uploadPhoto(regNo);
+
+}
+
+await updateDoc(doc(db,"students",regNo),{
+
+name:document.getElementById("studentName").value,
+
+gender:document.getElementById("gender").value,
+
+dob:document.getElementById("dob").value,
+
+mobile:document.getElementById("mobile").value,
+
+email:document.getElementById("email").value,
+
+parentName:document.getElementById("parentName").value,
+
+parentMobile:document.getElementById("parentMobile").value,
+
+department:document.getElementById("department").value,
+
+year:document.getElementById("year").value,
+
+section:document.getElementById("section").value,
+
+semester:document.getElementById("semester").value,
+
+password:document.getElementById("password").value,
+
+address:document.getElementById("address").value,
+
+photo:photoURL
+
+});
+
+alert("Student Updated Successfully");
+
+}
+
+/* ===========================
+   DELETE STUDENT
+=========================== */
+
+window.deleteStudent=async function(){
+
+const regNo=document.getElementById("regNo").value.trim().toUpperCase();
+
+if(regNo==""){
+
+alert("Enter Register Number");
+
+return;
+
+}
+
+if(!confirm("Delete this student?")){
+
+return;
+
+}
+
+await deleteDoc(doc(db,"students",regNo));
+
+alert("Student Deleted");
+
+clearForm();
+
+}
+
+/* ===========================
+   CLEAR FORM
+=========================== */
+
+window.clearForm=function(){
+
+document.getElementById("regNo").value="";
+document.getElementById("studentName").value="";
+document.getElementById("gender").value="Male";
+document.getElementById("dob").value="";
+document.getElementById("mobile").value="";
+document.getElementById("email").value="";
+document.getElementById("parentName").value="";
+document.getElementById("parentMobile").value="";
+document.getElementById("department").selectedIndex=0;
+document.getElementById("year").selectedIndex=0;
+document.getElementById("section").selectedIndex=0;
+document.getElementById("semester").selectedIndex=0;
+document.getElementById("password").value="";
+document.getElementById("address").value="";
+document.getElementById("photo").value="";
+document.getElementById("preview").src="images/default-profile.png";
+
+}
+
+</script>
+
+</body>
+
+</html>

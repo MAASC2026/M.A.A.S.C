@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Student Login</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
+
+body{
+background:#f4f6f9;
+display:flex;
+justify-content:center;
+align-items:center;
+height:100vh;
+}
+
+.login-box{
+
+width:400px;
+background:#fff;
+padding:30px;
+border-radius:10px;
+box-shadow:0 0 15px rgba(0,0,0,.2);
+
+}
+
+.logo{
+
+text-align:center;
+margin-bottom:20px;
+
+}
+
+.logo img{
+
+width:90px;
+
+}
+
+h2{
+
+text-align:center;
+color:#500454;
+margin-bottom:25px;
+
+}
+
+.input-group{
+
+margin-bottom:18px;
+
+}
+
+label{
+
+display:block;
+margin-bottom:6px;
+font-weight:bold;
+color:#333;
+
+}
+
+input{
+
+width:100%;
+padding:12px;
+border:1px solid #ccc;
+border-radius:5px;
+font-size:15px;
+
+}
+
+button{
+
+width:100%;
+padding:13px;
+background:#500454;
+color:#fff;
+border:none;
+border-radius:5px;
+font-size:16px;
+cursor:pointer;
+
+}
+
+button:hover{
+
+background:#700770;
+
+}
+
+.message{
+
+margin-top:15px;
+text-align:center;
+font-weight:bold;
+color:red;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="login-box">
+
+<div class="logo">
+
+<!-- Replace with your college logo -->
+<img src="images/logo.png">
+
+</div>
+
+<h2>Student Login</h2>
+
+<div class="input-group">
+
+<label>Register Number</label>
+
+<input
+type="text"
+id="regNo"
+placeholder="Enter Register Number">
+
+</div>
+
+<div class="input-group">
+
+<label>Date of Birth</label>
+
+<input
+type="date"
+id="dob">
+
+</div>
+
+<button onclick="loginStudent()">
+
+Login
+
+</button>
+
+<div class="message" id="msg"></div>
+
+</div>
+
+<script type="module">
+
+import { db } from "./firebase-config.js";
+
+import {
+doc,
+getDoc
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+window.loginStudent = async function(){
+
+const regNo = document.getElementById("regNo").value.trim().toUpperCase();
+const dob = document.getElementById("dob").value;
+const msg = document.getElementById("msg");
+
+msg.innerHTML = "";
+
+const ref = doc(db, "students", regNo);
+const snap = await getDoc(ref);
+
+if(!snap.exists()){
+    msg.innerHTML = "Student Not Found";
+    return;
+}
+
+const student = snap.data();
+
+// Convert HTML date (YYYY-MM-DD) to Firestore format (DD.MM.YYYY)
+const parts = dob.split("-");
+const formattedDOB = `${parts[2]}.${parts[1]}.${parts[0]}`;
+
+// Compare DOB
+if(student.dob.trim() !== formattedDOB){
+
+    msg.innerHTML = "Invalid Date of Birth";
+
+    return;
+
+}
+
+// Login successful
+sessionStorage.setItem("studentRegNo", regNo);
+
+window.location.href = "student-dashboard.html";
+}
+</script>
+
+</body>
+</html>

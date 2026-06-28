@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+content="width=device-width,initial-scale=1.0">
+
+<title>
+
+My Attendance
+
+</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial;
+}
+
+body{
+
+background:#f4f6f9;
+
+padding:20px;
+
+}
+
+.container{
+
+max-width:1200px;
+
+margin:auto;
+
+background:white;
+
+padding:20px;
+
+border-radius:10px;
+
+box-shadow:0 0 10px rgba(0,0,0,.15);
+
+}
+
+h2{
+
+text-align:center;
+
+color:#500454;
+
+margin-bottom:20px;
+
+}
+
+.studentInfo{
+
+display:grid;
+
+grid-template-columns:repeat(4,1fr);
+
+gap:15px;
+
+margin-bottom:20px;
+
+}
+
+.info{
+
+background:#500454;
+
+color:white;
+
+padding:15px;
+
+border-radius:8px;
+
+text-align:center;
+
+font-weight:bold;
+
+}
+
+table{
+
+width:100%;
+
+border-collapse:collapse;
+
+margin-top:20px;
+
+}
+
+th{
+
+background:#500454;
+
+color:white;
+
+padding:12px;
+
+border:1px solid #ddd;
+
+}
+
+td{
+
+padding:10px;
+
+border:1px solid #ddd;
+
+text-align:center;
+
+}
+
+.present{
+
+color:green;
+
+font-weight:bold;
+
+}
+
+.absent{
+
+color:red;
+
+font-weight:bold;
+
+}
+
+.summary{
+
+display:grid;
+
+grid-template-columns:repeat(3,1fr);
+
+gap:20px;
+
+margin-top:30px;
+
+}
+
+.card{
+
+background:#500454;
+
+color:white;
+
+padding:20px;
+
+border-radius:10px;
+
+text-align:center;
+
+font-size:18px;
+
+font-weight:bold;
+
+}
+
+#message{
+
+text-align:center;
+
+margin-top:20px;
+
+color:red;
+
+font-weight:bold;
+
+}
+
+@media(max-width:800px){
+
+.studentInfo{
+
+grid-template-columns:1fr;
+
+}
+
+.summary{
+
+grid-template-columns:1fr;
+
+}
+
+table{
+
+font-size:13px;
+
+}
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h2>
+
+STUDENT ATTENDANCE REPORT
+
+</h2>
+
+<div class="studentInfo">
+
+<div class="info">
+
+Register No
+
+<br><br>
+
+<span id="regNo"></span>
+
+</div>
+
+<div class="info">
+
+Name
+
+<br><br>
+
+<span id="name"></span>
+
+</div>
+
+<div class="info">
+
+Department
+
+<br><br>
+
+<span id="department"></span>
+
+</div>
+
+<div class="info">
+
+Class
+
+<br><br>
+
+<span id="class"></span>
+
+</div>
+
+</div>
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>Date</th>
+
+<th>P1</th>
+
+<th>P2</th>
+
+<th>P3</th>
+
+<th>P4</th>
+
+<th>P5</th>
+
+</tr>
+
+</thead>
+
+<tbody id="attendanceBody">
+
+</tbody>
+
+</table>
+
+<div class="summary">
+
+<div class="card">
+
+Present Periods
+
+<br><br>
+
+<span id="present">
+
+0
+
+</span>
+
+</div>
+
+<div class="card">
+
+Absent Periods
+
+<br><br>
+
+<span id="absent">
+
+0
+
+</span>
+
+</div>
+
+<div class="card">
+
+Attendance %
+
+<br><br>
+
+<span id="percentage">
+
+0%
+
+</span>
+
+</div>
+
+</div>
+
+<div id="message"></div>
+
+</div>
+
+<script type="module">
+    import { db } from "./firebase-config.js";
+
+import{
+doc,
+getDoc,
+collection,
+getDocs
+}
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+/*==========================================
+CHECK STUDENT LOGIN
+==========================================*/
+
+const regNo = sessionStorage.getItem("studentRegNo");
+
+if(!regNo){
+
+alert("Please Login First");
+
+window.location.href="student-login.html";
+
+throw new Error("Student Not Logged In");
+
+}
+
+/*==========================================
+LOAD STUDENT DETAILS
+==========================================*/
+
+const studentRef = doc(db,"students",regNo);
+
+const studentSnap = await getDoc(studentRef);
+
+if(!studentSnap.exists()){
+
+alert("Student Record Not Found");
+
+window.location.href="student-login.html";
+
+throw new Error("Student Not Found");
+
+}
+
+const student = studentSnap.data();
+
+/*==========================================
+DISPLAY STUDENT DETAILS
+==========================================*/
+
+document.getElementById("regNo").innerHTML =
+student.regNo;
+
+document.getElementById("name").innerHTML =
+student.name;
+
+document.getElementById("department").innerHTML =
+student.department;
+
+document.getElementById("class").innerHTML =
+student.year+" Year - "+student.section;
+/*==========================================
+LOAD STUDENT ATTENDANCE
+==========================================*/
+
+const attendanceSnap = await getDocs(collection(db,"attendance"));
+
+let html = "";
+
+let present = 0;
+let absent = 0;
+
+attendanceSnap.forEach(attDoc=>{
+
+    const x = attDoc.data();
+
+    // Only logged-in student
+    if(x.regNo !== regNo) return;
+
+    // Attendance Map
+    const att = x.attendance || {};
+
+    const p1 = att["1"] || "-";
+    const p2 = att["2"] || "-";
+    const p3 = att["3"] || "-";
+    const p4 = att["4"] || "-";
+    const p5 = att["5"] || "-";
+
+    const periods=[p1,p2,p3,p4,p5];
+
+    // Count Attendance
+    periods.forEach(status=>{
+
+        if(status=="P")
+            present++;
+
+        else if(status=="A")
+            absent++;
+
+    });
+
+    html += `
+
+    <tr>
+
+        <td>${x.date}</td>
+
+        <td class="${p1=="P"?"present":p1=="A"?"absent":""}">
+            ${p1}
+        </td>
+
+        <td class="${p2=="P"?"present":p2=="A"?"absent":""}">
+            ${p2}
+        </td>
+
+        <td class="${p3=="P"?"present":p3=="A"?"absent":""}">
+            ${p3}
+        </td>
+
+        <td class="${p4=="P"?"present":p4=="A"?"absent":""}">
+            ${p4}
+        </td>
+
+        <td class="${p5=="P"?"present":p5=="A"?"absent":""}">
+            ${p5}
+        </td>
+
+    </tr>
+
+    `;
+
+});
+
+/*==========================================
+DISPLAY TABLE
+==========================================*/
+
+document.getElementById("attendanceBody").innerHTML = html;
+
+if(html==""){
+
+document.getElementById("message").innerHTML =
+"No Attendance Records Found";
+
+}
+/*==========================================
+ATTENDANCE SUMMARY
+==========================================*/
+
+document.getElementById("present").innerHTML = present;
+
+document.getElementById("absent").innerHTML = absent;
+
+const totalPeriods = present + absent;
+
+let percentage = 0;
+
+if(totalPeriods > 0){
+
+    percentage = ((present / totalPeriods) * 100).toFixed(2);
+
+}
+
+document.getElementById("percentage").innerHTML =
+percentage + "%";
+
+/*==========================================
+ATTENDANCE STATUS MESSAGE
+==========================================*/
+
+if(totalPeriods == 0){
+
+    document.getElementById("message").innerHTML =
+    "No Attendance Available";
+
+}
+else if(percentage >= 75){
+
+    document.getElementById("message").style.color="green";
+
+    document.getElementById("message").innerHTML =
+    "Excellent Attendance";
+
+}
+else if(percentage >= 60){
+
+    document.getElementById("message").style.color="orange";
+
+    document.getElementById("message").innerHTML =
+    "Attendance Below Required Level";
+
+}
+else{
+
+    document.getElementById("message").style.color="red";
+
+    document.getElementById("message").innerHTML =
+    "Attendance Shortage";
+
+}
+
+</script>
+
+</body>
+
+</html>

@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+content="width=device-width,initial-scale=1.0">
+
+<title>
+
+Student List
+
+</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial;
+}
+
+body{
+
+background:#f4f6f9;
+
+padding:20px;
+
+}
+
+.container{
+
+max-width:1400px;
+
+margin:auto;
+
+background:white;
+
+padding:20px;
+
+border-radius:10px;
+
+box-shadow:0 0 10px rgba(0,0,0,.15);
+
+}
+
+h2{
+
+text-align:center;
+
+color:#500454;
+
+margin-bottom:20px;
+
+}
+
+.top{
+
+display:grid;
+
+grid-template-columns:
+
+1fr
+1fr
+1fr
+150px
+150px;
+
+gap:10px;
+
+margin-bottom:20px;
+
+}
+
+input,
+select{
+
+padding:12px;
+
+border:1px solid #ccc;
+
+border-radius:5px;
+
+font-size:15px;
+
+}
+
+button{
+
+background:#500454;
+
+color:white;
+
+border:none;
+
+border-radius:5px;
+
+cursor:pointer;
+
+font-size:15px;
+
+}
+
+button:hover{
+
+background:#700770;
+
+}
+
+table{
+
+width:100%;
+
+border-collapse:collapse;
+
+}
+
+th{
+
+background:#500454;
+
+color:white;
+
+padding:12px;
+
+}
+
+td{
+
+padding:10px;
+
+text-align:center;
+
+border-bottom:1px solid #ddd;
+
+}
+
+tr:hover{
+
+background:#f8f8f8;
+
+}
+
+img{
+
+width:60px;
+
+height:70px;
+
+border-radius:5px;
+
+object-fit:cover;
+
+}
+
+.edit{
+
+background:#007bff;
+
+padding:8px 12px;
+
+}
+
+.delete{
+
+background:#dc3545;
+
+padding:8px 12px;
+
+}
+
+.footer{
+
+margin-top:15px;
+
+font-weight:bold;
+
+color:#500454;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h2>
+
+Registered Students
+
+</h2>
+
+<div class="top">
+
+<input
+type="text"
+id="searchRegNo"
+placeholder="Register Number">
+
+<select id="department">
+
+<option value="">All Departments</option>
+
+<option>B.Com General</option>
+<option>B.Com BM</option>
+<option>B.Com MM</option>
+<option>B.Com CS</option>
+<option>B.Com A&F</option>
+<option>B.Com ISM</option>
+<option>B.Com CA</option>
+<option>B.Com BUS.AD</option>
+
+<option>B.A DEFENCE</option>
+<option>B.A PUB.AD</option>
+<option>B.A TAMIL</option>
+<option>B.A TOURISM</option>
+
+<option>B.Sc CS</option>
+<option>B.Sc CS WITH AI</option>
+<option>B.Sc CRIMINOLOGY</option>
+<option>B.Sc SA</option>
+<option>B.Sc PHYS WITH CA</option>
+<option>B.Sc MATHS WITH CA</option>
+<option>B.Sc ELECTRONICS WITH AI</option>
+<option>B.Sc VISCOM</option>
+<option>B.Sc ELECTRONIC MEDIA</option>
+<option>B.Sc IDD</option>
+<option>B.Sc PHYSICS</option>
+
+<option>BCA COMPUTER APPLICATION</option>
+
+</select>
+
+<select id="year">
+
+<option value="">All Years</option>
+
+<option>I</option>
+
+<option>II</option>
+
+<option>III</option>
+
+</select>
+
+<button onclick="loadStudents()">
+
+Refresh
+
+</button>
+
+<button onclick="searchStudent()">
+
+Search
+
+</button>
+
+</div>
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>Photo</th>
+
+<th>Register No</th>
+
+<th>Name</th>
+
+<th>Department</th>
+
+<th>Year</th>
+
+<th>Section</th>
+
+<th>Semester</th>
+
+<th>Mobile</th>
+
+<th>Action</th>
+
+</tr>
+
+</thead>
+
+<tbody id="studentTable">
+
+</tbody>
+
+</table>
+
+<div class="footer">
+
+Total Students :
+
+<span id="totalStudents">
+
+0
+
+</span>
+
+</div>
+<!-- ONLY SCRIPT PART IS IMPORTANT FIX -->
+<script type="module">
+import { db } from "./firebase-config.js";
+import {
+collection,
+getDocs,
+doc,
+deleteDoc
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const table = document.getElementById("studentTable");
+const total = document.getElementById("totalStudents");
+
+function addRow(s){
+
+const photo = s.photo || "images/default-profile.png";
+
+table.innerHTML += `
+<tr>
+<td><img src="${photo}"></td>
+<td>${s.regNo}</td>
+<td>${s.name}</td>
+<td>${s.department}</td>
+<td>${s.year}</td>
+<td>${s.section}</td>
+<td>${s.semester}</td>
+<td>${s.mobile}</td>
+<td>
+<button onclick="deleteStudent('${s.regNo}')">Delete</button>
+</td>
+</tr>
+`;
+}
+
+window.loadStudents = async function(){
+
+table.innerHTML="";
+
+const snap = await getDocs(collection(db,"students"));
+
+total.textContent = snap.size;
+
+snap.forEach(d => addRow(d.data()));
+
+}
+
+
+</script>
+
+</script>
+
+</div>
+
+</body>
+
+</html>

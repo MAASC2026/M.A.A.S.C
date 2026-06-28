@@ -1,14 +1,20 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta charset="utf-8">
-<title>M.A.A.S College Login</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MAASC Staff Login</title>
 
 <style>
 
-body{
+*{
     margin:0;
+    padding:0;
+    box-sizing:border-box;
     font-family:Arial,sans-serif;
+}
+
+body{
     background:#f4f6f9;
     display:flex;
     justify-content:center;
@@ -17,15 +23,16 @@ body{
 }
 
 .login-box{
-    width:400px;
-    background:white;
+    width:420px;
+    background:#fff;
     padding:30px;
-    border-radius:10px;
-    box-shadow:0 0 15px rgba(0,0,0,0.2);
+    border-radius:12px;
+    box-shadow:0 0 20px rgba(0,0,0,.2);
 }
 
 .logo{
     text-align:center;
+    margin-bottom:15px;
 }
 
 .logo img{
@@ -33,15 +40,24 @@ body{
 }
 
 h2{
-    text-align:center;
     color:#500454;
+    text-align:center;
+    margin-bottom:5px;
+}
+
+h4{
+    text-align:center;
+    color:#666;
+    margin-bottom:25px;
 }
 
 input{
     width:100%;
     padding:12px;
-    margin:10px 0;
-    box-sizing:border-box;
+    margin-bottom:18px;
+    border:1px solid #ccc;
+    border-radius:6px;
+    font-size:15px;
 }
 
 button{
@@ -50,15 +66,32 @@ button{
     background:#500454;
     color:white;
     border:none;
+    border-radius:6px;
     cursor:pointer;
     font-size:16px;
+    font-weight:bold;
 }
 
 button:hover{
-    background:#6e096f;
+    background:#72067a;
+}
+
+.footer{
+    text-align:center;
+    margin-top:20px;
+    color:#777;
+    font-size:14px;
+}
+
+.loading{
+    display:none;
+    color:#500454;
+    text-align:center;
+    margin-top:15px;
 }
 
 </style>
+
 </head>
 
 <body>
@@ -66,14 +99,16 @@ button:hover{
 <div class="login-box">
 
 <div class="logo">
-<img src="logo.png" alt="College Logo">
+<img src="logo.png" alt="Logo">
 </div>
 
-<h2>M.A.A.S COLLEGE PORTAL</h2>
+<h2>M.A.A.S COLLEGE</h2>
+
+<h4>STAFF LOGIN</h4>
 
 <input
 type="text"
-id="userid"
+id="staffId"
 placeholder="User ID">
 
 <input
@@ -82,68 +117,164 @@ id="password"
 placeholder="Password">
 
 <button onclick="login()">
-Login
+LOGIN
 </button>
+
+<div
+class="loading"
+id="loading">
+Please wait...
+</div>
+
+<div class="footer">
+Murali Arts and Science College
+</div>
 
 </div>
 
-<script>
+<script type="module">
 
-function login(){
+import { db } from "./firebase-config.js";
 
-    const userid =
-    document.getElementById("userid")
-    .value
-    .trim()
-    .toUpperCase();
+import {
+doc,
+getDoc
+}
+from
+"https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-    const password =
-    document.getElementById("password")
-    .value
-    .trim();
+window.login = async function(){
 
-    /* ADMIN */
+const loading =
+document.getElementById("loading");
 
-    if(
-        userid === "ADMIN" &&
-        password === "admin@maasc"
-    ){
+loading.style.display="block";
 
-        alert("Admin Login Success");
+const staffId =
+document.getElementById("staffId")
+.value
+.trim()
+.toUpperCase();
 
-        window.location.href =
-        "admin-dashboard.html";
+const password =
+document.getElementById("password")
+.value
+.trim();
 
-        return;
-    }
+if(staffId=="" || password==""){
 
-    /* STAFF */
+loading.style.display="none";
 
-    if(
-        userid === "BC001" &&
-        password === "1234"
-    ){
+alert("Enter User ID and Password");
 
-        window.location.href =
-        "staff-dashboard.html";
+return;
 
-        return;
-    }
+}
 
-    /* STUDENT */
+/* ==========================
+   ADMIN LOGIN
+========================== */
 
-    if(
-        userid === "26H001" &&
-        password === "1234"
-    ){
+if(
+staffId==="ADMIN" &&
+password==="admin@maasc"
+){
 
-        window.location.href =
-        "student-dashboard.html";
+loading.style.display="none";
 
-        return;
-    }
+sessionStorage.setItem(
+"role",
+"admin"
+);
 
-    alert("Invalid User ID or Password");
+sessionStorage.setItem(
+"staffId",
+"ADMIN"
+);
+
+sessionStorage.setItem(
+"staffName",
+"Administrator"
+);
+
+window.location.href=
+"admin-dashboard.html";
+
+return;
+
+}
+
+/* ==========================
+   STAFF LOGIN
+========================== */
+
+try{
+
+const ref =
+doc(db,"staff",staffId);
+
+const snap =
+await getDoc(ref);
+
+loading.style.display="none";
+
+if(!snap.exists()){
+
+alert("Staff ID Not Found");
+
+return;
+
+}
+
+const data =
+snap.data();
+
+if(data.password!==password){
+
+alert("Incorrect Password");
+
+return;
+
+}
+
+/* SESSION */
+
+sessionStorage.setItem(
+"role",
+"staff"
+);
+
+sessionStorage.setItem(
+"staffId",
+data.staffId
+);
+
+sessionStorage.setItem(
+"staffName",
+data.name
+);
+
+sessionStorage.setItem(
+"department",
+data.department
+);
+
+alert("Login Successful");
+
+window.location.href=
+"staff-dashboard.html";
+
+}
+catch(error){
+
+loading.style.display="none";
+
+console.error(error);
+
+alert(error.message);
+
+}
+
 }
 
 </script>

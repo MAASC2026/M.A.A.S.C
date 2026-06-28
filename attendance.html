@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Attendance System</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial;
+}
+
+body{
+background:#f4f6f9;
+padding:20px;
+}
+
+.container{
+max-width:1400px;
+margin:auto;
+background:white;
+padding:20px;
+border-radius:10px;
+box-shadow:0 0 10px rgba(0,0,0,.1);
+}
+
+h2{
+text-align:center;
+margin-bottom:20px;
+color:#500454;
+}
+
+select,input,button{
+padding:10px;
+margin:5px;
+border-radius:5px;
+border:1px solid #ccc;
+}
+
+button{
+cursor:pointer;
+}
+
+.load{
+background:#500454;
+color:white;
+}
+
+.save{
+background:green;
+color:white;
+width:100%;
+padding:15px;
+font-size:18px;
+margin-top:20px;
+}
+
+
+table{
+width:100%;
+border-collapse:collapse;
+margin-top:20px;
+}
+
+th,td{
+border:1px solid #ddd;
+padding:8px;
+text-align:center;
+}
+
+th{
+background:#500454;
+color:white;
+}
+
+.periodBtns button{
+padding:4px 8px;
+margin:2px;
+font-size:12px;
+}
+
+.present{
+color:green;
+font-weight:bold;
+}
+
+.absent{
+color:red;
+font-weight:bold;
+}
+.loader{
+
+display:none;
+
+padding:15px;
+
+background:#500454;
+
+color:white;
+
+margin-top:10px;
+
+text-align:center;
+
+border-radius:5px;
+
+font-weight:bold;
+
+}
+
+button:disabled{
+
+opacity:.6;
+
+cursor:not-allowed;
+
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h2>Attendance System (5 Periods)</h2>
+
+<input type="date" id="date">
+
+<select id="dept">
+
+<option value="">Department</option>
+
+<option value="B.Com General">B.Com General</option>
+<option value="B.Com BM">B.Com BM</option>
+<option value="B.Com MM">B.Com MM</option>
+<option value="B.Com CS">B.Com CS</option>
+<option value="B.Com A&F">B.Com A&F</option>
+<option value="B.Com ISM">B.Com ISM</option>
+<option value="B.Com CA">B.Com CA</option>
+<option value="B.Com BUS.AD">B.Com BUS.AD</option>
+
+<option value="B.A DEFENCE">B.A DEFENCE</option>
+<option value="B.A PUB.AD">B.A PUB.AD</option>
+<option value="B.A TAMIL">B.A TAMIL</option>
+<option value="B.A TOURISM">B.A TOURISM</option>
+
+<option value="B.Sc CS">B.Sc CS</option>
+<option value="B.Sc CS WITH AI">B.Sc CS WITH AI</option>
+<option value="B.Sc CRIMINOLOGY">B.Sc CRIMINOLOGY</option>
+<option value="B.Sc SA">B.Sc SA</option>
+<option value="B.Sc PHYS WITH CA">B.Sc PHYS WITH CA</option>
+<option value="B.Sc MATHS WITH CA">B.Sc MATHS WITH CA</option>
+<option value="B.Sc ELECTRONICS WITH AI">B.Sc ELECTRONICS WITH AI</option>
+<option value="B.Sc VISCOM">B.Sc VISCOM</option>
+<option value="B.Sc ELECTRONIC MEDIA">B.Sc ELECTRONIC MEDIA</option>
+<option value="B.Sc IDD">B.Sc IDD</option>
+<option value="B.Sc PHYSICS">B.Sc PHYSICS</option>
+
+<option value="BCA COMPUTER APPLICATIONS">
+BCA COMPUTER APPLICATIONS
+</option>
+
+</select>
+
+<select id="year">
+<option value="">Year</option>
+<option>I</option>
+<option>II</option>
+<option>III</option>
+</select>
+
+<select id="section">
+<option value="">Section</option>
+<option>A</option>
+<option>B</option>
+<option>C</option>
+<option>D</option>
+<option>E</option>
+<option>F</option>
+</select>
+
+<button class="load" onclick="loadStudents()">
+LOAD STUDENTS
+</button>
+<div id="loader" class="loader">
+
+Loading...
+
+</div>
+<div style="margin:15px 0;">
+    
+
+<input type="text"
+id="searchBox"
+placeholder="Search Register No"
+onkeyup="searchStudent()">
+
+<button onclick="markEntireClass('P')">
+ALL PRESENT
+</button>
+
+<button onclick="markEntireClass('A')">
+ALL ABSENT
+</button>
+
+<button onclick="clearEntireClass()">
+CLEAR ALL
+</button>
+
+</div>
+
+<div style="margin:10px 0;font-weight:bold;">
+
+Present :
+<span id="presentCount">0</span>
+
+&nbsp;&nbsp;
+
+Absent :
+<span id="absentCount">0</span>
+
+&nbsp;&nbsp;
+
+Not Marked :
+<span id="pendingCount">0</span>
+
+</div>
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>Reg No</th>
+
+<th>Name</th>
+
+<th>
+
+P1
+
+<div class="periodBtns">
+
+<button onclick="markAll(1,'P')">All P</button>
+
+<button onclick="markAll(1,'A')">All A</button>
+
+</div>
+
+</th>
+
+<th>
+
+P2
+
+<div class="periodBtns">
+
+<button onclick="markAll(2,'P')">All P</button>
+
+<button onclick="markAll(2,'A')">All A</button>
+
+</div>
+
+</th>
+
+<th>
+
+P3
+
+<div class="periodBtns">
+
+<button onclick="markAll(3,'P')">All P</button>
+
+<button onclick="markAll(3,'A')">All A</button>
+
+</div>
+
+</th>
+
+<th>
+
+P4
+
+<div class="periodBtns">
+
+<button onclick="markAll(4,'P')">All P</button>
+
+<button onclick="markAll(4,'A')">All A</button>
+
+</div>
+
+</th>
+
+<th>
+
+P5
+
+<div class="periodBtns">
+
+<button onclick="markAll(5,'P')">All P</button>
+
+<button onclick="markAll(5,'A')">All A</button>
+
+</div>
+
+</th>
+
+</tr>
+
+</thead>
+
+<tbody id="table"></tbody>
+
+</table>
+
+<button class="save" onclick="saveAttendance()">
+
+SAVE ATTENDANCE
+
+</button>
+
+</div>
+
+<script type="module">
+import { db } from "./firebase-config.js";
+
+import{
+collection,
+query,
+where,
+getDocs,
+doc,
+getDoc,
+setDoc,
+serverTimestamp
+}
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+/* ===================================
+   LOAD STUDENTS
+=================================== */
+
+window.loadStudents = async function(){
+    loader.style.display="block";
+
+const dept=document.getElementById("dept").value.trim();
+const year=document.getElementById("year").value.trim();
+const section=document.getElementById("section").value.trim();
+const date=document.getElementById("date").value;
+
+const table=document.getElementById("table");
+
+table.innerHTML="";
+
+if(!dept || !year || !section || !date){
+
+alert("Select Date, Department, Year and Section");
+
+return;
+
+}
+
+const q=query(
+
+collection(db,"students"),
+
+where("department","==",dept),
+
+where("year","==",year),
+
+where("section","==",section)
+
+);
+
+const snap=await getDocs(q);
+let found=false;
+
+for(const studentDoc of snap.docs){
+
+const s=studentDoc.data();
+
+{
+
+found=true;
+updateSummary();
+
+/* ======================
+LOAD PREVIOUS ATTENDANCE
+====================== */
+
+let saved={};
+
+const attRef=doc(db,"attendance",date+"_"+s.regNo);
+
+const attSnap=await getDoc(attRef);
+
+if(attSnap.exists()){
+
+saved=attSnap.data().attendance||{};
+
+}
+
+/* ======================
+ROW
+====================== */
+
+table.innerHTML+=`
+
+<tr data-att='${JSON.stringify(saved)}'>
+
+<td>${s.regNo}</td>
+
+<td>${s.name}</td>
+
+${[1,2,3,4,5].map(i=>{
+
+const st=saved[i]||saved[String(i)]||"-";
+
+return `
+
+<td>
+
+<button onclick="mark(this,${i},'P')">
+
+P
+
+</button>
+
+<button onclick="mark(this,${i},'A')">
+
+A
+
+</button>
+
+<br>
+
+<span class="${
+st=="P"?"present":
+st=="A"?"absent":""
+}">
+
+${st}
+
+</span>
+
+</td>
+
+`;
+
+}).join("")}
+
+</tr>
+
+`;
+
+}
+
+}
+
+if(!found){
+
+table.innerHTML=
+
+"<tr><td colspan='7'>No Students Found</td></tr>";
+
+}
+loader.style.display="none";
+};
+/* ===================================
+   MARK SINGLE ATTENDANCE
+=================================== */
+
+window.mark = function(btn, period, status){
+
+    const row = btn.closest("tr");
+
+    let data = {};
+
+    try{
+        data = JSON.parse(row.dataset.att || "{}");
+    }catch(e){
+        data = {};
+    }
+
+    data[period] = status;
+
+    row.dataset.att = JSON.stringify(data);
+
+    const span = row.querySelectorAll("span")[period-1];
+
+    span.innerHTML = status;
+
+    if(status=="P"){
+        span.className="present";
+    }else{
+        span.className="absent";
+    }
+    updateSummary();
+
+};
+
+
+/* ===================================
+   MARK ALL (P / A)
+=================================== */
+
+window.markAll = function(period,status){
+
+    const rows=document.querySelectorAll("#table tr");
+
+    rows.forEach(row=>{
+
+        if(row.children.length<7) return;
+
+        let data={};
+
+        try{
+            data=JSON.parse(row.dataset.att||"{}");
+        }catch(e){
+            data={};
+        }
+
+        data[period]=status;
+
+        row.dataset.att=JSON.stringify(data);
+
+        const span=row.querySelectorAll("span")[period-1];
+
+        span.innerHTML=status;
+
+        if(status=="P"){
+            span.className="present";
+        }else{
+            span.className="absent";
+        }
+
+    });
+    updateSummary();
+
+};
+
+
+/* ===================================
+   CLEAR PERIOD
+=================================== */
+
+window.clearPeriod=function(period){
+
+    const rows=document.querySelectorAll("#table tr");
+
+    rows.forEach(row=>{
+
+        if(row.children.length<7) return;
+
+        let data={};
+
+        try{
+            data=JSON.parse(row.dataset.att||"{}");
+        }catch(e){
+            data={};
+        }
+
+        delete data[period];
+
+        row.dataset.att=JSON.stringify(data);
+
+        const span=row.querySelectorAll("span")[period-1];
+
+        span.innerHTML="-";
+
+        span.className="";
+
+    });
+    updateSummary();
+
+};
+/* ===================================
+   SAVE / UPDATE ATTENDANCE
+=================================== */
+
+window.saveAttendance = async function(){
+    const saveBtn=document.querySelector(".save");
+
+saveBtn.disabled=true;
+
+saveBtn.innerHTML="Saving...";
+
+    const date = document.getElementById("date").value;
+
+    if(!date){
+        alert("Select Date");
+        return;
+    }
+
+    const rows = document.querySelectorAll("#table tr");
+
+    if(rows.length === 0){
+        alert("No students loaded");
+        return;
+    }
+
+    let savedCount = 0;
+
+    for(const row of rows){
+
+        if(row.children.length < 7) continue;
+
+        const regNo = row.cells[0].innerText.trim();
+        const name  = row.cells[1].innerText.trim();
+
+        let attendance = {};
+
+        try{
+            attendance = JSON.parse(row.dataset.att || "{}");
+        }catch(e){
+            attendance = {};
+        }
+
+        // Skip rows with no attendance marked
+        if(Object.keys(attendance).length === 0){
+            continue;
+        }
+
+        await setDoc(
+
+doc(db,"attendance",date+"_"+regNo),
+
+{
+
+regNo,
+
+name,
+
+department:document.getElementById("dept").value,
+
+year:document.getElementById("year").value,
+
+section:document.getElementById("section").value,
+
+date,
+
+attendance,
+
+lastUpdated:serverTimestamp()
+
+},
+
+{merge:true}
+
+);
+
+
+        savedCount++;
+    }
+
+    alert(savedCount + " student attendance records saved successfully.");
+    saveBtn.disabled=false;
+
+saveBtn.innerHTML="SAVE ATTENDANCE";
+};
+window.searchStudent=function(){
+
+const value=document.getElementById("searchBox")
+.value
+.toUpperCase();
+
+const rows=document.querySelectorAll("#table tr");
+
+rows.forEach(r=>{
+
+const reg=r.cells[0].innerText.toUpperCase();
+
+r.style.display=
+reg.includes(value)
+?
+""
+:
+"none";
+
+});
+
+}
+window.markEntireClass=function(status){
+
+const rows=document.querySelectorAll("#table tr");
+
+rows.forEach(row=>{
+
+if(row.children.length<7)return;
+
+let data={};
+
+try{
+
+data=JSON.parse(row.dataset.att||"{}");
+
+}catch{
+
+data={};
+
+}
+
+for(let i=1;i<=5;i++){
+
+data[i]=status;
+
+const span=row.querySelectorAll("span")[i-1];
+
+span.innerHTML=status;
+
+span.className=
+status=="P"
+?
+"present"
+:
+"absent";
+
+}
+
+row.dataset.att=
+JSON.stringify(data);
+
+});
+
+updateSummary();
+
+}
+window.clearEntireClass=function(){
+
+const rows=document.querySelectorAll("#table tr");
+
+rows.forEach(row=>{
+
+if(row.children.length<7)return;
+
+row.dataset.att="{}";
+
+row.querySelectorAll("span").forEach(span=>{
+
+span.innerHTML="-";
+
+span.className="";
+
+});
+
+});
+
+updateSummary();
+
+}
+window.updateSummary=function(){
+
+let present=0;
+
+let absent=0;
+
+let pending=0;
+
+const rows=document.querySelectorAll("#table tr");
+
+rows.forEach(row=>{
+
+if(row.children.length<7)return;
+
+row.querySelectorAll("span").forEach(span=>{
+
+if(span.innerHTML=="P")
+
+present++;
+
+else if(span.innerHTML=="A")
+
+absent++;
+
+else
+
+pending++;
+
+});
+
+});
+
+document.getElementById("presentCount").innerHTML=present;
+
+document.getElementById("absentCount").innerHTML=absent;
+
+document.getElementById("pendingCount").innerHTML=pending;
+
+}
+</script>
+</body>
+</html>
