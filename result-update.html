@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>MAASC Result Editor</title>
+
+<style>
+body{
+  font-family:Arial;
+  background:#f4f6f9;
+  padding:20px;
+}
+
+.container{
+  max-width:1000px;
+  margin:auto;
+  background:white;
+  padding:20px;
+  border-radius:10px;
+}
+
+input,select,button{
+  padding:8px;
+  margin:5px;
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  margin-top:20px;
+}
+
+th,td{
+  border:1px solid #ccc;
+  padding:8px;
+  text-align:center;
+}
+
+th{
+  background:#eee;
+}
+
+.load{
+  background:#007bff;
+  color:white;
+  border:none;
+}
+
+.delete{
+  background:red;
+  color:white;
+  border:none;
+}
+
+.save{
+  background:green;
+  color:white;
+  border:none;
+}
+
+.pass{color:green;font-weight:bold}
+.fail{color:red;font-weight:bold}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h2>MAASC RESULT EDIT SYSTEM</h2>
+
+<input type="text" id="regno" placeholder="Enter Register No">
+<button class="load" onclick="loadResults()">Load Results</button>
+
+<br>
+
+<select id="examType">
+  <option value="CYCLIC-1">Cyclic 1</option>
+  <option value="CYCLIC-2">Cyclic 2</option>
+  <option value="INTERNAL-1">Internal 1</option>
+  <option value="INTERNAL-2">Internal 2</option>
+  <option value="MODEL">Model</option>
+  <option value="SEMESTER">Semester</option>
+</select>
+
+<table>
+<thead>
+<tr>
+<th>Subject</th>
+<th>Mark / IA</th>
+<th>UE</th>
+<th>Total</th>
+<th>Result</th>
+<th>Action</th>
+</tr>
+</thead>
+
+<tbody id="body"></tbody>
+</table>
+
+<button class="save" onclick="saveAll()">Save All</button>
+
+</div>
+
+<script type="module">
+
+import { db } from "./firebase-config.js";
+import {
+doc,
+getDocs,
+collection,
+setDoc,
+deleteDoc
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+let regnoGlobal = "";
+let examGlobal = "";
+
+/* ================= LOAD ================= */
+window.loadResults = async function(){
+
+  regnoGlobal = document.getElementById("regno").value.trim();
+  examGlobal = document.getElementById("examType").value;
+
+  if(!regnoGlobal || !examGlobal){
+    alert("Enter Register No and Exam");
+    return;
+  }
+
+  const snap = await getDocs(collection(db,"results",regnoGlobal,examGlobal));
+
+  const body = document.getElementById("body");
+  body.innerHTML = "";
+
+  snap.forEach(docSnap => {
+
+    const r = docSnap.data();
+    const id = docSnap.id;
+
+    const isSimple = r.mark !== undefined && r.mark !== null;
+
+    if(isSimple){
+
+      body.innerHTML += `
+        <tr id="row_${id}">
+          <td><input value="${r.subject}" id="sub_${id}"></td>
+
+          <td>
+            <input type="number" value="${r.mark}" id="mark_${id}" oninput="calcSimple('${id}')">
+          </td>
+
+          <td>-</td>
+
+          <td>-</td>
+
+          <td id="res_${id}" class="${r.result==='PASS'?'pass':'fail'}">${r.result}</td>
+
+          <td>
+            <button class="delete" onclick="deleteRow('${id}')">Delete</button>
+          </td>
+        </tr>
+      `;
+    }
+
+    else{
+
+      body.innerHTML += `
+        <tr id="row_${id}">
+          <td><input value="${r.subject}" id="sub_${id}"></td>
+
+          <td>
+            <input type="number" value="${r.ia}" id="ia_${id}" oninput="calcAdv('${id}')">
+          </td>
+
+          <td>
+            <input type="number" value="${r.ue}" id="ue_${id}" oninput="calcAdv('${id}')">
+          </td>
+
+          <td id="tot_${id}">${r.total}</td>
+
+          <td id="res_${id}" class="${r.result==='PASS'?'pass':'fail'}">${r.result}</td>
+
+          <td>
+            <button class="delete" onclick="deleteRow('${id}')">Delete</button>
+          </td>
+        </tr>
+      `;
+    }
+
+  });
+
+  if(snap.empty){
+    alert("No Results Found");
+  }
+};
+
+/* ================= SIMPLE CALC ================= */
+window.calcSimple = function(id){
+
+  let mark = Number(document.getElementById("mark_"+id).value)||0;
+
+  document.getElementById("res_"+id).innerText =
+    (mark>=12) ? "PASS" : "FAIL";
+};
+
+/* ================= ADV CALC ================= */
+window.calcAdv = function(id){
+
+  let ia = Number(document.getElementById("ia_"+id).value)||0;
+  let ue = Number(document.getElementById("ue_"+id).value)||0;
+
+  let total = ia + ue;
+
+  document.getElementById("tot_"+id).innerText = total;
+
+  document.getElementById("res_"+id).innerText =
+    (ia>=10 && ue>=30 && total>=40) ? "PASS" : "FAIL";
+};
+
+/* ================= DELETE ================= */
+window.deleteRow = async function(id){
+
+  if(!confirm("Delete this record?")) return;
+
+  await deleteDoc(doc(db,"results",regnoGlobal,examGlobal,id));
+
+  document.getElementById("row_"+id).remove();
+};
+
+/* ================= SAVE ALL ================= */
+window.saveAll = async function(){
+
+  const rows = document.querySelectorAll("#body tr");
+
+  for(let row of rows){
+
+    const id = row.id.replace("row_","");
+
+    const subject = document.getElementById("sub_"+id).value;
+
+    if(document.getElementById("mark_"+id)){
+
+      const mark = Number(document.getElementById("mark_"+id).value)||0;
+      const result = document.getElementById("res_"+id).innerText;
+
+      await setDoc(doc(db,"results",regnoGlobal,examGlobal,id),{
+        subject,
+        mark,
+        result
+      });
+    }
+
+    else{
+
+      const ia = Number(document.getElementById("ia_"+id).value)||0;
+      const ue = Number(document.getElementById("ue_"+id).value)||0;
+      const total = ia + ue;
+      const result = document.getElementById("res_"+id).innerText;
+
+      await setDoc(doc(db,"results",regnoGlobal,examGlobal,id),{
+        subject,
+        ia,
+        ue,
+        total,
+        result
+      });
+    }
+  }
+
+  alert("All Changes Saved");
+};
+
+</script>
+
+</body>
+</html>
