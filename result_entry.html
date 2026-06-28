@@ -2,242 +2,277 @@
 <html>
 <head>
 <meta charset="utf-8">
-<title>MAASC Staff Result Entry</title>
+<title>MAASC Result System</title>
 
 <style>
-body{
-    font-family: Arial, sans-serif;
-    background:#f4f6f9;
-    margin:0;
-    padding:20px;
-}
+body{font-family:Arial;background:#f4f6f9;padding:20px}
+.container{max-width:1200px;margin:auto;background:white;padding:20px;border-radius:10px}
 
-.container{
-    max-width:1000px;
-    margin:auto;
-    background:#fff;
-    padding:20px;
-    border-radius:10px;
-    box-shadow:0 0 10px rgba(0,0,0,0.1);
-}
+select,input,button{padding:10px;margin:5px}
 
-h2{
-    text-align:center;
-}
+table{width:100%;border-collapse:collapse;margin-top:20px}
+th,td{border:1px solid #ccc;padding:10px;text-align:center}
+th{background:#eee}
 
-input{
-    width:100%;
-    padding:8px;
-    margin:6px 0;
-    box-sizing:border-box;
-}
-
-.table-wrapper{
-    overflow-x:auto;
-}
-
-table{
-    width:100%;
-    border-collapse:collapse;
-    margin-top:15px;
-    min-width:700px;
-}
-
-th,td{
-    border:1px solid #ccc;
-    padding:10px;
-    text-align:center;
-}
-
-th{
-    background:#f0f0f0;
-}
-
-button{
-    padding:10px 15px;
-    margin-top:10px;
-    margin-right:10px;
-    cursor:pointer;
-    border:none;
-    border-radius:5px;
-}
-
-.add{ background:#007bff; color:white; }
-.save{ background:green; color:white; }
-.reset{ background:red; color:white; }
-
- body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #f9f9f9;
-    }
-
-    /* Header */
-    .top-header {
-      display: flex;
-      align-items: center;
-      background: #f8f9fa;
-      padding: 15px;
-      border-bottom: 2px solid #ccc;
-    }
-    .logo {
-      height: 150px;
-      margin-right: 80px;
-    }
-    .college-info {
-      flex: 1;
-    }
-    .college-info h1 {
-      margin: 0;
-      color: #333;
-    }
-    .header-buttons {
-      margin-left: auto;
-    }
-
+.save{background:green;color:white;border:none}
+.load{background:#007bff;color:white;border:none}
 </style>
 </head>
 
 <body>
- <header class="top-header">
-    <img src="logo.png" alt="College Logo" class="logo">
-    <div class="college-info">
-      <h1 align="center">MURALI ARTS AND SCIENCE COLLEGE</h1>
-      <p align="center">Affiliated to University of Madras | NAAC A+</p>
-      <p align="center">A Co-Educational Institution | Tambaram, Chennai – 600 045</p>
-            <div class="header-buttons">
-        <p align="center"><a href="index.html"><button>Logout</button></a></p>
-      </div>
-    </div>
-  </header>
-  <br>
-  <br>
+
 <div class="container">
 
-<h2>MAASC Staff Result Entry</h2>
+<h2>MAASC RESULT SYSTEM</h2>
 
-<input type="text" id="name" placeholder="Student Name">
-<input type="text" id="regno" placeholder="Register Number">
-<input type="date" id="dob">
+<!-- 🔥 DEPARTMENTS (UNCHANGED) -->
+<select id="department">
+  <option value="">Select Department</option>
 
-<div class="table-wrapper">
-<table id="marksTable">
+  <option value="BCOM-GENERAL">B.Com General</option>
+  <option value="BCOM-BM">B.Com BM</option>
+  <option value="BCOM-MM">B.Com MM</option>
+  <option value="BCOM-CS">B.Com CS</option>
+  <option value="BCOM-AF">B.Com A&F</option>
+  <option value="BCOM-ISM">B.Com ISM</option>
+  <option value="BCOM-CA">B.Com CA</option>
+  <option value="BCOM-BUSAD">B.Com BUS.AD</option>
 
-<thead>
-<tr>
-<th>Subject Code</th>
-<th>IA</th>
-<th>UE</th>
-<th>TOTAL</th>
-<th>RESULT</th>
-</tr>
-</thead>
+  <option value="BA-DEFENCE">B.A DEFENCE</option>
+  <option value="BA-PUBAD">B.A PUB.AD</option>
+  <option value="BA-TAMIL">B.A TAMIL</option>
+  <option value="BA-TOURISM">B.A TOURISM</option>
 
-<tbody></tbody>
+  <option value="BSC-CS">B.Sc CS</option>
+  <option value="BSC-CS-AI">B.Sc CS WITH AI</option>
+  <option value="BSC-CRIMINOLOGY">B.Sc CRIMINOLOGY</option>
+  <option value="BSC-SA">B.Sc SA</option>
+  <option value="BSC-PHYS-CA">B.Sc PHYS WITH CA</option>
+  <option value="BSC-MATHS-CA">B.Sc MATHS WITH CA</option>
+  <option value="BSC-ELEC-AI">B.Sc ELECTRONICS WITH AI</option>
+  <option value="BSC-VISCOM">B.Sc VISCOM</option>
+  <option value="BSC-ELECTRONIC-MEDIA">B.Sc ELECTRONIC MEDIA</option>
+  <option value="BSC-IDD">B.Sc IDD</option>
+  <option value="BSC-PHYSICS">B.Sc PHYSICS</option>
 
+  <option value="BCA">BCA COMPUTER APPLICATION</option>
+</select>
+
+<!-- YEAR -->
+<select id="year">
+  <option value="">Year</option>
+  <option value="I">I Year</option>
+  <option value="II">II Year</option>
+  <option value="III">III Year</option>
+</select>
+
+<!-- SECTION -->
+<select id="section">
+  <option value="">Section</option>
+  <option value="A">A</option>
+  <option value="B">B</option>
+  <option value="C">C</option>
+  <option value="D">D</option>
+</select>
+
+<!-- EXAM TYPE -->
+<select id="examType" onchange="changeUI()">
+  <option value="">Exam Type</option>
+  <option value="CYCLIC-1">Cyclic Test 1</option>
+  <option value="CYCLIC-2">Cyclic Test 2</option>
+  <option value="INTERNAL-1">Internal Test 1</option>
+  <option value="INTERNAL-2">Internal Test 2</option>
+  <option value="MODEL">Model Exam</option>
+  <option value="SEMESTER">Semester Exam</option>
+</select>
+
+<!-- 🔥 COMMON SUBJECT INPUT -->
+<input type="text" id="subject" placeholder="Enter Subject Name (Common for all students)">
+
+<button class="load" onclick="loadStudents()">Load Students</button>
+<a href="result-update.html"><button>Update Result</button></a>
+
+<table>
+<thead id="thead"></thead>
+<tbody id="body"></tbody>
 </table>
-</div>
 
-<button class="add" onclick="addRow()">Add Row</button>
-<button class="save" onclick="saveData()">Save Result</button>
-<button class="reset" onclick="resetForm()">Reset</button>
+<br>
+
+<button class="save" onclick="saveData()">Save</button>
 
 </div>
 
 <script type="module">
 
 import { db } from "./firebase-config.js";
-import { doc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import {
+collection,
+getDocs,
+doc,
+setDoc
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-let row = 0;
+let students = [];
+let mode = "";
 
-window.addRow = function(){
+/* ================= UI ================= */
+window.changeUI = function(){
 
-    row++;
+  const exam = document.getElementById("examType").value;
 
-    const tr = document.createElement("tr");
+  if(exam.includes("CYCLIC") || exam.includes("INTERNAL")){
+    mode = "simple";
+    document.getElementById("thead").innerHTML = `
+      <tr>
+        <th>Reg No</th>
+        <th>Name</th>
+        <th>Mark</th>
+        <th>Result</th>
+      </tr>`;
+  }
+  else{
+    mode = "advanced";
+    document.getElementById("thead").innerHTML = `
+      <tr>
+        <th>Reg No</th>
+        <th>Name</th>
+        <th>IA</th>
+        <th>UE</th>
+        <th>Total</th>
+        <th>Result</th>
+      </tr>`;
+  }
+};
 
-    tr.innerHTML = `
-        <td><input type="text" id="sub${row}"></td>
-        <td><input type="number" id="ia${row}"></td>
-        <td><input type="number" id="ue${row}"></td>
-        <td><input type="number" id="tot${row}" readonly></td>
-        <td><input type="text" id="res${row}" readonly></td>
-    `;
+/* ================= LOAD STUDENTS (FIXED) ================= */
+window.loadStudents = async function(){
 
-    document.querySelector("#marksTable tbody").appendChild(tr);
+  const dept = document.getElementById("department").value;
+  const year = document.getElementById("year").value;
+  const section = document.getElementById("section").value;
 
-    document.getElementById("ia"+row).addEventListener("input", ()=>calc(row));
-    document.getElementById("ue"+row).addEventListener("input", ()=>calc(row));
-}
+  const snap = await getDocs(collection(db,"students"));
 
-function calc(i){
+  document.getElementById("body").innerHTML = "";
+  students = [];
 
-    let ia = Number(document.getElementById("ia"+i).value) || 0;
-    let ue = Number(document.getElementById("ue"+i).value) || 0;
+  let found = false;
 
-    let tot = ia + ue;
+  snap.forEach(docSnap => {
 
-    document.getElementById("tot"+i).value = tot;
+    const s = docSnap.data();
 
-    let result = (tot >= 40 && ia >=10) ? "PASS" : "FAIL";
+    // 🔥 SAFE NORMALIZATION (IMPORTANT FIX)
+    const dbDept = (s.department || "").toUpperCase().replace(/\s+/g,"");
+    const selDept = (dept || "").toUpperCase().replace(/\s+/g,"");
 
-    document.getElementById("res"+i).value = result;
-}
+    const dbYear = (s.year || "").toUpperCase();
+    const selYear = (year || "").toUpperCase();
 
-window.saveData = async function(){
+    const dbSec = (s.section || "").toUpperCase();
+    const selSec = (section || "").toUpperCase();
 
-    const name = document.getElementById("name").value;
-    const regno = document.getElementById("regno").value;
-    const dob = document.getElementById("dob").value;
+    // FILTER FIXED
+    if(selDept && dbDept.indexOf(selDept) === -1) return;
+    if(selYear && dbYear !== selYear) return;
+    if(selSec && dbSec !== selSec) return;
 
-    let Subjects = {};
+    found = true;
+    students.push(docSnap.id);
 
-    for(let i=1;i<=row;i++){
-
-        let code = document.getElementById("sub"+i).value;
-        if(!code) continue;
-
-        let ia = Number(document.getElementById("ia"+i).value) || 0;
-        let ue = Number(document.getElementById("ue"+i).value) || 0;
-        let tot = ia + ue;
-
-        let result = (tot >= 40 && ia >= 10) ? "PASS" : "FAIL";
-
-        Subjects[code] = {
-            IA: ia,
-            UE: ue,
-            TOTAL: tot,
-            Result: result
-        };
+    if(mode === "simple"){
+      document.getElementById("body").innerHTML += `
+        <tr>
+          <td>${s.regNo}</td>
+          <td>${s.name}</td>
+          <td><input type="number" id="mark_${docSnap.id}" oninput="calc('${docSnap.id}')"></td>
+          <td><input id="res_${docSnap.id}" readonly></td>
+        </tr>`;
+    }
+    else{
+      document.getElementById("body").innerHTML += `
+        <tr>
+          <td>${s.regNo}</td>
+          <td>${s.name}</td>
+          <td><input type="number" id="ia_${docSnap.id}" oninput="calc('${docSnap.id}')"></td>
+          <td><input type="number" id="ue_${docSnap.id}" oninput="calc('${docSnap.id}')"></td>
+          <td><input id="tot_${docSnap.id}" readonly></td>
+          <td><input id="res_${docSnap.id}" readonly></td>
+        </tr>`;
     }
 
-    await setDoc(doc(db,"results",regno), {
-        "Name": name,
-        "Reg No": regno,
-        "DOB": dob,
-        "Subjects": Subjects
-    });
+  });
 
-    alert("Result Saved Successfully");
+  if(!found){
+    alert("No students found! Check department/year/section values in Firestore.");
+  }
 };
 
-window.resetForm = function(){
+/* ================= CALC ================= */
+window.calc = function(id){
 
-    document.getElementById("name").value = "";
-    document.getElementById("regno").value = "";
-    document.getElementById("dob").value = "";
+  let mark = Number(document.getElementById("mark_"+id).value) || 0;
 
-    document.querySelector("#marksTable tbody").innerHTML = "";
-
-    row = 0;
-
-    addRow();
-
-    alert("Form Reset Successfully");
+  if(mark >= 12){
+    document.getElementById("res_"+id).value = "PASS";
+  } else {
+    document.getElementById("res_"+id).value = "FAIL";
+  }
 };
 
-addRow();
+/* ================= SAVE ================= */
+window.saveData = async function(){
+
+  const dept = document.getElementById("department").value;
+  const year = document.getElementById("year").value;
+  const section = document.getElementById("section").value;
+  const exam = document.getElementById("examType").value;
+  const subject = document.getElementById("subject").value;
+
+  if(!dept || !year || !section || !exam || !subject){
+    alert("Fill all fields");
+    return;
+  }
+
+  for(let id of students){
+
+    if(mode === "simple"){
+      let mark = Number(document.getElementById("mark_"+id).value)||0;
+      let res = document.getElementById("res_"+id).value;
+
+      await setDoc(doc(db,"results",id,exam,subject),{
+        department:dept,
+        year,
+        section,
+        examType:exam,
+        subject,
+        mark,
+        result:res
+      });
+    }
+    else{
+      let ia = Number(document.getElementById("ia_"+id).value)||0;
+      let ue = Number(document.getElementById("ue_"+id).value)||0;
+      let tot = ia + ue;
+      let res = document.getElementById("res_"+id).value;
+
+      await setDoc(doc(db,"results",id,exam,subject),{
+        department:dept,
+        year,
+        section,
+        examType:exam,
+        subject,
+        ia,
+        ue,
+        total:tot,
+        result:res
+      });
+    }
+  }
+
+  alert("Saved Successfully");
+};
 
 </script>
 
