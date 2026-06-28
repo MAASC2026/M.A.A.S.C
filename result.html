@@ -3,44 +3,114 @@
 <head>
 <meta charset="utf-8">
 <title>MAASC Results</title>
-<link rel="stylesheet" href="result.css">
+
+<style>
+body{
+  background:#d8dcee;
+  font-family:Arial;
+}
+
+.container{
+  width:900px;
+  margin:auto;
+  text-align:center;
+  background:white;
+  padding:20px;
+}
+
+input{
+  padding:8px;
+  width:220px;
+  margin:5px;
+}
+
+button{
+  padding:8px 15px;
+  cursor:pointer;
+}
+
+.search-table{
+  margin:auto;
+  border-collapse:collapse;
+}
+
+.search-table td{
+  border:1px solid #999;
+  padding:10px;
+}
+
+/* RESULT TABLE */
+#marksTable{
+  width:100%;
+  border-collapse:collapse;
+  margin-top:20px;
+}
+
+#marksTable th{
+  background:#8bdd8b;
+}
+
+#marksTable th,
+#marksTable td{
+  border:1px solid #888;
+  padding:8px;
+  text-align:center;
+}
+
+.pass{color:green;font-weight:bold}
+.fail{color:red;font-weight:bold}
+
+/* INPUT BOX */
+#inputBox{
+  margin-bottom:20px;
+}
+
+/* PRINT BUTTON */
+#printBtn{
+  display:none;
+  margin-top:15px;
+  background:green;
+  color:white;
+  border:none;
+}
+
+/* PRINT MODE */
+@media print {
+  #inputBox, #printBtn {
+    display: none !important;
+  }
+}
+</style>
 </head>
 
 <body>
 
 <div class="container">
 
-<img src="logo.png" width="90">
+<img src="logo.png" width="80">
 
 <h1>Murali Arts and Science College</h1>
+<h3>UG / PG Examination Results</h3>
 
-<h2>UG / PG Examination Results</h2>
+<!-- INPUT -->
+<div id="inputBox">
 
 <table class="search-table">
 
 <tr>
 <td>Register Number</td>
-<td>
-<input type="text" id="regno">
-</td>
+<td><input type="text" id="regno"></td>
 </tr>
 
 <tr>
 <td>Date of Birth</td>
-<td>
-<input type="date" id="dob">
-</td>
+<td><input type="date" id="dob"></td>
 </tr>
 
 <tr>
-<td colspan="2" align="center">
-<button onclick="getResult()">
-Get Result
-</button>
-
-<button onclick="location.reload()">
-Clear
-</button>
+<td colspan="2">
+<button onclick="getResult()">Get Result</button>
+<button onclick="location.reload()">Clear</button>
 </td>
 </tr>
 
@@ -48,7 +118,150 @@ Clear
 
 </div>
 
-<script type="module" src="result.js"></script>
+<!-- STUDENT INFO -->
+<div id="studentInfo"></div>
+
+<!-- RESULT TABLE -->
+<table id="marksTable">
+<thead id="tableHead" style="display:none;">
+<tr>
+<th>Exam</th>
+<th>Subject</th>
+<th>Marks / IA-UE</th>
+<th>Total</th>
+<th>Result</th>
+</tr>
+</thead>
+
+<tbody id="resultBody"></tbody>
+</table>
+
+<!-- PRINT -->
+<button id="printBtn" onclick="window.print()">PRINT RESULT</button>
+
+</div>
+
+<script type="module">
+
+import { db } from "./firebase-config.js";
+import {
+doc,
+getDoc,
+collection,
+getDocs
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+/* DOB NORMALIZER */
+function normalizeDOB(dob){
+  if(!dob) return "";
+
+  if(dob.includes(".")){
+    const [d,m,y] = dob.split(".");
+    return `${y}-${m.padStart(2,'0')}-${d.padStart(2,'0')}`;
+  }
+
+  return dob;
+}
+
+/* MAIN FUNCTION */
+window.getResult = async function(){
+
+  const regno = document.getElementById("regno").value.trim();
+  const dob = document.getElementById("dob").value;
+
+  if(!regno || !dob){
+    alert("Enter Register Number and DOB");
+    return;
+  }
+
+  document.getElementById("resultBody").innerHTML = "";
+  document.getElementById("studentInfo").innerHTML = "";
+
+  document.getElementById("tableHead").style.display = "none";
+  document.getElementById("printBtn").style.display = "none";
+
+  try{
+
+    const studentRef = doc(db,"students",regno);
+    const studentSnap = await getDoc(studentRef);
+
+    if(!studentSnap.exists()){
+      alert("Student Not Found");
+      return;
+    }
+
+    const student = studentSnap.data();
+
+    if(normalizeDOB(student.dob) !== normalizeDOB(dob)){
+      alert("DOB Mismatch");
+      return;
+    }
+
+    /* HIDE INPUT */
+    document.getElementById("inputBox").style.display = "none";
+
+    /* STUDENT HEADER (MARKSHEET STYLE) */
+    document.getElementById("studentInfo").innerHTML = `
+      <div style="text-align:left;max-width:600px;margin:auto;font-size:16px;">
+        <p><b>Name</b> : ${student.name}</p>
+        <p><b>Register No</b> : ${regno}</p>
+        <p><b>Department</b> : ${student.department}</p>
+      </div>
+    `;
+
+    document.getElementById("tableHead").style.display = "table-header-group";
+    document.getElementById("printBtn").style.display = "inline-block";
+
+    const exams = [
+      "CYCLIC-1",
+      "CYCLIC-2",
+      "INTERNAL-1",
+      "INTERNAL-2",
+      "MODEL",
+      "SEMESTER"
+    ];
+
+    for(let exam of exams){
+
+      const snap = await getDocs(collection(db,"results",regno,exam));
+
+      snap.forEach(docSnap => {
+
+        const r = docSnap.data();
+
+        if(r.mark !== undefined){
+
+          document.getElementById("resultBody").innerHTML += `
+            <tr>
+              <td>${exam}</td>
+              <td>${r.subject}</td>
+              <td>${r.mark}</td>
+              <td>-</td>
+              <td class="${r.result==='PASS'?'pass':'fail'}">${r.result}</td>
+            </tr>`;
+        }
+        else{
+
+          document.getElementById("resultBody").innerHTML += `
+            <tr>
+              <td>${exam}</td>
+              <td>${r.subject}</td>
+              <td>IA:${r.ia} / UE:${r.ue}</td>
+              <td>${r.total}</td>
+              <td class="${r.result==='PASS'?'pass':'fail'}">${r.result}</td>
+            </tr>`;
+        }
+
+      });
+    }
+
+  } catch(err){
+    console.error(err);
+    alert("ERROR: " + err.message);
+  }
+};
+
+</script>
 
 </body>
-</html>2
+</html>
