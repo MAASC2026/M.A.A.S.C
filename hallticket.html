@@ -1,86 +1,66 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
+<meta charset="utf-8">
 <title>MAASC Hall Ticket Generator</title>
 
 <style>
 body{
-    font-family:Arial,sans-serif;
-    background:#f4f4f4;
-    margin:20px;
+  font-family:Arial;
+  background:#f4f6f9;
+  padding:20px;
 }
+
 .container{
-    max-width:1000px;
-    margin:auto;
-    background:#fff;
-    padding:20px;
-    border-radius:10px;
-    box-shadow:0 0 10px #ccc;
+  max-width:1100px;
+  margin:auto;
+  background:white;
+  padding:20px;
+  border-radius:10px;
 }
-h2{
-    text-align:center;
-    color:#003366;
+
+select,button{
+  padding:8px;
+  margin:5px;
 }
-label{
-    font-weight:bold;
+
+.student-card{
+  border:1px solid #ccc;
+  padding:15px;
+  margin-top:15px;
+  border-radius:10px;
 }
-input,select{
-    width:100%;
-    padding:10px;
-    margin-top:5px;
-    margin-bottom:15px;
+
+.header{
+  text-align:center;
 }
-#subjects{
-    border:1px solid #ccc;
-    padding:10px;
-    border-radius:5px;
-    margin-bottom:20px;
+
+.print{
+  background:green;
+  color:white;
+  border:none;
+  padding:10px;
 }
-button{
-    background:#003366;
-    color:white;
-    border:none;
-    padding:10px 20px;
-    cursor:pointer;
-    margin-right:10px;
+
+.load{
+  background:#007bff;
+  color:white;
+  border:none;
 }
-button:hover{
-    background:#0055aa;
+
+.sign-box{
+  margin-top:20px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
 }
-#hallTicket{
-    display:none;
-    border:2px solid black;
-    padding:20px;
-    margin-top:30px;
-}
-table{
-    width:100%;
-    border-collapse:collapse;
-}
-td{
-    padding:8px;
-}
+
 .sign{
-    margin-top:50px;
-    text-align:right;
+  text-align:center;
 }
+
 .sign img{
-    width:180px;
-}
-@media print{
-    body *{
-        visibility:hidden;
-    }
-    #hallTicket,#hallTicket *{
-        visibility:visible;
-    }
-    #hallTicket{
-        position:absolute;
-        left:0;
-        top:0;
-        width:100%;
-    }
+  height:60px;
 }
 </style>
 </head>
@@ -89,20 +69,10 @@ td{
 
 <div class="container">
 
-<h2>MURALI ARTS AND SCIENCE COLLEGE</h2>
-<h3 align="center">Hall Ticket Generator</h3>
+<h2>HALL TICKET GENERATOR</h2>
 
-<label>Register Number</label>
-<input type="text" id="regno" placeholder="MC26H001">
-
-<label>Student Name</label>
-<input type="text" id="name">
-
-<label>Department</label>
-<select id="department" onchange="loadSubjects()">
-
-<option value="">Select Department</option>
-
+<!-- DEPARTMENT -->
+<select id="department">
 <option value="BCOM-GENERAL">B.Com General</option>
 <option value="BCOM-BM">B.Com BM</option>
 <option value="BCOM-MM">B.Com MM</option>
@@ -130,177 +100,106 @@ td{
 <option value="BSC-PHYSICS">B.Sc PHYSICS</option>
 
 <option value="BCA">BCA COMPUTER APPLICATION</option>
-
 </select>
 
-<label>Exam Type</label>
-<select id="examType">
-
-<option value="CYCLIC TEST 01">CYCLIC TEST 01</option>
-<option value="CYCLIC TEST 02">CYCLIC TEST 02</option>
-<option value="INTERNAL TEST 01">INTERNAL TEST 01</option>
-<option value="INTERNAL TEST 02">INTERNAL TEST 02</option>
-<option value="MODEL EXAM">MODEL EXAM</option>
-<option value="SEMESTER EXAM">SEMESTER EXAM</option>
-
+<select id="year">
+  <option value="">Year</option>
+  <option value="I">I Year</option>
+  <option value="II">II Year</option>
+  <option value="III">III Year</option>
 </select>
 
-<div id="subjects">
-Select Department to Load Subjects
-</div>
+<select id="section">
+  <option value="">Section</option>
+  <option value="A">A</option>
+  <option value="B">B</option>
+  <option value="C">C</option>
+  <option value="D">D</option>
+</select>
 
-<button onclick="generateHallTicket()">Generate Hall Ticket</button>
-<button onclick="window.print()">Print Hall Ticket</button>
+<button class="load" onclick="loadStudents()">Load Students</button>
+<button class="print" onclick="window.print()">Print All</button>
 
-<div id="hallTicket">
-
-<center>
-<h1>MURALI ARTS AND SCIENCE COLLEGE</h1>
-<h2>HALL TICKET</h2>
-</center>
-
-<table border="1">
-
-<tr>
-<td><b>Register Number</b></td>
-<td id="htReg"></td>
-</tr>
-
-<tr>
-<td><b>Student Name</b></td>
-<td id="htName"></td>
-</tr>
-
-<tr>
-<td><b>Department</b></td>
-<td id="htDept"></td>
-</tr>
-
-<tr>
-<td><b>Exam Type</b></td>
-<td id="htExam"></td>
-</tr>
-
-</table>
-
-<h3>Subjects</h3>
-<ul id="htSubjects"></ul>
-
-<div class="sign">
-<img src="principal-signature.jpeg">
-<br>
-<b>FOUNDER    </b><br>
-<b>Dr.R.Muralikrishnan</b>
-</div>
+<div id="students"></div>
 
 </div>
 
-</div>
+<script type="module">
 
-<script>
+import { db } from "./firebase-config.js";
+import { collection, getDocs } 
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-const departmentSubjects={
+/* ================= LOAD STUDENTS ================= */
+window.loadStudents = async function(){
 
-"BCA":[
-"100L1A - TAMIL 1",
-"100L1Z - ENGLISH 1",
-"120C1A - PYTHON",
-"120E1B - STATISTICS 1",
-"120S1A - FUND.COMP",
-"120S1B - SEC"
-],
+  const dept = document.getElementById("department").value;
+  const year = document.getElementById("year").value;
+  const section = document.getElementById("section").value;
 
-"BSC-CS":[
-"Programming in C",
-"Computer Architecture",
-"Python",
-"Operating System",
-"Mathematics"
-],
+  if(!dept || !year || !section){
+    alert("Select Department, Year, Section");
+    return;
+  }
 
-"BSC-CS-AI":[
-"Artificial Intelligence",
-"Python",
-"Machine Learning",
-"Data Analytics",
-"Statistics"
-],
+  const snap = await getDocs(collection(db,"students"));
 
-"BCOM-GENERAL":[
-"Financial Accounting",
-"Business Economics",
-"Business Management",
-"Marketing",
-"Banking"
-],
+  const container = document.getElementById("students");
+  container.innerHTML = "";
 
-"BCOM-CS":[
-"Financial Accounting",
-"Programming Fundamentals",
-"DBMS",
-"Corporate Accounting",
-"E-Commerce"
-],
+  let found = false;
 
-"default":[
-"Subject 1",
-"Subject 2",
-"Subject 3",
-"Subject 4",
-"Subject 5"
-]
+  snap.forEach(docSnap => {
 
+    const s = docSnap.data();
+
+    const deptMatch =
+      s.department &&
+      s.department.toLowerCase().includes(dept.toLowerCase());
+
+    if(!deptMatch) return;
+    if(s.year !== year) return;
+    if(s.section !== section) return;
+
+    found = true;
+
+    container.innerHTML += `
+      <div class="student-card">
+
+        <div class="header">
+          <h2>Murali Arts and Science College</h2>
+          <h3>HALL TICKET</h3>
+        </div>
+
+        <p><b>Name:</b> ${s.name}</p>
+        <p><b>Register No:</b> ${docSnap.id}</p>
+        <p><b>Department:</b> ${s.department}</p>
+        <p><b>Year:</b> ${s.year}</p>
+        <p><b>Section:</b> ${s.section}</p>
+        <p><b>DOB:</b> ${s.dob}</p>
+
+        <hr>
+
+        <p><b>Exam Center:</b> MAASC Campus</p>
+
+        <div class="sign-box">
+          <div><b>Principal Signature</b></div>
+
+          <!-- INBUILT SIGN (TEXT STAMP OR IMAGE) -->
+          <div class="sign">
+            <img src="principal-signature.jpeg" alt="Signature">
+            <div>Principal</div>
+          </div>
+        </div>
+
+      </div>
+    `;
+  });
+
+  if(!found){
+    alert("No students found!");
+  }
 };
-
-function loadSubjects(){
-
-let dept=document.getElementById("department").value;
-
-let list=departmentSubjects[dept] || departmentSubjects["default"];
-
-let html="";
-
-list.forEach(sub=>{
-html+=`
-<label>
-<input type="checkbox" value="${sub}">
-${sub}
-</label><br>`;
-});
-
-document.getElementById("subjects").innerHTML=html;
-}
-
-function generateHallTicket(){
-
-let reg=document.getElementById("regno").value;
-let name=document.getElementById("name").value;
-let dept=document.getElementById("department").options[
-document.getElementById("department").selectedIndex].text;
-
-let exam=document.getElementById("examType").value;
-
-if(reg===""||name===""){
-alert("Enter Register Number and Name");
-return;
-}
-
-document.getElementById("htReg").innerText=reg;
-document.getElementById("htName").innerText=name;
-document.getElementById("htDept").innerText=dept;
-document.getElementById("htExam").innerText=exam;
-
-let list=document.getElementById("htSubjects");
-list.innerHTML="";
-
-document.querySelectorAll("#subjects input:checked").forEach(cb=>{
-let li=document.createElement("li");
-li.innerText=cb.value;
-list.appendChild(li);
-});
-
-document.getElementById("hallTicket").style.display="block";
-}
 
 </script>
 
