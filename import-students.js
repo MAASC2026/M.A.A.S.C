@@ -155,12 +155,11 @@ status.innerHTML = allStudents.length + " Students Ready for Import";
 ================================ */
 
 function getSection(no) {
-if (no <= 50) return "A";
-if (no <= 100) return "B";
-if (no <= 150) return "C";
-if (no <= 200) return "D";
-if (no <= 250) return "E";
-return "F";
+if (no <= 100) return "A";
+if (no <= 200) return "B";
+if (no <= 300) return "C";
+if (no <= 400) return "D";
+return "E";
 }
 
 /* ==============================
