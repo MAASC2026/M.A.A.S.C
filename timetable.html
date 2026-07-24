@@ -1,32 +1,36 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta charset="utf-8">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Exam Schedule Entry</title>
 
 <style>
+
 body{
-    font-family: Arial;
+    font-family:Arial,sans-serif;
     background:#f4f6f9;
     padding:20px;
 }
 
 .container{
-    max-width:1100px;
+    max-width:1200px;
     margin:auto;
-    background:white;
+    background:#fff;
     padding:20px;
     border-radius:10px;
+    box-shadow:0 0 10px rgba(0,0,0,.1);
 }
 
 h2{
     text-align:center;
+    margin-bottom:20px;
 }
 
 select,input{
     width:100%;
     padding:8px;
-    margin:6px 0;
+    margin:5px 0;
     box-sizing:border-box;
 }
 
@@ -38,37 +42,35 @@ table{
     width:100%;
     border-collapse:collapse;
     margin-top:15px;
-    table-layout:fixed;
 }
 
 th,td{
     border:1px solid #ccc;
     padding:10px;
     text-align:center;
-    vertical-align:middle;
-    word-wrap:break-word;
 }
 
 th{
-    background:#f0f0f0;
+    background:#f2f2f2;
 }
-
-/* Column alignment */
-th:nth-child(1), td:nth-child(1){width:15%;}
-th:nth-child(2), td:nth-child(2){width:25%;}
-th:nth-child(3), td:nth-child(3){width:15%;}
-th:nth-child(4), td:nth-child(4){width:20%;}
-th:nth-child(5), td:nth-child(5){width:25%;}
 
 button{
     padding:10px 15px;
-    margin-top:10px;
+    margin-top:15px;
     cursor:pointer;
     border:none;
+    color:white;
+    border-radius:5px;
 }
 
-.add{background:#007bff;color:white;}
-.save{background:green;color:white;}
+.add{
+    background:#007bff;
+}
+
+.save{
+    background:green;
+}
+
 </style>
 </head>
 
@@ -80,61 +82,64 @@ button{
 
 <select id="dept" onchange="loadExam()">
 
-    <option value="BCOM-GENERAL">B.Com General</option>
-    <option value="BCOM-BM">B.Com BM</option>
-    <option value="BCOM-MM">B.Com MM</option>
-    <option value="BCOM-CS">B.Com CS</option>
-    <option value="BCOM-AF">B.Com A&F</option>
-    <option value="BCOM-ISM">B.Com ISM</option>
-    <option value="BCOM-CA">B.Com CA</option>
-    <option value="BCOM-BUSAD">B.Com BUS.AD</option>
+<option value="BCOM-GENERAL">B.Com General</option>
+<option value="BCOM-BM">B.Com BM</option>
+<option value="BCOM-MM">B.Com MM</option>
+<option value="BCOM-CS">B.Com CS</option>
+<option value="BCOM-AF">B.Com A&F</option>
+<option value="BCOM-ISM">B.Com ISM</option>
+<option value="BCOM-CA">B.Com CA</option>
+<option value="BCOM-BUSAD">B.Com BUS.AD</option>
 
-    <option value="BA-DEFENCE">B.A DEFENCE</option>
-    <option value="BA-PUBAD">B.A PUB.AD</option>
-    <option value="BA-TAMIL">B.A TAMIL</option>
-    <option value="BA-TOURISM">B.A TOURISM</option>
+<option value="BA-DEFENCE">B.A DEFENCE</option>
+<option value="BA-PUBAD">B.A PUB.AD</option>
+<option value="BA-TAMIL">B.A TAMIL</option>
+<option value="BA-TOURISM">B.A TOURISM</option>
 
-    <option value="BSC-CS">B.Sc CS</option>
-    <option value="BSC-CS-AI">B.Sc CS WITH AI</option>
-    <option value="BSC-CRIMINOLOGY">B.Sc CRIMINOLOGY</option>
-    <option value="BSC-SA">B.Sc SA</option>
-    <option value="BSC-PHYS-CA">B.Sc PHYS WITH CA</option>
-    <option value="BSC-MATHS-CA">B.Sc MATHS WITH CA</option>
-    <option value="BSC-ELEC-AI">B.Sc ELECTRONICS WITH AI</option>
-    <option value="BSC-VISCOM">B.Sc VISCOM</option>
-    <option value="BSC-ELECTRONIC-MEDIA">B.Sc ELECTRONIC MEDIA</option>
-    <option value="BSC-IDD">B.Sc IDD</option>
-    <option value="BSC-PHYSICS">B.Sc PHYSICS</option>
+<option value="BSC-CS">B.Sc CS</option>
+<option value="BSC-CS-AI">B.Sc CS WITH AI</option>
+<option value="BSC-CRIMINOLOGY">B.Sc CRIMINOLOGY</option>
+<option value="BSC-SA">B.Sc SA</option>
+<option value="BSC-PHYS-CA">B.Sc PHYSICS WITH CA</option>
+<option value="BSC-MATHS-CA">B.Sc MATHS WITH CA</option>
+<option value="BSC-ELEC-AI">B.Sc ELECTRONICS WITH AI</option>
+<option value="BSC-VISCOM">B.Sc VISCOM</option>
+<option value="BSC-ELECTRONIC-MEDIA">B.Sc ELECTRONIC MEDIA</option>
+<option value="BSC-IDD">B.Sc IDD</option>
+<option value="BSC-PHYSICS">B.Sc PHYSICS</option>
 
-    <option value="BCA">BCA COMPUTER APPLICATION</option>
+<option value="BCA">BCA COMPUTER APPLICATION</option>
 
 </select>
 
+
 <select id="examType" onchange="loadExam()">
 
-    <option value="CYCLIC-TEST-01">CYCLIC TEST 01</option>
-    <option value="CYCLIC-TEST-02">CYCLIC TEST 02</option>
-
-    <option value="INTERNAL-TEST-01">INTERNAL TEST 01</option>
-    <option value="INTERNAL-TEST-02">INTERNAL TEST 02</option>
-
-    <option value="MODEL-EXAM">MODEL EXAM</option>
-
-    <option value="SEMESTER-EXAM">SEMESTER EXAM</option>
+<option value="CYCLIC-TEST-01">CYCLIC TEST 01</option>
+<option value="CYCLIC-TEST-02">CYCLIC TEST 02</option>
+<option value="INTERNAL-TEST-01">INTERNAL TEST 01</option>
+<option value="INTERNAL-TEST-02">INTERNAL TEST 02</option>
+<option value="MODEL-EXAM">MODEL EXAM</option>
+<option value="SEMESTER-EXAM">SEMESTER EXAM</option>
 
 </select>
 
 <div class="table-wrapper">
 
 <table>
+
 <thead>
+
 <tr>
+
 <th>Subject Code</th>
 <th>Subject Name</th>
 <th>Date</th>
 <th>Timing</th>
+<th>Platform</th>
 
 </tr>
+
 </thead>
 
 <tbody id="tbody"></tbody>
@@ -151,47 +156,133 @@ button{
 <script type="module">
 
 import { db } from "./firebase-config.js";
-import { doc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-let row = 0;
+import {
+doc,
+setDoc
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-window.addRow = function(){
+let row=0;
 
-    row++;
+/* Placeholder for future loading */
+window.loadExam=function(){
 
-    document.getElementById("tbody").innerHTML += `
-    <tr>
-        <td><input id="code${row}" placeholder="Subject Code"></td>
-        <td><input id="name${row}" placeholder="Subject Name"></td>
-        <td><input type="date" id="date${row}"></td>
-        <td><input id="time${row}" placeholder="10:00 - 1:00"></td>
-        
-    </tr>
-    `;
+console.log("Selection changed.");
+
 };
 
-window.saveExam = async function(){
+/* Add Row */
 
-    const dept = document.getElementById("dept").value;
-    const examType = document.getElementById("examType").value;
+window.addRow=function(){
 
-    let data = {};
+row++;
 
-    for(let i=1;i<=row;i++){
+document.getElementById("tbody").insertAdjacentHTML("beforeend",`
 
-        data["Exam_"+i] = {
-            SubjectCode: document.getElementById("code"+i).value,
-            SubjectName: document.getElementById("name"+i).value,
-            Date: document.getElementById("date"+i).value,
-            Timing: document.getElementById("time"+i).value,
-            Platform: document.getElementById("platform"+i).value
-        };
-    }
+<tr>
 
-    await setDoc(doc(db,"exams",dept,examType,"schedule"), data);
+<td>
+<input id="code${row}" placeholder="Subject Code">
+</td>
 
-    alert("Exam Schedule Saved Successfully");
+<td>
+<input id="name${row}" placeholder="Subject Name">
+</td>
+
+<td>
+<input type="date" id="date${row}">
+</td>
+
+<td>
+<input id="time${row}" placeholder="10:00 AM - 1:00 PM">
+</td>
+
+<td>
+<input id="platform${row}" placeholder="Offline / Online">
+</td>
+
+</tr>
+
+`);
+
 };
+
+
+/* Save */
+
+window.saveExam=async function(){
+
+const dept=document.getElementById("dept").value;
+
+const examType=document.getElementById("examType").value;
+
+let data={};
+
+let count=1;
+
+for(let i=1;i<=row;i++){
+
+const code=document.getElementById("code"+i).value.trim();
+
+const name=document.getElementById("name"+i).value.trim();
+
+const date=document.getElementById("date"+i).value;
+
+const time=document.getElementById("time"+i).value.trim();
+
+const platform=document.getElementById("platform"+i).value.trim();
+
+if(code=="" && name=="") continue;
+
+data["Exam_"+count]={
+
+SubjectCode:code,
+
+SubjectName:name,
+
+Date:date,
+
+Timing:time,
+
+Platform:platform
+
+};
+
+count++;
+
+}
+
+if(Object.keys(data).length===0){
+
+alert("Please enter at least one subject.");
+
+return;
+
+}
+
+try{
+
+await setDoc(
+
+doc(db,"exams",dept,examType,"schedule"),
+
+data
+
+);
+
+alert("Exam Schedule Saved Successfully.");
+
+}catch(err){
+
+console.error(err);
+
+alert(err.message);
+
+}
+
+};
+
+/* First Row */
 
 addRow();
 
