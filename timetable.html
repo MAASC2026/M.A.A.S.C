@@ -123,6 +123,13 @@ button{
 <option value="SEMESTER-EXAM">SEMESTER EXAM</option>
 
 </select>
+<select id="year" onchange="loadExam()">
+
+<option value="YEAR-1">I YEAR</option>
+<option value="YEAR-2">II YEAR</option>
+<option value="YEAR-3">III YEAR</option>
+
+</select>
 
 <div class="table-wrapper">
 
@@ -211,6 +218,7 @@ document.getElementById("tbody").insertAdjacentHTML("beforeend",`
 /* Save */
 
 window.saveExam=async function(){
+const year = document.getElementById("year").value;
 
 const dept=document.getElementById("dept").value;
 
@@ -264,7 +272,7 @@ try{
 
 await setDoc(
 
-doc(db,"exams",dept,examType,"schedule"),
+doc(db,"exams",year,"departments",dept,"exams",examType),
 
 data
 
