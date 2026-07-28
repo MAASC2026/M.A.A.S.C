@@ -1,13 +1,14 @@
-```html
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta charset="utf-8">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Exam Schedule View</title>
 
 <style>
+
 body{
-    font-family: Arial;
+    font-family: Arial, sans-serif;
     background:#f4f6f9;
     padding:20px;
 }
@@ -15,19 +16,22 @@ body{
 .container{
     max-width:1000px;
     margin:auto;
-    background:white;
+    background:#fff;
     padding:20px;
     border-radius:10px;
+    box-shadow:0 0 10px rgba(0,0,0,.1);
 }
 
 h2{
     text-align:center;
+    margin-bottom:20px;
 }
 
 select{
     width:100%;
-    padding:8px;
-    margin:6px 0;
+    padding:10px;
+    margin:8px 0;
+    box-sizing:border-box;
 }
 
 .table-wrapper{
@@ -38,39 +42,18 @@ table{
     width:100%;
     border-collapse:collapse;
     margin-top:15px;
-    table-layout:fixed;
 }
 
 th,td{
     border:1px solid #ccc;
     padding:10px;
     text-align:center;
-    vertical-align:middle;
 }
 
 th{
-    background:#f0f0f0;
+    background:#f2f2f2;
 }
 
-th:nth-child(1), td:nth-child(1){width:15%;}
-th:nth-child(2), td:nth-child(2){width:25%;}
-th:nth-child(3), td:nth-child(3){width:15%;}
-th:nth-child(4), td:nth-child(4){width:20%;}
-th:nth-child(5), td:nth-child(5){width:25%;}
-
-.attend-btn{
-    background:#28a745;
-    color:white;
-    border:none;
-    padding:8px 14px;
-    border-radius:5px;
-    cursor:pointer;
-    font-weight:bold;
-}
-
-.attend-btn:hover{
-    background:#218838;
-}
 </style>
 </head>
 
@@ -80,6 +63,16 @@ th:nth-child(5), td:nth-child(5){width:25%;}
 
 <h2>Exam Schedule</h2>
 
+<!-- Year -->
+<select id="year" onchange="loadExam()">
+
+    <option value="YEAR-1">I YEAR</option>
+    <option value="YEAR-2">II YEAR</option>
+    <option value="YEAR-3">III YEAR</option>
+
+</select>
+
+<!-- Department -->
 <select id="dept" onchange="loadExam()">
 
     <option value="BCOM-GENERAL">B.Com General</option>
@@ -100,7 +93,7 @@ th:nth-child(5), td:nth-child(5){width:25%;}
     <option value="BSC-CS-AI">B.Sc CS WITH AI</option>
     <option value="BSC-CRIMINOLOGY">B.Sc CRIMINOLOGY</option>
     <option value="BSC-SA">B.Sc SA</option>
-    <option value="BSC-PHYS-CA">B.Sc PHYS WITH CA</option>
+    <option value="BSC-PHYS-CA">B.Sc PHYSICS WITH CA</option>
     <option value="BSC-MATHS-CA">B.Sc MATHS WITH CA</option>
     <option value="BSC-ELEC-AI">B.Sc ELECTRONICS WITH AI</option>
     <option value="BSC-VISCOM">B.Sc VISCOM</option>
@@ -112,6 +105,7 @@ th:nth-child(5), td:nth-child(5){width:25%;}
 
 </select>
 
+<!-- Exam Type -->
 <select id="examType" onchange="loadExam()">
 
     <option value="CYCLIC-TEST-01">CYCLIC TEST 01</option>
@@ -129,13 +123,17 @@ th:nth-child(5), td:nth-child(5){width:25%;}
 <div class="table-wrapper">
 
 <table>
+
 <thead>
+
 <tr>
 <th>Subject Code</th>
 <th>Subject Name</th>
 <th>Date</th>
 <th>Timing</th>
+<th>Platform</th>
 </tr>
+
 </thead>
 
 <tbody id="tbody"></tbody>
@@ -149,7 +147,11 @@ th:nth-child(5), td:nth-child(5){width:25%;}
 <script type="module">
 
 import { db } from "./firebase-config.js";
-import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+import {
+doc,
+getDoc
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 function formatDate(dateStr){
 
@@ -157,61 +159,91 @@ function formatDate(dateStr){
 
     const d = new Date(dateStr);
 
-    let day = String(d.getDate()).padStart(2,'0');
-    let month = String(d.getMonth()+1).padStart(2,'0');
-    let year = d.getFullYear();
+    const day = String(d.getDate()).padStart(2,"0");
+    const month = String(d.getMonth()+1).padStart(2,"0");
+    const year = d.getFullYear();
 
     return `${day}.${month}.${year}`;
+
 }
-
-window.attendTest = function(link){
-
-    if(!link){
-        alert("Test Link Not Available");
-        return;
-    }
-
-    window.open(link,"_blank");
-};
 
 window.loadExam = async function(){
 
+    const year = document.getElementById("year").value;
     const dept = document.getElementById("dept").value;
     const examType = document.getElementById("examType").value;
-
-    const snap = await getDoc(
-        doc(db,"exams",dept,examType,"schedule")
-    );
 
     const tbody = document.getElementById("tbody");
     tbody.innerHTML = "";
 
-    if(!snap.exists()){
+    try{
+
+        const snap = await getDoc(
+
+            doc(
+                db,
+                "exams",
+                year,
+                "departments",
+                dept,
+                "exams",
+                examType
+            )
+
+        );
+
+        if(!snap.exists()){
+
+            tbody.innerHTML = `
+            <tr>
+                <td colspan="5">No Exam Schedule Found</td>
+            </tr>
+            `;
+
+            return;
+
+        }
+
+        const data = snap.data();
+
+        Object.keys(data).forEach(key=>{
+
+            const d = data[key];
+
+            tbody.innerHTML += `
+
+            <tr>
+
+                <td>${d.SubjectCode || ""}</td>
+
+                <td>${d.SubjectName || ""}</td>
+
+                <td>${formatDate(d.Date)}</td>
+
+                <td>${d.Timing || ""}</td>
+
+                <td>${d.Platform || ""}</td>
+
+            </tr>
+
+            `;
+
+        });
+
+    }
+
+    catch(err){
+
+        console.error(err);
 
         tbody.innerHTML = `
         <tr>
-            <td colspan="5">No Exam Schedule Found</td>
+            <td colspan="5">Error Loading Schedule</td>
         </tr>
         `;
-        return;
+
     }
 
-    const data = snap.data();
-
-    for(let key in data){
-
-        let d = data[key];
-
-        tbody.innerHTML += `
-        <tr>
-            <td>${d.SubjectCode || ""}</td>
-            <td>${d.SubjectName || ""}</td>
-            <td>${formatDate(d.Date)}</td>
-            <td>${d.Timing || ""}</td>
-            
-        </tr>
-        `;
-    }
 };
 
 loadExam();
@@ -220,4 +252,3 @@ loadExam();
 
 </body>
 </html>
-```
