@@ -1,123 +1,711 @@
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:Arial, Helvetica, sans-serif;
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Internal Mark Entry</title>
+
+<link rel="stylesheet" href="internalMarkEntry.css">
+
+</head>
+
+
+<body>
+
+
+<div class="container">
+
+
+<div class="header">
+
+<h2>Internal Mark Entry</h2>
+
+</div>
+
+
+
+<div class="filters">
+
+
+
+<div class="form-group">
+
+<label>Department</label>
+
+<select id="department">
+
+<option value="">Select Department</option>
+
+<option value="B.Com General">B.Com General</option>
+<option value="B.Com BM">B.Com BM</option>
+<option value="B.Com MM">B.Com MM</option>
+<option value="B.Com CS">B.Com CS</option>
+<option value="B.Com A&F">B.Com A&F</option>
+<option value="B.Com ISM">B.Com ISM</option>
+<option value="B.Com CA">B.Com CA</option>
+<option value="B.Com BUS.AD">B.Com BUS.AD</option>
+
+<option value="B.A DEFENCE">B.A DEFENCE</option>
+<option value="B.A PUB.AD">B.A PUB.AD</option>
+<option value="B.A TAMIL">B.A TAMIL</option>
+<option value="B.A TOURISM">B.A TOURISM</option>
+
+<option value="B.Sc CS">B.Sc CS</option>
+<option value="B.Sc CS WITH AI">B.Sc CS WITH AI</option>
+<option value="B.Sc CRIMINOLOGY">B.Sc CRIMINOLOGY</option>
+<option value="B.Sc SA">B.Sc SA</option>
+<option value="B.Sc PHYS WITH CA">B.Sc PHYS WITH CA</option>
+<option value="B.Sc MATHS WITH CA">B.Sc MATHS WITH CA</option>
+<option value="B.Sc ELECTRONICS WITH AI">B.Sc ELECTRONICS WITH AI</option>
+<option value="B.Sc VISCOM">B.Sc VISCOM</option>
+<option value="B.Sc ELECTRONIC MEDIA">B.Sc ELECTRONIC MEDIA</option>
+<option value="B.Sc IDD">B.Sc IDD</option>
+<option value="B.Sc PHYSICS">B.Sc PHYSICS</option>
+
+<option value="BCA COMPUTER APPLICATION">
+BCA COMPUTER APPLICATION
+</option>
+
+</select>
+
+</div>
+
+
+
+
+
+<div class="form-group">
+
+<label>Class</label>
+
+<select id="year">
+
+<option value="">Select Year</option>
+
+<option value="I">I Year</option>
+
+<option value="II">II Year</option>
+
+<option value="III">III Year</option>
+
+</select>
+
+</div>
+
+
+
+
+
+<div class="form-group">
+
+<label>Section</label>
+
+<select id="section">
+
+<option value="">Select Section</option>
+
+<option value="A">A</option>
+
+<option value="B">B</option>
+
+<option value="C">C</option>
+
+<option value="D">D</option>
+
+</select>
+
+</div>
+
+
+
+
+
+<div class="form-group">
+
+<label>Subject</label>
+
+<select id="subject">
+
+
+<option value="">Select Subject</option>
+
+<option>Data Structure Programming</option>
+
+<option>Web Technology</option>
+
+<option>RDBMS - SA</option>
+
+<option>ASP.NET - SA</option>
+
+
+</select>
+
+</div>
+
+
+
+
+
+<div class="form-group">
+
+<label>Program Number</label>
+
+<select id="examType">
+
+
+<option value="">Select Exam</option>
+
+<option>PRG 1</option>
+
+<option>PRG 2</option>
+
+<option>PRG 3</option>
+
+<option>PRG 4</option>
+
+<option>PRG 5</option>
+
+
+</select>
+
+</div>
+
+
+
+
+
+<div class="form-group">
+
+<label>Maximum Mark</label>
+
+<input 
+type="number"
+id="maxMark"
+value="50">
+
+</div>
+
+
+
+
+
+<div class="form-group">
+
+<label>Date</label>
+
+<input 
+type="date"
+id="date">
+
+</div>
+<div class="button-area">
+
+<button onclick="loadStudents()">
+
+Load Students
+
+</button>
+
+</div>
+
+
+
+
+
+<table>
+
+
+<thead>
+
+<tr>
+
+<th>S.No</th>
+
+<th>Roll No</th>
+
+<th>Student Name</th>
+
+<th>Mark</th>
+
+</tr>
+
+</thead>
+
+
+<tbody id="studentBody">
+
+
+</tbody>
+
+
+</table>
+
+
+
+
+
+<div class="save-area">
+
+
+<button onclick="saveMarks()">
+
+Save Marks
+
+</button>
+
+
+</div>
+
+
+
+</div>
+
+
+
+
+
+
+<script type="module">
+
+
+// ==========================================
+// FIREBASE IMPORT
+// ==========================================
+
+
+import { initializeApp } 
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+
+import {
+
+getFirestore,
+collection,
+getDocs,
+query,
+where,
+addDoc,
+serverTimestamp
+
+}
+
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+
+
+
+
+// ==========================================
+// FIREBASE CONFIG
+// ==========================================
+
+
+const firebaseConfig = {
+
+
+apiKey: "AIzaSyAIv3091VM-gkmdwEAn7OhXWd9Cm2zh2bo",
+
+authDomain: "maasc-2026.firebaseapp.com",
+
+projectId: "maasc-2026",
+
+storageBucket: "maasc-2026.appspot.com",
+
+messagingSenderId: "585813001586",
+
+appId: "1:585813001586:web:664e0e90ff0725d2e849eb"
+
+
+};
+
+
+
+
+
+const app = initializeApp(firebaseConfig);
+
+
+const db = getFirestore(app);
+
+
+
+
+
+
+// SET CURRENT DATE
+
+
+document.getElementById("date").valueAsDate = new Date();
+
+
+
+
+
+
+// ==========================================
+// LOAD STUDENTS IN ROLL ORDER
+// ==========================================
+
+
+window.loadStudents = async function(){
+
+
+
+const department =
+document.getElementById("department").value;
+
+
+const year =
+document.getElementById("year").value;
+
+
+const section =
+document.getElementById("section").value;
+
+
+const subject =
+document.getElementById("subject").value;
+
+
+const examType =
+document.getElementById("examType").value;
+
+
+
+
+
+if(
+!department ||
+!year ||
+!section ||
+!subject ||
+!examType
+)
+
+{
+
+alert("Select all fields");
+
+return;
+
 }
 
 
-body{
 
-    background:#f4f6f9;
-    padding:20px;
+
+
+
+const tbody =
+document.getElementById("studentBody");
+
+
+tbody.innerHTML="";
+
+
+
+
+
+try{
+
+
+
+
+
+// ===============================
+// STUDENT QUERY
+// ===============================
+
+
+const studentQuery = query(
+
+collection(db,"students"),
+
+where("department","==",department),
+
+where("year","==",year),
+
+where("section","==",section)
+
+);
+
+
+
+
+
+const studentSnapshot =
+await getDocs(studentQuery);
+
+
+
+
+
+
+// ===============================
+// CONVERT TO ARRAY
+// ===============================
+
+
+let students=[];
+
+
+
+studentSnapshot.forEach(doc=>{
+
+
+students.push(doc.data());
+
+
+});
+
+
+
+
+
+
+
+// ===============================
+// SORT BY ROLL NUMBER
+// ===============================
+
+
+students.sort((a,b)=>{
+
+
+return a.rollNo.localeCompare(
+
+b.rollNo,
+
+undefined,
+
+{
+
+numeric:true,
+
+sensitivity:"base"
+
+}
+
+);
+
+
+});
+
+
+
+
+
+
+
+// ===============================
+// LOAD OLD MARKS
+// ===============================
+
+
+const markQuery=query(
+
+collection(db,"internalMarks"),
+
+
+where("department","==",department),
+
+
+where("year","==",year),
+
+
+where("section","==",section),
+
+
+where("subject","==",subject),
+
+
+where("examType","==",examType)
+
+
+);
+
+
+
+
+
+const markSnapshot =
+await getDocs(markQuery);
+
+
+
+
+
+
+let markList={};
+
+
+
+markSnapshot.forEach(doc=>{
+
+
+let data=doc.data();
+
+
+markList[data.rollNo]=data.mark;
+
+
+});
+
+
+
+
+
+
+
+
+// ===============================
+// DISPLAY STUDENTS
+// ===============================
+
+
+let sno=1;
+
+
+
+students.forEach(student=>{
+
+
+
+let oldMark =
+markList[student.rollNo];
+
+
+
+
+
+tbody.innerHTML += `
+
+
+<tr>
+
+
+<td>${sno++}</td>
+
+
+<td>${student.rollNo}</td>
+
+
+<td>${student.studentName}</td>
+
+
+<td>
+
+
+<input
+
+type="number"
+
+class="mark"
+
+data-roll="${student.rollNo}"
+
+value="${oldMark ?? ''}"
+
+placeholder="Enter Mark"
+
+
+>
+
+
+</td>
+
+
+</tr>
+
+
+
+`;
+
+
+
+});
+
+
+
+
 
 }
 
 
 
-.container{
+catch(error){
 
-    max-width:1400px;
-    margin:auto;
-    background:white;
-    padding:25px;
-    border-radius:10px;
-    box-shadow:0 2px 10px rgba(0,0,0,0.15);
+
+console.error(error);
+
+
+alert(error.message);
+
 
 }
 
 
 
-.header{
-
-    text-align:center;
-    margin-bottom:25px;
-
 }
+// ==========================================
+// SAVE MARKS
+// ==========================================
 
 
-.header h2{
-
-    color:#2c3e50;
-    font-size:28px;
-
-}
-
+window.saveMarks = async function(){
 
 
 
-.filters{
-
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-    gap:15px;
-    margin-bottom:25px;
-
-}
+let department =
+document.getElementById("department").value;
 
 
+let year =
+document.getElementById("year").value;
 
 
-.form-group{
-
-    display:flex;
-    flex-direction:column;
-
-}
+let section =
+document.getElementById("section").value;
 
 
+let subject =
+document.getElementById("subject").value;
 
 
-.form-group label{
+let examType =
+document.getElementById("examType").value;
 
-    font-weight:bold;
-    margin-bottom:6px;
-    color:#333;
 
-}
+let maxMark =
+Number(document.getElementById("maxMark").value);
+
+
+let date =
+document.getElementById("date").value;
 
 
 
 
-.form-group select,
-.form-group input{
 
-    padding:10px;
-    border:1px solid #ccc;
-    border-radius:5px;
-    font-size:15px;
+if(
 
-}
+!department ||
+!year ||
+!section ||
+!subject ||
+!examType ||
+!maxMark ||
+!date
 
+)
 
+{
 
+alert("Please fill all fields");
 
-.button-area{
-
-    text-align:center;
-    margin-bottom:20px;
-
-}
-
-
-
-.button-area button{
-
-    background:#0d6efd;
-    color:white;
-    border:none;
-    padding:12px 35px;
-    border-radius:5px;
-    cursor:pointer;
-    font-size:16px;
-
-}
-
-
-
-.button-area button:hover{
-
-    background:#084ec1;
+return;
 
 }
 
@@ -125,58 +713,20 @@ body{
 
 
 
-table{
-
-    width:100%;
-    border-collapse:collapse;
-    margin-top:20px;
-
-}
+let marks =
+document.querySelectorAll(".mark");
 
 
 
 
-thead{
 
-    background:#0d6efd;
-    color:white;
+if(marks.length===0)
 
-}
+{
 
+alert("Load Students First");
 
-
-th{
-
-    padding:12px;
-    border:1px solid #ddd;
-
-}
-
-
-
-
-td{
-
-    padding:10px;
-    text-align:center;
-    border:1px solid #ddd;
-
-}
-
-
-
-
-tbody tr:nth-child(even){
-
-    background:#f8f8f8;
-
-}
-
-
-
-tbody tr:hover{
-
-    background:#eef5ff;
+return;
 
 }
 
@@ -184,77 +734,150 @@ tbody tr:hover{
 
 
 
-td input{
-
-    width:100px;
-    padding:8px;
-    text-align:center;
-    border:1px solid #aaa;
-    border-radius:5px;
-    font-size:15px;
-
-}
+try{
 
 
 
-
-.save-area{
-
-    text-align:center;
-    margin-top:25px;
-
-}
+for(let input of marks){
 
 
 
-
-.save-area button{
-
-    background:#198754;
-    color:white;
-    border:none;
-    padding:12px 40px;
-    border-radius:5px;
-    cursor:pointer;
-    font-size:16px;
-
-}
+let mark=input.value;
 
 
 
-.save-area button:hover{
+if(mark==="")
 
-    background:#146c43;
+{
+
+alert("Enter marks for all students");
+
+return;
 
 }
 
 
 
 
-@media(max-width:768px){
 
+if(Number(mark)>maxMark)
 
-.container{
+{
 
-    padding:15px;
+alert("Mark cannot exceed maximum mark");
 
-}
-
-
-
-.filters{
-
-    grid-template-columns:1fr;
+return;
 
 }
 
 
 
-table{
 
-    font-size:13px;
+
+let row=input.closest("tr");
+
+
+
+let rollNo =
+row.cells[1].innerText;
+
+
+
+let studentName =
+row.cells[2].innerText;
+
+
+
+
+
+
+
+await addDoc(
+
+collection(db,"internalMarks"),
+
+{
+
+
+department,
+
+year,
+
+section,
+
+subject,
+
+examType,
+
+maxMark,
+
+date,
+
+
+rollNo,
+
+
+studentName,
+
+
+mark:Number(mark),
+
+
+createdAt:serverTimestamp()
+
 
 }
 
 
+);
+
+
+
 }
+
+
+
+
+
+
+alert("Internal Marks Saved Successfully");
+
+
+
+
+
+}
+
+
+
+catch(error){
+
+
+
+console.error(error);
+
+
+alert(error.message);
+
+
+
+}
+
+
+
+
+}
+
+
+
+</script>
+
+
+
+</body>
+
+
+</html>
+
+
+</div>
