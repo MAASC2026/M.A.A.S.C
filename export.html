@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+<title>Export Students</title>
+
+<link rel="stylesheet" href="style.css">
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+</head>
+
+<body>
+
+<div class="sidebar">
+
+<div class="logo">
+
+<h2>MAASC</h2>
+
+<p>Student Management</p>
+
+</div>
+
+<ul>
+
+<li>
+<a href="student.html">
+<i class="fa fa-home"></i>
+Dashboard
+</a>
+</li>
+
+<li>
+<a href="upload.html">
+<i class="fa fa-upload"></i>
+Upload Students
+</a>
+</li>
+
+<li>
+<a href="register.html">
+<i class="fa fa-id-card"></i>
+Register Numbers
+</a>
+</li>
+
+<li>
+<a href="records.html">
+<i class="fa fa-users"></i>
+Student Records
+</a>
+</li>
+<li>
+            <a href="report.html">
+                <i class="fa fa-id-card"></i>
+                Class Reports
+            </a>
+        </li>
+
+<li class="active">
+<a href="export.html">
+<i class="fa fa-file-excel"></i>
+Export Excel
+</a>
+</li>
+
+</ul>
+
+</div>
+
+<div class="main">
+
+<header>
+
+<h1>Export Student Records</h1>
+
+<p>Download Student List as Excel</p>
+
+</header>
+
+<div class="container">
+
+<label>Academic Year</label>
+
+<select id="academicYear">
+
+<option value="">All</option>
+
+<option>2026-2029</option>
+<option>2025-2028</option>
+<option>2024-2027</option>
+
+</select>
+
+<label>Department</label>
+
+<select id="department">
+
+<option value="">All Departments</option>
+
+<option>B.Com General</option>
+<option>B.Com BM</option>
+<option>B.Com MM</option>
+<option>B.Com CS</option>
+<option>B.Com A&F</option>
+<option>B.Com ISM</option>
+<option>B.Com CA</option>
+<option>B.Com BUS.AD</option>
+
+<option>B.A DEFENCE</option>
+<option>B.A PUB.AD</option>
+<option>B.A TAMIL</option>
+<option>B.A TOURISM</option>
+
+<option>B.Sc CS</option>
+<option>B.Sc CS WITH AI</option>
+<option>B.Sc CRIMINOLOGY</option>
+<option>B.Sc SA</option>
+<option>B.Sc PHYS WITH CA</option>
+<option>B.Sc MATHS WITH CA</option>
+<option>B.Sc ELECTRONICS WITH AI</option>
+<option>B.Sc VISCOM</option>
+<option>B.Sc ELECTRONIC MEDIA</option>
+<option>B.Sc IDD</option>
+<option>B.Sc PHYSICS</option>
+
+<option>BCA COMPUTER APPLICATION</option>
+
+</select>
+
+<label>Year</label>
+
+<select id="year">
+
+<option value="">All</option>
+
+<option>I</option>
+<option>II</option>
+<option>III</option>
+
+</select>
+
+<label>Section</label>
+
+<select id="section">
+
+<option value="">All</option>
+
+<option>A</option>
+<option>B</option>
+<option>C</option>
+<option>D</option>
+
+</select>
+
+<br><br>
+
+<button id="exportBtn">
+
+<i class="fa fa-file-excel"></i>
+
+Export Excel
+
+</button>
+
+</div>
+
+</div>
+
+<script type="module">
+    import { db } from "./firebase-config.js";
+
+import {
+collection,
+getDocs,
+query,
+where
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+document
+.getElementById("exportBtn")
+.onclick = exportStudents;
+
+async function exportStudents(){
+
+let academicYear =
+document.getElementById("academicYear").value;
+
+let department =
+document.getElementById("department").value;
+
+let year =
+document.getElementById("year").value;
+
+let section =
+document.getElementById("section").value;
+
+let constraints=[];
+
+if(academicYear)
+constraints.push(where("academicYear","==",academicYear));
+
+if(department)
+constraints.push(where("department","==",department));
+
+if(year)
+constraints.push(where("year","==",year));
+
+if(section)
+constraints.push(where("section","==",section));
+
+let q;
+
+if(constraints.length>0)
+q=query(collection(db,"students"),...constraints);
+else
+q=collection(db,"students");
+
+const snapshot=await getDocs(q);
+
+let data=[];
+
+snapshot.forEach(doc=>{
+
+let s=doc.data();
+
+data.push({
+
+"Register No":s.registerNo,
+
+"Roll No":s.rollNo,
+
+"Student Name":s.studentName,
+
+"Department":s.department,
+
+"Year":s.year,
+
+"Section":s.section,
+
+"Academic Year":s.academicYear
+
+});
+
+});
+
+if(data.length==0){
+
+alert("No students found.");
+
+return;
+
+}
+
+let wb=XLSX.utils.book_new();
+
+let ws=XLSX.utils.json_to_sheet(data);
+
+XLSX.utils.book_append_sheet(
+wb,
+ws,
+"Students"
+);
+
+XLSX.writeFile(
+wb,
+"Students.xlsx"
+);
+
+}
+</script>
+
+</body>
+
+</html>

@@ -1,0 +1,351 @@
+/* ===========================
+   M.A.A.S.C Student Management
+   style.css
+=========================== */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Segoe UI,Tahoma,Geneva,Verdana,sans-serif;
+}
+
+body{
+    background:#eef2f7;
+    color:#333;
+}
+
+/* Sidebar */
+
+.sidebar{
+    position:fixed;
+    left:0;
+    top:0;
+    width:250px;
+    height:100vh;
+    background:#0d47a1;
+    color:#fff;
+    overflow:auto;
+}
+
+.logo{
+    padding:25px;
+    text-align:center;
+    border-bottom:1px solid rgba(255,255,255,.15);
+}
+
+.logo h2{
+    font-size:28px;
+    letter-spacing:1px;
+}
+
+.logo p{
+    margin-top:5px;
+    font-size:14px;
+    color:#d8e6ff;
+}
+
+.sidebar ul{
+    list-style:none;
+}
+
+.sidebar ul li{
+    border-bottom:1px solid rgba(255,255,255,.08);
+}
+
+.sidebar ul li a{
+    display:block;
+    padding:18px 22px;
+    color:#fff;
+    text-decoration:none;
+    transition:.3s;
+}
+
+.sidebar ul li a i{
+    width:25px;
+}
+
+.sidebar ul li:hover,
+.sidebar ul li.active{
+    background:#1565c0;
+}
+
+/* Main */
+
+.main{
+    margin-left:250px;
+    padding:30px;
+}
+
+header{
+    margin-bottom:30px;
+}
+
+header h1{
+    font-size:34px;
+    color:#0d47a1;
+}
+
+header p{
+    color:#666;
+    margin-top:6px;
+}
+
+/* Dashboard Cards */
+
+.cards{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+    gap:25px;
+}
+
+.card{
+    background:#fff;
+    border-radius:12px;
+    padding:30px;
+    text-align:center;
+    cursor:pointer;
+    transition:.3s;
+    box-shadow:0 3px 10px rgba(0,0,0,.08);
+}
+
+.card:hover{
+    transform:translateY(-8px);
+    box-shadow:0 10px 25px rgba(0,0,0,.15);
+}
+
+.card i{
+    font-size:55px;
+    color:#0d47a1;
+    margin-bottom:20px;
+}
+
+.card h2{
+    margin-bottom:10px;
+    color:#222;
+}
+
+.card p{
+    color:#666;
+}
+
+/* Statistics */
+
+.statistics{
+    margin-top:40px;
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:20px;
+}
+
+.stat{
+    background:#fff;
+    padding:25px;
+    border-radius:12px;
+    box-shadow:0 2px 8px rgba(0,0,0,.08);
+    text-align:center;
+}
+
+.stat h3{
+    color:#555;
+    margin-bottom:10px;
+}
+
+.stat span{
+    font-size:35px;
+    color:#0d47a1;
+    font-weight:bold;
+}
+
+/* Form Container */
+
+.container{
+    background:#fff;
+    padding:25px;
+    border-radius:12px;
+    box-shadow:0 2px 8px rgba(0,0,0,.08);
+}
+
+/* Labels */
+
+label{
+    display:block;
+    margin-top:15px;
+    margin-bottom:6px;
+    font-weight:600;
+}
+
+/* Inputs */
+
+input[type=text],
+input[type=number],
+input[type=file],
+select{
+    width:100%;
+    padding:12px;
+    border:1px solid #ccc;
+    border-radius:8px;
+    outline:none;
+    font-size:15px;
+}
+
+input:focus,
+select:focus{
+    border-color:#0d47a1;
+}
+
+/* Buttons */
+
+button{
+    margin-top:20px;
+    background:#0d47a1;
+    color:#fff;
+    border:none;
+    padding:12px 30px;
+    border-radius:8px;
+    cursor:pointer;
+    font-size:16px;
+    transition:.3s;
+}
+
+button:hover{
+    background:#1565c0;
+}
+
+/* Search */
+
+.search-box{
+    margin:20px 0;
+}
+
+.search-box input{
+    width:350px;
+    max-width:100%;
+}
+
+/* Table */
+
+.table-wrapper{
+    overflow:auto;
+    margin-top:20px;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    background:#fff;
+}
+
+table th{
+    background:#0d47a1;
+    color:#fff;
+    padding:12px;
+}
+
+table td{
+    padding:10px;
+    border:1px solid #ddd;
+}
+
+table tr:nth-child(even){
+    background:#f7f7f7;
+}
+
+table tr:hover{
+    background:#eef6ff;
+}
+
+/* Register textbox */
+
+table input{
+    width:100%;
+    padding:8px;
+    border:1px solid #bbb;
+    border-radius:5px;
+}
+
+/* Message */
+
+.message{
+    margin-top:20px;
+    padding:15px;
+    border-radius:8px;
+    display:none;
+}
+
+.success{
+    background:#d4edda;
+    color:#155724;
+}
+
+.error{
+    background:#f8d7da;
+    color:#721c24;
+}
+
+/* Loader */
+
+.loader{
+    width:60px;
+    height:60px;
+    border:7px solid #ddd;
+    border-top:7px solid #0d47a1;
+    border-radius:50%;
+    animation:spin 1s linear infinite;
+    margin:40px auto;
+    display:none;
+}
+
+@keyframes spin{
+    100%{
+        transform:rotate(360deg);
+    }
+}
+
+/* Footer */
+
+footer{
+    margin-top:40px;
+    text-align:center;
+    color:#666;
+}
+
+/* Responsive */
+
+@media(max-width:900px){
+
+.sidebar{
+    width:70px;
+}
+
+.sidebar .logo p,
+.sidebar ul li a{
+    font-size:0;
+}
+
+.sidebar ul li a i{
+    font-size:22px;
+}
+
+.main{
+    margin-left:70px;
+}
+
+}
+
+@media(max-width:600px){
+
+.cards,
+.statistics{
+    grid-template-columns:1fr;
+}
+
+header h1{
+    font-size:24px;
+}
+
+button{
+    width:100%;
+}
+
+}

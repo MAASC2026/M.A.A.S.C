@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Student Reports</title>
+
+<link rel="stylesheet" href="style.css">
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+<style>
+
+.tabs{
+
+display:flex;
+
+gap:10px;
+
+margin-bottom:20px;
+
+}
+
+.tabBtn{
+
+padding:12px 20px;
+
+border:none;
+
+background:#1976d2;
+
+color:white;
+
+cursor:pointer;
+
+border-radius:6px;
+
+font-size:15px;
+
+}
+
+.tabBtn.active{
+
+background:#0d47a1;
+
+}
+
+.tabContent{
+
+display:none;
+
+}
+
+.tabContent.active{
+
+display:block;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<!-- Sidebar -->
+
+<div class="sidebar">
+
+<div class="logo">
+
+<h2>MAASC</h2>
+
+<p>Student Management</p>
+
+</div>
+
+<ul>
+
+<li><a href="student.html"><i class="fa fa-home"></i> Dashboard</a></li>
+
+<li><a href="upload.html"><i class="fa fa-upload"></i> Upload Students</a></li>
+
+<li><a href="register.html"><i class="fa fa-id-card"></i> Register Numbers</a></li>
+
+<li><a href="records.html"><i class="fa fa-users"></i> Student Records</a></li>
+
+<li class="active"><a href="reports.html"><i class="fa fa-chart-bar"></i> Reports</a></li>
+
+<li><a href="export.html"><i class="fa fa-file-excel"></i> Export</a></li>
+
+</ul>
+
+</div>
+
+<!-- Main -->
+
+<div class="main">
+
+<header>
+
+<h1>Reports</h1>
+
+<p>Generate Class Reports</p>
+
+</header>
+
+<div class="container">
+
+<div class="tabs">
+
+<button class="tabBtn active" data-tab="classList">
+
+Class List
+
+</button>
+
+<button class="tabBtn" data-tab="attendance">
+
+Attendance Sheet
+
+</button>
+
+<button class="tabBtn" data-tab="nominal">
+
+Nominal Roll
+
+</button>
+
+<button class="tabBtn" data-tab="register">
+
+Register List
+
+</button>
+
+</div>
+
+<!-- CLASS LIST -->
+
+<div id="classList" class="tabContent active">
+
+<label>Academic Year</label>
+
+<select id="academicYear">
+
+<option value="">Select Academic Year</option>
+
+
+<option>2026-2029</option>
+<option>2025-2028</option>
+<option>2024-2027</option>
+
+
+</select>
+
+<label>Department</label>
+
+<select id="department">
+
+<option value="">Select Department</option>
+
+<option>B.Com General</option>
+<option>B.Com BM</option>
+<option>B.Com MM</option>
+<option>B.Com CS</option>
+<option>B.Com A&F</option>
+<option>B.Com ISM</option>
+<option>B.Com CA</option>
+<option>B.Com BUS.AD</option>
+
+<option>B.A DEFENCE</option>
+<option>B.A PUB.AD</option>
+<option>B.A TAMIL</option>
+<option>B.A TOURISM</option>
+
+<option>B.Sc CS</option>
+<option>B.Sc CS WITH AI</option>
+<option>B.Sc CRIMINOLOGY</option>
+<option>B.Sc SA</option>
+<option>B.Sc PHYS WITH CA</option>
+<option>B.Sc MATHS WITH CA</option>
+<option>B.Sc ELECTRONICS WITH AI</option>
+<option>B.Sc VISCOM</option>
+<option>B.Sc ELECTRONIC MEDIA</option>
+<option>B.Sc IDD</option>
+<option>B.Sc PHYSICS</option>
+
+<option>BCA COMPUTER APPLICATION</option>
+
+</select>
+
+<label>Year</label>
+
+<select id="year">
+
+<option value="">Select Year</option>
+
+<option>I</option>
+<option>II</option>
+<option>III</option>
+
+</select>
+
+<label>Section</label>
+
+<select id="section">
+
+<option value="">Select Section</option>
+
+<option>A</option>
+<option>B</option>
+<option>C</option>
+<option>D</option>
+
+</select>
+
+<br><br>
+
+<button id="loadClass">
+
+<i class="fa fa-search"></i>
+
+Load Class
+
+</button>
+
+<button id="printClass">
+
+<i class="fa fa-print"></i>
+
+Print
+
+</button>
+
+<button id="excelClass">
+
+<i class="fa fa-file-excel"></i>
+
+Export Excel
+
+</button>
+
+<br><br>
+
+<h3>
+
+Total Students :
+
+<span id="totalStudents">
+
+0
+
+</span>
+
+</h3>
+
+<div class="table-wrapper">
+
+<table id="classTable">
+
+<thead>
+
+<tr>
+
+<th>S.No</th>
+
+<th>Register No</th>
+
+<th>Roll No</th>
+
+<th>Student Name</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+
+<!-- Attendance -->
+
+<div id="attendance" class="tabContent">
+
+<h2>
+
+Attendance Sheet
+
+</h2>
+
+<p>
+
+Coming in Part 10C
+
+</p>
+
+</div>
+
+<!-- Nominal -->
+
+<div id="nominal" class="tabContent">
+
+<h2>
+
+Nominal Roll
+
+</h2>
+
+<p>
+
+Coming in Part 10D
+
+</p>
+
+</div>
+
+<!-- Register -->
+
+<div id="register" class="tabContent">
+
+<h2>
+
+University Register List
+
+</h2>
+
+<p>
+
+Coming in Part 10E
+
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+<script type="module" src="reports.js"></script>
+
+<script>
+
+const buttons=document.querySelectorAll(".tabBtn");
+
+buttons.forEach(btn=>{
+
+btn.onclick=function(){
+
+document.querySelectorAll(".tabBtn")
+.forEach(b=>b.classList.remove("active"));
+
+document.querySelectorAll(".tabContent")
+.forEach(c=>c.classList.remove("active"));
+
+btn.classList.add("active");
+
+document.getElementById(
+btn.dataset.tab
+).classList.add("active");
+
+}
+
+});
+
+</script>
+
+</body>
+
+</html>

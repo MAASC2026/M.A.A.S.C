@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+content="width=device-width,initial-scale=1.0">
+
+<title>Student Records</title>
+
+<link rel="stylesheet"
+href="style.css">
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+</head>
+
+<body>
+
+<div class="sidebar">
+
+<div class="logo">
+
+<h2>MAASC</h2>
+
+<p>Student Management</p>
+
+</div>
+
+<ul>
+
+<li>
+
+<a href="student.html">
+
+<i class="fa fa-home"></i>
+
+Dashboard
+
+</a>
+
+</li>
+
+<li>
+
+<a href="upload.html">
+
+<i class="fa fa-upload"></i>
+
+Upload Students
+
+</a>
+
+</li>
+
+<li>
+
+<a href="register.html">
+
+<i class="fa fa-id-card"></i>
+
+Register Numbers
+
+</a>
+
+</li>
+
+<li class="active">
+
+<a href="records.html">
+
+<i class="fa fa-users"></i>
+
+Student Records
+
+</a>
+
+</li>
+<li>
+            <a href="report.html">
+                <i class="fa fa-id-card"></i>
+                Class Reports
+            </a>
+        </li>
+
+<li>
+
+<a href="export.html">
+
+<i class="fa fa-file-excel"></i>
+
+Export Excel
+
+</a>
+
+</li>
+
+</ul>
+
+</div>
+
+<div class="main">
+
+<header>
+
+<h1>Student Records</h1>
+
+<p>View, Search and Delete Students</p>
+
+</header>
+
+<div class="container">
+
+<div class="search-box">
+
+<input
+type="text"
+id="search"
+placeholder="Search Roll No / Name">
+
+</div>
+
+<div class="table-wrapper">
+
+<table id="studentTable">
+
+<thead>
+
+<tr>
+
+<th>S.No</th>
+
+<th>Roll No</th>
+
+<th>Name</th>
+
+<th>Department</th>
+
+<th>Year</th>
+
+<th>Section</th>
+
+<th>Register No</th>
+
+<th>Action</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+
+</div>
+
+<script type="module">
+    import { db } from "./firebase-config.js";
+
+import {
+    collection,
+    getDocs,
+    deleteDoc,
+    doc,
+    updateDoc
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const tbody = document.querySelector("#studentTable tbody");
+const search = document.getElementById("search");
+
+let students = [];
+
+window.addEventListener("load", loadStudents);
+
+search.addEventListener("keyup", filterStudents);
+
+async function loadStudents() {
+
+    tbody.innerHTML = "";
+
+    students = [];
+
+    const snapshot = await getDocs(collection(db, "students"));
+
+    let sno = 1;
+
+    snapshot.forEach((studentDoc) => {
+
+        const data = studentDoc.data();
+
+        students.push({
+            id: studentDoc.id,
+            ...data
+        });
+
+        tbody.innerHTML += `
+
+<tr>
+
+<td>${sno++}</td>
+
+<td>${data.rollNo}</td>
+
+<td>${data.studentName}</td>
+
+<td>${data.department}</td>
+
+<td>${data.year}</td>
+
+<td>${data.section}</td>
+
+<td>
+
+<input
+class="regInput"
+data-id="${studentDoc.id}"
+value="${data.registerNo || ""}">
+
+</td>
+
+<td>
+
+<button
+class="saveBtn"
+data-id="${studentDoc.id}">
+
+Save
+
+</button>
+
+<button
+class="deleteBtn"
+data-id="${studentDoc.id}">
+
+Delete
+
+</button>
+
+</td>
+
+</tr>
+
+`;
+
+    });
+
+    attachEvents();
+
+}
+
+function attachEvents() {
+
+    document.querySelectorAll(".saveBtn")
+        .forEach(btn => {
+
+            btn.onclick = saveStudent;
+
+        });
+
+    document.querySelectorAll(".deleteBtn")
+        .forEach(btn => {
+
+            btn.onclick = deleteStudent;
+
+        });
+
+}
+
+async function saveStudent(e) {
+
+    const id = e.target.dataset.id;
+
+    const input = document.querySelector(
+        `input[data-id='${id}']`
+    );
+
+    await updateDoc(doc(db, "students", id), {
+
+        registerNo: input.value.trim()
+
+    });
+
+    alert("Updated Successfully");
+
+}
+
+async function deleteStudent(e) {
+
+    if (!confirm("Delete this student?"))
+        return;
+
+    const id = e.target.dataset.id;
+
+    await deleteDoc(doc(db, "students", id));
+
+    loadStudents();
+
+}
+
+function filterStudents() {
+
+    const value = search.value.toLowerCase();
+
+    const rows = tbody.querySelectorAll("tr");
+
+    rows.forEach(row => {
+
+        row.style.display =
+            row.innerText.toLowerCase().includes(value)
+            ? ""
+            : "none";
+
+    });
+
+}
+</script>
+
+</body>
+
+</html>

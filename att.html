@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Attendance Entry</title>
+
+<link rel="stylesheet" href="attendance.css">
+
+</head>
+
+
+<body>
+
+
+<div class="container">
+
+
+<div class="header">
+<h2>Attendance Entry</h2>
+</div>
+
+
+
+<div class="filters">
+
+
+
+<div class="form-group">
+
+<label>Department</label>
+
+<select id="department">
+
+<option value="">Select Department</option>
+
+<option value="B.Com General">B.Com General</option>
+<option value="B.Com BM">B.Com BM</option>
+<option value="B.Com MM">B.Com MM</option>
+<option value="B.Com CS">B.Com CS</option>
+<option value="B.Com A&F">B.Com A&F</option>
+<option value="B.Com ISM">B.Com ISM</option>
+<option value="B.Com CA">B.Com CA</option>
+<option value="B.Com BUS.AD">B.Com BUS.AD</option>
+
+<option value="B.A DEFENCE">B.A DEFENCE</option>
+<option value="B.A PUB.AD">B.A PUB.AD</option>
+<option value="B.A TAMIL">B.A TAMIL</option>
+<option value="B.A TOURISM">B.A TOURISM</option>
+
+<option value="B.Sc CS">B.Sc CS</option>
+<option value="B.Sc CS WITH AI">B.Sc CS WITH AI</option>
+<option value="B.Sc CRIMINOLOGY">B.Sc CRIMINOLOGY</option>
+<option value="B.Sc SA">B.Sc SA</option>
+<option value="B.Sc PHYS WITH CA">B.Sc PHYS WITH CA</option>
+<option value="B.Sc MATHS WITH CA">B.Sc MATHS WITH CA</option>
+<option value="B.Sc ELECTRONICS WITH AI">B.Sc ELECTRONICS WITH AI</option>
+<option value="B.Sc VISCOM">B.Sc VISCOM</option>
+<option value="B.Sc ELECTRONIC MEDIA">B.Sc ELECTRONIC MEDIA</option>
+<option value="B.Sc IDD">B.Sc IDD</option>
+<option value="B.Sc PHYSICS">B.Sc PHYSICS</option>
+
+<option value="BCA COMPUTER APPLICATION">BCA COMPUTER APPLICATION</option>
+
+
+</select>
+
+</div>
+
+
+
+
+<div class="form-group">
+
+<label>Class</label>
+
+<select id="year">
+
+<option value="">Select Year</option>
+
+<option value="I">I Year</option>
+
+<option value="II">II Year</option>
+
+<option value="III">III Year</option>
+
+</select>
+
+</div>
+
+
+
+
+<div class="form-group">
+
+<label>Section</label>
+
+<select id="section">
+
+<option value="">Select Section</option>
+
+<option value="A">A</option>
+
+<option value="B">B</option>
+
+<option value="C">C</option>
+
+<option value="D">D</option>
+
+
+</select>
+
+</div>
+<div class="form-group">
+
+<label>Hour</label>
+
+<select id="hour">
+
+<option value="">Select Hour</option>
+
+<option value="1">1</option>
+
+<option value="2">2</option>
+
+<option value="3">3</option>
+
+<option value="4">4</option>
+
+<option value="5">5</option>
+
+
+</select>
+
+
+</div>
+
+
+
+
+
+<div class="form-group">
+
+<label>Date</label>
+
+<input type="date" id="date">
+
+
+</div>
+
+
+
+
+</div>
+
+
+
+
+
+<div class="button-area">
+
+
+<button onclick="loadStudents()">
+Load Students
+</button>
+
+
+
+<button onclick="markAllPresent()">
+Mark All Present
+</button>
+
+
+
+</div>
+
+
+
+
+
+<table>
+
+
+<thead>
+
+<tr>
+
+<th>S.No</th>
+
+<th>Roll No</th>
+
+<th>Name</th>
+
+<th>Attendance</th>
+
+</tr>
+
+
+</thead>
+
+
+<tbody id="studentBody">
+
+
+</tbody>
+
+
+
+</table>
+
+
+
+
+
+<div class="save-area">
+
+
+<button onclick="saveAttendance()">
+
+Save Attendance
+
+</button>
+
+
+</div>
+
+
+
+</div>
+
+
+
+
+
+<script type="module">
+
+
+import {initializeApp}
+
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+
+
+import {
+
+getFirestore,
+
+collection,
+
+getDocs,
+
+query,
+
+where,
+
+addDoc,
+
+serverTimestamp
+
+
+}
+
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+
+
+
+
+
+const firebaseConfig = {
+
+
+  apiKey: "AIzaSyAIv3091VM-gkmdwEAn7OhXWd9Cm2zh2bo",
+  authDomain: "maasc-2026.firebaseapp.com",
+  projectId: "maasc-2026",
+  storageBucket: "maasc-2026.appspot.com",
+  messagingSenderId: "585813001586",
+  appId: "1:585813001586:web:664e0e90ff0725d2e849eb"
+
+
+};
+
+
+
+
+
+
+const app = initializeApp(firebaseConfig);
+
+
+const db=getFirestore(app);
+
+
+
+
+
+
+
+document.getElementById("date").valueAsDate=new Date();
+
+
+
+
+
+
+
+// ============================
+// LOAD STUDENTS
+// ============================
+
+
+window.loadStudents=async function(){
+
+
+
+let department=
+document.getElementById("department").value;
+
+
+
+let year=
+document.getElementById("year").value;
+
+
+
+let section=
+document.getElementById("section").value;
+
+
+
+
+if(!department || !year || !section)
+{
+
+alert("Select Department, Class and Section");
+
+return;
+
+}
+
+
+
+
+let tbody=document.getElementById("studentBody");
+
+
+tbody.innerHTML="";
+
+
+
+
+
+try{
+
+
+let q=query(
+
+collection(db,"students"),
+
+where("department","==",department),
+
+where("year","==",year),
+
+where("section","==",section)
+
+);
+
+
+
+let snapshot=await getDocs(q);
+
+
+
+let students=[];
+
+
+
+snapshot.forEach(doc=>{
+
+students.push(doc.data());
+
+});
+
+
+
+
+
+students.sort((a,b)=>{
+
+
+return a.rollNo.localeCompare(b.rollNo);
+
+
+});
+
+
+
+
+
+
+let sno=1;
+
+
+
+students.forEach(student=>{
+
+
+tbody.innerHTML += `
+
+
+<tr>
+
+
+<td>${sno++}</td>
+
+
+<td>${student.rollNo}</td>
+
+
+<td>${student.studentName}</td>
+
+
+<td>
+
+
+<label>
+
+<input
+
+type="radio"
+
+name="${student.rollNo}"
+
+value="P"
+
+checked>
+
+Present
+
+
+</label>
+
+
+
+<label>
+
+
+<input
+
+type="radio"
+
+name="${student.rollNo}"
+
+value="A">
+
+Absent
+
+
+</label>
+
+
+</td>
+
+
+
+</tr>
+
+
+`;
+
+
+
+});
+
+
+
+
+
+
+if(students.length==0)
+{
+
+tbody.innerHTML=
+
+`
+<tr>
+
+<td colspan="4">
+
+No Students Found
+
+</td>
+
+</tr>
+
+`;
+
+}
+
+
+
+}
+
+catch(error)
+
+{
+
+console.log(error);
+
+alert(error.message);
+
+
+}
+
+
+}
+
+
+
+
+
+
+
+// ============================
+// MARK ALL PRESENT
+// ============================
+
+
+window.markAllPresent=function(){
+
+
+document.querySelectorAll(
+
+"input[value='P']"
+
+)
+
+.forEach(e=>e.checked=true);
+
+
+
+}
+
+
+
+
+
+
+
+
+// ============================
+// SAVE ATTENDANCE
+// ============================
+
+
+window.saveAttendance=async function(){
+
+
+
+let department=
+document.getElementById("department").value;
+
+
+let year=
+document.getElementById("year").value;
+
+
+let section=
+document.getElementById("section").value;
+
+
+let subject=
+document.getElementById("subject").value;
+
+
+let hour=
+document.getElementById("hour").value;
+
+
+let date=
+document.getElementById("date").value;
+
+
+
+
+
+if(!subject || !hour || !date)
+
+{
+
+alert("Fill Subject, Hour and Date");
+
+return;
+
+}
+
+
+
+
+let rows=document.querySelectorAll("#studentBody tr");
+
+
+
+if(rows.length==0)
+
+{
+
+alert("Load Students First");
+
+return;
+
+}
+
+
+
+
+
+try{
+
+
+for(let row of rows){
+
+
+
+let rollNo=row.cells[1].innerText;
+
+
+let name=row.cells[2].innerText;
+
+
+
+let status=
+
+row.querySelector(
+
+"input:checked"
+
+).value;
+
+
+
+
+
+await addDoc(
+
+collection(db,"attendance"),
+
+{
+
+
+department,
+
+year,
+
+section,
+
+subject,
+
+hour,
+
+date,
+
+rollNo,
+
+studentName:name,
+
+status,
+
+createdAt:serverTimestamp()
+
+
+
+}
+
+);
+
+
+
+}
+
+
+
+
+
+alert("Attendance Saved Successfully");
+
+
+}
+
+
+catch(error)
+
+{
+
+console.log(error);
+
+alert(error.message);
+
+
+}
+
+
+}
+
+
+
+</script>
+
+
+</body>
+
+</html>

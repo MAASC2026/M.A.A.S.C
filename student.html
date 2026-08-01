@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>M.A.A.S.C Student Management System</title>
+
+<link rel="stylesheet" href="style.css">
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+</head>
+
+<body>
+
+<div class="sidebar">
+
+    <div class="logo">
+
+        <h2>MAASC</h2>
+
+        <p>Student Management</p>
+
+    </div>
+
+    <ul>
+
+        <li class="active">
+            <a href="student.html">
+                <i class="fa fa-home"></i>
+                Dashboard
+            </a>
+        </li>
+
+        <li>
+            <a href="upload.html">
+                <i class="fa fa-upload"></i>
+                Upload Students
+            </a>
+        </li>
+
+        <li>
+            <a href="register.html">
+                <i class="fa fa-id-card"></i>
+                Register Numbers
+            </a>
+        </li>
+
+        <li>
+            <a href="records.html">
+                <i class="fa fa-users"></i>
+                Student Records
+            </a>
+        </li>
+        <li>
+            <a href="report.html">
+                <i class="fa fa-id-card"></i>
+                Class Reports
+            </a>
+        </li>
+
+        <li>
+            <a href="export.html">
+                <i class="fa fa-file-excel"></i>
+                Export Excel
+            </a>
+        </li>
+
+    </ul>
+
+</div>
+
+<div class="main">
+
+<header>
+
+<h1>Student Management Dashboard</h1>
+
+<p>Manage Student Uploads and Register Numbers</p>
+
+</header>
+
+<div class="cards">
+
+<div class="card" onclick="location.href='upload.html'">
+
+<i class="fa fa-upload"></i>
+
+<h2>Upload Students</h2>
+
+<p>Import Student Excel File</p>
+
+</div>
+
+<div class="card" onclick="location.href='register.html'">
+
+<i class="fa fa-id-card"></i>
+
+<h2>Register Numbers</h2>
+
+<p>Assign Register Numbers</p>
+
+</div>
+
+<div class="card" onclick="location.href='records.html'">
+
+<i class="fa fa-users"></i>
+
+<h2>Student Records</h2>
+
+<p>View & Edit Students</p>
+
+</div>
+
+<div class="card" onclick="location.href='export.html'">
+
+<i class="fa fa-file-excel"></i>
+
+<h2>Export Excel</h2>
+
+<p>Download Student List</p>
+
+</div>
+
+</div>
+
+<div class="statistics">
+
+<div class="stat">
+
+<h3>Total Students</h3>
+
+<span id="totalStudents">0</span>
+
+</div>
+
+<div class="stat">
+
+<h3>Departments</h3>
+
+<span>22</span>
+
+</div>
+
+<div class="stat">
+
+<h3>Pending Register No</h3>
+
+<span id="pending">0</span>
+
+</div>
+
+<div class="stat">
+
+<h3>Academic Year</h3>
+
+<span>2026-2027</span>
+
+</div>
+
+</div>
+
+</div>
+
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+import {
+
+getFirestore,
+
+collection,
+
+getDocs,
+
+query,
+
+where
+
+}
+
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+
+    // Paste later
+
+};
+
+const app = initializeApp(firebaseConfig);
+
+const db = getFirestore(app);
+
+async function loadStats(){
+
+const snapshot=await getDocs(collection(db,"students"));
+
+document.getElementById("totalStudents").innerHTML=snapshot.size;
+
+let pending=0;
+
+snapshot.forEach(doc=>{
+
+const d=doc.data();
+
+if(!d.registerNo)
+
+pending++;
+
+});
+
+document.getElementById("pending").innerHTML=pending;
+
+}
+
+loadStats();
+
+</script>
+
+</body>
+</html>

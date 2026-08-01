@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Register Number Entry</title>
+
+<link rel="stylesheet" href="style.css">
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+</head>
+
+<body>
+
+<!-- Sidebar -->
+
+<div class="sidebar">
+
+    <div class="logo">
+        <h2>MAASC</h2>
+        <p>Student Management</p>
+    </div>
+
+    <ul>
+
+        <li>
+            <a href="student.html">
+                <i class="fa fa-home"></i>
+                Dashboard
+            </a>
+        </li>
+
+        <li>
+            <a href="upload.html">
+                <i class="fa fa-upload"></i>
+                Upload Students
+            </a>
+        </li>
+
+        <li class="active">
+            <a href="register.html">
+                <i class="fa fa-id-card"></i>
+                Register Numbers
+            </a>
+        </li>
+
+        <li>
+            <a href="records.html">
+                <i class="fa fa-users"></i>
+                Student Records
+            </a>
+        </li>
+        <li>
+            <a href="report.html">
+                <i class="fa fa-id-card"></i>
+                Class Reports
+            </a>
+        </li>
+
+        <li>
+            <a href="export.html">
+                <i class="fa fa-file-excel"></i>
+                Export Excel
+            </a>
+        </li>
+
+    </ul>
+
+</div>
+
+<!-- Main -->
+
+<div class="main">
+
+<header>
+
+<h1>Register Number Entry</h1>
+
+<p>Load Students and Update Register Numbers</p>
+
+</header>
+
+<div class="container">
+
+<label>Academic Year</label>
+
+<select id="academicYear">
+
+<option value="">Select Academic Year</option>
+
+<option>2026-2029</option>
+<option>2025-2028</option>
+<option>2024-2027</option>
+
+</select>
+
+<label>Department</label>
+
+<select id="department">
+
+<option value="">Select Department</option>
+
+<option value="B.Com General">B.Com General</option>
+<option value="B.Com BM">B.Com BM</option>
+<option value="B.Com MM">B.Com MM</option>
+<option value="B.Com CS">B.Com CS</option>
+<option value="B.Com A&F">B.Com A&F</option>
+<option value="B.Com ISM">B.Com ISM</option>
+<option value="B.Com CA">B.Com CA</option>
+<option value="B.Com BUS.AD">B.Com BUS.AD</option>
+
+<option value="B.A DEFENCE">B.A DEFENCE</option>
+<option value="B.A PUB.AD">B.A PUB.AD</option>
+<option value="B.A TAMIL">B.A TAMIL</option>
+<option value="B.A TOURISM">B.A TOURISM</option>
+
+<option value="B.Sc CS">B.Sc CS</option>
+<option value="B.Sc CS WITH AI">B.Sc CS WITH AI</option>
+<option value="B.Sc CRIMINOLOGY">B.Sc CRIMINOLOGY</option>
+<option value="B.Sc SA">B.Sc SA</option>
+<option value="B.Sc PHYS WITH CA">B.Sc PHYS WITH CA</option>
+<option value="B.Sc MATHS WITH CA">B.Sc MATHS WITH CA</option>
+<option value="B.Sc ELECTRONICS WITH AI">B.Sc ELECTRONICS WITH AI</option>
+<option value="B.Sc VISCOM">B.Sc VISCOM</option>
+<option value="B.Sc ELECTRONIC MEDIA">B.Sc ELECTRONIC MEDIA</option>
+<option value="B.Sc IDD">B.Sc IDD</option>
+<option value="B.Sc PHYSICS">B.Sc PHYSICS</option>
+
+<option value="BCA COMPUTER APPLICATION">BCA COMPUTER APPLICATION</option>
+
+</select>
+
+<label>Year</label>
+
+<select id="year">
+
+<option value="">Select Year</option>
+
+<option value="I">I Year</option>
+<option value="II">II Year</option>
+<option value="III">III Year</option>
+
+</select>
+
+<label>Section</label>
+
+<select id="section">
+
+<option value="">Select Section</option>
+
+<option value="A">Section A</option>
+<option value="B">Section B</option>
+<option value="C">Section C</option>
+<option value="D">Section D</option>
+
+</select>
+
+<br><br>
+
+<button id="loadBtn">
+
+<i class="fa fa-search"></i>
+
+Load Students
+
+</button>
+
+<hr style="margin:25px 0;">
+
+<h3>Auto Generate Register Numbers</h3>
+
+<label>Starting Register Number</label>
+
+<input
+type="text"
+id="startReg"
+placeholder="Example : 202610001">
+
+<button id="generateBtn">
+
+<i class="fa fa-bolt"></i>
+
+Generate Numbers
+
+</button>
+
+<button id="saveBtn">
+
+<i class="fa fa-save"></i>
+
+Save All
+
+</button>
+
+<div id="message" class="message"></div>
+
+<div class="loader" id="loader"></div>
+
+</div>
+
+<div class="container" style="margin-top:25px;">
+
+<div class="search-box">
+
+<input
+type="text"
+id="search"
+placeholder="Search Roll No or Student Name">
+
+</div>
+
+<div class="table-wrapper">
+
+<table id="studentTable">
+
+<thead>
+
+<tr>
+
+<th>S.No</th>
+
+<th>Roll No</th>
+
+<th>Student Name</th>
+
+<th>Register Number</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+
+</div>
+
+<script type="module">
+    import { db } from "./firebase-config.js";
+
+import {
+    collection,
+    getDocs,
+    query,
+    where,
+    doc,
+    updateDoc
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const tbody = document.querySelector("#studentTable tbody");
+
+const loader = document.getElementById("loader");
+
+const message = document.getElementById("message");
+
+const loadBtn = document.getElementById("loadBtn");
+
+const generateBtn = document.getElementById("generateBtn");
+
+const saveBtn = document.getElementById("saveBtn");
+
+const searchBox = document.getElementById("search");
+
+let students = [];
+
+loadBtn.addEventListener("click", loadStudents);
+
+generateBtn.addEventListener("click", generateNumbers);
+
+saveBtn.addEventListener("click", saveAll);
+
+searchBox.addEventListener("keyup", filterStudents);
+
+function showMessage(text, type) {
+
+    message.style.display = "block";
+    message.className = "message " + type;
+    message.innerHTML = text;
+
+}
+
+function hideMessage() {
+
+    message.style.display = "none";
+
+}
+
+async function loadStudents() {
+
+    hideMessage();
+
+    tbody.innerHTML = "";
+
+    students = [];
+
+    const academicYear = document.getElementById("academicYear").value;
+    const department = document.getElementById("department").value;
+    const year = document.getElementById("year").value;
+    const section = document.getElementById("section").value;
+
+    if (
+        !academicYear ||
+        !department ||
+        !year ||
+        !section
+    ) {
+
+        showMessage("Please select all filters.", "error");
+        return;
+
+    }
+
+    loader.style.display = "block";
+
+    const q = query(
+        collection(db, "students"),
+        where("academicYear", "==", academicYear),
+        where("department", "==", department),
+        where("year", "==", year),
+        where("section", "==", section)
+    );
+
+    const snapshot = await getDocs(q);
+
+    loader.style.display = "none";
+
+    if (snapshot.empty) {
+
+        showMessage("No students found.", "error");
+        return;
+
+    }
+
+    let sno = 1;
+
+    snapshot.forEach((docSnap) => {
+
+        const data = docSnap.data();
+
+        students.push({
+
+            id: docSnap.id,
+
+            rollNo: data.rollNo,
+
+            studentName: data.studentName,
+
+            registerNo: data.registerNo || ""
+
+        });
+
+        tbody.innerHTML += `
+        <tr>
+
+            <td>${sno++}</td>
+
+            <td>${data.rollNo}</td>
+
+            <td>${data.studentName}</td>
+
+            <td>
+
+                <input
+                    class="regNo"
+                    data-id="${docSnap.id}"
+                    value="${data.registerNo || ""}">
+
+            </td>
+
+        </tr>
+        `;
+
+    });
+
+    showMessage(snapshot.size + " students loaded.", "success");
+
+}
+
+function generateNumbers() {
+
+    const start = document.getElementById("startReg").value.trim();
+
+    if (start === "") {
+
+        showMessage("Enter a starting register number.", "error");
+        return;
+
+    }
+
+    let number = Number(start);
+
+    if (isNaN(number)) {
+
+        showMessage("Register number must be numeric.", "error");
+        return;
+
+    }
+
+    document.querySelectorAll(".regNo").forEach(input => {
+
+        input.value = number++;
+
+    });
+
+    showMessage("Register numbers generated.", "success");
+
+}
+
+async function saveAll() {
+
+    const inputs = document.querySelectorAll(".regNo");
+
+    if (inputs.length === 0) {
+
+        showMessage("Load students first.", "error");
+        return;
+
+    }
+
+    loader.style.display = "block";
+
+    const used = new Set();
+
+    for (const input of inputs) {
+
+        const reg = input.value.trim();
+
+        if (reg === "") {
+
+            loader.style.display = "none";
+            showMessage("Register number cannot be empty.", "error");
+            return;
+
+        }
+
+        if (used.has(reg)) {
+
+            loader.style.display = "none";
+            showMessage("Duplicate register number: " + reg, "error");
+            return;
+
+        }
+
+        used.add(reg);
+
+    }
+
+    for (const input of inputs) {
+
+        const id = input.dataset.id;
+
+        await updateDoc(doc(db, "students", id), {
+
+            registerNo: input.value.trim()
+
+        });
+
+    }
+
+    loader.style.display = "none";
+
+    showMessage("All register numbers saved successfully.", "success");
+
+}
+
+function filterStudents() {
+
+    const value = searchBox.value.toLowerCase();
+
+    const rows = tbody.querySelectorAll("tr");
+
+    rows.forEach(row => {
+
+        const text = row.innerText.toLowerCase();
+
+        row.style.display = text.includes(value) ? "" : "none";
+
+    });
+
+}
+</script>
+
+</body>
+</html>
