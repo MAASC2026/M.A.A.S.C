@@ -1,300 +1,597 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Exam Schedule Entry</title>
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+<title>Student Exam View Portal</title>
+
 
 <style>
 
-body{
-    font-family:Arial,sans-serif;
-    background:#f4f6f9;
-    padding:20px;
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,Helvetica,sans-serif;
 }
+
+
+body{
+
+background:#f4f6f9;
+padding:25px;
+
+}
+
 
 .container{
-    max-width:1200px;
-    margin:auto;
-    background:#fff;
-    padding:20px;
-    border-radius:10px;
-    box-shadow:0 0 10px rgba(0,0,0,.1);
+
+max-width:1200px;
+margin:auto;
+background:white;
+padding:25px;
+border-radius:10px;
+box-shadow:0 0 10px rgba(0,0,0,.1);
+
 }
+
 
 h2{
-    text-align:center;
-    margin-bottom:20px;
+
+text-align:center;
+color:#1565c0;
+margin-bottom:25px;
+
 }
 
-select,input{
-    width:100%;
-    padding:8px;
-    margin:5px 0;
-    box-sizing:border-box;
+
+
+.filter-box{
+
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:15px;
+margin-bottom:25px;
+
 }
 
-.table-wrapper{
-    overflow-x:auto;
+
+
+select,
+button{
+
+padding:12px;
+border-radius:5px;
+border:1px solid #ccc;
+font-size:15px;
+
 }
 
-table{
-    width:100%;
-    border-collapse:collapse;
-    margin-top:15px;
-}
 
-th,td{
-    border:1px solid #ccc;
-    padding:10px;
-    text-align:center;
-}
-
-th{
-    background:#f2f2f2;
-}
 
 button{
-    padding:10px 15px;
-    margin-top:15px;
-    cursor:pointer;
-    border:none;
-    color:white;
-    border-radius:5px;
+
+background:#1565c0;
+color:white;
+border:none;
+cursor:pointer;
+
 }
 
-.add{
-    background:#007bff;
+
+
+button:hover{
+
+background:#0d47a1;
+
 }
 
-.save{
-    background:green;
+
+
+
+.exam-card{
+
+background:#fafafa;
+border-left:6px solid #1565c0;
+padding:20px;
+margin-bottom:20px;
+border-radius:8px;
+
 }
+
+
+
+.exam-card h3{
+
+color:#1565c0;
+margin-bottom:15px;
+
+}
+
+
+
+.exam-card p{
+
+margin:8px 0;
+
+}
+
+
+
+.portion{
+
+background:white;
+padding:15px;
+margin-top:15px;
+border-radius:5px;
+border:1px solid #ddd;
+
+}
+
+
+
+.no-data{
+
+text-align:center;
+font-size:18px;
+padding:30px;
+color:#777;
+
+}
+
+
+
+
+@media(max-width:800px){
+
+.filter-box{
+
+grid-template-columns:1fr;
+
+}
+
+}
+
+
 
 </style>
+
 </head>
+
+
 
 <body>
 
+
 <div class="container">
 
-<h2>Exam Schedule Entry Portal</h2>
 
-<select id="dept" onchange="loadExam()">
+<h2>
+Student Exam View Portal
+</h2>
 
-<option value="BCOM-GENERAL">B.Com General</option>
-<option value="BCOM-BM">B.Com BM</option>
-<option value="BCOM-MM">B.Com MM</option>
-<option value="BCOM-CS">B.Com CS</option>
-<option value="BCOM-AF">B.Com A&F</option>
-<option value="BCOM-ISM">B.Com ISM</option>
-<option value="BCOM-CA">B.Com CA</option>
-<option value="BCOM-BUSAD">B.Com BUS.AD</option>
 
-<option value="BA-DEFENCE">B.A DEFENCE</option>
-<option value="BA-PUBAD">B.A PUB.AD</option>
-<option value="BA-TAMIL">B.A TAMIL</option>
-<option value="BA-TOURISM">B.A TOURISM</option>
 
-<option value="BSC-CS">B.Sc CS</option>
-<option value="BSC-CS-AI">B.Sc CS WITH AI</option>
-<option value="BSC-CRIMINOLOGY">B.Sc CRIMINOLOGY</option>
-<option value="BSC-SA">B.Sc SA</option>
-<option value="BSC-PHYS-CA">B.Sc PHYSICS WITH CA</option>
-<option value="BSC-MATHS-CA">B.Sc MATHS WITH CA</option>
-<option value="BSC-ELEC-AI">B.Sc ELECTRONICS WITH AI</option>
-<option value="BSC-VISCOM">B.Sc VISCOM</option>
-<option value="BSC-ELECTRONIC-MEDIA">B.Sc ELECTRONIC MEDIA</option>
-<option value="BSC-IDD">B.Sc IDD</option>
-<option value="BSC-PHYSICS">B.Sc PHYSICS</option>
+<div class="filter-box">
 
-<option value="BCA">BCA COMPUTER APPLICATION</option>
+
+<select id="department">
+
+
+<option value="">
+Select Department
+</option>
+
+
+<option value="">Select Department</option>
+
+<option value="B.Com General">B.Com General</option>
+<option value="B.Com BM">B.Com BM</option>
+<option value="B.Com MM">B.Com MM</option>
+<option value="B.Com CS">B.Com CS</option>
+<option value="B.Com A&F">B.Com A&F</option>
+<option value="B.Com ISM">B.Com ISM</option>
+<option value="B.Com CA">B.Com CA</option>
+<option value="B.Com BUS.AD">B.Com BUS.AD</option>
+
+<option value="B.A DEFENCE">B.A DEFENCE</option>
+<option value="B.A PUB.AD">B.A PUB.AD</option>
+<option value="B.A TAMIL">B.A TAMIL</option>
+<option value="B.A TOURISM">B.A TOURISM</option>
+
+<option value="B.Sc CS">B.Sc CS</option>
+<option value="B.Sc CS WITH AI">B.Sc CS WITH AI</option>
+<option value="B.Sc CRIMINOLOGY">B.Sc CRIMINOLOGY</option>
+<option value="B.Sc SA">B.Sc SA</option>
+<option value="B.Sc PHYS WITH CA">B.Sc PHYS WITH CA</option>
+<option value="B.Sc MATHS WITH CA">B.Sc MATHS WITH CA</option>
+<option value="B.Sc ELECTRONICS WITH AI">B.Sc ELECTRONICS WITH AI</option>
+<option value="B.Sc VISCOM">B.Sc VISCOM</option>
+<option value="B.Sc ELECTRONIC MEDIA">B.Sc ELECTRONIC MEDIA</option>
+<option value="B.Sc IDD">B.Sc IDD</option>
+<option value="B.Sc PHYSICS">B.Sc PHYSICS</option>
+
+<option value="BCA COMPUTER APPLICATION">BCA COMPUTER APPLICATION</option>
+
+
+</select>
+
+
+
+
+<select id="year">
+
+
+<option value="">
+Select Year
+</option>
+
+
+<option>I Year</option>
+
+<option>II Year</option>
+
+<option>III Year</option>
+
+
 
 </select>
 
 
-<select id="examType" onchange="loadExam()">
 
-<option value="CYCLIC-TEST-01">CYCLIC TEST 01</option>
-<option value="CYCLIC-TEST-02">CYCLIC TEST 02</option>
-<option value="INTERNAL-TEST-01">INTERNAL TEST 01</option>
-<option value="INTERNAL-TEST-02">INTERNAL TEST 02</option>
-<option value="MODEL-EXAM">MODEL EXAM</option>
-<option value="SEMESTER-EXAM">SEMESTER EXAM</option>
+
+
+<select id="section">
+
+
+<option value="">
+Select Section
+</option>
+
+
+<option>A</option>
+
+<option>B</option>
+
+<option>C</option>
+
+<option>D</option>
+
 
 </select>
-<select id="year" onchange="loadExam()">
 
-<option value="YEAR-1">I YEAR</option>
-<option value="YEAR-2">II YEAR</option>
-<option value="YEAR-3">III YEAR</option>
 
-</select>
 
-<div class="table-wrapper">
 
-<table>
 
-<thead>
+<button id="loadBtn">
 
-<tr>
+Load Exam
 
-<th>Subject Code</th>
-<th>Subject Name</th>
-<th>Date</th>
-<th>Timing</th>
-<th>Platform</th>
+</button>
 
-</tr>
 
-</thead>
-
-<tbody id="tbody"></tbody>
-
-</table>
 
 </div>
 
-<button class="add" onclick="addRow()">Add Subject</button>
-<button class="save" onclick="saveExam()">Save Schedule</button>
+
+
+
+
+<div id="examList">
+
+
+<div class="no-data">
+
+Select Department, Year and Section
 
 </div>
+
+
+</div>
+
+
+
+
+</div>
+
+
+
 
 <script type="module">
+    import { initializeApp } 
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
-import { db } from "./firebase-config.js";
 
 import {
-doc,
-setDoc
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-let row=0;
-
-/* Placeholder for future loading */
-window.loadExam=function(){
-
-console.log("Selection changed.");
-
-};
-
-/* Add Row */
-
-window.addRow=function(){
-
-row++;
-
-document.getElementById("tbody").insertAdjacentHTML("beforeend",`
-
-<tr>
-
-<td>
-<input id="code${row}" placeholder="Subject Code">
-</td>
-
-<td>
-<input id="name${row}" placeholder="Subject Name">
-</td>
-
-<td>
-<input type="date" id="date${row}">
-</td>
-
-<td>
-<input id="time${row}" placeholder="10:00 AM - 1:00 PM">
-</td>
-
-<td>
-<input id="platform${row}" placeholder="Offline / Online">
-</td>
-
-</tr>
-
-`);
-
-};
-
-
-/* Save */
-
-window.saveExam=async function(){
-const year = document.getElementById("year").value;
-
-const dept=document.getElementById("dept").value;
-
-const examType=document.getElementById("examType").value;
-
-let data={};
-
-let count=1;
-
-for(let i=1;i<=row;i++){
-
-const code=document.getElementById("code"+i).value.trim();
-
-const name=document.getElementById("name"+i).value.trim();
-
-const date=document.getElementById("date"+i).value;
-
-const time=document.getElementById("time"+i).value.trim();
-
-const platform=document.getElementById("platform"+i).value.trim();
-
-if(code=="" && name=="") continue;
-
-data["Exam_"+count]={
-
-SubjectCode:code,
-
-SubjectName:name,
-
-Date:date,
-
-Timing:time,
-
-Platform:platform
-
-};
-
-count++;
-
+getFirestore,
+collection,
+query,
+where,
+getDocs
 }
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-if(Object.keys(data).length===0){
 
-alert("Please enter at least one subject.");
+
+// FIREBASE CONFIG
+
+const firebaseConfig = {
+
+apiKey: "AIzaSyAIv3091VM-gkmdwEAn7OhXWd9Cm2zh2bo",
+
+authDomain: "maasc-2026.firebaseapp.com",
+
+projectId: "maasc-2026",
+
+storageBucket: "maasc-2026.appspot.com",
+
+messagingSenderId: "585813001586",
+
+appId: "1:585813001586:web:664e0e90ff0725d2e849eb"
+
+};
+
+
+
+// INITIALIZE
+
+const app = initializeApp(firebaseConfig);
+
+const db = getFirestore(app);
+
+
+
+
+// BUTTON EVENT
+
+document
+.getElementById("loadBtn")
+.addEventListener(
+"click",
+loadExam
+);
+
+
+
+
+
+async function loadExam(){
+
+
+
+const department =
+document.getElementById("department").value;
+
+
+const year =
+document.getElementById("year").value;
+
+
+const section =
+document.getElementById("section").value;
+
+
+
+if(
+department==""||
+year==""||
+section==""
+){
+
+alert("Please select Department, Year and Section");
 
 return;
 
 }
 
+
+
+
+const examList =
+document.getElementById("examList");
+
+
+
+examList.innerHTML=
+`
+<div class="no-data">
+Loading Exams...
+</div>
+`;
+
+
+
+
 try{
 
-await setDoc(
 
-doc(db,"exams",year,"departments",dept,"exams",examType),
+const q=query(
 
-data
+collection(db,"examAssignments"),
+
+
+where(
+"department",
+"==",
+department
+),
+
+
+where(
+"year",
+"==",
+year
+),
+
+
+where(
+"section",
+"==",
+section
+)
+
 
 );
 
-alert("Exam Schedule Saved Successfully.");
 
-}catch(err){
 
-console.error(err);
 
-alert(err.message);
+const snapshot =
+await getDocs(q);
+
+
+
+
+
+if(snapshot.empty){
+
+
+examList.innerHTML=
+`
+
+<div class="no-data">
+
+No Exam Assigned For This Class
+
+</div>
+
+`;
+
+
+return;
 
 }
 
-};
 
-/* First Row */
 
-addRow();
 
+let html="";
+
+
+
+
+snapshot.forEach(doc=>{
+
+
+const e=doc.data();
+
+
+
+html +=
+
+`
+
+<div class="exam-card">
+
+
+<h3>
+${e.subject}
+</h3>
+
+
+
+<p>
+<b>Exam Type :</b>
+${e.examType}
+</p>
+
+
+
+<p>
+<b>Date :</b>
+${e.examDate}
+</p>
+
+
+
+<p>
+<b>Time :</b>
+${e.examTime}
+</p>
+
+
+
+<p>
+<b>Semester :</b>
+${e.semester}
+</p>
+
+
+
+<p>
+<b>Maximum Marks :</b>
+${e.maxMarks}
+</p>
+
+
+
+<div class="portion">
+
+
+<b>
+Exam Portion
+</b>
+
+
+<hr><br>
+
+
+${e.portion}
+
+
+</div>
+
+
+
+</div>
+
+`;
+
+
+
+});
+
+
+
+
+examList.innerHTML=html;
+
+
+
+}
+
+catch(error){
+
+
+console.error(error);
+
+
+examList.innerHTML=
+
+`
+
+<div class="no-data">
+
+Error Loading Exams
+
+</div>
+
+`;
+
+
+
+}
+
+
+
+}
 </script>
 
+
 </body>
+
 </html>
