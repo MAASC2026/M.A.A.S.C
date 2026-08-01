@@ -1,254 +1,597 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Exam Schedule View</title>
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+<title>Student Exam View Portal</title>
+
 
 <style>
 
-body{
-    font-family: Arial, sans-serif;
-    background:#f4f6f9;
-    padding:20px;
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,Helvetica,sans-serif;
 }
+
+
+body{
+
+background:#f4f6f9;
+padding:25px;
+
+}
+
 
 .container{
-    max-width:1000px;
-    margin:auto;
-    background:#fff;
-    padding:20px;
-    border-radius:10px;
-    box-shadow:0 0 10px rgba(0,0,0,.1);
+
+max-width:1200px;
+margin:auto;
+background:white;
+padding:25px;
+border-radius:10px;
+box-shadow:0 0 10px rgba(0,0,0,.1);
+
 }
+
 
 h2{
-    text-align:center;
-    margin-bottom:20px;
+
+text-align:center;
+color:#1565c0;
+margin-bottom:25px;
+
 }
 
-select{
-    width:100%;
-    padding:10px;
-    margin:8px 0;
-    box-sizing:border-box;
+
+
+.filter-box{
+
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:15px;
+margin-bottom:25px;
+
 }
 
-.table-wrapper{
-    overflow-x:auto;
+
+
+select,
+button{
+
+padding:12px;
+border-radius:5px;
+border:1px solid #ccc;
+font-size:15px;
+
 }
 
-table{
-    width:100%;
-    border-collapse:collapse;
-    margin-top:15px;
+
+
+button{
+
+background:#1565c0;
+color:white;
+border:none;
+cursor:pointer;
+
 }
 
-th,td{
-    border:1px solid #ccc;
-    padding:10px;
-    text-align:center;
+
+
+button:hover{
+
+background:#0d47a1;
+
 }
 
-th{
-    background:#f2f2f2;
+
+
+
+.exam-card{
+
+background:#fafafa;
+border-left:6px solid #1565c0;
+padding:20px;
+margin-bottom:20px;
+border-radius:8px;
+
 }
+
+
+
+.exam-card h3{
+
+color:#1565c0;
+margin-bottom:15px;
+
+}
+
+
+
+.exam-card p{
+
+margin:8px 0;
+
+}
+
+
+
+.portion{
+
+background:white;
+padding:15px;
+margin-top:15px;
+border-radius:5px;
+border:1px solid #ddd;
+
+}
+
+
+
+.no-data{
+
+text-align:center;
+font-size:18px;
+padding:30px;
+color:#777;
+
+}
+
+
+
+
+@media(max-width:800px){
+
+.filter-box{
+
+grid-template-columns:1fr;
+
+}
+
+}
+
+
 
 </style>
+
 </head>
+
+
 
 <body>
 
+
 <div class="container">
 
-<h2>Exam Schedule</h2>
 
-<!-- Year -->
-<select id="year" onchange="loadExam()">
+<h2>
+Student Exam View Portal
+</h2>
 
-    <option value="YEAR-1">I YEAR</option>
-    <option value="YEAR-2">II YEAR</option>
-    <option value="YEAR-3">III YEAR</option>
 
-</select>
 
-<!-- Department -->
-<select id="dept" onchange="loadExam()">
+<div class="filter-box">
 
-    <option value="BCOM-GENERAL">B.Com General</option>
-    <option value="BCOM-BM">B.Com BM</option>
-    <option value="BCOM-MM">B.Com MM</option>
-    <option value="BCOM-CS">B.Com CS</option>
-    <option value="BCOM-AF">B.Com A&F</option>
-    <option value="BCOM-ISM">B.Com ISM</option>
-    <option value="BCOM-CA">B.Com CA</option>
-    <option value="BCOM-BUSAD">B.Com BUS.AD</option>
 
-    <option value="BA-DEFENCE">B.A DEFENCE</option>
-    <option value="BA-PUBAD">B.A PUB.AD</option>
-    <option value="BA-TAMIL">B.A TAMIL</option>
-    <option value="BA-TOURISM">B.A TOURISM</option>
+<select id="department">
 
-    <option value="BSC-CS">B.Sc CS</option>
-    <option value="BSC-CS-AI">B.Sc CS WITH AI</option>
-    <option value="BSC-CRIMINOLOGY">B.Sc CRIMINOLOGY</option>
-    <option value="BSC-SA">B.Sc SA</option>
-    <option value="BSC-PHYS-CA">B.Sc PHYSICS WITH CA</option>
-    <option value="BSC-MATHS-CA">B.Sc MATHS WITH CA</option>
-    <option value="BSC-ELEC-AI">B.Sc ELECTRONICS WITH AI</option>
-    <option value="BSC-VISCOM">B.Sc VISCOM</option>
-    <option value="BSC-ELECTRONIC-MEDIA">B.Sc ELECTRONIC MEDIA</option>
-    <option value="BSC-IDD">B.Sc IDD</option>
-    <option value="BSC-PHYSICS">B.Sc PHYSICS</option>
 
-    <option value="BCA">BCA COMPUTER APPLICATION</option>
+<option value="">
+Select Department
+</option>
 
-</select>
 
-<!-- Exam Type -->
-<select id="examType" onchange="loadExam()">
+<option value="">Select Department</option>
 
-    <option value="CYCLIC-TEST-01">CYCLIC TEST 01</option>
-    <option value="CYCLIC-TEST-02">CYCLIC TEST 02</option>
+<option value="B.Com General">B.Com General</option>
+<option value="B.Com BM">B.Com BM</option>
+<option value="B.Com MM">B.Com MM</option>
+<option value="B.Com CS">B.Com CS</option>
+<option value="B.Com A&F">B.Com A&F</option>
+<option value="B.Com ISM">B.Com ISM</option>
+<option value="B.Com CA">B.Com CA</option>
+<option value="B.Com BUS.AD">B.Com BUS.AD</option>
 
-    <option value="INTERNAL-TEST-01">INTERNAL TEST 01</option>
-    <option value="INTERNAL-TEST-02">INTERNAL TEST 02</option>
+<option value="B.A DEFENCE">B.A DEFENCE</option>
+<option value="B.A PUB.AD">B.A PUB.AD</option>
+<option value="B.A TAMIL">B.A TAMIL</option>
+<option value="B.A TOURISM">B.A TOURISM</option>
 
-    <option value="MODEL-EXAM">MODEL EXAM</option>
+<option value="B.Sc CS">B.Sc CS</option>
+<option value="B.Sc CS WITH AI">B.Sc CS WITH AI</option>
+<option value="B.Sc CRIMINOLOGY">B.Sc CRIMINOLOGY</option>
+<option value="B.Sc SA">B.Sc SA</option>
+<option value="B.Sc PHYS WITH CA">B.Sc PHYS WITH CA</option>
+<option value="B.Sc MATHS WITH CA">B.Sc MATHS WITH CA</option>
+<option value="B.Sc ELECTRONICS WITH AI">B.Sc ELECTRONICS WITH AI</option>
+<option value="B.Sc VISCOM">B.Sc VISCOM</option>
+<option value="B.Sc ELECTRONIC MEDIA">B.Sc ELECTRONIC MEDIA</option>
+<option value="B.Sc IDD">B.Sc IDD</option>
+<option value="B.Sc PHYSICS">B.Sc PHYSICS</option>
 
-    <option value="SEMESTER-EXAM">SEMESTER EXAM</option>
+<option value="BCA COMPUTER APPLICATION">BCA COMPUTER APPLICATION</option>
+
 
 </select>
 
-<div class="table-wrapper">
 
-<table>
 
-<thead>
 
-<tr>
-<th>Subject Code</th>
-<th>Subject Name</th>
-<th>Date</th>
-<th>Timing</th>
-<th>Platform</th>
-</tr>
+<select id="year">
 
-</thead>
 
-<tbody id="tbody"></tbody>
+<option value="">
+Select Year
+</option>
 
-</table>
+
+<option>I Year</option>
+
+<option>II Year</option>
+
+<option>III Year</option>
+
+
+
+</select>
+
+
+
+
+
+<select id="section">
+
+
+<option value="">
+Select Section
+</option>
+
+
+<option>A</option>
+
+<option>B</option>
+
+<option>C</option>
+
+<option>D</option>
+
+
+</select>
+
+
+
+
+
+<button id="loadBtn">
+
+Load Exam
+
+</button>
+
+
 
 </div>
 
+
+
+
+
+<div id="examList">
+
+
+<div class="no-data">
+
+Select Department, Year and Section
+
 </div>
+
+
+</div>
+
+
+
+
+</div>
+
+
+
 
 <script type="module">
+    import { initializeApp } 
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
-import { db } from "./firebase-config.js";
 
 import {
-doc,
-getDoc
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-function formatDate(dateStr){
-
-    if(!dateStr) return "";
-
-    const d = new Date(dateStr);
-
-    const day = String(d.getDate()).padStart(2,"0");
-    const month = String(d.getMonth()+1).padStart(2,"0");
-    const year = d.getFullYear();
-
-    return `${day}.${month}.${year}`;
-
+getFirestore,
+collection,
+query,
+where,
+getDocs
 }
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-window.loadExam = async function(){
 
-    const year = document.getElementById("year").value;
-    const dept = document.getElementById("dept").value;
-    const examType = document.getElementById("examType").value;
 
-    const tbody = document.getElementById("tbody");
-    tbody.innerHTML = "";
+// FIREBASE CONFIG
 
-    try{
+const firebaseConfig = {
 
-        const snap = await getDoc(
+apiKey: "AIzaSyAIv3091VM-gkmdwEAn7OhXWd9Cm2zh2bo",
 
-            doc(
-                db,
-                "exams",
-                year,
-                "departments",
-                dept,
-                "exams",
-                examType
-            )
+authDomain: "maasc-2026.firebaseapp.com",
 
-        );
+projectId: "maasc-2026",
 
-        if(!snap.exists()){
+storageBucket: "maasc-2026.appspot.com",
 
-            tbody.innerHTML = `
-            <tr>
-                <td colspan="5">No Exam Schedule Found</td>
-            </tr>
-            `;
+messagingSenderId: "585813001586",
 
-            return;
-
-        }
-
-        const data = snap.data();
-
-        Object.keys(data).forEach(key=>{
-
-            const d = data[key];
-
-            tbody.innerHTML += `
-
-            <tr>
-
-                <td>${d.SubjectCode || ""}</td>
-
-                <td>${d.SubjectName || ""}</td>
-
-                <td>${formatDate(d.Date)}</td>
-
-                <td>${d.Timing || ""}</td>
-
-                <td>${d.Platform || ""}</td>
-
-            </tr>
-
-            `;
-
-        });
-
-    }
-
-    catch(err){
-
-        console.error(err);
-
-        tbody.innerHTML = `
-        <tr>
-            <td colspan="5">Error Loading Schedule</td>
-        </tr>
-        `;
-
-    }
+appId: "1:585813001586:web:664e0e90ff0725d2e849eb"
 
 };
 
-loadExam();
 
+
+// INITIALIZE
+
+const app = initializeApp(firebaseConfig);
+
+const db = getFirestore(app);
+
+
+
+
+// BUTTON EVENT
+
+document
+.getElementById("loadBtn")
+.addEventListener(
+"click",
+loadExam
+);
+
+
+
+
+
+async function loadExam(){
+
+
+
+const department =
+document.getElementById("department").value;
+
+
+const year =
+document.getElementById("year").value;
+
+
+const section =
+document.getElementById("section").value;
+
+
+
+if(
+department==""||
+year==""||
+section==""
+){
+
+alert("Please select Department, Year and Section");
+
+return;
+
+}
+
+
+
+
+const examList =
+document.getElementById("examList");
+
+
+
+examList.innerHTML=
+`
+<div class="no-data">
+Loading Exams...
+</div>
+`;
+
+
+
+
+try{
+
+
+const q=query(
+
+collection(db,"examAssignments"),
+
+
+where(
+"department",
+"==",
+department
+),
+
+
+where(
+"year",
+"==",
+year
+),
+
+
+where(
+"section",
+"==",
+section
+)
+
+
+);
+
+
+
+
+const snapshot =
+await getDocs(q);
+
+
+
+
+
+if(snapshot.empty){
+
+
+examList.innerHTML=
+`
+
+<div class="no-data">
+
+No Exam Assigned For This Class
+
+</div>
+
+`;
+
+
+return;
+
+}
+
+
+
+
+let html="";
+
+
+
+
+snapshot.forEach(doc=>{
+
+
+const e=doc.data();
+
+
+
+html +=
+
+`
+
+<div class="exam-card">
+
+
+<h3>
+${e.subject}
+</h3>
+
+
+
+<p>
+<b>Exam Type :</b>
+${e.examType}
+</p>
+
+
+
+<p>
+<b>Date :</b>
+${e.examDate}
+</p>
+
+
+
+<p>
+<b>Time :</b>
+${e.examTime}
+</p>
+
+
+
+<p>
+<b>Semester :</b>
+${e.semester}
+</p>
+
+
+
+<p>
+<b>Maximum Marks :</b>
+${e.maxMarks}
+</p>
+
+
+
+<div class="portion">
+
+
+<b>
+Exam Portion
+</b>
+
+
+<hr><br>
+
+
+${e.portion}
+
+
+</div>
+
+
+
+</div>
+
+`;
+
+
+
+});
+
+
+
+
+examList.innerHTML=html;
+
+
+
+}
+
+catch(error){
+
+
+console.error(error);
+
+
+examList.innerHTML=
+
+`
+
+<div class="no-data">
+
+Error Loading Exams
+
+</div>
+
+`;
+
+
+
+}
+
+
+
+}
 </script>
 
+
 </body>
+
 </html>
