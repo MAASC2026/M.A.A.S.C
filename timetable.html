@@ -1,13 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
 
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Student Exam View Portal</title>
-
+<title>Exam Assignment Portal</title>
 
 <style>
 
@@ -18,172 +16,153 @@ box-sizing:border-box;
 font-family:Arial,Helvetica,sans-serif;
 }
 
-
 body{
-
 background:#f4f6f9;
-padding:25px;
-
+padding:20px;
 }
-
 
 .container{
-
-max-width:1200px;
+max-width:1400px;
 margin:auto;
-background:white;
-padding:25px;
+background:#fff;
+padding:20px;
 border-radius:10px;
 box-shadow:0 0 10px rgba(0,0,0,.1);
-
 }
-
 
 h2{
-
 text-align:center;
+margin-bottom:20px;
 color:#1565c0;
-margin-bottom:25px;
-
 }
 
-
-
-.filter-box{
-
+.form-grid{
 display:grid;
-grid-template-columns:repeat(4,1fr);
+grid-template-columns:repeat(2,1fr);
 gap:15px;
-margin-bottom:25px;
-
+margin-bottom:20px;
 }
 
+.form-grid input,
+.form-grid select,
+.form-grid textarea{
 
-
-select,
-button{
-
-padding:12px;
-border-radius:5px;
+width:100%;
+padding:10px;
 border:1px solid #ccc;
+border-radius:5px;
 font-size:15px;
 
 }
 
+.form-grid textarea{
 
+grid-column:1/3;
+resize:vertical;
+
+}
+
+.button-area{
+
+grid-column:1/3;
+display:flex;
+gap:10px;
+
+}
 
 button{
 
+padding:10px 20px;
+border:none;
+border-radius:5px;
+cursor:pointer;
+font-size:15px;
+
+}
+
+#saveBtn{
 background:#1565c0;
 color:white;
-border:none;
-cursor:pointer;
+}
+
+#clearBtn{
+background:#757575;
+color:white;
+}
+
+#updateBtn{
+background:#2e7d32;
+color:white;
+display:none;
+}
+
+.table-wrapper{
+
+overflow:auto;
+margin-top:20px;
 
 }
 
+table{
 
-
-button:hover{
-
-background:#0d47a1;
-
-}
-
-
-
-
-.exam-card{
-
-background:#fafafa;
-border-left:6px solid #1565c0;
-padding:20px;
-margin-bottom:20px;
-border-radius:8px;
+width:100%;
+border-collapse:collapse;
+min-width:1300px;
 
 }
 
+table th{
 
-
-.exam-card h3{
-
-color:#1565c0;
-margin-bottom:15px;
-
-}
-
-
-
-.exam-card p{
-
-margin:8px 0;
+background:#1565c0;
+color:white;
+padding:10px;
 
 }
 
+table td{
 
-
-.portion{
-
-background:white;
-padding:15px;
-margin-top:15px;
-border-radius:5px;
+padding:10px;
 border:1px solid #ddd;
-
-}
-
-
-
-.no-data{
-
 text-align:center;
-font-size:18px;
-padding:30px;
-color:#777;
 
 }
 
+.action-btn{
 
-
-
-@media(max-width:800px){
-
-.filter-box{
-
-grid-template-columns:1fr;
-
-}
+padding:6px 10px;
+margin:2px;
+border:none;
+border-radius:4px;
+cursor:pointer;
+color:white;
 
 }
 
+.edit{
 
+background:#2e7d32;
+
+}
+
+.delete{
+
+background:#d32f2f;
+
+}
 
 </style>
 
 </head>
 
-
-
 <body>
-
 
 <div class="container">
 
+<h2>Exam Assignment Portal</h2>
 
-<h2>
-Student Exam View Portal
-</h2>
-
-
-
-<div class="filter-box">
-
+<div class="form-grid">
 
 <select id="department">
-
-
-<option value="">
-Select Department
-</option>
 
 
 <option value="">Select Department</option>
@@ -219,102 +198,149 @@ Select Department
 
 </select>
 
-
-
-
 <select id="year">
 
-
-<option value="">
-Select Year
-</option>
-
+<option value="">Year</option>
 
 <option>I Year</option>
-
 <option>II Year</option>
-
 <option>III Year</option>
 
-
-
 </select>
-
-
-
-
 
 <select id="section">
 
-
-<option value="">
-Select Section
-</option>
-
+<option value="">Section</option>
 
 <option>A</option>
-
 <option>B</option>
-
 <option>C</option>
-
 <option>D</option>
-
 
 </select>
 
+<select id="semester">
 
+<option value="">Semester</option>
 
+<option>I</option>
+<option>II</option>
+<option>III</option>
+<option>IV</option>
+<option>V</option>
+<option>VI</option>
 
+</select>
 
-<button id="loadBtn">
+<input
+type="text"
+id="subject"
+placeholder="Subject Name">
 
-Load Exam
+<select id="examType">
+
+<option value="">Exam Type</option>
+
+<option>CIA I</option>
+<option>CIA II</option>
+<option>MODEL</option>
+<option>UNIVERSITY</option>
+
+</select>
+
+<input
+type="date"
+id="examDate">
+
+<input
+type="time"
+id="examTime">
+
+<input
+type="number"
+id="maxMarks"
+placeholder="Maximum Marks">
+
+<textarea
+id="portion"
+rows="6"
+placeholder="Enter Exam Portion"></textarea>
+
+<div class="button-area">
+
+<button id="saveBtn">
+
+Assign Exam
 
 </button>
 
+<button id="updateBtn">
 
+Update Exam
 
-</div>
+</button>
 
+<button id="clearBtn">
 
+Clear
 
-
-
-<div id="examList">
-
-
-<div class="no-data">
-
-Select Department, Year and Section
+</button>
 
 </div>
 
+</div>
+
+<hr>
+
+<div class="table-wrapper">
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>Department</th>
+<th>Year</th>
+<th>Section</th>
+<th>Semester</th>
+<th>Subject</th>
+<th>Exam</th>
+<th>Date</th>
+<th>Time</th>
+<th>Marks</th>
+<th>Portion</th>
+<th>Action</th>
+
+</tr>
+
+</thead>
+
+<tbody id="examTable">
+
+</tbody>
+
+</table>
 
 </div>
 
-
-
-
 </div>
-
-
-
 
 <script type="module">
     import { initializeApp } 
 from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
-
-import {
+import { 
 getFirestore,
 collection,
-query,
-where,
-getDocs
+addDoc,
+getDocs,
+doc,
+deleteDoc,
+updateDoc,
+getDoc
 }
 from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
 
 
 // FIREBASE CONFIG
@@ -322,243 +348,135 @@ from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 const firebaseConfig = {
 
 apiKey: "AIzaSyAIv3091VM-gkmdwEAn7OhXWd9Cm2zh2bo",
-
 authDomain: "maasc-2026.firebaseapp.com",
-
 projectId: "maasc-2026",
-
 storageBucket: "maasc-2026.appspot.com",
-
 messagingSenderId: "585813001586",
-
 appId: "1:585813001586:web:664e0e90ff0725d2e849eb"
 
 };
 
 
-
-// INITIALIZE
+// INITIALIZE FIREBASE
 
 const app = initializeApp(firebaseConfig);
 
 const db = getFirestore(app);
 
 
+// VARIABLES
+
+let editID = null;
 
 
-// BUTTON EVENT
+
+// PAGE LOAD
+
+window.onload = function(){
+
+loadExams();
+
+};
+
+
+
+// SAVE EXAM
 
 document
-.getElementById("loadBtn")
-.addEventListener(
-"click",
-loadExam
-);
+.getElementById("saveBtn")
+.addEventListener("click",saveExam);
 
 
 
+async function saveExam(){
 
 
-async function loadExam(){
+let exam={
 
 
-
-const department =
-document.getElementById("department").value;
-
-
-const year =
-document.getElementById("year").value;
+department:
+document.getElementById("department").value,
 
 
-const section =
-document.getElementById("section").value;
+year:
+document.getElementById("year").value,
+
+
+section:
+document.getElementById("section").value,
+
+
+semester:
+document.getElementById("semester").value,
+
+
+subject:
+document.getElementById("subject").value,
+
+
+examType:
+document.getElementById("examType").value,
+
+
+examDate:
+document.getElementById("examDate").value,
+
+
+examTime:
+document.getElementById("examTime").value,
+
+
+maxMarks:
+document.getElementById("maxMarks").value,
+
+
+portion:
+document.getElementById("portion").value,
+
+
+createdAt:
+new Date()
+
+
+};
 
 
 
 if(
-department==""||
-year==""||
-section==""
+exam.department==""||
+exam.year==""||
+exam.section==""||
+exam.subject==""
 ){
 
-alert("Please select Department, Year and Section");
+alert("Please fill required fields");
 
 return;
 
 }
-
-
-
-
-const examList =
-document.getElementById("examList");
-
-
-
-examList.innerHTML=
-`
-<div class="no-data">
-Loading Exams...
-</div>
-`;
-
 
 
 
 try{
 
 
-const q=query(
+await addDoc(
 
 collection(db,"examAssignments"),
 
-
-where(
-"department",
-"==",
-department
-),
-
-
-where(
-"year",
-"==",
-year
-),
-
-
-where(
-"section",
-"==",
-section
-)
-
+exam
 
 );
 
 
 
+alert("Exam Assigned Successfully");
 
-const snapshot =
-await getDocs(q);
 
+clearForm();
 
 
-
-
-if(snapshot.empty){
-
-
-examList.innerHTML=
-`
-
-<div class="no-data">
-
-No Exam Assigned For This Class
-
-</div>
-
-`;
-
-
-return;
-
-}
-
-
-
-
-let html="";
-
-
-
-
-snapshot.forEach(doc=>{
-
-
-const e=doc.data();
-
-
-
-html +=
-
-`
-
-<div class="exam-card">
-
-
-<h3>
-${e.subject}
-</h3>
-
-
-
-<p>
-<b>Exam Type :</b>
-${e.examType}
-</p>
-
-
-
-<p>
-<b>Date :</b>
-${e.examDate}
-</p>
-
-
-
-<p>
-<b>Time :</b>
-${e.examTime}
-</p>
-
-
-
-<p>
-<b>Semester :</b>
-${e.semester}
-</p>
-
-
-
-<p>
-<b>Maximum Marks :</b>
-${e.maxMarks}
-</p>
-
-
-
-<div class="portion">
-
-
-<b>
-Exam Portion
-</b>
-
-
-<hr><br>
-
-
-${e.portion}
-
-
-</div>
-
-
-
-</div>
-
-`;
-
-
-
-});
-
-
-
-
-examList.innerHTML=html;
+loadExams();
 
 
 
@@ -566,32 +484,352 @@ examList.innerHTML=html;
 
 catch(error){
 
+console.log(error);
 
-console.error(error);
+alert(error.message);
+
+}
 
 
-examList.innerHTML=
 
-`
+}
 
-<div class="no-data">
 
-Error Loading Exams
 
-</div>
+
+// LOAD EXAMS
+
+
+async function loadExams(){
+
+
+let table =
+document.getElementById("examTable");
+
+
+table.innerHTML="";
+
+
+const querySnapshot =
+await getDocs(
+collection(db,"examAssignments")
+);
+
+
+
+querySnapshot.forEach((item)=>{
+
+
+let e=item.data();
+
+
+
+table.innerHTML += `
+
+<tr>
+
+
+<td>${e.department}</td>
+
+<td>${e.year}</td>
+
+<td>${e.section}</td>
+
+<td>${e.semester}</td>
+
+<td>${e.subject}</td>
+
+<td>${e.examType}</td>
+
+<td>${e.examDate}</td>
+
+<td>${e.examTime}</td>
+
+<td>${e.maxMarks}</td>
+
+<td>${e.portion}</td>
+
+
+<td>
+
+
+<button 
+class="action-btn edit"
+onclick="editExam('${item.id}')">
+
+Edit
+
+</button>
+
+
+
+<button 
+class="action-btn delete"
+onclick="deleteExam('${item.id}')">
+
+Delete
+
+</button>
+
+
+</td>
+
+
+</tr>
 
 `;
 
+});
 
 
 }
 
 
 
+// DELETE EXAM
+
+
+window.deleteExam = async function(id){
+
+
+if(
+confirm("Delete this exam?")
+){
+
+
+await deleteDoc(
+
+doc(db,"examAssignments",id)
+
+);
+
+
+
+alert("Deleted");
+
+
+loadExams();
+
+
 }
+
+
+
+};
+
+
+
+
+// EDIT EXAM
+
+
+window.editExam = async function(id){
+
+
+const ref =
+doc(db,"examAssignments",id);
+
+
+
+const snap =
+await getDoc(ref);
+
+
+
+let e=snap.data();
+
+
+
+document.getElementById("department").value=e.department;
+
+document.getElementById("year").value=e.year;
+
+document.getElementById("section").value=e.section;
+
+document.getElementById("semester").value=e.semester;
+
+document.getElementById("subject").value=e.subject;
+
+document.getElementById("examType").value=e.examType;
+
+document.getElementById("examDate").value=e.examDate;
+
+document.getElementById("examTime").value=e.examTime;
+
+document.getElementById("maxMarks").value=e.maxMarks;
+
+document.getElementById("portion").value=e.portion;
+
+
+
+editID=id;
+
+
+
+document.getElementById("saveBtn")
+.style.display="none";
+
+
+document.getElementById("updateBtn")
+.style.display="block";
+
+
+
+};
+
+
+
+
+// UPDATE EXAM
+
+
+document
+.getElementById("updateBtn")
+.addEventListener(
+"click",
+updateExam
+);
+
+
+
+async function updateExam(){
+
+
+if(editID==null){
+
+return;
+
+}
+
+
+
+let updated={
+
+
+department:
+department.value,
+
+
+year:
+year.value,
+
+
+section:
+section.value,
+
+
+semester:
+semester.value,
+
+
+subject:
+subject.value,
+
+
+examType:
+examType.value,
+
+
+examDate:
+examDate.value,
+
+
+examTime:
+examTime.value,
+
+
+maxMarks:
+maxMarks.value,
+
+
+portion:
+portion.value
+
+
+};
+
+
+
+await updateDoc(
+
+doc(
+db,
+"examAssignments",
+editID
+),
+
+updated
+
+);
+
+
+
+alert("Updated Successfully");
+
+
+
+editID=null;
+
+
+document.getElementById("saveBtn")
+.style.display="block";
+
+
+document.getElementById("updateBtn")
+.style.display="none";
+
+
+
+clearForm();
+
+loadExams();
+
+
+
+}
+
+
+
+
+
+// CLEAR FORM
+
+
+document
+.getElementById("clearBtn")
+.addEventListener(
+"click",
+clearForm
+);
+
+
+
+function clearForm(){
+
+
+document
+.querySelectorAll(
+"input,textarea"
+)
+.forEach(
+el=>el.value=""
+);
+
+
+
+document
+.querySelectorAll(
+"select"
+)
+.forEach(
+el=>el.selectedIndex=0
+);
+
+
+
+}
+
 </script>
 
-
 </body>
-
 </html>
