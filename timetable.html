@@ -231,13 +231,34 @@ background:#d32f2f;
 <option>VI</option>
 
 </select>
+<select id="faculty">
 
+    <option value="Select Staff">Select Staff</option>
+
+    <option value="SUDANDIRA DEVI">SUDANDIRA DEVI</option>
+    <option value="TAMATAM NARENDAR REDDY">TAMATAM NARENDAR REDDY</option>
+    <option value="PREETHIGA">PREETHIGA</option>
+    <option value="AKASH">AKASH</option>
+    <option value="RAMESHVAR">RAMESHVAR</option>
+    <option value="PAVITHRA">PAVITHRA</option>
+    <option value="SOUNDHAR">SOUNDHAR</option>
+    <option value="HARISH">HARISH</option>
+    <option value="DHINESH S">DHINESH S</option>
+    <option value="MURALIKRISHNAN R">MURALIKRISHNAN R</option>
+    <option value="DINESH U">DINESH U</option>
+    <option value="LOGESHWARRAN">LOGESHWARRAN</option>
+
+</select>
 <input
 type="text"
 id="subject"
 placeholder="Subject Name">
 
+
+
+
 <select id="examType">
+
 
 <option value="">Exam Type</option>
 
@@ -305,6 +326,7 @@ Clear
 <th>Section</th>
 <th>Semester</th>
 <th>Subject</th>
+<th>Faculty Assigned</th>
 <th>Exam</th>
 <th>Date</th>
 <th>Time</th>
@@ -325,12 +347,11 @@ Clear
 </div>
 
 </div>
-
 <script type="module">
-    import { initializeApp } 
+import { initializeApp }
 from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
-import { 
+import{
 getFirestore,
 collection,
 addDoc,
@@ -338,222 +359,252 @@ getDocs,
 doc,
 deleteDoc,
 updateDoc,
-getDoc
+getDoc,
+query,
+orderBy
 }
 from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 
+//==================================================
 // FIREBASE CONFIG
+//==================================================
 
-const firebaseConfig = {
+const firebaseConfig={
 
-apiKey: "AIzaSyAIv3091VM-gkmdwEAn7OhXWd9Cm2zh2bo",
-authDomain: "maasc-2026.firebaseapp.com",
-projectId: "maasc-2026",
-storageBucket: "maasc-2026.appspot.com",
-messagingSenderId: "585813001586",
-appId: "1:585813001586:web:664e0e90ff0725d2e849eb"
+apiKey:"AIzaSyAIv3091VM-gkmdwEAn7OhXWd9Cm2zh2bo",
+authDomain:"maasc-2026.firebaseapp.com",
+projectId:"maasc-2026",
+storageBucket:"maasc-2026.appspot.com",
+messagingSenderId:"585813001586",
+appId:"1:585813001586:web:664e0e90ff0725d2e849eb"
 
 };
 
+const app=initializeApp(firebaseConfig);
+const db=getFirestore(app);
 
-// INITIALIZE FIREBASE
-
-const app = initializeApp(firebaseConfig);
-
-const db = getFirestore(app);
-
-
+//==================================================
 // VARIABLES
+//==================================================
 
-let editID = null;
+let editID=null;
 
-
-
+//==================================================
 // PAGE LOAD
+//==================================================
+window.onload = async () => {
 
-window.onload = function(){
-
-loadExams();
+    await loadExams();
 
 };
 
+//==================================================
+// LOAD FACULTY DROPDOWN
+//==================================================
 
+async function loadFaculty(){
 
-// SAVE EXAM
+const faculty=document.getElementById("faculty");
+
+faculty.innerHTML="<option value=''>Select staff</option>";
+
+try{
+
+const q=query(
+collection(db,"staff"),
+orderBy("staffName")
+);
+
+const snap=await getDocs(q);
+
+snap.forEach((d)=>{
+
+const s=d.data();
+
+faculty.innerHTML+=`
+<option value="${s.staffName}">
+${s.staffName}
+</option>
+`;
+
+});
+
+}
+catch(err){
+
+console.log(err);
+alert("Unable to load faculty list");
+
+}
+
+}
+
+//==================================================
+// SAVE BUTTON
+//==================================================
 
 document
 .getElementById("saveBtn")
 .addEventListener("click",saveExam);
 
-
+//==================================================
+// SAVE EXAM
+//==================================================
 
 async function saveExam(){
 
-
 let exam={
-
 
 department:
 document.getElementById("department").value,
 
-
 year:
 document.getElementById("year").value,
-
 
 section:
 document.getElementById("section").value,
 
-
 semester:
 document.getElementById("semester").value,
 
-
 subject:
 document.getElementById("subject").value,
-
-
+faculty:
+document.getElementById("faculty").value,
 examType:
 document.getElementById("examType").value,
-
 
 examDate:
 document.getElementById("examDate").value,
 
-
 examTime:
 document.getElementById("examTime").value,
-
 
 maxMarks:
 document.getElementById("maxMarks").value,
 
-
 portion:
 document.getElementById("portion").value,
 
-
-createdAt:
-new Date()
-
+createdAt:new Date()
 
 };
 
-
+//==================================================
+// VALIDATION
+//==================================================
 
 if(
-exam.department==""||
-exam.year==""||
-exam.section==""||
-exam.subject==""
+
+exam.department=="" ||
+exam.year=="" ||
+exam.section=="" ||
+exam.semester=="" ||
+exam.subject=="" ||
+exam.faculty=="" ||
+exam.examType=="" ||
+exam.examDate=="" ||
+exam.examTime=="" ||
+exam.maxMarks==""
+
 ){
 
-alert("Please fill required fields");
+alert("Please fill all required fields.");
+return;
+
+}
+
+try{
+
+await addDoc(
+
+collection(db,"examAssignments"),
+exam
+
+);
+
+alert("Exam Assigned Successfully.");
+
+clearForm();
+
+await loadExams();
+
+}
+catch(err){
+
+console.log(err);
+alert(err.message);
+
+}
+
+}
+//==================================================
+// LOAD ALL EXAMS
+//==================================================
+
+async function loadExams(){
+
+const table=document.getElementById("examTable");
+
+table.innerHTML="";
+
+try{
+
+const q=query(
+collection(db,"examAssignments"),
+orderBy("createdAt","desc")
+);
+
+const snap=await getDocs(q);
+
+if(snap.empty){
+
+table.innerHTML=`
+<tr>
+<td colspan="12">No Exam Assignments Found</td>
+</tr>
+`;
 
 return;
 
 }
 
+let sno=1;
 
+snap.forEach((item)=>{
 
-try{
+const e=item.data();
 
-
-await addDoc(
-
-collection(db,"examAssignments"),
-
-exam
-
-);
-
-
-
-alert("Exam Assigned Successfully");
-
-
-clearForm();
-
-
-loadExams();
-
-
-
-}
-
-catch(error){
-
-console.log(error);
-
-alert(error.message);
-
-}
-
-
-
-}
-
-
-
-
-// LOAD EXAMS
-
-
-async function loadExams(){
-
-
-let table =
-document.getElementById("examTable");
-
-
-table.innerHTML="";
-
-
-const querySnapshot =
-await getDocs(
-collection(db,"examAssignments")
-);
-
-
-
-querySnapshot.forEach((item)=>{
-
-
-let e=item.data();
-
-
-
-table.innerHTML += `
+table.innerHTML+=`
 
 <tr>
 
+<td>${e.department ?? ""}</td>
 
-<td>${e.department}</td>
+<td>${e.year ?? ""}</td>
 
-<td>${e.year}</td>
+<td>${e.section ?? ""}</td>
 
-<td>${e.section}</td>
+<td>${e.semester ?? ""}</td>
 
-<td>${e.semester}</td>
+<td>${e.subject ?? ""}</td>
 
-<td>${e.subject}</td>
+<td>${e.faculty ?? ""}</td>
 
-<td>${e.examType}</td>
+<td>${e.examType ?? ""}</td>
 
-<td>${e.examDate}</td>
+<td>${e.examDate ?? ""}</td>
 
-<td>${e.examTime}</td>
+<td>${e.examTime ?? ""}</td>
 
-<td>${e.maxMarks}</td>
+<td>${e.maxMarks ?? ""}</td>
 
-<td>${e.portion}</td>
-
+<td>${e.portion ?? ""}</td>
 
 <td>
 
-
-<button 
+<button
 class="action-btn edit"
 onclick="editExam('${item.id}')">
 
@@ -561,9 +612,7 @@ Edit
 
 </button>
 
-
-
-<button 
+<button
 class="action-btn delete"
 onclick="deleteExam('${item.id}')">
 
@@ -571,9 +620,7 @@ Delete
 
 </button>
 
-
 </td>
-
 
 </tr>
 
@@ -581,254 +628,268 @@ Delete
 
 });
 
+}
+catch(err){
+
+console.log(err);
+
+table.innerHTML=`
+<tr>
+<td colspan="12">
+Unable to load data
+</td>
+</tr>
+`;
 
 }
 
+}
 
-
+//==================================================
 // DELETE EXAM
+//==================================================
 
+window.deleteExam=async function(id){
 
-window.deleteExam = async function(id){
+const ok=confirm("Delete this exam assignment?");
 
+if(!ok) return;
 
-if(
-confirm("Delete this exam?")
-){
-
+try{
 
 await deleteDoc(
-
 doc(db,"examAssignments",id)
-
 );
 
+alert("Deleted Successfully");
 
-
-alert("Deleted");
-
-
-loadExams();
-
+await loadExams();
 
 }
+catch(err){
 
+console.log(err);
 
+alert(err.message);
+
+}
 
 };
 
-
-
-
+//==================================================
 // EDIT EXAM
-
+//==================================================
 
 window.editExam = async function(id){
 
+try{
 
-const ref =
-doc(db,"examAssignments",id);
+const ref = doc(db,"examAssignments",id);
 
+const snap = await getDoc(ref);
 
+if(!snap.exists()){
 
-const snap =
-await getDoc(ref);
-
-
-
-let e=snap.data();
-
-
-
-document.getElementById("department").value=e.department;
-
-document.getElementById("year").value=e.year;
-
-document.getElementById("section").value=e.section;
-
-document.getElementById("semester").value=e.semester;
-
-document.getElementById("subject").value=e.subject;
-
-document.getElementById("examType").value=e.examType;
-
-document.getElementById("examDate").value=e.examDate;
-
-document.getElementById("examTime").value=e.examTime;
-
-document.getElementById("maxMarks").value=e.maxMarks;
-
-document.getElementById("portion").value=e.portion;
-
-
-
-editID=id;
-
-
-
-document.getElementById("saveBtn")
-.style.display="none";
-
-
-document.getElementById("updateBtn")
-.style.display="block";
-
-
-
-};
-
-
-
-
-// UPDATE EXAM
-
-
-document
-.getElementById("updateBtn")
-.addEventListener(
-"click",
-updateExam
-);
-
-
-
-async function updateExam(){
-
-
-if(editID==null){
-
+alert("Exam record not found.");
 return;
 
 }
 
+const e = snap.data();
 
+document.getElementById("department").value = e.department || "";
 
-let updated={
+document.getElementById("year").value = e.year || "";
 
+document.getElementById("section").value = e.section || "";
+
+document.getElementById("semester").value = e.semester || "";
+
+document.getElementById("subject").value = e.subject || "";
+
+document.getElementById("faculty").value = e.faculty;
+
+document.getElementById("examType").value = e.examType || "";
+
+document.getElementById("examDate").value = e.examDate || "";
+
+document.getElementById("examTime").value = e.examTime || "";
+
+document.getElementById("maxMarks").value = e.maxMarks || "";
+
+document.getElementById("portion").value = e.portion || "";
+
+editID = id;
+
+// Change Buttons
+
+document.getElementById("saveBtn").style.display="none";
+
+document.getElementById("updateBtn").style.display="inline-block";
+
+window.scrollTo({
+
+top:0,
+behavior:"smooth"
+
+});
+
+}
+catch(err){
+
+console.log(err);
+
+alert(err.message);
+
+}
+
+};
+//==================================================
+// UPDATE BUTTON
+//==================================================
+
+document
+.getElementById("updateBtn")
+.addEventListener("click", updateExam);
+
+//==================================================
+// UPDATE EXAM
+//==================================================
+
+async function updateExam(){
+
+if(editID==null){
+
+alert("Please select a record to update.");
+return;
+
+}
+
+const updated={
 
 department:
-department.value,
-
+document.getElementById("department").value,
 
 year:
-year.value,
-
+document.getElementById("year").value,
 
 section:
-section.value,
-
+document.getElementById("section").value,
 
 semester:
-semester.value,
-
+document.getElementById("semester").value,
 
 subject:
-subject.value,
+document.getElementById("subject").value,
 
+faculty:
+document.getElementById("faculty").value,
 
 examType:
-examType.value,
-
+document.getElementById("examType").value,
 
 examDate:
-examDate.value,
-
+document.getElementById("examDate").value,
 
 examTime:
-examTime.value,
-
+document.getElementById("examTime").value,
 
 maxMarks:
-maxMarks.value,
-
+document.getElementById("maxMarks").value,
 
 portion:
-portion.value
-
+document.getElementById("portion").value
 
 };
 
+// Validation
 
+if(
+
+updated.department=="" ||
+updated.year=="" ||
+updated.section=="" ||
+updated.semester=="" ||
+updated.subject=="" ||
+updated.faculty=="" ||
+updated.examType=="" ||
+updated.examDate=="" ||
+updated.examTime=="" ||
+updated.maxMarks==""
+
+){
+
+alert("Please fill all required fields.");
+return;
+
+}
+
+try{
 
 await updateDoc(
 
-doc(
-db,
-"examAssignments",
-editID
-),
+doc(db,"examAssignments",editID),
 
 updated
 
 );
 
-
-
-alert("Updated Successfully");
-
-
+alert("Exam Updated Successfully.");
 
 editID=null;
 
+document.getElementById("saveBtn").style.display="inline-block";
 
-document.getElementById("saveBtn")
-.style.display="block";
-
-
-document.getElementById("updateBtn")
-.style.display="none";
-
-
+document.getElementById("updateBtn").style.display="none";
 
 clearForm();
 
-loadExams();
+await loadExams();
 
+}
+catch(err){
 
+console.log(err);
+
+alert(err.message);
 
 }
 
+}
 
-
-
-
-// CLEAR FORM
-
+//==================================================
+// CLEAR BUTTON
+//==================================================
 
 document
 .getElementById("clearBtn")
-.addEventListener(
-"click",
-clearForm
-);
+.addEventListener("click", clearForm);
 
-
+//==================================================
+// CLEAR FORM
+//==================================================
 
 function clearForm(){
 
+document.getElementById("department").selectedIndex=0;
+document.getElementById("year").selectedIndex=0;
+document.getElementById("section").selectedIndex=0;
+document.getElementById("semester").selectedIndex=0;
+document.getElementById("faculty").selectedIndex=0;
+document.getElementById("examType").selectedIndex=0;
 
-document
-.querySelectorAll(
-"input,textarea"
-)
-.forEach(
-el=>el.value=""
-);
+document.getElementById("subject").value="";
+document.getElementById("examDate").value="";
+document.getElementById("examTime").value="";
+document.getElementById("maxMarks").value="";
+document.getElementById("portion").value="";
 
+editID=null;
 
-
-document
-.querySelectorAll(
-"select"
-)
-.forEach(
-el=>el.selectedIndex=0
-);
-
-
+document.getElementById("saveBtn").style.display="inline-block";
+document.getElementById("updateBtn").style.display="none";
 
 }
-
 </script>
 
 </body>
