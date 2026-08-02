@@ -258,8 +258,23 @@ data.department
 
 alert("Login Successful");
 
-window.location.href=
-"staff-dashboard.html";
+/* ==========================
+   REDIRECT BASED ON STAFF ID
+========================== */
+
+const id = data.staffId.toUpperCase();
+
+if (id.startsWith("SHT")) {
+
+    // Lab Staff Dashboard
+    window.location.href = "lab-dashboard.html";
+
+} else {
+
+    // All other staff
+    window.location.href = "staff-dashboard.html";
+
+}
 
 }
 catch(error){
@@ -278,3 +293,4 @@ alert(error.message);
 
 </body>
 </html>
+<!--  -->
