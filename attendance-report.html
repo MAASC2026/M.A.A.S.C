@@ -203,8 +203,8 @@ box-shadow:none;
 
 <input
 type="text"
-id="regNo"
-placeholder="Register Number">
+id="rollNo"
+placeholder="Roll No">
 
 <select id="dept">
 
@@ -236,7 +236,7 @@ placeholder="Register Number">
 <option>B.Sc IDD</option>
 <option>B.Sc PHYSICS</option>
 
-<option>BCA COMPUTER APPLICATIONS</option>
+<option>BCA COMPUTER APPLICATION</option>
 
 </select>
 
@@ -263,10 +263,6 @@ placeholder="Register Number">
 <option>C</option>
 
 <option>D</option>
-
-<option>E</option>
-
-<option>F</option>
 
 </select>
 
@@ -361,7 +357,7 @@ Attendance %
 
 <th>Reg No</th>
 
-<th>Name</th>
+<th>studentName</th>
 
 <th>P1</th>
 
@@ -398,7 +394,7 @@ getDocs
 from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 window.studentReport = async function(){
 
-const reg=document.getElementById("regNo")
+const reg=document.getElementById("rollNo")
 .value
 .trim()
 .toUpperCase();
@@ -418,7 +414,7 @@ document.getElementById("percent").innerHTML="0%";
 
 const q=query(
 collection(db,"attendance"),
-where("regNo","==",reg)
+where("rollNo","==",reg)
 );
 
 const snap=await getDocs(q);
@@ -479,9 +475,9 @@ body.innerHTML+=`
 
 <td>${r.date}</td>
 
-<td>${r.regNo}</td>
+<td>${r.rollNo}</td>
 
-<td>${r.name||""}</td>
+<td>${r.studentName||""}</td>
 
 <td class="${p1=="P"?"present":"absent"}">${p1}</td>
 
@@ -642,7 +638,7 @@ const attendanceQuery=query(
 
 collection(db,"attendance"),
 
-where("regNo","==",s.regNo),
+where("rollNo","==",s.rollNo),
 
 where("date","==",date)
 
@@ -689,9 +685,9 @@ body.innerHTML+=`
 
 <td>${date}</td>
 
-<td>${s.regNo}</td>
+<td>${s.rollNo}</td>
 
-<td>${s.name}</td>
+<td>${s.studentName}</td>
 
 <td class="${p1=="P"?"present":"absent"}">${p1}</td>
 
