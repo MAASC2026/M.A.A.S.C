@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -126,7 +127,7 @@ cursor:not-allowed;
 
 <div class="container">
 
-<h2>Attendance System (5 Periods)</h2>
+<h2> Lab Staff <br> Attendance System (5 Periods)</h2>
 
 <input type="date" id="date">
 
@@ -160,7 +161,7 @@ cursor:not-allowed;
 <option value="B.Sc IDD">B.Sc IDD</option>
 <option value="B.Sc PHYSICS">B.Sc PHYSICS</option>
 
-<option value="BCA COMPUTER APPLICATIONS">
+<option value="BCA COMPUTER APPLICATION">
 BCA COMPUTER APPLICATIONS
 </option>
 
@@ -179,8 +180,6 @@ BCA COMPUTER APPLICATIONS
 <option>B</option>
 <option>C</option>
 <option>D</option>
-<option>E</option>
-<option>F</option>
 </select>
 
 <button class="load" onclick="loadStudents()">
@@ -238,7 +237,7 @@ Not Marked :
 
 <th>Roll No</th>
 
-<th>Name</th>
+<th>studentName</th>
 
 <th>
 
@@ -344,132 +343,113 @@ from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 /* ===================================
    LOAD STUDENTS
 =================================== */
+window.loadStudents = async function () {
 
-window.loadStudents = async function(){
-    loader.style.display="block";
+    const loader = document.getElementById("loader");
+    const table = document.getElementById("table");
 
-const dept=document.getElementById("dept").value.trim();
-const year=document.getElementById("year").value.trim();
-const section=document.getElementById("section").value.trim();
-const date=document.getElementById("date").value;
+    loader.style.display = "block";
+    table.innerHTML = "";
 
-const table=document.getElementById("table");
+    try {
 
-table.innerHTML="";
+        const dept = document.getElementById("dept").value.trim();
+        const year = document.getElementById("year").value.trim();
+        const section = document.getElementById("section").value.trim();
+        const date = document.getElementById("date").value;
 
-if(!dept || !year || !section || !date){
+        if (!dept || !year || !section || !date) {
+            alert("Select Date, Department, Year and Section");
+            loader.style.display = "none";
+            return;
+        }
 
-alert("Select Date, Department, Year and Section");
+        const q = query(
+            collection(db, "students"),
+            where("department", "==", dept),
+            where("year", "==", year),
+            where("section", "==", section)
+        );
 
-return;
+        const snap = await getDocs(q);
 
-}
+        if (snap.empty) {
+            table.innerHTML =
+                "<tr><td colspan='7'>No Students Found</td></tr>";
+            loader.style.display = "none";
+            return;
+        }
 
-const q=query(
+        let students = [];
 
-collection(db,"students"),
+        snap.forEach(docSnap => {
+            students.push(docSnap.data());
+        });
 
-where("department","==",dept),
+        students.sort((a, b) =>
+            (a.rollNo || "").localeCompare(b.rollNo || "", undefined, {
+                numeric: true
+            })
+        );
 
-where("year","==",year),
+        for (const s of students) {
 
-where("section","==",section)
+            let saved = {};
 
-);
+            const attRef = doc(db, "attendance", date + "_" + s.rollNo);
 
-const snap=await getDocs(q);
-let found=false;
+            const attSnap = await getDoc(attRef);
 
-for(const studentDoc of snap.docs){
+            if (attSnap.exists()) {
+                saved = attSnap.data().attendance || {};
+            }
 
-const s=studentDoc.data();
+            table.innerHTML += `
+            <tr data-att='${JSON.stringify(saved)}'>
 
-{
+                <td>${s.rollNo}</td>
 
-found=true;
-updateSummary();
+                <td>${s.studentName}</td>
 
-/* ======================
-LOAD PREVIOUS ATTENDANCE
-====================== */
+                ${[1,2,3,4,5].map(i=>{
 
-let saved={};
+                    const st = saved[i] || saved[String(i)] || "-";
 
-const attRef=doc(db,"attendance",date+"_"+s.rollno);
+                    return `
+                    <td>
 
-const attSnap=await getDoc(attRef);
+                        <button onclick="mark(this,${i},'P')">P</button>
 
-if(attSnap.exists()){
+                        <button onclick="mark(this,${i},'A')">A</button>
 
-saved=attSnap.data().attendance||{};
+                        <br>
 
-}
+                        <span class="${
+                            st==="P" ? "present" :
+                            st==="A" ? "absent" : ""
+                        }">${st}</span>
 
-/* ======================
-ROW
-====================== */
+                    </td>
+                    `;
 
-table.innerHTML+=`
+                }).join("")}
 
-<tr data-att='${JSON.stringify(saved)}'>
+            </tr>
+            `;
+        }
 
-<td>${s.regNo}</td>
+        updateSummary();
 
-<td>${s.name}</td>
+    } catch (err) {
 
-${[1,2,3,4,5].map(i=>{
+        console.error(err);
 
-const st=saved[i]||saved[String(i)]||"-";
+        alert("Error Loading Students\n\n" + err.message);
 
-return `
+    }
 
-<td>
+    loader.style.display = "none";
 
-<button onclick="mark(this,${i},'P')">
-
-P
-
-</button>
-
-<button onclick="mark(this,${i},'A')">
-
-A
-
-</button>
-
-<br>
-
-<span class="${
-st=="P"?"present":
-st=="A"?"absent":""
-}">
-
-${st}
-
-</span>
-
-</td>
-
-`;
-
-}).join("")}
-
-</tr>
-
-`;
-
-}
-
-}
-
-if(!found){
-
-table.innerHTML=
-
-"<tr><td colspan='7'>No Students Found</td></tr>";
-
-}
-loader.style.display="none";
 };
 /* ===================================
    MARK SINGLE ATTENDANCE
@@ -610,8 +590,8 @@ saveBtn.innerHTML="Saving...";
 
         if(row.children.length < 7) continue;
 
-        const regNo = row.cells[0].innerText.trim();
-        const name  = row.cells[1].innerText.trim();
+       const rollNo = row.cells[0].innerText.trim();
+        const studentName  = row.cells[1].innerText.trim();
 
         let attendance = {};
 
@@ -628,13 +608,13 @@ saveBtn.innerHTML="Saving...";
 
         await setDoc(
 
-doc(db,"attendance",date+"_"+regNo),
+doc(db,"attendance",date+"_"+rollNo),
 
 {
 
-regNo,
+rollNo,
 
-name,
+studentName,
 
 department:document.getElementById("dept").value,
 
@@ -673,7 +653,9 @@ const rows=document.querySelectorAll("#table tr");
 
 rows.forEach(r=>{
 
-const reg=r.cells[0].innerText.toUpperCase();
+const roll = r.cells[0].innerText.toUpperCase();
+
+r.style.display = roll.includes(value) ? "" : "none";
 
 r.style.display=
 reg.includes(value)
