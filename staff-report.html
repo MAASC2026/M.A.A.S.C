@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>MAASC ERP - Staff Timetable Report</title>
+
+<link rel="stylesheet" href="staff-report.css">
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- HEADER -->
+
+    <div class="header">
+
+        <div class="logo">
+            <i class="fas fa-calendar-alt"></i>
+        </div>
+
+        <div class="title">
+            <p><h2>Staff Timetable Report</h2></p>
+        </div>
+
+    </div>
+
+    <!-- SEARCH PANEL -->
+
+    <div class="searchCard">
+
+        <div class="row">
+
+            <div class="field">
+
+                <label>Staff ID</label>
+
+                <input
+                    type="text"
+                    id="staffId"
+                    placeholder="Enter Staff ID">
+
+            </div>
+
+            <div class="buttonArea">
+
+                <button id="loadBtn">
+
+                    <i class="fas fa-search"></i>
+
+                    Load Timetable
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- STAFF DETAILS -->
+
+    <div class="staffCard">
+
+        <div class="info">
+
+            <label>Staff Name</label>
+
+            <input
+                type="text"
+                id="staffName"
+                readonly>
+
+        </div>
+
+        <div class="info">
+
+            <label>Department</label>
+
+            <input
+                type="text"
+                id="department"
+                readonly>
+
+        </div>
+
+    </div>
+
+    <!-- FN TABLE -->
+
+    <div class="tableCard">
+
+        <h2>
+
+            <i class="fas fa-sun"></i>
+
+            Fore Noon Session (FN)
+
+        </h2>
+
+        <div id="fnTable"></div>
+
+    </div>
+
+    <!-- AN TABLE -->
+
+    <div class="tableCard">
+
+        <h2>
+
+            <i class="fas fa-cloud-sun"></i>
+
+            After Noon Session (AN)
+
+        </h2>
+
+        <div id="anTable"></div>
+
+    </div>
+
+    <!-- BUTTONS -->
+
+    <div class="footerButtons">
+
+        <button id="printBtn">
+
+            <i class="fas fa-print"></i>
+
+            Print
+
+        </button>
+
+        <button id="refreshBtn">
+
+            <i class="fas fa-rotate-right"></i>
+
+            Refresh
+
+        </button>
+
+    </div>
+
+</div>
+
+<!-- Firebase -->
+
+<script type="module" src="staff-report.js"></script>
+
+</body>
+</html>

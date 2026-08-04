@@ -1,0 +1,200 @@
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial,sans-serif;
+}
+
+body{
+    background:#f4f6f9;
+    padding:25px;
+}
+
+.container{
+    max-width:1500px;
+    margin:auto;
+}
+
+/* ================= HEADER ================= */
+
+.header{
+    background:#1565c0;
+    color:#fff;
+    display:flex;
+    align-items:center;
+    gap:20px;
+    padding:20px;
+    border-radius:10px;
+    margin-bottom:20px;
+}
+
+.logo{
+    font-size:45px;
+}
+
+.title h1{
+    font-size:30px;
+}
+
+.title p{
+    margin-top:5px;
+    opacity:.9;
+}
+
+/* ================= CARDS ================= */
+
+.searchCard,
+.staffCard,
+.tableCard{
+    background:#fff;
+    border-radius:10px;
+    box-shadow:0 2px 8px rgba(0,0,0,.08);
+    padding:20px;
+    margin-bottom:20px;
+}
+
+.row{
+    display:flex;
+    gap:20px;
+    align-items:end;
+}
+
+.field{
+    flex:1;
+}
+
+.field label,
+.info label{
+    display:block;
+    margin-bottom:8px;
+    font-weight:bold;
+    color:#444;
+}
+
+.field input,
+.info input{
+    width:100%;
+    padding:12px;
+    border:1px solid #ccc;
+    border-radius:6px;
+    font-size:15px;
+}
+
+.staffCard{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:20px;
+}
+
+/* ================= BUTTONS ================= */
+
+button{
+    background:#1565c0;
+    color:#fff;
+    border:none;
+    padding:12px 22px;
+    border-radius:6px;
+    cursor:pointer;
+    font-size:15px;
+    transition:.3s;
+}
+
+button:hover{
+    background:#0d47a1;
+}
+
+.footerButtons{
+    display:flex;
+    justify-content:center;
+    gap:15px;
+    margin-top:20px;
+}
+
+/* ================= TABLE ================= */
+
+.tableCard h2{
+    margin-bottom:15px;
+    color:#1565c0;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+th{
+    background:#1565c0;
+    color:#fff;
+    border:1px solid #ddd;
+    padding:10px;
+    text-align:center;
+}
+
+td{
+    border:1px solid #ddd;
+    padding:8px;
+    vertical-align:top;
+    text-align:center;
+    height:120px;
+    font-size:13px;
+}
+
+.dayCol{
+    width:130px;
+    background:#f7f7f7;
+    font-weight:bold;
+}
+
+.subjectCode{
+    font-weight:bold;
+    color:#1565c0;
+    font-size:15px;
+}
+
+.subjectName{
+    margin-top:5px;
+    font-size:13px;
+}
+
+.classInfo{
+    margin-top:6px;
+    color:#444;
+    font-size:12px;
+}
+
+.labInfo{
+    margin-top:6px;
+    color:#e65100;
+    font-weight:bold;
+    font-size:12px;
+}
+
+.empty{
+    color:#bbb;
+}
+
+/* ================= PRINT ================= */
+
+@media print{
+
+body{
+    background:#fff;
+    padding:0;
+}
+
+.searchCard,
+.footerButtons{
+    display:none;
+}
+
+.tableCard{
+    box-shadow:none;
+    page-break-inside:avoid;
+}
+
+.header{
+    background:#1565c0 !important;
+    color:#fff !important;
+}
+
+}

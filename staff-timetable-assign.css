@@ -1,0 +1,415 @@
+/* ==========================================
+   MAASC ERP - STAFF TIMETABLE ASSIGNMENT
+========================================== */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Segoe UI,Arial,sans-serif;
+}
+
+body{
+    background:#f4f7fb;
+}
+
+/* ================= HEADER ================= */
+
+header{
+    height:70px;
+    background:#0d47a1;
+    color:#fff;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:0 25px;
+    box-shadow:0 3px 10px rgba(0,0,0,.15);
+}
+
+.logo{
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
+
+.logo i{
+    font-size:28px;
+}
+
+header h1{
+    font-size:22px;
+    font-weight:600;
+}
+
+/* ================= CONTAINER ================= */
+
+.container{
+    width:97%;
+    margin:20px auto;
+}
+
+/* ================= CARD ================= */
+
+.card{
+    background:#fff;
+    border-radius:10px;
+    margin-bottom:20px;
+    padding:20px;
+    box-shadow:0 4px 10px rgba(0,0,0,.08);
+}
+
+.card h3{
+    color:#1565c0;
+    margin-bottom:15px;
+}
+
+/* ================= GRID ================= */
+
+.formGrid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:18px;
+}
+
+.formGrid label{
+    display:block;
+    margin-bottom:8px;
+    font-weight:600;
+    color:#444;
+}
+
+.formGrid input{
+    width:100%;
+    height:42px;
+    border:1px solid #ccc;
+    border-radius:6px;
+    padding:0 12px;
+    font-size:15px;
+}
+
+/* ================= SEARCH ================= */
+
+.searchBox{
+    display:flex;
+}
+
+.searchBox input{
+    flex:1;
+    border-radius:6px 0 0 6px;
+}
+
+.searchBox button{
+    width:110px;
+    border:none;
+    background:#1565c0;
+    color:#fff;
+    cursor:pointer;
+    border-radius:0 6px 6px 0;
+}
+
+.searchBox button:hover{
+    background:#0d47a1;
+}
+
+/* ================= SESSION ================= */
+
+.sessionArea{
+    display:flex;
+    gap:40px;
+}
+
+.sessionArea label{
+    font-size:17px;
+    font-weight:600;
+}
+
+.sessionArea input{
+    margin-right:8px;
+}
+
+/* ================= TOOLBAR ================= */
+
+.toolbar{
+    display:flex;
+    justify-content:flex-end;
+    gap:15px;
+}
+
+.toolbar button{
+    padding:10px 22px;
+    border:none;
+    border-radius:6px;
+    background:#1565c0;
+    color:#fff;
+    cursor:pointer;
+    font-size:15px;
+}
+
+.toolbar button:hover{
+    background:#0d47a1;
+}
+
+/* ================= TIMETABLE ================= */
+
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+th,td{
+    border:1px solid #dcdcdc;
+}
+
+th{
+    background:#1565c0;
+    color:#fff;
+    text-align:center;
+    padding:8px;
+}
+
+.dayCol{
+    width:120px;
+    font-weight:bold;
+    background:#eaf2ff;
+}
+
+/* ================= HEADER CELL ================= */
+
+.periodHeader{
+
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+
+}
+
+.periodNumber{
+
+    font-size:22px;
+    font-weight:bold;
+}
+
+.periodTime{
+
+    font-size:12px;
+    margin-top:4px;
+}
+
+/* ================= PERIOD CELL ================= */
+
+.slot{
+
+    height:120px;
+    cursor:pointer;
+    padding:6px;
+    background:#fff;
+    transition:.25s;
+
+}
+
+.slot:hover{
+
+    background:#e3f2fd;
+
+}
+
+.subjectCode{
+
+    font-size:14px;
+    font-weight:bold;
+    color:#1565c0;
+
+}
+
+.subjectName{
+
+    font-size:13px;
+    margin-top:4px;
+
+}
+
+.classInfo{
+
+    font-size:12px;
+    color:#444;
+    margin-top:4px;
+
+}
+
+.labInfo{
+
+    font-size:12px;
+    color:#777;
+    margin-top:4px;
+
+}
+
+.empty{
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100%;
+    color:#bbb;
+    font-size:13px;
+
+}
+
+/* ================= ASSIGNED ================= */
+
+.assigned{
+    background:#e8f5e9;
+}
+
+.assigned:hover{
+    background:#d7f0db;
+}
+
+/* ================= MODAL ================= */
+
+.modal{
+
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.4);
+
+    justify-content:center;
+    align-items:center;
+
+}
+
+.modalContent{
+
+    width:650px;
+    background:#fff;
+    border-radius:10px;
+    padding:25px;
+
+}
+
+.modalContent h2{
+
+    color:#1565c0;
+    margin-bottom:20px;
+
+}
+
+.popupGrid{
+
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:15px;
+
+}
+
+.popupGrid .full{
+
+    grid-column:1/3;
+
+}
+
+.popupGrid label{
+
+    display:block;
+    margin-bottom:8px;
+    font-weight:600;
+
+}
+
+.popupGrid input,
+.popupGrid select{
+
+    width:100%;
+    height:42px;
+    border:1px solid #ccc;
+    border-radius:6px;
+    padding:0 12px;
+
+}
+
+.buttons{
+
+    display:flex;
+    justify-content:flex-end;
+    gap:12px;
+    margin-top:25px;
+
+}
+
+.buttons button{
+
+    border:none;
+    padding:10px 22px;
+    border-radius:6px;
+    cursor:pointer;
+
+}
+
+#savePeriod{
+
+    background:#2e7d32;
+    color:white;
+
+}
+
+#deletePeriod{
+
+    background:#e53935;
+    color:white;
+
+}
+
+#cancelPeriod{
+
+    background:#616161;
+    color:white;
+
+}
+
+/* ================= MOBILE ================= */
+
+@media(max-width:1100px){
+
+.formGrid{
+
+grid-template-columns:1fr 1fr;
+
+}
+
+}
+
+@media(max-width:700px){
+
+.formGrid{
+
+grid-template-columns:1fr;
+
+}
+
+.toolbar{
+
+flex-direction:column;
+
+}
+
+.modalContent{
+
+width:95%;
+
+}
+
+.popupGrid{
+
+grid-template-columns:1fr;
+
+}
+
+.popupGrid .full{
+
+grid-column:auto;
+
+}
+
+}
