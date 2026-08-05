@@ -91,7 +91,7 @@ const subjects = [
 },
 
 {
-    code:"120C31",
+    code:"220C31",
     name:"DATA STRUCTURE",
     year:"II",
     department:"BCA",
