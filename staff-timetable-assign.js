@@ -61,7 +61,7 @@ let timetableData = {};
 // SUBJECT MASTER
 // =====================================
 
-const subjects = [
+const anSubject = [
 
 {
     code:"220C31",
@@ -593,22 +593,44 @@ async function loadStaff(){
 // LOAD SUBJECTS
 // =======================================================
 
-async function loadSubjects(){
+// =======================================================
+// LOAD SUBJECTS BASED ON FN / AN
+// =======================================================
+
+function loadSubjects(){
 
     const select = document.getElementById("popupSubject");
 
     select.innerHTML = "<option value=''>Select Subject</option>";
 
+    let allowedCodes = [];
+
+    if(currentSession === "FN"){
+
+        allowedCodes = fnSubject;
+
+    }
+
+    else if(currentSession === "AN"){
+
+        allowedCodes = anSubject;
+
+    }
+
     subjects.forEach((subject,index)=>{
 
-        const option = document.createElement("option");
+        if(allowedCodes.includes(subject.code)){
 
-        option.value = index;
+            const option = document.createElement("option");
 
-        option.textContent =
-            `${subject.code} - ${subject.name} - ${subject.year} ${subject.department} ${subject.section} - ${subject.lab}`;
+            option.value = index;
 
-        select.appendChild(option);
+            option.textContent =
+                `${subject.code} - ${subject.name} - ${subject.year} ${subject.department} ${subject.section} - ${subject.lab}`;
+
+            select.appendChild(option);
+
+        }
 
     });
 
