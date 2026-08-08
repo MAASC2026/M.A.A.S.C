@@ -1,0 +1,3492 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
+
+<title>Service Request</title>
+
+<style>
+
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+    font-family:Arial,sans-serif;
+}
+
+body{
+    background:#f4f6f9;
+    color:#222;
+}
+
+/* =========================================
+   HEADER
+========================================= */
+
+.header{
+    background:#1e3a8a;
+    color:white;
+    padding:18px 25px;
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.header h2{
+    font-size:22px;
+}
+
+.staff-info{
+    text-align:right;
+    font-size:14px;
+}
+
+.staff-info strong{
+    display:block;
+    font-size:15px;
+}
+
+
+/* =========================================
+   CONTAINER
+========================================= */
+
+.container{
+    width:95%;
+    max-width:1250px;
+    margin:25px auto;
+}
+
+
+/* =========================================
+   CARD
+========================================= */
+
+.card{
+    background:white;
+    border-radius:10px;
+    padding:25px;
+    margin-bottom:25px;
+
+    box-shadow:
+        0 2px 10px rgba(0,0,0,.08);
+}
+
+.card h3{
+    margin-bottom:20px;
+    color:#1e3a8a;
+}
+
+
+/* =========================================
+   FORM
+========================================= */
+
+.form-grid{
+    display:grid;
+    grid-template-columns:
+        repeat(2,1fr);
+
+    gap:18px;
+}
+
+.form-group{
+    display:flex;
+    flex-direction:column;
+}
+
+.form-group.full{
+    grid-column:1/-1;
+}
+
+label{
+    font-size:14px;
+    font-weight:bold;
+    margin-bottom:7px;
+}
+
+input,
+select,
+textarea{
+    width:100%;
+    padding:11px 12px;
+
+    border:1px solid #ccc;
+    border-radius:6px;
+
+    font-size:14px;
+    outline:none;
+}
+
+input:focus,
+select:focus,
+textarea:focus{
+    border-color:#1e3a8a;
+}
+
+textarea{
+    min-height:120px;
+    resize:vertical;
+}
+
+
+/* =========================================
+   STAFF IDENTITY
+========================================= */
+
+.identity-box{
+    background:#f8fafc;
+    border:1px solid #e2e8f0;
+
+    padding:15px;
+
+    border-radius:8px;
+
+    margin-bottom:20px;
+}
+
+.identity-title{
+    font-size:12px;
+    color:#64748b;
+    margin-bottom:8px;
+}
+
+.identity-details{
+    display:grid;
+
+    grid-template-columns:
+        repeat(3,1fr);
+
+    gap:15px;
+}
+
+.identity-item label{
+    display:block;
+    font-size:11px;
+    color:#64748b;
+    margin-bottom:3px;
+}
+
+.identity-item span{
+    font-size:14px;
+    font-weight:bold;
+}
+
+
+/* =========================================
+   BUTTON
+========================================= */
+
+.submit-btn{
+    margin-top:20px;
+
+    background:#1e3a8a;
+    color:white;
+
+    border:none;
+
+    padding:12px 25px;
+
+    border-radius:6px;
+
+    cursor:pointer;
+
+    font-size:15px;
+    font-weight:bold;
+}
+
+.submit-btn:hover{
+    background:#162d6b;
+}
+
+.submit-btn:disabled{
+    background:#999;
+    cursor:not-allowed;
+}
+
+
+/* =========================================
+   TABLE
+========================================= */
+
+.table-container{
+    overflow-x:auto;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+th{
+    background:#1e3a8a;
+    color:white;
+
+    padding:12px;
+
+    text-align:left;
+
+    font-size:13px;
+}
+
+td{
+    padding:12px;
+
+    border-bottom:1px solid #ddd;
+
+    font-size:13px;
+}
+
+tr:hover{
+    background:#f7f9fc;
+}
+
+
+/* =========================================
+   STATUS
+========================================= */
+
+.status{
+    display:inline-block;
+
+    padding:5px 10px;
+
+    border-radius:20px;
+
+    font-size:11px;
+
+    font-weight:bold;
+}
+
+.status-submitted{
+    background:#dbeafe;
+    color:#1d4ed8;
+}
+
+.status-received{
+    background:#e0e7ff;
+    color:#4338ca;
+}
+
+.status-assigned{
+    background:#fef3c7;
+    color:#92400e;
+}
+
+.status-progress{
+    background:#cffafe;
+    color:#155e75;
+}
+
+.status-hold{
+    background:#f3f4f6;
+    color:#374151;
+}
+
+.status-completed{
+    background:#dcfce7;
+    color:#166534;
+}
+
+.status-verification{
+    background:#ede9fe;
+    color:#6d28d9;
+}
+
+.status-closed{
+    background:#d1fae5;
+    color:#065f46;
+}
+
+.status-reopened{
+    background:#fee2e2;
+    color:#991b1b;
+}
+
+
+/* =========================================
+   VIEW BUTTON
+========================================= */
+
+.view-btn{
+    border:none;
+
+    background:#2563eb;
+    color:white;
+
+    padding:7px 12px;
+
+    border-radius:5px;
+
+    cursor:pointer;
+}
+
+.view-btn:hover{
+    background:#1d4ed8;
+}
+
+
+/* =========================================
+   MESSAGE
+========================================= */
+
+.message{
+    padding:12px;
+
+    border-radius:6px;
+
+    margin-bottom:15px;
+
+    display:none;
+
+    font-size:14px;
+}
+
+.success{
+    background:#dcfce7;
+    color:#166534;
+}
+
+.error{
+    background:#fee2e2;
+    color:#991b1b;
+}
+
+
+/* =========================================
+   MODAL
+========================================= */
+
+.modal{
+    display:none;
+
+    position:fixed;
+
+    z-index:1000;
+
+    left:0;
+    top:0;
+
+    width:100%;
+    height:100%;
+
+    background:rgba(0,0,0,.55);
+
+    overflow-y:auto;
+}
+
+.modal-content{
+    background:white;
+
+    width:90%;
+    max-width:850px;
+
+    margin:50px auto;
+
+    border-radius:10px;
+
+    padding:25px;
+}
+
+.modal-header{
+    display:flex;
+
+    justify-content:space-between;
+    align-items:center;
+
+    margin-bottom:20px;
+}
+
+.modal-header h3{
+    color:#1e3a8a;
+}
+
+.close-btn{
+    border:none;
+    background:transparent;
+
+    font-size:28px;
+
+    cursor:pointer;
+}
+
+
+/* =========================================
+   DETAILS
+========================================= */
+
+.detail-grid{
+    display:grid;
+
+    grid-template-columns:
+        repeat(2,1fr);
+
+    gap:15px;
+
+    margin-bottom:25px;
+}
+
+.detail-box{
+    background:#f8fafc;
+
+    padding:12px;
+
+    border-radius:6px;
+}
+
+.detail-box label{
+    display:block;
+
+    color:#666;
+
+    font-size:11px;
+
+    margin-bottom:5px;
+}
+
+.detail-box span{
+    font-size:14px;
+
+    font-weight:bold;
+}
+
+
+/* =========================================
+   TIMELINE
+========================================= */
+
+.timeline{
+    position:relative;
+
+    margin-top:20px;
+
+    padding-left:25px;
+}
+
+.timeline-item{
+    position:relative;
+
+    padding:
+        0 0 22px 20px;
+
+    border-left:
+        2px solid #cbd5e1;
+}
+
+.timeline-item:last-child{
+    border-left:none;
+}
+
+.timeline-item::before{
+    content:"";
+
+    position:absolute;
+
+    left:-7px;
+    top:0;
+
+    width:12px;
+    height:12px;
+
+    background:#2563eb;
+
+    border-radius:50%;
+}
+
+.timeline-title{
+    font-weight:bold;
+
+    margin-bottom:4px;
+}
+
+.timeline-date{
+    font-size:11px;
+
+    color:#777;
+}
+
+.timeline-remarks{
+    margin-top:5px;
+
+    font-size:13px;
+
+    color:#555;
+}
+
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media(max-width:700px){
+
+    .form-grid{
+        grid-template-columns:1fr;
+    }
+
+    .form-group.full{
+        grid-column:auto;
+    }
+
+    .detail-grid{
+        grid-template-columns:1fr;
+    }
+
+    .identity-details{
+        grid-template-columns:1fr;
+    }
+
+    .header{
+        flex-direction:column;
+
+        align-items:flex-start;
+
+        gap:10px;
+    }
+
+    .staff-info{
+        text-align:left;
+    }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<!-- =========================================
+     HEADER
+========================================= -->
+
+<div class="header">
+
+    <div>
+
+        <h2>
+            Service Request
+        </h2>
+
+        <small>
+            College ERP
+        </small>
+
+    </div>
+
+
+    <div class="staff-info">
+
+        <strong id="staffName">
+            Loading...
+        </strong>
+
+        <span id="staffDepartment">
+            Loading...
+        </span>
+
+    </div>
+
+</div>
+
+
+
+<div class="container">
+
+
+<!-- =========================================
+     MESSAGE
+========================================= -->
+
+<div
+    id="messageBox"
+    class="message"
+></div>
+
+
+
+<!-- =========================================
+     NEW REQUEST
+========================================= -->
+
+<div class="card">
+
+    <h3>
+        Raise New Service Request
+    </h3>
+
+
+    <!-- =====================================
+         AUTOMATIC STAFF INFORMATION
+    ====================================== -->
+
+    <div class="identity-box">
+
+        <div class="identity-title">
+            Requestor Information
+        </div>
+
+
+        <div class="identity-details">
+
+
+            <div class="identity-item">
+
+                <label>
+                    Staff ID
+                </label>
+
+                <span id="identityStaffId">
+                    Loading...
+                </span>
+
+            </div>
+
+
+            <div class="identity-item">
+
+                <label>
+                    Staff Name
+                </label>
+
+                <span id="identityStaffName">
+                    Loading...
+                </span>
+
+            </div>
+
+
+            <div class="identity-item">
+
+                <label>
+                    Department
+                </label>
+
+                <span id="identityDepartment">
+                    Loading...
+                </span>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+
+
+    <form id="serviceRequestForm">
+
+
+        <div class="form-grid">
+
+
+            <!-- =================================
+                 SERVICE DEPARTMENT
+            ================================== -->
+
+            <div class="form-group">
+
+                <label>
+                    Service Department *
+                </label>
+
+                <select
+                    id="serviceDepartment"
+                    required
+                >
+
+                    <option value="">
+                        Select Department
+                    </option>
+
+                    <option value="IT">
+                        IT / Computer
+                    </option>
+
+                    <option value="Maintenance">
+                        Maintenance
+                    </option>
+
+                    <option value="Electrical">
+                        Electrical
+                    </option>
+
+                    <option value="Plumbing">
+                        Plumbing
+                    </option>
+
+                    <option value="Transport">
+                        Transport
+                    </option>
+
+                    <option value="Housekeeping">
+                        Housekeeping
+                    </option>
+
+                    <option value="Security">
+                        Security
+                    </option>
+
+                    <option value="Administration">
+                        Administration
+                    </option>
+
+                </select>
+
+            </div>
+
+
+
+            <!-- =================================
+                 CATEGORY
+            ================================== -->
+
+            <div class="form-group">
+
+                <label>
+                    Request Category *
+                </label>
+
+                <select
+                    id="requestCategory"
+                    required
+                >
+
+                    <option value="">
+                        Select Category
+                    </option>
+
+                    <option value="Computer">
+                        Computer
+                    </option>
+
+                    <option value="Network">
+                        Network
+                    </option>
+
+                    <option value="Projector">
+                        Projector
+                    </option>
+
+                    <option value="Printer">
+                        Printer
+                    </option>
+
+                    <option value="Electrical">
+                        Electrical
+                    </option>
+
+                    <option value="Furniture">
+                        Furniture
+                    </option>
+
+                    <option value="Plumbing">
+                        Plumbing
+                    </option>
+
+                    <option value="Cleaning">
+                        Cleaning
+                    </option>
+
+                    <option value="Other">
+                        Other
+                    </option>
+
+                </select>
+
+            </div>
+
+
+
+            <!-- =================================
+                 TITLE
+            ================================== -->
+
+            <div class="form-group full">
+
+                <label>
+                    Request Title *
+                </label>
+
+                <input
+                    type="text"
+                    id="requestTitle"
+                    placeholder="Enter request title"
+                    required
+                >
+
+            </div>
+
+
+
+            <!-- =================================
+                 LOCATION
+            ================================== -->
+
+            <div class="form-group">
+
+                <label>
+                    Location
+                </label>
+
+                <input
+                    type="text"
+                    id="location"
+                    placeholder="Example: Room 204"
+                >
+
+            </div>
+
+
+
+            <!-- =================================
+                 PRIORITY
+            ================================== -->
+
+            <div class="form-group">
+
+                <label>
+                    Priority *
+                </label>
+
+                <select
+                    id="priority"
+                    required
+                >
+
+                    <option value="">
+                        Select Priority
+                    </option>
+
+                    <option value="Low">
+                        Low
+                    </option>
+
+                    <option value="Medium">
+                        Medium
+                    </option>
+
+                    <option value="High">
+                        High
+                    </option>
+
+                    <option value="Urgent">
+                        Urgent
+                    </option>
+
+                </select>
+
+            </div>
+
+
+
+            <!-- =================================
+                 DESCRIPTION
+            ================================== -->
+
+            <div class="form-group full">
+
+                <label>
+                    Description *
+                </label>
+
+                <textarea
+                    id="description"
+                    placeholder="Describe the problem clearly..."
+                    required
+                ></textarea>
+
+            </div>
+
+
+        </div>
+
+
+
+        <button
+            type="submit"
+            class="submit-btn"
+            id="submitBtn"
+            disabled
+        >
+            Submit Service Request
+        </button>
+
+
+    </form>
+
+</div>
+
+
+
+<!-- =========================================
+     MY REQUESTS
+========================================= -->
+
+<div class="card">
+
+    <h3>
+        My Service Requests
+    </h3>
+
+
+    <div class="table-container">
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>S.No</th>
+
+                    <th>Ticket ID</th>
+
+                    <th>Title</th>
+
+                    <th>Service Department</th>
+
+                    <th>Priority</th>
+
+                    <th>Status</th>
+
+                    <th>Date</th>
+
+                    <th>Action</th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody
+                id="requestTableBody"
+            >
+
+                <tr>
+
+                    <td
+                        colspan="8"
+                        style="text-align:center;"
+                    >
+                        Loading requests...
+                    </td>
+
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+
+</div>
+
+
+
+<!-- =========================================
+     VIEW REQUEST MODAL
+========================================= -->
+
+<div
+    id="requestModal"
+    class="modal"
+>
+
+    <div class="modal-content">
+
+
+        <div class="modal-header">
+
+            <h3>
+                Service Request Details
+            </h3>
+
+            <button
+                class="close-btn"
+                onclick="closeModal()"
+            >
+                &times;
+            </button>
+
+        </div>
+
+
+
+        <div class="detail-grid">
+
+
+            <div class="detail-box">
+
+                <label>
+                    Ticket ID
+                </label>
+
+                <span id="detailTicketId">
+                </span>
+
+            </div>
+
+
+
+            <div class="detail-box">
+
+                <label>
+                    Status
+                </label>
+
+                <span id="detailStatus">
+                </span>
+
+            </div>
+
+
+
+            <div class="detail-box">
+
+                <label>
+                    Requestor
+                </label>
+
+                <span id="detailRequestor">
+                </span>
+
+            </div>
+
+
+
+            <div class="detail-box">
+
+                <label>
+                    Requestor Department
+                </label>
+
+                <span id="detailRequestorDepartment">
+                </span>
+
+            </div>
+
+
+
+            <div class="detail-box">
+
+                <label>
+                    Service Department
+                </label>
+
+                <span id="detailDepartment">
+                </span>
+
+            </div>
+
+
+
+            <div class="detail-box">
+
+                <label>
+                    Department Head
+                </label>
+
+                <span id="detailHead">
+                </span>
+
+            </div>
+
+
+
+            <div class="detail-box">
+
+                <label>
+                    Category
+                </label>
+
+                <span id="detailCategory">
+                </span>
+
+            </div>
+
+
+
+            <div class="detail-box">
+
+                <label>
+                    Priority
+                </label>
+
+                <span id="detailPriority">
+                </span>
+
+            </div>
+
+
+
+            <div class="detail-box">
+
+                <label>
+                    Location
+                </label>
+
+                <span id="detailLocation">
+                </span>
+
+            </div>
+
+
+
+            <div class="detail-box">
+
+                <label>
+                    Assigned Worker
+                </label>
+
+                <span id="detailWorker">
+                    Not Assigned
+                </span>
+
+            </div>
+
+
+        </div>
+
+
+
+        <div class="detail-box">
+
+            <label>
+                Request Title
+            </label>
+
+            <span id="detailTitle">
+            </span>
+
+        </div>
+
+
+        <br>
+
+
+        <div class="detail-box">
+
+            <label>
+                Description
+            </label>
+
+            <span id="detailDescription">
+            </span>
+
+        </div>
+
+
+        <br>
+
+
+        <h3>
+            Request Timeline
+        </h3>
+
+
+        <div
+            class="timeline"
+            id="requestTimeline"
+        ></div>
+
+
+    </div>
+
+</div>
+
+
+
+<!-- =========================================
+     FIREBASE
+========================================= -->
+
+<script type="module">
+
+
+import {
+    initializeApp
+} from
+"https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+
+import {
+    getFirestore,
+    collection,
+    addDoc,
+    getDocs,
+    query,
+    where,
+    doc,
+    getDoc,
+    serverTimestamp,
+    writeBatch,
+    limit
+} from
+"https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+
+import {
+    getAuth,
+    onAuthStateChanged
+} from
+"https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+
+
+/* =========================================
+   FIREBASE CONFIG
+========================================= */
+
+const firebaseConfig = {
+
+    apiKey:
+        "AIzaSyAIv3091VM-gkmdwEAn7OhXWd9Cm2zh2bo",
+
+    authDomain:
+        "maasc-2026.firebaseapp.com",
+
+    projectId:
+        "maasc-2026",
+
+    storageBucket:
+        "maasc-2026.appspot.com",
+
+    messagingSenderId:
+        "585813001586",
+
+    appId:
+        "1:585813001586:web:664e0e90ff0725d2e849eb"
+
+};
+
+
+const app =
+    initializeApp(
+        firebaseConfig
+    );
+
+
+const db =
+    getFirestore(app);
+
+
+const auth =
+    getAuth(app);
+
+
+
+/* =========================================
+   CURRENT STAFF
+========================================= */
+
+let currentStaff = null;
+
+
+/* =========================================
+   INITIALIZATION FLAG
+========================================= */
+
+let staffLoaded = false;
+
+
+
+/* =========================================
+   MESSAGE
+========================================= */
+
+function showMessage(
+    text,
+    type
+){
+
+    const box =
+        document.getElementById(
+            "messageBox"
+        );
+
+
+    box.textContent =
+        text;
+
+
+    box.className =
+        "message " + type;
+
+
+    box.style.display =
+        "block";
+
+
+    setTimeout(
+        function(){
+
+            box.style.display =
+                "none";
+
+        },
+        5000
+    );
+
+}
+
+
+
+/* =========================================
+   NORMALIZE STAFF DATA
+========================================= */
+
+function normalizeStaff(
+    data,
+    documentId
+){
+
+    if(!data){
+
+        return null;
+
+    }
+
+
+    const staffId =
+        data.staffId ||
+        data.staffID ||
+        data.id ||
+        documentId ||
+        "";
+
+
+    const staffName =
+        data.name ||
+        data.staffName ||
+        data.fullName ||
+        data.displayName ||
+        "";
+
+
+    const department =
+        data.department ||
+        data.dept ||
+        "";
+
+
+    const email =
+        data.email ||
+        data.mail ||
+        "";
+
+
+    if(
+        !staffId ||
+        !staffName ||
+        !department
+    ){
+
+        return null;
+
+    }
+
+
+    return {
+
+        staffId:
+            String(staffId),
+
+        staffName:
+            String(staffName),
+
+        department:
+            String(department),
+
+        email:
+            String(email)
+
+    };
+
+}
+
+
+
+/* =========================================
+   LOAD STAFF BY STAFF ID
+========================================= */
+
+async function loadStaffById(
+    staffId
+){
+
+    if(!staffId){
+
+        return null;
+
+    }
+
+
+    try{
+
+        const staffRef =
+            doc(
+                db,
+                "staff",
+                staffId
+            );
+
+
+        const snapshot =
+            await getDoc(
+                staffRef
+            );
+
+
+        if(
+            snapshot.exists()
+        ){
+
+            return normalizeStaff(
+                snapshot.data(),
+                snapshot.id
+            );
+
+        }
+
+    }
+
+    catch(error){
+
+        console.error(
+            "Staff ID lookup error:",
+            error
+        );
+
+    }
+
+
+    return null;
+
+}
+
+
+
+/* =========================================
+   LOAD STAFF BY EMAIL
+========================================= */
+
+async function loadStaffByEmail(
+    email
+){
+
+    if(!email){
+
+        return null;
+
+    }
+
+
+    try{
+
+        const q =
+            query(
+
+                collection(
+                    db,
+                    "staff"
+                ),
+
+                where(
+                    "email",
+                    "==",
+                    email
+                ),
+
+                limit(1)
+
+            );
+
+
+        const snapshot =
+            await getDocs(q);
+
+
+        if(
+            !snapshot.empty
+        ){
+
+            const staffDoc =
+                snapshot.docs[0];
+
+
+            return normalizeStaff(
+                staffDoc.data(),
+                staffDoc.id
+            );
+
+        }
+
+    }
+
+    catch(error){
+
+        console.error(
+            "Staff email lookup error:",
+            error
+        );
+
+    }
+
+
+    return null;
+
+}
+
+
+
+/* =========================================
+   LOAD STAFF FROM SAVED LOGIN DATA
+========================================= */
+
+async function loadStaffFromStorage(){
+
+    let possibleStaffIds = [];
+
+    let possibleEmails = [];
+
+
+    const storageNames = [
+
+        "currentStaff",
+        "loggedInStaff",
+        "staff",
+        "staffData",
+        "user",
+        "currentUser"
+
+    ];
+
+
+    for(
+        const storageName of storageNames
+    ){
+
+        try{
+
+            const raw =
+                sessionStorage.getItem(
+                    storageName
+                );
+
+
+            if(!raw){
+
+                continue;
+
+            }
+
+
+            try{
+
+                const parsed =
+                    JSON.parse(raw);
+
+
+                if(
+                    parsed &&
+                    typeof parsed === "object"
+                ){
+
+                    if(
+                        parsed.staffId
+                    ){
+
+                        possibleStaffIds.push(
+                            parsed.staffId
+                        );
+
+                    }
+
+                    if(
+                        parsed.staffID
+                    ){
+
+                        possibleStaffIds.push(
+                            parsed.staffID
+                        );
+
+                    }
+
+                    if(
+                        parsed.id &&
+                        String(parsed.id)
+                            .toUpperCase()
+                            .startsWith("S")
+                    ){
+
+                        possibleStaffIds.push(
+                            parsed.id
+                        );
+
+                    }
+
+                    if(
+                        parsed.email
+                    ){
+
+                        possibleEmails.push(
+                            parsed.email
+                        );
+
+                    }
+
+                }
+
+            }
+
+            catch{
+
+                if(
+                    raw.includes("@")
+                ){
+
+                    possibleEmails.push(
+                        raw
+                    );
+
+                }
+                else{
+
+                    possibleStaffIds.push(
+                        raw
+                    );
+
+                }
+
+            }
+
+        }
+
+        catch{
+
+        }
+
+    }
+
+
+
+    for(
+        const storageName of storageNames
+    ){
+
+        try{
+
+            const raw =
+                localStorage.getItem(
+                    storageName
+                );
+
+
+            if(!raw){
+
+                continue;
+
+            }
+
+
+            try{
+
+                const parsed =
+                    JSON.parse(raw);
+
+
+                if(
+                    parsed &&
+                    typeof parsed === "object"
+                ){
+
+                    if(
+                        parsed.staffId
+                    ){
+
+                        possibleStaffIds.push(
+                            parsed.staffId
+                        );
+
+                    }
+
+                    if(
+                        parsed.staffID
+                    ){
+
+                        possibleStaffIds.push(
+                            parsed.staffID
+                        );
+
+                    }
+
+                    if(
+                        parsed.email
+                    ){
+
+                        possibleEmails.push(
+                            parsed.email
+                        );
+
+                    }
+
+                }
+
+            }
+
+            catch{
+
+                if(
+                    raw.includes("@")
+                ){
+
+                    possibleEmails.push(
+                        raw
+                    );
+
+                }
+                else{
+
+                    possibleStaffIds.push(
+                        raw
+                    );
+
+                }
+
+            }
+
+        }
+
+        catch{
+
+        }
+
+    }
+
+
+
+    possibleStaffIds =
+        [...new Set(
+            possibleStaffIds
+        )];
+
+
+    possibleEmails =
+        [...new Set(
+            possibleEmails
+        )];
+
+
+
+    for(
+        const staffId
+        of possibleStaffIds
+    ){
+
+        const staff =
+            await loadStaffById(
+                staffId
+            );
+
+
+        if(staff){
+
+            return staff;
+
+        }
+
+    }
+
+
+
+    for(
+        const email
+        of possibleEmails
+    ){
+
+        const staff =
+            await loadStaffByEmail(
+                email
+            );
+
+
+        if(staff){
+
+            return staff;
+
+        }
+
+    }
+
+
+    return null;
+
+}
+
+
+
+/* =========================================
+   LOAD LOGGED IN STAFF
+========================================= */
+
+async function loadLoggedInStaff(){
+
+    let staff =
+        await loadStaffFromStorage();
+
+
+    if(staff){
+
+        setCurrentStaff(
+            staff
+        );
+
+        return;
+
+    }
+
+
+
+    /*
+       If your existing ERP uses Firebase
+       Authentication, try the authenticated
+       user's email.
+    */
+
+    const firebaseUser =
+        auth.currentUser;
+
+
+    if(firebaseUser){
+
+        staff =
+            await loadStaffByEmail(
+                firebaseUser.email
+            );
+
+
+        if(staff){
+
+            setCurrentStaff(
+                staff
+            );
+
+            return;
+
+        }
+
+    }
+
+
+
+    /*
+       Wait for Firebase Authentication
+       state to become available.
+    */
+
+    onAuthStateChanged(
+        auth,
+        async function(user){
+
+            if(
+                currentStaff
+            ){
+
+                return;
+
+            }
+
+
+            if(!user){
+
+                showIdentityError(
+                    "Staff login information was not found."
+                );
+
+                return;
+
+            }
+
+
+            const staff =
+                await loadStaffByEmail(
+                    user.email
+                );
+
+
+            if(!staff){
+
+                showIdentityError(
+                    "Logged-in staff was not found in the staff collection."
+                );
+
+                return;
+
+            }
+
+
+            setCurrentStaff(
+                staff
+            );
+
+        }
+    );
+
+}
+
+
+
+/* =========================================
+   SET CURRENT STAFF
+========================================= */
+
+function setCurrentStaff(
+    staff
+){
+
+    currentStaff =
+        staff;
+
+
+    staffLoaded =
+        true;
+
+
+    document.getElementById(
+        "staffName"
+    ).textContent =
+        staff.staffName;
+
+
+    document.getElementById(
+        "staffDepartment"
+    ).textContent =
+        staff.department;
+
+
+    document.getElementById(
+        "identityStaffId"
+    ).textContent =
+        staff.staffId;
+
+
+    document.getElementById(
+        "identityStaffName"
+    ).textContent =
+        staff.staffName;
+
+
+    document.getElementById(
+        "identityDepartment"
+    ).textContent =
+        staff.department;
+
+
+    document.getElementById(
+        "submitBtn"
+    ).disabled =
+        false;
+
+
+    loadMyRequests();
+
+}
+
+
+
+/* =========================================
+   IDENTITY ERROR
+========================================= */
+
+function showIdentityError(
+    message
+){
+
+    document.getElementById(
+        "staffName"
+    ).textContent =
+        "Staff Login Not Found";
+
+
+    document.getElementById(
+        "staffDepartment"
+    ).textContent =
+        "";
+
+
+    document.getElementById(
+        "identityStaffId"
+    ).textContent =
+        "-";
+
+
+    document.getElementById(
+        "identityStaffName"
+    ).textContent =
+        "-";
+
+
+    document.getElementById(
+        "identityDepartment"
+    ).textContent =
+        "-";
+
+
+    document.getElementById(
+        "submitBtn"
+    ).disabled =
+        true;
+
+
+    showMessage(
+        message,
+        "error"
+    );
+
+}
+
+
+
+/* =========================================
+   GENERATE UNIQUE TICKET ID
+========================================= */
+
+function generateTicketId(){
+
+    const now =
+        new Date();
+
+
+    const year =
+        now.getFullYear();
+
+
+    const month =
+        String(
+            now.getMonth() + 1
+        ).padStart(
+            2,
+            "0"
+        );
+
+
+    const day =
+        String(
+            now.getDate()
+        ).padStart(
+            2,
+            "0"
+        );
+
+
+    const hours =
+        String(
+            now.getHours()
+        ).padStart(
+            2,
+            "0"
+        );
+
+
+    const minutes =
+        String(
+            now.getMinutes()
+        ).padStart(
+            2,
+            "0"
+        );
+
+
+    const seconds =
+        String(
+            now.getSeconds()
+        ).padStart(
+            2,
+            "0"
+        );
+
+
+    const random =
+        Math.floor(
+            Math.random() * 900
+        ) + 100;
+
+
+    return `SR-${year}${month}${day}-${hours}${minutes}${seconds}-${random}`;
+
+}
+
+
+
+/* =========================================
+   FIND DEPARTMENT HEAD
+========================================= */
+
+async function findDepartmentHead(
+    serviceDepartment
+){
+
+    if(!serviceDepartment){
+
+        throw new Error(
+            "Service department is required."
+        );
+
+    }
+
+
+    /*
+       Expected collection:
+
+       departmentHeads
+
+       Example:
+
+       {
+           department: "IT",
+           headId: "SHT041",
+           headName: "Department Head",
+           active: true
+       }
+    */
+
+
+    const q =
+        query(
+
+            collection(
+                db,
+                "departmentHeads"
+            ),
+
+            where(
+                "department",
+                "==",
+                serviceDepartment
+            ),
+
+            where(
+                "active",
+                "==",
+                true
+            ),
+
+            limit(1)
+
+        );
+
+
+    const snapshot =
+        await getDocs(q);
+
+
+    if(
+        snapshot.empty
+    ){
+
+        throw new Error(
+            "No active Department Head is configured for " +
+            serviceDepartment +
+            ". Please contact the administrator."
+        );
+
+    }
+
+
+    const headDoc =
+        snapshot.docs[0];
+
+
+    const data =
+        headDoc.data();
+
+
+    const headId =
+        data.headId ||
+        data.staffId ||
+        headDoc.id;
+
+
+    const headName =
+        data.headName ||
+        data.name ||
+        data.staffName;
+
+
+    if(
+        !headId ||
+        !headName
+    ){
+
+        throw new Error(
+            "Department Head record is incomplete for " +
+            serviceDepartment +
+            "."
+        );
+
+    }
+
+
+    return {
+
+        headId:
+            String(headId),
+
+        headName:
+            String(headName),
+
+        department:
+            serviceDepartment
+
+    };
+
+}
+
+
+
+/* =========================================
+   SUBMIT REQUEST
+========================================= */
+
+document
+.getElementById(
+    "serviceRequestForm"
+)
+.addEventListener(
+    "submit",
+    async function(event){
+
+        event.preventDefault();
+
+
+        if(
+            !currentStaff ||
+            !staffLoaded
+        ){
+
+            showMessage(
+                "Staff information is not loaded. Please login again.",
+                "error"
+            );
+
+            return;
+
+        }
+
+
+        const submitBtn =
+            document.getElementById(
+                "submitBtn"
+            );
+
+
+        if(
+            submitBtn.disabled
+        ){
+
+            return;
+
+        }
+
+
+        submitBtn.disabled =
+            true;
+
+
+        submitBtn.textContent =
+            "Submitting...";
+
+
+        try{
+
+
+            /* =================================
+               READ FORM
+            ================================= */
+
+            const serviceDepartment =
+                document.getElementById(
+                    "serviceDepartment"
+                ).value.trim();
+
+
+            const requestCategory =
+                document.getElementById(
+                    "requestCategory"
+                ).value.trim();
+
+
+            const requestTitle =
+                document.getElementById(
+                    "requestTitle"
+                ).value.trim();
+
+
+            const location =
+                document.getElementById(
+                    "location"
+                ).value.trim();
+
+
+            const priority =
+                document.getElementById(
+                    "priority"
+                ).value.trim();
+
+
+            const description =
+                document.getElementById(
+                    "description"
+                ).value.trim();
+
+
+
+            if(
+                !serviceDepartment ||
+                !requestCategory ||
+                !requestTitle ||
+                !priority ||
+                !description
+            ){
+
+                throw new Error(
+                    "Please fill all required fields."
+                );
+
+            }
+
+
+
+            /* =================================
+               FIND DEPARTMENT HEAD
+            ================================= */
+
+            submitBtn.textContent =
+                "Finding Department Head...";
+
+
+            const head =
+                await findDepartmentHead(
+                    serviceDepartment
+                );
+
+
+
+            /* =================================
+               CREATE TICKET ID
+            ================================= */
+
+            const ticketId =
+                generateTicketId();
+
+
+
+            /* =================================
+               REQUEST DATA
+            ================================= */
+
+            const requestData = {
+
+                ticketId:
+                    ticketId,
+
+                requestorId:
+                    currentStaff.staffId,
+
+                requestorName:
+                    currentStaff.staffName,
+
+                requestorDepartment:
+                    currentStaff.department,
+
+                requestorEmail:
+                    currentStaff.email || "",
+
+
+                serviceDepartment:
+                    serviceDepartment,
+
+                category:
+                    requestCategory,
+
+                title:
+                    requestTitle,
+
+                description:
+                    description,
+
+                location:
+                    location,
+
+                priority:
+                    priority,
+
+
+                status:
+                    "SUBMITTED",
+
+
+                assignedHeadId:
+                    head.headId,
+
+                assignedHeadName:
+                    head.headName,
+
+
+                assignedWorkerId:
+                    null,
+
+                assignedWorkerName:
+                    null,
+
+
+                createdAt:
+                    serverTimestamp(),
+
+                updatedAt:
+                    serverTimestamp(),
+
+                closedAt:
+                    null
+
+            };
+
+
+
+            /* =================================
+               CREATE BATCH
+            ================================= */
+
+            submitBtn.textContent =
+                "Creating Ticket...";
+
+
+            const batch =
+                writeBatch(db);
+
+
+
+            const requestRef =
+                doc(
+                    collection(
+                        db,
+                        "serviceRequests"
+                    )
+                );
+
+
+
+            batch.set(
+                requestRef,
+                requestData
+            );
+
+
+
+            /* =================================
+               TIMELINE
+            ================================= */
+
+            const timelineRef =
+                doc(
+                    collection(
+                        db,
+                        "serviceRequests",
+                        requestRef.id,
+                        "timeline"
+                    )
+                );
+
+
+            batch.set(
+                timelineRef,
+                {
+
+                    action:
+                        "REQUEST_CREATED",
+
+                    title:
+                        "Service request submitted",
+
+                    description:
+                        "Request submitted by " +
+                        currentStaff.staffName +
+                        " and routed to " +
+                        head.headName,
+
+                    performedById:
+                        currentStaff.staffId,
+
+                    performedByName:
+                        currentStaff.staffName,
+
+                    performedByRole:
+                        "STAFF",
+
+                    timestamp:
+                        serverTimestamp()
+
+                }
+            );
+
+
+
+            /* =================================
+               SAVE BOTH AT ONCE
+            ================================= */
+
+            submitBtn.textContent =
+                "Saving...";
+
+
+            await batch.commit();
+
+
+
+            /* =================================
+               SUCCESS
+            ================================= */
+
+            document
+            .getElementById(
+                "serviceRequestForm"
+            )
+            .reset();
+
+
+            showMessage(
+
+                "Service Request created successfully. Ticket ID: " +
+                ticketId +
+                ". Assigned to " +
+                head.headName +
+                ".",
+
+                "success"
+
+            );
+
+
+            await loadMyRequests();
+
+
+        }
+
+        catch(error){
+
+            console.error(
+                "SERVICE REQUEST ERROR:",
+                error
+            );
+
+
+            let message =
+                error?.message ||
+                "Unable to submit service request.";
+
+
+            if(
+                error?.code ===
+                "permission-denied"
+            ){
+
+                message =
+                    "Firebase permission denied. Check your Firestore security rules.";
+
+            }
+
+
+            if(
+                error?.code ===
+                "failed-precondition"
+            ){
+
+                message =
+                    "Firestore configuration/index problem: " +
+                    error.message;
+
+            }
+
+
+            showMessage(
+                message,
+                "error"
+            );
+
+        }
+
+        finally{
+
+            submitBtn.disabled =
+                !staffLoaded;
+
+
+            submitBtn.textContent =
+                "Submit Service Request";
+
+        }
+
+    }
+);
+
+
+
+/* =========================================
+   LOAD MY REQUESTS
+========================================= */
+
+async function loadMyRequests(){
+
+    if(
+        !currentStaff
+    ){
+
+        return;
+
+    }
+
+
+    const tbody =
+        document.getElementById(
+            "requestTableBody"
+        );
+
+
+    tbody.innerHTML = `
+
+        <tr>
+
+            <td
+                colspan="8"
+                style="text-align:center;"
+            >
+                Loading requests...
+            </td>
+
+        </tr>
+
+    `;
+
+
+    try{
+
+        const q =
+            query(
+
+                collection(
+                    db,
+                    "serviceRequests"
+                ),
+
+                where(
+                    "requestorId",
+                    "==",
+                    currentStaff.staffId
+                )
+
+            );
+
+
+        const snapshot =
+            await getDocs(q);
+
+
+        if(
+            snapshot.empty
+        ){
+
+            tbody.innerHTML = `
+
+                <tr>
+
+                    <td
+                        colspan="8"
+                        style="text-align:center;"
+                    >
+                        No service requests found
+                    </td>
+
+                </tr>
+
+            `;
+
+            return;
+
+        }
+
+
+        let requests = [];
+
+
+        snapshot.forEach(
+            function(item){
+
+                requests.push({
+
+                    id:
+                        item.id,
+
+                    ...item.data()
+
+                });
+
+            }
+        );
+
+
+
+        requests.sort(
+            function(a,b){
+
+                const dateA =
+                    a.createdAt?.seconds || 0;
+
+
+                const dateB =
+                    b.createdAt?.seconds || 0;
+
+
+                return dateB - dateA;
+
+            }
+        );
+
+
+        tbody.innerHTML = "";
+
+
+        requests.forEach(
+            function(
+                request,
+                index
+            ){
+
+                const tr =
+                    document.createElement(
+                        "tr"
+                    );
+
+
+                tr.innerHTML = `
+
+                    <td>
+                        ${index + 1}
+                    </td>
+
+                    <td>
+                        <strong>
+                            ${escapeHtml(
+                                request.ticketId
+                            )}
+                        </strong>
+                    </td>
+
+                    <td>
+                        ${escapeHtml(
+                            request.title || ""
+                        )}
+                    </td>
+
+                    <td>
+                        ${escapeHtml(
+                            request.serviceDepartment || ""
+                        )}
+                    </td>
+
+                    <td>
+                        ${escapeHtml(
+                            request.priority || ""
+                        )}
+                    </td>
+
+                    <td>
+                        ${getStatusBadge(
+                            request.status
+                        )}
+                    </td>
+
+                    <td>
+                        ${formatDate(
+                            request.createdAt
+                        )}
+                    </td>
+
+                    <td>
+
+                        <button
+                            class="view-btn"
+                            onclick="viewRequest('${request.id}')"
+                        >
+                            Track
+                        </button>
+
+                    </td>
+
+                `;
+
+
+                tbody.appendChild(
+                    tr
+                );
+
+            }
+        );
+
+    }
+
+    catch(error){
+
+        console.error(
+            "Load Requests Error:",
+            error
+        );
+
+
+        tbody.innerHTML = `
+
+            <tr>
+
+                <td
+                    colspan="8"
+                    style="text-align:center;color:red;"
+                >
+                    Failed to load requests.
+                    ${escapeHtml(
+                        error.message || ""
+                    )}
+                </td>
+
+            </tr>
+
+        `;
+
+    }
+
+}
+
+
+
+/* =========================================
+   STATUS BADGE
+========================================= */
+
+function getStatusBadge(
+    status
+){
+
+    let className =
+        "status-submitted";
+
+
+    let text =
+        status || "SUBMITTED";
+
+
+    switch(status){
+
+        case "SUBMITTED":
+
+            className =
+                "status-submitted";
+
+            break;
+
+
+        case "RECEIVED":
+
+            className =
+                "status-received";
+
+            break;
+
+
+        case "ASSIGNED":
+
+            className =
+                "status-assigned";
+
+            break;
+
+
+        case "IN_PROGRESS":
+
+            className =
+                "status-progress";
+
+            break;
+
+
+        case "ON_HOLD":
+
+            className =
+                "status-hold";
+
+            break;
+
+
+        case "WORK_COMPLETED":
+
+            className =
+                "status-completed";
+
+            break;
+
+
+        case "HEAD_VERIFICATION":
+
+            className =
+                "status-verification";
+
+            break;
+
+
+        case "CLOSED":
+
+            className =
+                "status-closed";
+
+            break;
+
+
+        case "REOPENED":
+
+            className =
+                "status-reopened";
+
+            break;
+
+    }
+
+
+    text =
+        text.replaceAll(
+            "_",
+            " "
+        );
+
+
+    return `
+
+        <span
+            class="status ${className}"
+        >
+            ${escapeHtml(text)}
+        </span>
+
+    `;
+
+}
+
+
+
+/* =========================================
+   VIEW REQUEST
+========================================= */
+
+window.viewRequest =
+async function(
+    requestId
+){
+
+    try{
+
+        const requestRef =
+            doc(
+                db,
+                "serviceRequests",
+                requestId
+            );
+
+
+        const requestSnap =
+            await getDoc(
+                requestRef
+            );
+
+
+        if(
+            !requestSnap.exists()
+        ){
+
+            alert(
+                "Request not found."
+            );
+
+            return;
+
+        }
+
+
+        const request =
+            requestSnap.data();
+
+
+
+        document.getElementById(
+            "detailTicketId"
+        ).textContent =
+            request.ticketId || "-";
+
+
+        document.getElementById(
+            "detailStatus"
+        ).innerHTML =
+            getStatusBadge(
+                request.status
+            );
+
+
+        document.getElementById(
+            "detailRequestor"
+        ).textContent =
+            request.requestorName || "-";
+
+
+        document.getElementById(
+            "detailRequestorDepartment"
+        ).textContent =
+            request.requestorDepartment || "-";
+
+
+        document.getElementById(
+            "detailDepartment"
+        ).textContent =
+            request.serviceDepartment || "-";
+
+
+        document.getElementById(
+            "detailHead"
+        ).textContent =
+            request.assignedHeadName ||
+            "Not Assigned";
+
+
+        document.getElementById(
+            "detailCategory"
+        ).textContent =
+            request.category || "-";
+
+
+        document.getElementById(
+            "detailPriority"
+        ).textContent =
+            request.priority || "-";
+
+
+        document.getElementById(
+            "detailLocation"
+        ).textContent =
+            request.location || "-";
+
+
+        document.getElementById(
+            "detailWorker"
+        ).textContent =
+            request.assignedWorkerName ||
+            "Not Assigned";
+
+
+        document.getElementById(
+            "detailTitle"
+        ).textContent =
+            request.title || "-";
+
+
+        document.getElementById(
+            "detailDescription"
+        ).textContent =
+            request.description || "-";
+
+
+
+        await loadTimeline(
+            requestId
+        );
+
+
+        document.getElementById(
+            "requestModal"
+        ).style.display =
+            "block";
+
+    }
+
+    catch(error){
+
+        console.error(
+            "View Request Error:",
+            error
+        );
+
+
+        alert(
+            "Unable to load request details.\n\n" +
+            error.message
+        );
+
+    }
+
+};
+
+
+
+/* =========================================
+   LOAD TIMELINE
+========================================= */
+
+async function loadTimeline(
+    requestId
+){
+
+    const timeline =
+        document.getElementById(
+            "requestTimeline"
+        );
+
+
+    timeline.innerHTML =
+        "<p>Loading timeline...</p>";
+
+
+    try{
+
+        const timelineRef =
+            collection(
+
+                db,
+
+                "serviceRequests",
+
+                requestId,
+
+                "timeline"
+
+            );
+
+
+        const snapshot =
+            await getDocs(
+                timelineRef
+            );
+
+
+        let entries = [];
+
+
+        snapshot.forEach(
+            function(item){
+
+                entries.push({
+
+                    id:
+                        item.id,
+
+                    ...item.data()
+
+                });
+
+            }
+        );
+
+
+        entries.sort(
+            function(a,b){
+
+                const dateA =
+                    a.timestamp?.seconds || 0;
+
+
+                const dateB =
+                    b.timestamp?.seconds || 0;
+
+
+                return dateA - dateB;
+
+            }
+        );
+
+
+        timeline.innerHTML =
+            "";
+
+
+        if(
+            entries.length === 0
+        ){
+
+            timeline.innerHTML =
+                "<p>No timeline available.</p>";
+
+            return;
+
+        }
+
+
+        entries.forEach(
+            function(entry){
+
+                const item =
+                    document.createElement(
+                        "div"
+                    );
+
+
+                item.className =
+                    "timeline-item";
+
+
+                item.innerHTML = `
+
+                    <div class="timeline-title">
+
+                        ${escapeHtml(
+                            entry.title ||
+                            entry.action ||
+                            "Update"
+                        )}
+
+                    </div>
+
+
+                    <div class="timeline-date">
+
+                        ${formatDateTime(
+                            entry.timestamp
+                        )}
+
+                        ${entry.performedByName
+                            ? " • " +
+                              escapeHtml(
+                                  entry.performedByName
+                              )
+                            : ""
+                        }
+
+                    </div>
+
+
+                    <div class="timeline-remarks">
+
+                        ${escapeHtml(
+                            entry.description || ""
+                        )}
+
+                    </div>
+
+                `;
+
+
+                timeline.appendChild(
+                    item
+                );
+
+            }
+        );
+
+    }
+
+    catch(error){
+
+        console.error(
+            "Timeline Error:",
+            error
+        );
+
+
+        timeline.innerHTML =
+            "<p>Unable to load timeline.</p>";
+
+    }
+
+}
+
+
+
+/* =========================================
+   FORMAT DATE
+========================================= */
+
+function formatDate(
+    timestamp
+){
+
+    if(!timestamp){
+
+        return "-";
+
+    }
+
+
+    try{
+
+        return timestamp
+            .toDate()
+            .toLocaleDateString(
+                "en-IN"
+            );
+
+    }
+
+    catch{
+
+        return "-";
+
+    }
+
+}
+
+
+
+/* =========================================
+   FORMAT DATE TIME
+========================================= */
+
+function formatDateTime(
+    timestamp
+){
+
+    if(!timestamp){
+
+        return "-";
+
+    }
+
+
+    try{
+
+        return timestamp
+            .toDate()
+            .toLocaleString(
+                "en-IN"
+            );
+
+    }
+
+    catch{
+
+        return "-";
+
+    }
+
+}
+
+
+
+/* =========================================
+   ESCAPE HTML
+========================================= */
+
+function escapeHtml(
+    value
+){
+
+    if(
+        value === undefined ||
+        value === null
+    ){
+
+        return "";
+
+    }
+
+
+    return String(value)
+
+        .replaceAll(
+            "&",
+            "&amp;"
+        )
+
+        .replaceAll(
+            "<",
+            "&lt;"
+        )
+
+        .replaceAll(
+            ">",
+            "&gt;"
+        )
+
+        .replaceAll(
+            '"',
+            "&quot;"
+        )
+
+        .replaceAll(
+            "'",
+            "&#039;"
+        );
+
+}
+
+
+
+/* =========================================
+   CLOSE MODAL
+========================================= */
+
+window.closeModal =
+function(){
+
+    document.getElementById(
+        "requestModal"
+    ).style.display =
+        "none";
+
+};
+
+
+
+/* =========================================
+   CLOSE MODAL OUTSIDE
+========================================= */
+
+window.addEventListener(
+    "click",
+    function(event){
+
+        const modal =
+            document.getElementById(
+                "requestModal"
+            );
+
+
+        if(
+            event.target === modal
+        ){
+
+            modal.style.display =
+                "none";
+
+        }
+
+    }
+);
+
+
+
+/* =========================================
+   START
+========================================= */
+
+loadLoggedInStaff();
+
+
+</script>
+
+</body>
+
+</html>
