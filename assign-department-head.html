@@ -1,0 +1,1331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Assign Department Head</title>
+
+<style>
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+    font-family:Arial,sans-serif;
+}
+
+body{
+    background:#f4f6f9;
+    color:#222;
+}
+
+.header{
+    background:#1e3a8a;
+    color:#fff;
+    padding:20px 28px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:20px;
+}
+
+.header h2{
+    font-size:23px;
+    margin-bottom:5px;
+}
+
+.header small{
+    opacity:.9;
+}
+
+.admin-info{
+    text-align:right;
+    font-size:13px;
+}
+
+.container{
+    width:94%;
+    max-width:1200px;
+    margin:28px auto;
+}
+
+.message{
+    display:none;
+    padding:13px 16px;
+    border-radius:7px;
+    margin-bottom:18px;
+    font-weight:bold;
+}
+
+.message.success{
+    display:block;
+    background:#dcfce7;
+    color:#166534;
+}
+
+.message.error{
+    display:block;
+    background:#fee2e2;
+    color:#991b1b;
+}
+
+.message.info{
+    display:block;
+    background:#dbeafe;
+    color:#1e40af;
+}
+
+.card{
+    background:#fff;
+    padding:25px;
+    border-radius:12px;
+    box-shadow:0 2px 12px rgba(0,0,0,.08);
+    margin-bottom:24px;
+}
+
+.card h3{
+    color:#1e3a8a;
+    margin-bottom:20px;
+}
+
+.form-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:18px;
+}
+
+.form-group{
+    display:flex;
+    flex-direction:column;
+}
+
+.form-group.full{
+    grid-column:1/-1;
+}
+
+label{
+    font-size:13px;
+    font-weight:bold;
+    margin-bottom:7px;
+}
+
+select,
+input{
+    width:100%;
+    padding:11px 12px;
+    border:1px solid #cbd5e1;
+    border-radius:7px;
+    outline:none;
+    background:#fff;
+}
+
+select:focus,
+input:focus{
+    border-color:#2563eb;
+}
+
+.staff-info{
+    display:none;
+    margin-top:18px;
+    padding:16px;
+    background:#f8fafc;
+    border-radius:8px;
+    border:1px solid #e2e8f0;
+}
+
+.staff-info.show{
+    display:block;
+}
+
+.info-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:12px;
+}
+
+.info-box{
+    background:#fff;
+    padding:12px;
+    border-radius:7px;
+    border:1px solid #e2e8f0;
+}
+
+.info-box span{
+    display:block;
+    color:#64748b;
+    font-size:11px;
+    margin-bottom:5px;
+}
+
+.info-box strong{
+    font-size:14px;
+}
+
+.actions{
+    display:flex;
+    gap:10px;
+    margin-top:20px;
+    flex-wrap:wrap;
+}
+
+button{
+    border:none;
+    padding:11px 18px;
+    border-radius:7px;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+.primary{
+    background:#16a34a;
+    color:#fff;
+}
+
+.primary:hover{
+    background:#15803d;
+}
+
+.secondary{
+    background:#64748b;
+    color:#fff;
+}
+
+.danger{
+    background:#dc2626;
+    color:#fff;
+}
+
+button:disabled{
+    opacity:.55;
+    cursor:not-allowed;
+}
+
+.table-container{
+    overflow-x:auto;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+th{
+    background:#1e3a8a;
+    color:#fff;
+    padding:12px;
+    text-align:left;
+    font-size:13px;
+}
+
+td{
+    padding:12px;
+    border-bottom:1px solid #e2e8f0;
+    font-size:13px;
+}
+
+tr:hover{
+    background:#f8fafc;
+}
+
+.badge{
+    display:inline-block;
+    padding:5px 9px;
+    border-radius:20px;
+    font-size:11px;
+    font-weight:bold;
+}
+
+.active{
+    background:#dcfce7;
+    color:#166534;
+}
+
+.empty{
+    text-align:center;
+    color:#64748b;
+    padding:25px;
+}
+
+.loading{
+    color:#64748b;
+    padding:12px 0;
+}
+
+@media(max-width:800px){
+    .form-grid,
+    .info-grid{
+        grid-template-columns:1fr;
+    }
+
+    .form-group.full{
+        grid-column:auto;
+    }
+
+    .header{
+        flex-direction:column;
+        align-items:flex-start;
+    }
+
+    .admin-info{
+        text-align:left;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">
+    <div>
+        <h2>Department Head Assignment</h2>
+        <small>Assign an existing staff member as Department Head</small>
+    </div>
+
+    <div class="admin-info">
+        <strong>MAASC ERP</strong><br>
+        Service Request Management
+    </div>
+</div>
+
+<div class="container">
+
+    <div id="messageBox" class="message"></div>
+
+    <div class="card">
+        <h3>Assign Department Head</h3>
+
+        <div class="form-grid">
+
+            <div class="form-group">
+                <label for="departmentSelect">Department</label>
+                <select id="departmentSelect">
+                    <option value="">Loading departments...</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="staffSelect">Existing Staff</label>
+                <select id="staffSelect" disabled>
+                    <option value="">Select department first</option>
+                </select>
+            </div>
+
+        </div>
+
+        <div id="staffInfo" class="staff-info">
+
+            <div class="info-grid">
+
+                <div class="info-box">
+                    <span>Staff ID</span>
+                    <strong id="selectedStaffId">-</strong>
+                </div>
+
+                <div class="info-box">
+                    <span>Staff Name</span>
+                    <strong id="selectedStaffName">-</strong>
+                </div>
+
+                <div class="info-box">
+                    <span>Department</span>
+                    <strong id="selectedStaffDepartment">-</strong>
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="actions">
+            <button
+                id="assignBtn"
+                class="primary"
+                disabled
+                onclick="assignDepartmentHead()"
+            >
+                Assign as Department Head
+            </button>
+
+            <button
+                class="secondary"
+                onclick="clearSelection()"
+            >
+                Clear
+            </button>
+        </div>
+    </div>
+
+
+    <div class="card">
+        <h3>Current Department Heads</h3>
+
+        <div class="table-container">
+
+            <table>
+
+                <thead>
+                    <tr>
+                        <th>S.No</th>
+                        <th>Department</th>
+                        <th>Head ID</th>
+                        <th>Head Name</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+
+                <tbody id="headsTableBody">
+                    <tr>
+                        <td colspan="6" class="empty">
+                            Loading...
+                        </td>
+                    </tr>
+                </tbody>
+
+            </table>
+
+        </div>
+    </div>
+
+</div>
+
+
+<script type="module">
+
+import {
+    initializeApp
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+import {
+    getFirestore,
+    collection,
+    getDocs,
+    doc,
+    setDoc,
+    deleteDoc,
+    serverTimestamp
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+
+/* =====================================================
+   FIREBASE
+===================================================== */
+
+const firebaseConfig = {
+    apiKey: "AIzaSyAIv3091VM-gkmdwEAn7OhXWd9Cm2zh2bo",
+    authDomain: "maasc-2026.firebaseapp.com",
+    projectId: "maasc-2026",
+    storageBucket: "maasc-2026.appspot.com",
+    messagingSenderId: "585813001586",
+    appId: "1:585813001586:web:664e0e90ff0725d2e849eb"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+
+/* =====================================================
+   GLOBAL DATA
+===================================================== */
+
+let allStaff = [];
+let departments = [];
+let currentHeads = [];
+
+const departmentSelect =
+    document.getElementById("departmentSelect");
+
+const staffSelect =
+    document.getElementById("staffSelect");
+
+const assignBtn =
+    document.getElementById("assignBtn");
+
+const staffInfo =
+    document.getElementById("staffInfo");
+
+
+/* =====================================================
+   NORMALIZE DEPARTMENT
+   Example:
+   "LAB ASSISTANT - Computer Science"
+   becomes:
+   "Computer Science"
+
+   If there is no " - ", the original value is used.
+===================================================== */
+
+function normalizeDepartment(value){
+
+    if(!value){
+        return "";
+    }
+
+    let text = String(value).trim();
+
+    const parts = text
+        .split(" - ")
+        .map(item => item.trim())
+        .filter(Boolean);
+
+    if(parts.length >= 2){
+        return parts[parts.length - 1];
+    }
+
+    return text;
+}
+
+
+/* =====================================================
+   SAFE HTML
+===================================================== */
+
+function escapeHtml(value){
+
+    if(value === null || value === undefined){
+        return "";
+    }
+
+    return String(value)
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+}
+
+
+/* =====================================================
+   MESSAGE
+===================================================== */
+
+function showMessage(text,type="info"){
+
+    const box =
+        document.getElementById("messageBox");
+
+    box.className =
+        "message " + type;
+
+    box.textContent = text;
+
+    setTimeout(() => {
+        box.className = "message";
+        box.textContent = "";
+    },5000);
+}
+
+
+/* =====================================================
+   LOAD STAFF
+===================================================== */
+
+async function loadStaff(){
+
+    try{
+
+        const snapshot =
+            await getDocs(
+                collection(db,"staff")
+            );
+
+        allStaff = [];
+
+        snapshot.forEach(item => {
+
+            const data = item.data();
+
+            const staffId =
+                data.staffId ||
+                data.staffID ||
+                data.id ||
+                item.id;
+
+            const name =
+                data.name ||
+                data.staffName ||
+                data.displayName ||
+                "";
+
+            const rawDepartment =
+                data.department ||
+                data.dept ||
+                data.departmentName ||
+                "";
+
+            if(!staffId || !name || !rawDepartment){
+                return;
+            }
+
+            allStaff.push({
+
+                firestoreId: item.id,
+
+                staffId: String(staffId).trim(),
+
+                name: String(name).trim(),
+
+                rawDepartment:
+                    String(rawDepartment).trim(),
+
+                department:
+                    normalizeDepartment(rawDepartment)
+
+            });
+
+        });
+
+
+        if(allStaff.length === 0){
+
+            departmentSelect.innerHTML =
+                `<option value="">No staff found</option>`;
+
+            showMessage(
+                "No valid staff records were found in the staff collection.",
+                "error"
+            );
+
+            return;
+        }
+
+
+        buildDepartmentList();
+
+    }
+    catch(error){
+
+        console.error(
+            "Load Staff Error:",
+            error
+        );
+
+        departmentSelect.innerHTML =
+            `<option value="">Unable to load</option>`;
+
+        showMessage(
+            "Unable to load staff records. Check Firestore permissions.",
+            "error"
+        );
+    }
+}
+
+
+/* =====================================================
+   BUILD DEPARTMENT LIST
+===================================================== */
+
+function buildDepartmentList(){
+
+    const set =
+        new Set();
+
+    allStaff.forEach(staff => {
+
+        if(staff.department){
+            set.add(staff.department);
+        }
+
+    });
+
+    departments =
+        Array.from(set)
+        .sort((a,b) =>
+            a.localeCompare(
+                b,
+                undefined,
+                {numeric:true}
+            )
+        );
+
+
+    departmentSelect.innerHTML =
+        `<option value="">Select Department</option>`;
+
+
+    departments.forEach(department => {
+
+        const option =
+            document.createElement("option");
+
+        option.value = department;
+
+        option.textContent = department;
+
+        departmentSelect.appendChild(option);
+
+    });
+
+}
+
+
+/* =====================================================
+   LOAD CURRENT HEADS
+===================================================== */
+
+async function loadCurrentHeads(){
+
+    try{
+
+        const snapshot =
+            await getDocs(
+                collection(
+                    db,
+                    "serviceDepartmentHeads"
+                )
+            );
+
+        currentHeads = [];
+
+        snapshot.forEach(item => {
+
+            const data = item.data();
+
+            if(data.active !== false){
+
+                currentHeads.push({
+
+                    id: item.id,
+
+                    department:
+                        data.department || item.id,
+
+                    headId:
+                        data.headId || "",
+
+                    headName:
+                        data.headName || "",
+
+                    active:
+                        data.active !== false
+
+                });
+
+            }
+
+        });
+
+
+        renderHeads();
+
+    }
+    catch(error){
+
+        console.error(
+            "Load Heads Error:",
+            error
+        );
+
+        document.getElementById(
+            "headsTableBody"
+        ).innerHTML = `
+            <tr>
+                <td colspan="6" class="empty">
+                    Unable to load current department heads.
+                </td>
+            </tr>
+        `;
+
+        showMessage(
+            "Unable to load department head assignments.",
+            "error"
+        );
+    }
+}
+
+
+/* =====================================================
+   RENDER CURRENT HEADS
+===================================================== */
+
+function renderHeads(){
+
+    const tbody =
+        document.getElementById(
+            "headsTableBody"
+        );
+
+    tbody.innerHTML = "";
+
+
+    if(currentHeads.length === 0){
+
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="6" class="empty">
+                    No department heads assigned yet.
+                </td>
+            </tr>
+        `;
+
+        return;
+    }
+
+
+    currentHeads
+        .sort((a,b) =>
+            a.department.localeCompare(b.department)
+        )
+        .forEach((head,index) => {
+
+            const tr =
+                document.createElement("tr");
+
+            tr.innerHTML = `
+
+                <td>${index + 1}</td>
+
+                <td>
+                    <strong>
+                        ${escapeHtml(head.department)}
+                    </strong>
+                </td>
+
+                <td>
+                    ${escapeHtml(head.headId)}
+                </td>
+
+                <td>
+                    ${escapeHtml(head.headName)}
+                </td>
+
+                <td>
+                    <span class="badge active">
+                        ACTIVE
+                    </span>
+                </td>
+
+                <td>
+                    <button
+                        class="danger"
+                        onclick="removeDepartmentHead(
+                            ${JSON.stringify(head.id)}
+                        )"
+                    >
+                        Remove
+                    </button>
+                </td>
+
+            `;
+
+            tbody.appendChild(tr);
+
+        });
+
+}
+
+
+/* =====================================================
+   DEPARTMENT CHANGE
+===================================================== */
+
+departmentSelect.addEventListener(
+    "change",
+    function(){
+
+        const department =
+            this.value;
+
+        staffInfo.classList.remove("show");
+
+        assignBtn.disabled = true;
+
+        staffSelect.innerHTML =
+            `<option value="">Select Staff</option>`;
+
+        staffSelect.disabled = true;
+
+
+        if(!department){
+            return;
+        }
+
+
+        const departmentStaff =
+            allStaff
+            .filter(staff =>
+                staff.department === department
+            )
+            .sort((a,b) =>
+                a.name.localeCompare(b.name)
+            );
+
+
+        if(departmentStaff.length === 0){
+
+            staffSelect.innerHTML =
+                `<option value="">No staff found</option>`;
+
+            return;
+        }
+
+
+        departmentStaff.forEach(staff => {
+
+            const option =
+                document.createElement("option");
+
+            option.value =
+                staff.staffId;
+
+            option.textContent =
+                `${staff.staffId} - ${staff.name}`;
+
+            staffSelect.appendChild(option);
+
+        });
+
+
+        staffSelect.disabled = false;
+
+        checkExistingHead(department);
+
+    }
+);
+
+
+/* =====================================================
+   STAFF CHANGE
+===================================================== */
+
+staffSelect.addEventListener(
+    "change",
+    function(){
+
+        const staffId =
+            this.value;
+
+        const staff =
+            allStaff.find(
+                item =>
+                    item.staffId === staffId
+            );
+
+
+        if(!staff){
+
+            staffInfo.classList.remove("show");
+
+            assignBtn.disabled = true;
+
+            return;
+        }
+
+
+        document.getElementById(
+            "selectedStaffId"
+        ).textContent =
+            staff.staffId;
+
+        document.getElementById(
+            "selectedStaffName"
+        ).textContent =
+            staff.name;
+
+        document.getElementById(
+            "selectedStaffDepartment"
+        ).textContent =
+            staff.department;
+
+        staffInfo.classList.add("show");
+
+        assignBtn.disabled = false;
+
+    }
+);
+
+
+/* =====================================================
+   CHECK EXISTING HEAD
+===================================================== */
+
+function checkExistingHead(department){
+
+    const existing =
+        currentHeads.find(
+            item =>
+                item.department === department &&
+                item.active !== false
+        );
+
+
+    if(existing){
+
+        showMessage(
+            `Current Head: ${existing.headName} (${existing.headId}). Selecting another staff will replace this Head.`,
+            "info"
+        );
+
+    }
+
+}
+
+
+/* =====================================================
+   ASSIGN HEAD
+===================================================== */
+
+window.assignDepartmentHead =
+async function(){
+
+    const department =
+        departmentSelect.value;
+
+    const staffId =
+        staffSelect.value;
+
+
+    if(!department){
+
+        showMessage(
+            "Please select a department.",
+            "error"
+        );
+
+        return;
+    }
+
+
+    if(!staffId){
+
+        showMessage(
+            "Please select an existing staff member.",
+            "error"
+        );
+
+        return;
+    }
+
+
+    const staff =
+        allStaff.find(
+            item =>
+                item.staffId === staffId &&
+                item.department === department
+        );
+
+
+    if(!staff){
+
+        showMessage(
+            "Selected staff member was not found.",
+            "error"
+        );
+
+        return;
+    }
+
+
+    const existing =
+        currentHeads.find(
+            item =>
+                item.department === department &&
+                item.active !== false
+        );
+
+
+    if(existing &&
+       existing.headId !== staff.staffId){
+
+        const confirmed =
+            confirm(
+                `This department already has ${existing.headName} (${existing.headId}) as Head.\n\nDo you want to replace the current Head with ${staff.name} (${staff.staffId})?`
+            );
+
+        if(!confirmed){
+            return;
+        }
+
+    }
+
+
+    assignBtn.disabled = true;
+    assignBtn.textContent = "Saving...";
+
+
+    try{
+
+        /*
+         * IMPORTANT:
+         * Document ID is the normalized department.
+         *
+         * This means only ONE active Head can exist
+         * for each department.
+         */
+        const headRef =
+            doc(
+                db,
+                "serviceDepartmentHeads",
+                department
+            );
+
+
+        await setDoc(
+            headRef,
+            {
+
+                department:
+                    department,
+
+                headId:
+                    staff.staffId,
+
+                headName:
+                    staff.name,
+
+                headStaffDocumentId:
+                    staff.firestoreId,
+
+                active:
+                    true,
+
+                assignedAt:
+                    serverTimestamp(),
+
+                updatedAt:
+                    serverTimestamp()
+
+            },
+            {
+                merge:true
+            }
+        );
+
+
+        /*
+         * Store the role on the staff document too.
+         * This is useful for identifying that the staff
+         * member is currently a Service Request Head.
+         *
+         * We do NOT change their normal department/name.
+         */
+        await setDoc(
+            doc(
+                db,
+                "staff",
+                staff.firestoreId
+            ),
+            {
+                serviceRole:
+                    "DEPARTMENT_HEAD",
+
+                serviceHeadDepartment:
+                    department,
+
+                serviceHeadActive:
+                    true
+            },
+            {
+                merge:true
+            }
+        );
+
+
+        showMessage(
+            `${staff.name} (${staff.staffId}) is now the Department Head for ${department}.`,
+            "success"
+        );
+
+
+        await loadCurrentHeads();
+
+        clearSelection(false);
+
+    }
+    catch(error){
+
+        console.error(
+            "Assign Head Error:",
+            error
+        );
+
+        showMessage(
+            "Unable to assign Department Head. Check Firestore permissions.",
+            "error"
+        );
+
+    }
+    finally{
+
+        assignBtn.disabled = !staffSelect.value;
+
+        assignBtn.textContent =
+            "Assign as Department Head";
+
+    }
+
+};
+
+
+/* =====================================================
+   REMOVE HEAD
+===================================================== */
+
+window.removeDepartmentHead =
+async function(departmentId){
+
+    const head =
+        currentHeads.find(
+            item =>
+                item.id === departmentId
+        );
+
+
+    if(!head){
+        return;
+    }
+
+
+    const confirmed =
+        confirm(
+            `Remove ${head.headName} (${head.headId}) as Department Head for ${head.department}?`
+        );
+
+
+    if(!confirmed){
+        return;
+    }
+
+
+    try{
+
+        /*
+         * Mark the assignment inactive instead of
+         * immediately deleting it.
+         * This preserves the assignment history.
+         */
+        await setDoc(
+            doc(
+                db,
+                "serviceDepartmentHeads",
+                departmentId
+            ),
+            {
+                active:false,
+                removedAt:serverTimestamp()
+            },
+            {
+                merge:true
+            }
+        );
+
+
+        /*
+         * If this staff member is still marked as the
+         * active head for this department, remove only
+         * the service-head flags.
+         */
+        const staff =
+            allStaff.find(
+                item =>
+                    item.staffId === head.headId
+            );
+
+
+        if(staff){
+
+            await setDoc(
+                doc(
+                    db,
+                    "staff",
+                    staff.firestoreId
+                ),
+                {
+                    serviceRole:null,
+                    serviceHeadDepartment:null,
+                    serviceHeadActive:false
+                },
+                {
+                    merge:true
+                }
+            );
+
+        }
+
+
+        showMessage(
+            `${head.headName} has been removed as Department Head.`,
+            "success"
+        );
+
+
+        await loadCurrentHeads();
+
+    }
+    catch(error){
+
+        console.error(
+            "Remove Head Error:",
+            error
+        );
+
+        showMessage(
+            "Unable to remove Department Head.",
+            "error"
+        );
+
+    }
+
+};
+
+
+/* =====================================================
+   CLEAR
+===================================================== */
+
+window.clearSelection =
+function(showMessageBox=true){
+
+    departmentSelect.value = "";
+
+    staffSelect.innerHTML =
+        `<option value="">Select department first</option>`;
+
+    staffSelect.disabled = true;
+
+    staffInfo.classList.remove("show");
+
+    assignBtn.disabled = true;
+
+    document.getElementById(
+        "selectedStaffId"
+    ).textContent = "-";
+
+    document.getElementById(
+        "selectedStaffName"
+    ).textContent = "-";
+
+    document.getElementById(
+        "selectedStaffDepartment"
+    ).textContent = "-";
+
+    if(showMessageBox){
+        showMessage(
+            "Selection cleared.",
+            "info"
+        );
+    }
+
+};
+
+
+/* =====================================================
+   START
+===================================================== */
+
+async function start(){
+
+    departmentSelect.innerHTML =
+        `<option value="">Loading departments...</option>`;
+
+    await loadStaff();
+
+    await loadCurrentHeads();
+
+}
+
+
+start();
+
+</script>
+
+</body>
+</html>
