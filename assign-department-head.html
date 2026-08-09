@@ -475,6 +475,22 @@ function normalizeDepartment(value){
 
 
 /* =====================================================
+   FIRESTORE-SAFE DEPARTMENT ID
+   Example:
+   "IT / COMPUTER" -> "IT_COMPUTER"
+   ===================================================== */
+
+function getSafeDepartmentId(department){
+
+    return String(department || "")
+        .trim()
+        .replace(/[\\/]/g, "_")
+        .replace(/\s+/g, "_")
+        .replace(/[.#$\[\]]/g, "_");
+}
+
+
+/* =====================================================
    SAFE HTML
 ===================================================== */
 
@@ -1045,16 +1061,23 @@ async function(){
 
         /*
          * IMPORTANT:
-         * Document ID is the normalized department.
+         * Never use the raw department name as a Firestore
+         * document ID because department names may contain "/".
+         *
+         * Example:
+         * "IT / COMPUTER" -> "IT_COMPUTER"
          *
          * This means only ONE active Head can exist
          * for each department.
          */
+        const departmentId =
+            getSafeDepartmentId(department);
+
         const headRef =
             doc(
                 db,
                 "serviceDepartmentHeads",
-                department
+                departmentId
             );
 
 
@@ -1064,6 +1087,9 @@ async function(){
 
                 department:
                     department,
+
+                departmentId:
+                    departmentId,
 
                 headId:
                     staff.staffId,
