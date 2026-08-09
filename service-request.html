@@ -708,7 +708,7 @@
                          Select Department
                      </option>
 
-                     <option value="IT / COMPUTER">
+                     <option value="IT">
                          IT / Computer
                      </option>
 
@@ -1891,127 +1891,153 @@
     FIND DEPARTMENT HEAD
  ========================================= */
 
- async function findDepartmentHead(
-     serviceDepartment
- ){
+ function getServiceDepartmentName(serviceDepartment){
 
-     if(!serviceDepartment){
-
-         throw new Error(
-             "Service department is required."
-         );
-
-     }
-
-
-     /*
-        Expected collection:
-
-        departmentHeads
-
-        Example:
-
-        {
-            department: "IT",
-            headId: "SHT041",
-            headName: "Department Head",
-            active: true
-        }
-     */
-
-
-     const q =
-         query(
-
-             collection(
-                 db,
-                 "departmentHeads"
-             ),
-
-             where(
-                 "department",
-                 "==",
-                 serviceDepartment
-             ),
-
-             where(
-                 "active",
-                 "==",
-                 true
-             ),
-
-             limit(1)
-
-         );
-
-
-     const snapshot =
-         await getDocs(q);
-
-
-     if(
-         snapshot.empty
-     ){
-
-         throw new Error(
-             "No active Department Head is configured for " +
-             serviceDepartment +
-             ". Please contact the administrator."
-         );
-
-     }
-
-
-     const headDoc =
-         snapshot.docs[0];
-
-
-     const data =
-         headDoc.data();
-
-
-     const headId =
-         data.headId ||
-         data.staffId ||
-         headDoc.id;
-
-
-     const headName =
-         data.headName ||
-         data.name ||
-         data.staffName;
-
-
-     if(
-         !headId ||
-         !headName
-     ){
-
-         throw new Error(
-             "Department Head record is incomplete for " +
-             serviceDepartment +
-             "."
-         );
-
-     }
-
-
-     return {
-
-         headId:
-             String(headId),
-
-         headName:
-             String(headName),
-
-         department:
-             serviceDepartment
-
+     const departmentMap = {
+         "IT": "IT / COMPUTER",
+         "IT / COMPUTER": "IT / COMPUTER",
+         "IT / Computer": "IT / COMPUTER",
+         "Maintenance": "Maintenance",
+         "Electrical": "Electrical",
+         "Plumbing": "Plumbing",
+         "Transport": "Transport",
+         "Housekeeping": "Housekeeping",
+         "Security": "Security",
+         "Administration": "Administration"
      };
 
+     return departmentMap[String(serviceDepartment || "").trim()]
+         || String(serviceDepartment || "").trim();
  }
 
+ function getSafeDepartmentId(department){
 
+     return String(department || "")
+         .trim()
+         .replace(/[\\/]/g, "_")
+         .replace(/\s+/g, "_")
+         .replace(/[.#$[\]]/g, "_");
+ }
+
+ async function findDepartmentHead(serviceDepartment){
+
+     if(!serviceDepartment){
+         throw new Error("Service department is required.");
+     }
+
+     const actualDepartment =
+         getServiceDepartmentName(serviceDepartment);
+
+     if(!actualDepartment){
+         throw new Error("Invalid Service Department.");
+     }
+
+     const departmentId =
+         getSafeDepartmentId(actualDepartment);
+
+     console.log("SERVICE DEPARTMENT KEY:", serviceDepartment);
+     console.log("ACTUAL SERVICE DEPARTMENT:", actualDepartment);
+     console.log("DEPARTMENT HEAD DOCUMENT ID:", departmentId);
+
+     /* =========================================
+        METHOD 1: serviceDepartmentHeads
+     ========================================= */
+
+     try{
+
+         const headRef = doc(
+             db,
+             "serviceDepartmentHeads",
+             departmentId
+         );
+
+         const headSnap = await getDoc(headRef);
+
+         if(headSnap.exists()){
+
+             const data = headSnap.data();
+
+             if(data.active === true && data.headId){
+
+                 const headName =
+                     data.headName ||
+                     data.name ||
+                     data.staffName ||
+                     data.headId;
+
+                 return {
+                     headId: String(data.headId),
+                     headName: String(headName),
+                     department: String(data.department || actualDepartment),
+                     departmentId: departmentId
+                 };
+             }
+         }
+
+     }catch(error){
+         console.warn("serviceDepartmentHeads lookup failed:", error);
+     }
+
+     /* =========================================
+        METHOD 2: staff fallback
+
+        assign-department-head.html also stores:
+        serviceRole = DEPARTMENT_HEAD
+        serviceHeadDepartment = actual department
+        serviceHeadActive = true
+     ========================================= */
+
+     try{
+
+         const staffQuery = query(
+             collection(db, "staff"),
+             where("serviceHeadDepartment", "==", actualDepartment)
+         );
+
+         const staffSnapshot = await getDocs(staffQuery);
+
+         let activeHead = null;
+
+         staffSnapshot.forEach(function(staffDoc){
+
+             if(activeHead){
+                 return;
+             }
+
+             const staff = staffDoc.data();
+
+             if(staff.serviceHeadActive === true &&
+                staff.serviceRole === "DEPARTMENT_HEAD"){
+
+                 activeHead = {
+                     headId: String(staff.staffId || staffDoc.id),
+                     headName: String(
+                         staff.name ||
+                         staff.staffName ||
+                         staff.staffId ||
+                         staffDoc.id
+                     ),
+                     department: actualDepartment,
+                     departmentId: departmentId
+                 };
+             }
+         });
+
+         if(activeHead){
+             console.log("Department Head Found From Staff:", activeHead);
+             return activeHead;
+         }
+
+     }catch(error){
+         console.warn("Staff Department Head fallback failed:", error);
+     }
+
+     throw new Error(
+         "No active Department Head is configured for " +
+         actualDepartment +
+         ". Please assign a Department Head first."
+     );
+ }
 
  /* =========================================
     SUBMIT REQUEST
@@ -2073,10 +2099,15 @@
                 READ FORM
              ================================= */
 
-             const serviceDepartment =
+             const serviceDepartmentKey =
                  document.getElementById(
                      "serviceDepartment"
                  ).value.trim();
+
+             const serviceDepartment =
+                 getServiceDepartmentName(
+                     serviceDepartmentKey
+                 );
 
 
              const requestCategory =
@@ -2175,6 +2206,9 @@
                  serviceDepartment:
                      serviceDepartment,
 
+                 serviceDepartmentKey:
+                     serviceDepartmentKey,
+
                  category:
                      requestCategory,
 
@@ -2194,6 +2228,9 @@
                  status:
                      "SUBMITTED",
 
+
+                 serviceDepartmentId:
+                     head.departmentId,
 
                  assignedHeadId:
                      head.headId,
