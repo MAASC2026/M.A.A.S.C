@@ -1709,144 +1709,56 @@ async function findCurrentStaff(){
 
     let staff = null;
 
+    // Existing college staff session has priority.
+    // This prevents Firebase Auth from selecting another staff account.
+    const ids = getStorageStaffIds();
 
-    // 1. Firebase Auth UID
+    console.log("STAFF SESSION IDS:", ids);
 
-    if(
-        currentUser &&
-        currentUser.uid
-    ){
+    for(const id of ids){
 
-        staff =
-            await getStaffByUid(
-                currentUser.uid
-            );
+        staff = await getStaffByDocumentId(id);
 
-    }
-
-
-    // 2. Firebase Auth email
-
-    if(!staff){
-
-        staff =
-            await getStaffByEmail(
-                currentUser?.email
-            );
-
-    }
-
-
-    // 3. Firebase Auth UID as document ID
-
-    if(!staff){
-
-        staff =
-            await getStaffByDocumentId(
-                currentUser?.uid
-            );
-
-    }
-
-
-    // 4. Storage
-
-    if(!staff){
-
-        const ids =
-            getStorageStaffIds();
-
-
-        for(
-            const id of ids
-        ){
-
-            staff =
-                await getStaffByDocumentId(
-                    id
-                );
-
-
-            if(staff){
-
-                break;
-
-            }
-
+        if(staff){
+            console.log("STAFF FOUND BY DOCUMENT ID:", id, staff);
+            return staff;
         }
 
-    }
+        try{
+            const q = query(
+                collection(db, "staff"),
+                where("staffId", "==", id)
+            );
 
+            const snap = await getDocs(q);
 
-    // 5. Storage ID against staffId field
-
-    if(!staff){
-
-        const ids =
-            getStorageStaffIds();
-
-
-        for(
-            const id of ids
-        ){
-
-            try{
-
-                const q =
-                    query(
-                        collection(
-                            db,
-                            "staff"
-                        ),
-                        where(
-                            "staffId",
-                            "==",
-                            id
-                        )
-                    );
-
-
-                const snap =
-                    await getDocs(q);
-
-
-                if(
-                    !snap.empty
-                ){
-
-                    const d =
-                        snap.docs[0];
-
-
-                    staff =
-                        normalizeStaff(
-                            d.data(),
-                            d.id
-                        );
-
-
-                    break;
-
-                }
-
+            if(!snap.empty){
+                const d = snap.docs[0];
+                staff = normalizeStaff(d.data(), d.id);
+                console.log("STAFF FOUND BY staffId:", id, staff);
+                return staff;
             }
-
-            catch(error){
-
-                console.warn(
-                    "staffId field lookup:",
-                    error
-                );
-
-            }
-
+        }catch(error){
+            console.warn("staffId lookup failed:", error);
         }
-
     }
 
+    // Firebase Auth UID
+    if(currentUser && currentUser.uid){
+        staff = await getStaffByUid(currentUser.uid);
+        if(staff) return staff;
 
-    return staff;
+        staff = await getStaffByDocumentId(currentUser.uid);
+        if(staff) return staff;
+    }
 
+    // Firebase Auth email
+    if(currentUser && currentUser.email){
+        staff = await getStaffByEmail(currentUser.email);
+        if(staff) return staff;
+    }
+
+    return null;
 }
 
 
@@ -1854,29 +1766,42 @@ async function findCurrentStaff(){
 // WORKER ACCESS CHECK
 // =====================================================
 
+function toBoolean(value){
+
+    if(value === true) return true;
+    if(value === false || value === null || value === undefined) return false;
+
+    return [
+        "true",
+        "1",
+        "yes",
+        "active",
+        "enabled"
+    ].includes(
+        String(value).trim().toLowerCase()
+    );
+}
+
+
 function isAssignedWorker(staff){
 
-    if(!staff){
-        return false;
-    }
+    if(!staff) return false;
 
-    const role =
-        normalize(
-            staff.role
-        );
+    const role = normalize(staff.role);
+    const active = toBoolean(staff.workerActive);
+    const assigned = toBoolean(staff.workerAssigned);
 
-    const active =
-        staff.workerActive === true;
+    console.log("WORKER ROLE CHECK:", {
+        staffId: getStaffId(staff),
+        role: staff.role,
+        normalizedRole: role,
+        workerActive: staff.workerActive,
+        active: active,
+        workerAssigned: staff.workerAssigned,
+        assigned: assigned
+    });
 
-    const assigned =
-        staff.workerAssigned === true;
-
-    return (
-        role === "WORKER" &&
-        active &&
-        assigned
-    );
-
+    return role === "WORKER" && active && assigned;
 }
 
 
