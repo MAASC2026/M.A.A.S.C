@@ -1034,29 +1034,20 @@ function getLoggedStaffId(){
 // =====================================================
 // FIND STAFF
 // =====================================================
+async function findStaff(staffId) {
 
-async function findStaff(
-    staffId
-){
+    staffId = clean(staffId);
 
-    staffId =
-        clean(
-            staffId
-        );
-
-
-    if(!staffId){
-
+    if (!staffId) {
         return null;
-
     }
 
 
-    /*
-     * Try document ID first.
-     */
+    // =================================================
+    // FIRST: DOCUMENT ID
+    // =================================================
 
-    try{
+    try {
 
         const staffRef =
             doc(
@@ -1065,20 +1056,15 @@ async function findStaff(
                 staffId
             );
 
-
         const snapshot =
             await getDoc(
                 staffRef
             );
 
-
-        if(
-            snapshot.exists()
-        ){
+        if (snapshot.exists()) {
 
             const data =
                 snapshot.data();
-
 
             return {
 
@@ -1098,10 +1084,9 @@ async function findStaff(
 
         }
 
-    }
-    catch(error){
+    } catch (error) {
 
-        console.warn(
+        console.error(
             "DIRECT STAFF LOOKUP ERROR:",
             error
         );
@@ -1109,11 +1094,11 @@ async function findStaff(
     }
 
 
-    /*
-     * Try staffId field.
-     */
+    // =================================================
+    // SECOND: staffId FIELD
+    // =================================================
 
-    try{
+    try {
 
         const q =
             query(
@@ -1128,31 +1113,28 @@ async function findStaff(
                 )
             );
 
-
         const snapshot =
-            await getDocs(
-                q
-            );
+            await getDocs(q);
 
-
-        if(
-            !snapshot.empty
-        ){
+        if (!snapshot.empty) {
 
             const staffDoc =
                 snapshot.docs[0];
 
+            const data =
+                staffDoc.data();
 
             return {
 
                 firestoreId:
                     staffDoc.id,
 
-                ...staffDoc.data(),
+                ...data,
 
                 staffId:
                     clean(
-                        staffDoc.data().staffId ||
+                        data.staffId ||
+                        data.staffID ||
                         staffId
                     )
 
@@ -1160,73 +1142,10 @@ async function findStaff(
 
         }
 
-    }
-    catch(error){
+    } catch (error) {
 
-        console.warn(
+        console.error(
             "staffId QUERY ERROR:",
-            error
-        );
-
-    }
-
-
-    /*
-     * Try staffID field.
-     */
-
-    try{
-
-        const q =
-            query(
-                collection(
-                    db,
-                    "staff"
-                ),
-                where(
-                    "staffID",
-                    "==",
-                    staffId
-                )
-            );
-
-
-        const snapshot =
-            await getDocs(
-                q
-            );
-
-
-        if(
-            !snapshot.empty
-        ){
-
-            const staffDoc =
-                snapshot.docs[0];
-
-
-            return {
-
-                firestoreId:
-                    staffDoc.id,
-
-                ...staffDoc.data(),
-
-                staffId:
-                    clean(
-                        staffDoc.data().staffID ||
-                        staffId
-                    )
-
-            };
-
-        }
-
-    }
-    catch(error){
-
-        console.warn(
-            "staffID QUERY ERROR:",
             error
         );
 
@@ -1237,81 +1156,38 @@ async function findStaff(
 
 }
 
-
 // =====================================================
 // VERIFY DEPARTMENT HEAD
 // =====================================================
+async function verifyHead() {
 
-async function verifyHead(){
+    console.log("==============================================");
+    console.log("ASSIGN WORKER PORTAL ACCESS CHECK");
+    console.log("==============================================");
 
-    console.log(
-        "=============================================="
-    );
+    let staffId = getLoggedStaffId();
 
-    console.log(
-        "ASSIGN WORKER PORTAL ACCESS CHECK"
-    );
+    if (!staffId) {
 
-    console.log(
-        "=============================================="
-    );
-
-
-    /*
-     * IMPORTANT:
-     *
-     * Firebase Auth can be null because the existing
-     * ERP login stores the staff login separately.
-     *
-     * Therefore the staffId from the existing login
-     * is used to identify the Head.
-     */
-
-    onAuthStateChanged(
-        auth,
-        user => {
-
-            console.log(
-                "AUTH STATE:",
-                user
-            );
-
-        }
-    );
-
-
-    let staffId =
-        getLoggedStaffId();
-
-
-    /*
-     * URL fallback.
-     */
-
-    if(!staffId){
-
-        try{
+        try {
 
             const params =
                 new URLSearchParams(
                     window.location.search
                 );
 
-
             staffId =
                 clean(
-                    params.get(
-                        "staffId"
-                    )
+                    params.get("staffId")
                 );
 
-        }
-        catch(error){
+        } catch (error) {
+
+            console.error(error);
 
         }
 
     }
-
 
     console.log(
         "HEAD STAFF ID:",
@@ -1319,10 +1195,10 @@ async function verifyHead(){
     );
 
 
-    if(!staffId){
+    if (!staffId) {
 
         showAccessViolation(
-            "Staff login information was not found. Please login again."
+            "Staff ID was not found. Please login again."
         );
 
         return;
@@ -1330,17 +1206,13 @@ async function verifyHead(){
     }
 
 
-    /*
-     * Load staff document.
-     */
-
     const staff =
         await findStaff(
             staffId
         );
 
 
-    if(!staff){
+    if (!staff) {
 
         showAccessViolation(
             "Staff profile was not found."
@@ -1357,25 +1229,40 @@ async function verifyHead(){
     );
 
 
-    /*
-     * ROLE CHECK
-     *
-     * ONLY DEPARTMENT HEAD CAN ENTER.
-     */
+    // =================================================
+    // CORRECT HEAD CHECK
+    // Firestore uses serviceRole
+    // =================================================
 
-    const role =
+    const serviceRole =
         normalize(
-            staff.role
+            staff.serviceRole
         );
 
 
-    if(
-        role !==
-        "department head"
-    ){
+    const serviceHeadActive =
+        staff.serviceHeadActive === true;
+
+
+    if (
+        serviceRole !== "department_head" ||
+        serviceHeadActive !== true
+    ) {
+
+        console.error(
+            "HEAD CHECK FAILED:",
+            {
+                serviceRole:
+                    staff.serviceRole,
+
+                serviceHeadActive:
+                    staff.serviceHeadActive
+            }
+        );
+
 
         showAccessViolation(
-            "Access denied. Only Department Heads can assign workers."
+            "Access denied. Only active Department Heads can assign workers."
         );
 
         return;
@@ -1383,20 +1270,21 @@ async function verifyHead(){
     }
 
 
-    /*
-     * Department is required.
-     */
+    // =================================================
+    // GET DEPARTMENT
+    // =================================================
 
     const department =
         clean(
+            staff.serviceHeadDepartment ||
             staff.department
         );
 
 
-    if(!department){
+    if (!department) {
 
         showAccessViolation(
-            "Department is missing from the Department Head profile."
+            "Department Head department was not found."
         );
 
         return;
@@ -1404,9 +1292,9 @@ async function verifyHead(){
     }
 
 
-    /*
-     * Save current Head.
-     */
+    // =================================================
+    // SAVE CURRENT HEAD
+    // =================================================
 
     currentHead =
         staff;
@@ -1425,7 +1313,6 @@ async function verifyHead(){
             staff.name ||
             staff.staffName ||
             staff.fullName ||
-            staff.displayName ||
             currentHeadId
         );
 
@@ -1434,9 +1321,37 @@ async function verifyHead(){
         department;
 
 
-    /*
-     * Display Head details.
-     */
+    console.log(
+        "=============================================="
+    );
+
+    console.log(
+        "DEPARTMENT HEAD VERIFIED"
+    );
+
+    console.log(
+        "HEAD:",
+        currentHeadName
+    );
+
+    console.log(
+        "STAFF ID:",
+        currentHeadId
+    );
+
+    console.log(
+        "DEPARTMENT:",
+        currentDepartment
+    );
+
+    console.log(
+        "=============================================="
+    );
+
+
+    // =================================================
+    // DISPLAY HEAD DETAILS
+    // =================================================
 
     document.getElementById(
         "headName"
@@ -1476,9 +1391,9 @@ async function verifyHead(){
         currentDepartment;
 
 
-    /*
-     * Show portal.
-     */
+    // =================================================
+    // SHOW PORTAL
+    // =================================================
 
     document.getElementById(
         "loadingScreen"
@@ -1498,14 +1413,13 @@ async function verifyHead(){
         "block";
 
 
-    /*
-     * Load same-department staff.
-     */
+    // =================================================
+    // LOAD STAFF FROM SAME DEPARTMENT
+    // =================================================
 
     await loadDepartmentStaff();
 
 }
-
 
 // =====================================================
 // LOAD DEPARTMENT STAFF
