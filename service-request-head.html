@@ -4,321 +4,128 @@
 <head>
 
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
->
-
-<title>
-    Service Request - Department Head
-</title>
-
+<title>Service Request - Department Head</title>
 
 <style>
 
 * {
     box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
 }
-
 
 body {
-
-    margin: 0;
-
-    font-family:
-        Arial,
-        Helvetica,
-        sans-serif;
-
     background: #f4f6f9;
-
     color: #222;
-
 }
 
-
-/* =====================================================
-   LOADING / ACCESS
-===================================================== */
-
-#loadingScreen,
-#accessViolation {
-
-    position: fixed;
-
-    inset: 0;
-
-    display: flex;
-
-    align-items: center;
-
-    justify-content: center;
-
-    background: #f4f6f9;
-
-    z-index: 99999;
-
-}
-
-
-.loading-box,
-.access-box {
-
-    width: 90%;
-
-    max-width: 530px;
-
-    background: white;
-
-    padding: 45px 35px;
-
-    border-radius: 18px;
-
-    text-align: center;
-
-    box-shadow:
-        0 15px 45px rgba(0,0,0,0.12);
-
-}
-
-
-.loading-box h2 {
-
-    margin-bottom: 10px;
-
-}
-
-
-.loading-box p {
-
-    color: #666;
-
-}
-
-
-.access-icon {
-
-    font-size: 65px;
-
-    margin-bottom: 15px;
-
-}
-
-
-.access-box h2 {
-
-    color: #d62828;
-
-    margin-bottom: 10px;
-
-}
-
-
-.access-box p {
-
-    color: #666;
-
-    line-height: 1.6;
-
-}
-
-
-.access-box button {
-
-    margin-top: 20px;
-
-    border: none;
-
-    background: #d62828;
-
-    color: white;
-
-    padding: 13px 30px;
-
-    border-radius: 7px;
-
-    cursor: pointer;
-
-    font-weight: bold;
-
-}
-
-
-.access-box button:hover {
-
-    background: #b71c1c;
-
-}
-
-
-/* =====================================================
-   APPLICATION
-===================================================== */
-
-#mainApplication {
-
-    display: none;
-
-}
-
-
-/* =====================================================
+/* ================================
    HEADER
-===================================================== */
+================================ */
 
-.page-header {
-
-    background: white;
-
-    padding: 22px 30px;
+.header {
+    background: #1e3a8a;
+    color: white;
+    padding: 18px 25px;
 
     display: flex;
-
     justify-content: space-between;
-
     align-items: center;
-
-    border-bottom: 1px solid #ddd;
-
 }
 
-
-.page-header h2 {
-
-    margin: 0 0 5px 0;
-
+.header h2 {
+    font-size: 22px;
 }
-
-
-.page-header small {
-
-    color: #777;
-
-}
-
 
 .head-info {
-
-    display: flex;
-
-    flex-direction: column;
-
     text-align: right;
-
-    gap: 5px;
-
+    font-size: 14px;
 }
-
 
 .head-info strong {
-
-    font-size: 16px;
-
+    display: block;
+    font-size: 15px;
 }
 
 
-.head-info span {
-
-    color: #666;
-
-}
-
-
-/* =====================================================
+/* ================================
    CONTAINER
-===================================================== */
+================================ */
 
 .container {
-
-    padding: 25px;
-
+    width: 95%;
+    max-width: 1400px;
+    margin: 25px auto;
 }
 
 
-/* =====================================================
+/* ================================
    STATISTICS
-===================================================== */
+================================ */
 
 .stats {
-
     display: grid;
-
     grid-template-columns:
         repeat(5, 1fr);
 
-    gap: 18px;
+    gap: 15px;
 
     margin-bottom: 25px;
-
 }
-
 
 .stat-card {
-
     background: white;
-
-    border-radius: 12px;
-
-    padding: 22px;
+    padding: 20px;
+    border-radius: 10px;
 
     box-shadow:
-        0 4px 15px rgba(0,0,0,0.06);
-
+        0 2px 10px
+        rgba(0,0,0,0.08);
 }
-
 
 .stat-title {
-
-    color: #777;
-
-    font-size: 14px;
-
+    color: #666;
+    font-size: 13px;
     margin-bottom: 10px;
-
 }
-
 
 .stat-number {
-
-    font-size: 30px;
-
+    font-size: 28px;
     font-weight: bold;
-
+    color: #1e3a8a;
 }
 
 
-/* =====================================================
-   REQUEST SECTION
-===================================================== */
+/* ================================
+   CARD
+================================ */
 
-.request-section {
-
+.card {
     background: white;
-
-    border-radius: 12px;
-
     padding: 25px;
+    border-radius: 10px;
 
     box-shadow:
-        0 4px 15px rgba(0,0,0,0.06);
+        0 2px 10px
+        rgba(0,0,0,0.08);
 
+    margin-bottom: 25px;
+}
+
+.card h3 {
+    color: #1e3a8a;
+    margin-bottom: 20px;
 }
 
 
-.request-section h3 {
-
-    margin-top: 0;
-
-}
-
-
-/* =====================================================
+/* ================================
    FILTERS
-===================================================== */
+================================ */
 
 .filters {
-
     display: grid;
 
     grid-template-columns:
@@ -326,483 +133,435 @@ body {
 
     gap: 15px;
 
-    margin-bottom: 22px;
-
+    margin-bottom: 20px;
 }
-
 
 .form-group {
-
     display: flex;
-
     flex-direction: column;
-
-    gap: 7px;
-
 }
-
 
 .form-group label {
-
     font-size: 13px;
-
     font-weight: bold;
-
+    margin-bottom: 6px;
 }
 
-
-.form-group select,
-.form-group input,
-.form-group textarea {
-
-    width: 100%;
+select,
+input {
+    padding: 10px;
 
     border: 1px solid #ccc;
 
-    border-radius: 7px;
+    border-radius: 6px;
 
-    padding: 10px;
+    outline: none;
+}
 
-    font-size: 14px;
-
+select:focus,
+input:focus {
+    border-color: #1e3a8a;
 }
 
 
-.form-group textarea {
-
-    min-height: 90px;
-
-    resize: vertical;
-
-}
-
-
-/* =====================================================
+/* ================================
    TABLE
-===================================================== */
+================================ */
 
 .table-container {
-
-    width: 100%;
-
     overflow-x: auto;
-
 }
-
 
 table {
-
     width: 100%;
-
     border-collapse: collapse;
-
-    min-width: 1000px;
-
 }
 
-
-th,
-td {
+th {
+    background: #1e3a8a;
+    color: white;
 
     padding: 12px;
-
-    border-bottom: 1px solid #eee;
 
     text-align: left;
 
     font-size: 13px;
+}
 
+td {
+    padding: 12px;
+
+    border-bottom:
+        1px solid #ddd;
+
+    font-size: 13px;
+}
+
+tr:hover {
+    background: #f8fafc;
 }
 
 
-th {
-
-    background: #f7f7f7;
-
-    font-weight: bold;
-
-}
-
-
-tr:hover td {
-
-    background: #fafafa;
-
-}
-
-
-/* =====================================================
+/* ================================
    STATUS
-===================================================== */
+================================ */
 
-.status-badge {
-
+.status {
     display: inline-block;
 
-    padding: 5px 9px;
+    padding: 5px 10px;
 
     border-radius: 20px;
 
     font-size: 11px;
 
     font-weight: bold;
-
-    background: #eee;
-
 }
 
-
-.status-SUBMITTED {
-
-    background: #fff3cd;
-
-}
-
-
-.status-RECEIVED {
-
+.status-submitted {
     background: #dbeafe;
-
+    color: #1d4ed8;
 }
 
-
-.status-ASSIGNED {
-
+.status-received {
     background: #e0e7ff;
-
+    color: #4338ca;
 }
 
-
-.status-IN_PROGRESS {
-
-    background: #cffafe;
-
-}
-
-
-.status-WORK_COMPLETED {
-
-    background: #dcfce7;
-
-}
-
-
-.status-HEAD_VERIFICATION {
-
+.status-assigned {
     background: #fef3c7;
-
+    color: #92400e;
 }
 
+.status-progress {
+    background: #cffafe;
+    color: #155e75;
+}
 
-.status-CLOSED {
+.status-completed {
+    background: #dcfce7;
+    color: #166534;
+}
 
+.status-verification {
+    background: #ede9fe;
+    color: #6d28d9;
+}
+
+.status-closed {
     background: #d1fae5;
-
+    color: #065f46;
 }
 
-
-.status-REOPENED {
-
+.status-reopened {
     background: #fee2e2;
-
+    color: #991b1b;
 }
 
 
-/* =====================================================
-   ACTION BUTTON
-===================================================== */
+/* ================================
+   BUTTONS
+================================ */
 
-.view-btn {
-
+button {
     border: none;
 
-    background: #2563eb;
+    padding: 8px 12px;
 
-    color: white;
-
-    padding: 8px 13px;
-
-    border-radius: 6px;
+    border-radius: 5px;
 
     cursor: pointer;
-
 }
 
+.view-btn {
+    background: #2563eb;
+    color: white;
+}
+
+.assign-btn {
+    background: #16a34a;
+    color: white;
+}
 
 .view-btn:hover {
-
     background: #1d4ed8;
+}
 
+.assign-btn:hover {
+    background: #15803d;
 }
 
 
-/* =====================================================
+/* ================================
    MODAL
-===================================================== */
+================================ */
 
-#requestModal {
-
+.modal {
     display: none;
 
     position: fixed;
 
-    inset: 0;
+    z-index: 1000;
+
+    left: 0;
+    top: 0;
+
+    width: 100%;
+    height: 100%;
 
     background:
         rgba(0,0,0,0.55);
 
-    z-index: 10000;
-
-    padding: 25px;
-
     overflow-y: auto;
-
 }
-
 
 .modal-content {
-
-    width: 95%;
-
-    max-width: 1000px;
-
-    margin: 20px auto;
-
     background: white;
 
-    border-radius: 14px;
+    width: 92%;
+
+    max-width: 950px;
+
+    margin: 40px auto;
+
+    border-radius: 10px;
 
     padding: 25px;
-
 }
 
-
 .modal-header {
-
     display: flex;
 
     justify-content: space-between;
 
     align-items: center;
 
-    border-bottom: 1px solid #ddd;
-
     margin-bottom: 20px;
-
 }
-
 
 .modal-header h3 {
-
-    margin: 0;
-
+    color: #1e3a8a;
 }
-
 
 .close-btn {
-
-    border: none;
-
     background: transparent;
 
-    font-size: 30px;
+    font-size: 28px;
 
-    cursor: pointer;
-
+    padding: 0;
 }
 
 
-/* =====================================================
+/* ================================
    DETAILS
-===================================================== */
+================================ */
 
 .detail-grid {
-
     display: grid;
 
     grid-template-columns:
         repeat(3, 1fr);
 
-    gap: 14px;
+    gap: 15px;
 
+    margin-bottom: 20px;
 }
 
-
 .detail-box {
-
-    background: #f8f9fa;
-
-    border-radius: 8px;
+    background: #f8fafc;
 
     padding: 13px;
 
-    margin-bottom: 14px;
-
+    border-radius: 6px;
 }
-
 
 .detail-box label {
-
     display: block;
 
-    color: #777;
+    font-size: 11px;
 
-    font-size: 12px;
+    color: #666;
 
-    font-weight: bold;
-
-    margin-bottom: 6px;
-
+    margin-bottom: 5px;
 }
-
 
 .detail-box span {
+    font-size: 14px;
 
-    display: block;
-
-    line-height: 1.5;
-
-    word-break: break-word;
-
+    font-weight: bold;
 }
 
 
-/* =====================================================
-   ASSIGN
-===================================================== */
+/* ================================
+   ASSIGN SECTION
+================================ */
 
 .assign-section {
-
-    margin-top: 25px;
+    background: #f8fafc;
 
     padding: 20px;
 
-    border: 1px solid #ddd;
+    border-radius: 8px;
 
-    border-radius: 10px;
-
+    margin-top: 20px;
 }
-
 
 .assign-section h4 {
+    color: #1e3a8a;
 
-    margin-top: 0;
-
+    margin-bottom: 15px;
 }
 
-
 .assign-grid {
-
     display: grid;
 
     grid-template-columns:
         1fr 1fr;
 
     gap: 15px;
-
 }
-
 
 .assign-grid .full {
-
     grid-column: 1 / -1;
-
 }
 
+textarea {
+    width: 100%;
+
+    min-height: 90px;
+
+    padding: 10px;
+
+    border: 1px solid #ccc;
+
+    border-radius: 6px;
+
+    resize: vertical;
+}
 
 .save-btn {
-
-    border: none;
-
     background: #16a34a;
 
     color: white;
 
-    padding: 12px 20px;
-
-    border-radius: 7px;
-
-    cursor: pointer;
+    padding: 11px 20px;
 
     font-weight: bold;
-
 }
 
 
-.save-btn:hover {
-
-    background: #15803d;
-
-}
-
-
-/* =====================================================
+/* ================================
    TIMELINE
-===================================================== */
+================================ */
 
 .timeline {
+    margin-top: 20px;
 
-    margin-top: 15px;
-
+    padding-left: 25px;
 }
-
 
 .timeline-item {
+    position: relative;
 
-    border-left: 3px solid #2563eb;
+    padding:
+        0 0 22px 20px;
 
-    padding: 10px 15px;
-
-    margin-bottom: 12px;
-
-    background: #f8fafc;
-
+    border-left:
+        2px solid #cbd5e1;
 }
 
+.timeline-item:last-child {
+    border-left: none;
+}
 
-.timeline-item strong {
+.timeline-item::before {
+    content: "";
 
-    display: block;
+    position: absolute;
+
+    left: -7px;
+
+    top: 0;
+
+    width: 12px;
+    height: 12px;
+
+    background: #2563eb;
+
+    border-radius: 50%;
+}
+
+.timeline-title {
+    font-weight: bold;
 
     margin-bottom: 4px;
-
 }
 
-
-.timeline-item small {
+.timeline-date {
+    font-size: 11px;
 
     color: #777;
+}
 
+.timeline-description {
+    font-size: 13px;
+
+    color: #555;
+
+    margin-top: 5px;
 }
 
 
-/* =====================================================
-   MOBILE
-===================================================== */
+/* ================================
+   MESSAGE
+================================ */
+
+.message {
+    display: none;
+
+    padding: 12px;
+
+    margin-bottom: 20px;
+
+    border-radius: 6px;
+}
+
+.success {
+    display: block;
+
+    background: #dcfce7;
+
+    color: #166534;
+}
+
+.error {
+    display: block;
+
+    background: #fee2e2;
+
+    color: #991b1b;
+}
+
+
+/* ================================
+   RESPONSIVE
+================================ */
 
 @media(max-width: 900px) {
 
     .stats {
-
         grid-template-columns:
             repeat(2, 1fr);
-
     }
-
 
     .filters {
-
         grid-template-columns:
             repeat(2, 1fr);
-
     }
 
-
     .detail-grid {
-
         grid-template-columns:
-            1fr 1fr;
-
+            repeat(2, 1fr);
     }
 
 }
@@ -810,60 +569,32 @@ tr:hover td {
 
 @media(max-width: 600px) {
 
-    .page-header {
+    .stats {
+        grid-template-columns: 1fr;
+    }
 
+    .filters {
+        grid-template-columns: 1fr;
+    }
+
+    .detail-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .assign-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .header {
         flex-direction: column;
 
         align-items: flex-start;
 
-        gap: 15px;
-
+        gap: 10px;
     }
-
 
     .head-info {
-
         text-align: left;
-
-    }
-
-
-    .stats {
-
-        grid-template-columns:
-            1fr;
-
-    }
-
-
-    .filters {
-
-        grid-template-columns:
-            1fr;
-
-    }
-
-
-    .detail-grid {
-
-        grid-template-columns:
-            1fr;
-
-    }
-
-
-    .assign-grid {
-
-        grid-template-columns:
-            1fr;
-
-    }
-
-
-    .assign-grid .full {
-
-        grid-column: auto;
-
     }
 
 }
@@ -875,421 +606,325 @@ tr:hover td {
 
 <body>
 
+<div id="headLoadingScreen" style="position:fixed;inset:0;background:#f4f6f9;display:flex;align-items:center;justify-content:center;z-index:5000;">
+    <div style="background:white;padding:35px 45px;border-radius:12px;box-shadow:0 5px 25px rgba(0,0,0,.12);text-align:center;max-width:500px;">
+        <h2 style="color:#1e3a8a;margin-bottom:10px;">Checking Access</h2>
+        <p id="headLoadingMessage">Verifying Department Head account...</p>
+    </div>
+</div>
 
-<!-- =====================================================
-     ACCESS CHECKING
-===================================================== -->
+<div id="headAccessViolation" style="position:fixed;inset:0;background:#f4f6f9;display:none;align-items:center;justify-content:center;z-index:5000;">
+    <div style="background:white;padding:40px 45px;border-radius:12px;box-shadow:0 5px 25px rgba(0,0,0,.12);text-align:center;max-width:520px;">
+        <div style="font-size:55px;margin-bottom:10px;">🚫</div>
+        <h2 style="color:#b91c1c;margin-bottom:10px;">ACCESS VIOLATION</h2>
+        <p id="headAccessMessage" style="color:#555;margin-bottom:20px;">You are not authorized to access this page.</p>
+        <button type="button" onclick="history.back()" style="background:#1e3a8a;color:white;padding:10px 20px;border-radius:6px;">Go Back</button>
+    </div>
+</div>
 
-<div id="loadingScreen">
 
-    <div class="loading-box">
+<!-- =================================================
+     HEADER
+================================================= -->
+
+<div class="header">
+
+    <div>
 
         <h2>
-            Checking Access
+            Service Request Management
         </h2>
 
-        <p>
-            Verifying Department Head account...
-        </p>
+        <small>
+            Department Head Dashboard
+        </small>
+
+    </div>
+
+
+    <div class="head-info">
+
+        <strong id="headName">
+            Loading...
+        </strong>
+
+        <span id="headDepartment">
+            Loading...
+        </span>
 
     </div>
 
 </div>
 
 
-<!-- =====================================================
-     ACCESS VIOLATION
-===================================================== -->
+
+<div class="container">
+
+
+<!-- =================================================
+     MESSAGE
+================================================= -->
 
 <div
-    id="accessViolation"
-    style="display:none;"
->
+    id="messageBox"
+    class="message"
+></div>
 
-    <div class="access-box">
 
-        <div class="access-icon">
-            🚫
+
+<!-- =================================================
+     STATISTICS
+================================================= -->
+
+<div class="stats">
+
+
+    <div class="stat-card">
+
+        <div class="stat-title">
+            Total Requests
         </div>
 
-        <h2>
-            ACCESS VIOLATION
-        </h2>
-
-        <p id="accessMessage">
-            You are not authorized to access this page.
-        </p>
-
-        <button onclick="goBack()">
-            Go Back
-        </button>
+        <div
+            class="stat-number"
+            id="totalCount"
+        >
+            0
+        </div>
 
     </div>
+
+
+    <div class="stat-card">
+
+        <div class="stat-title">
+            New Requests
+        </div>
+
+        <div
+            class="stat-number"
+            id="newCount"
+        >
+            0
+        </div>
+
+    </div>
+
+
+    <div class="stat-card">
+
+        <div class="stat-title">
+            Assigned
+        </div>
+
+        <div
+            class="stat-number"
+            id="assignedCount"
+        >
+            0
+        </div>
+
+    </div>
+
+
+    <div class="stat-card">
+
+        <div class="stat-title">
+            In Progress
+        </div>
+
+        <div
+            class="stat-number"
+            id="progressCount"
+        >
+            0
+        </div>
+
+    </div>
+
+
+    <div class="stat-card">
+
+        <div class="stat-title">
+            Completed
+        </div>
+
+        <div
+            class="stat-number"
+            id="completedCount"
+        >
+            0
+        </div>
+
+    </div>
+
 
 </div>
 
 
-<!-- =====================================================
-     MAIN APPLICATION
-===================================================== -->
 
-<div id="mainApplication">
+<!-- =================================================
+     REQUEST TABLE
+================================================= -->
 
+<div class="card">
 
-    <!-- =================================================
-         HEADER
-    ================================================= -->
-
-    <div class="page-header">
-
-        <div>
-
-            <h2>
-                Service Request Management
-            </h2>
-
-            <small>
-                Department Head Dashboard
-            </small>
-
-        </div>
+    <h3>
+        Department Service Requests
+    </h3>
 
 
-        <div class="head-info">
+    <!-- FILTERS -->
 
-            <strong id="headName">
-                Loading...
-            </strong>
-
-            <span id="headDepartment">
-                Loading...
-            </span>
-
-        </div>
-
-    </div>
+    <div class="filters">
 
 
-    <!-- =================================================
-         MAIN CONTAINER
-    ================================================= -->
+        <div class="form-group">
 
-    <div class="container">
+            <label>
+                Status
+            </label>
 
+            <select id="statusFilter">
 
-        <!-- =================================================
-             STATISTICS
-        ================================================= -->
+                <option value="ALL">
+                    All Status
+                </option>
 
-        <div class="stats">
+                <option value="SUBMITTED">
+                    Submitted
+                </option>
 
+                <option value="RECEIVED">
+                    Received
+                </option>
 
-            <div class="stat-card">
-
-                <div class="stat-title">
-                    Total Requests
-                </div>
-
-                <div
-                    class="stat-number"
-                    id="totalCount"
-                >
-                    0
-                </div>
-
-            </div>
-
-
-            <div class="stat-card">
-
-                <div class="stat-title">
-                    New Requests
-                </div>
-
-                <div
-                    class="stat-number"
-                    id="newCount"
-                >
-                    0
-                </div>
-
-            </div>
-
-
-            <div class="stat-card">
-
-                <div class="stat-title">
+                <option value="ASSIGNED">
                     Assigned
-                </div>
+                </option>
 
-                <div
-                    class="stat-number"
-                    id="assignedCount"
-                >
-                    0
-                </div>
-
-            </div>
-
-
-            <div class="stat-card">
-
-                <div class="stat-title">
+                <option value="IN_PROGRESS">
                     In Progress
-                </div>
+                </option>
 
-                <div
-                    class="stat-number"
-                    id="progressCount"
-                >
-                    0
-                </div>
+                <option value="WORK_COMPLETED">
+                    Work Completed
+                </option>
 
-            </div>
+                <option value="HEAD_VERIFICATION">
+                    Head Verification
+                </option>
 
+                <option value="CLOSED">
+                    Closed
+                </option>
 
-            <div class="stat-card">
+                <option value="REOPENED">
+                    Reopened
+                </option>
 
-                <div class="stat-title">
-                    Completed
-                </div>
-
-                <div
-                    class="stat-number"
-                    id="completedCount"
-                >
-                    0
-                </div>
-
-            </div>
-
+            </select>
 
         </div>
 
 
-        <!-- =================================================
-             REQUEST SECTION
-        ================================================= -->
+        <div class="form-group">
 
-        <div class="request-section">
+            <label>
+                Priority
+            </label>
 
-            <h3>
-                Department Service Requests
-            </h3>
+            <select id="priorityFilter">
 
+                <option value="ALL">
+                    All Priority
+                </option>
 
-            <!-- FILTERS -->
+                <option value="Urgent">
+                    Urgent
+                </option>
 
-            <div class="filters">
+                <option value="High">
+                    High
+                </option>
 
+                <option value="Medium">
+                    Medium
+                </option>
 
-                <div class="form-group">
+                <option value="Low">
+                    Low
+                </option>
 
-                    <label>
-                        Status
-                    </label>
+            </select>
 
-                    <select id="statusFilter">
+        </div>
 
-                        <option value="ALL">
-                            All Status
-                        </option>
 
-                        <option value="SUBMITTED">
-                            Submitted
-                        </option>
+        <div class="form-group">
 
-                        <option value="RECEIVED">
-                            Received
-                        </option>
+            <label>
+                Category
+            </label>
 
-                        <option value="ASSIGNED">
-                            Assigned
-                        </option>
+            <select id="categoryFilter">
 
-                        <option value="IN_PROGRESS">
-                            In Progress
-                        </option>
+                <option value="ALL">
+                    All Categories
+                </option>
 
-                        <option value="WORK_COMPLETED">
-                            Work Completed
-                        </option>
+                <option value="Computer">
+                    Computer
+                </option>
 
-                        <option value="HEAD_VERIFICATION">
-                            Head Verification
-                        </option>
+                <option value="Network">
+                    Network
+                </option>
 
-                        <option value="CLOSED">
-                            Closed
-                        </option>
+                <option value="Projector">
+                    Projector
+                </option>
 
-                        <option value="REOPENED">
-                            Reopened
-                        </option>
+                <option value="Printer">
+                    Printer
+                </option>
 
-                    </select>
+                <option value="Electrical">
+                    Electrical
+                </option>
 
-                </div>
+                <option value="Furniture">
+                    Furniture
+                </option>
 
+                <option value="Plumbing">
+                    Plumbing
+                </option>
 
-                <div class="form-group">
+                <option value="Cleaning">
+                    Cleaning
+                </option>
 
-                    <label>
-                        Priority
-                    </label>
+                <option value="Other">
+                    Other
+                </option>
 
-                    <select id="priorityFilter">
+            </select>
 
-                        <option value="ALL">
-                            All Priority
-                        </option>
+        </div>
 
-                        <option value="Urgent">
-                            Urgent
-                        </option>
 
-                        <option value="High">
-                            High
-                        </option>
+        <div class="form-group">
 
-                        <option value="Medium">
-                            Medium
-                        </option>
+            <label>
+                Search
+            </label>
 
-                        <option value="Low">
-                            Low
-                        </option>
-
-                    </select>
-
-                </div>
-
-
-                <div class="form-group">
-
-                    <label>
-                        Category
-                    </label>
-
-                    <select id="categoryFilter">
-
-                        <option value="ALL">
-                            All Categories
-                        </option>
-
-                        <option value="Computer">
-                            Computer
-                        </option>
-
-                        <option value="Network">
-                            Network
-                        </option>
-
-                        <option value="Projector">
-                            Projector
-                        </option>
-
-                        <option value="Printer">
-                            Printer
-                        </option>
-
-                        <option value="Electrical">
-                            Electrical
-                        </option>
-
-                        <option value="Furniture">
-                            Furniture
-                        </option>
-
-                        <option value="Plumbing">
-                            Plumbing
-                        </option>
-
-                        <option value="Cleaning">
-                            Cleaning
-                        </option>
-
-                        <option value="Other">
-                            Other
-                        </option>
-
-                    </select>
-
-                </div>
-
-
-                <div class="form-group">
-
-                    <label>
-                        Search
-                    </label>
-
-                    <input
-                        type="text"
-                        id="searchBox"
-                        placeholder="Ticket / title / staff"
-                    >
-
-                </div>
-
-
-            </div>
-
-
-            <!-- TABLE -->
-
-            <div class="table-container">
-
-                <table>
-
-                    <thead>
-
-                        <tr>
-
-                            <th>S.No</th>
-
-                            <th>Ticket ID</th>
-
-                            <th>Requestor</th>
-
-                            <th>Title</th>
-
-                            <th>Category</th>
-
-                            <th>Priority</th>
-
-                            <th>Status</th>
-
-                            <th>Assigned Worker</th>
-
-                            <th>Date</th>
-
-                            <th>Action</th>
-
-                        </tr>
-
-                    </thead>
-
-
-                    <tbody id="requestTableBody">
-
-                        <tr>
-
-                            <td
-                                colspan="10"
-                                style="text-align:center;"
-                            >
-                                Loading...
-                            </td>
-
-                        </tr>
-
-                    </tbody>
-
-                </table>
-
-            </div>
-
+            <input
+                type="text"
+                id="searchBox"
+                placeholder="Ticket / title / staff"
+            >
 
         </div>
 
@@ -1297,15 +932,75 @@ tr:hover td {
     </div>
 
 
+
+    <div class="table-container">
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>S.No</th>
+
+                    <th>Ticket ID</th>
+
+                    <th>Requestor</th>
+
+                    <th>Title</th>
+
+                    <th>Category</th>
+
+                    <th>Priority</th>
+
+                    <th>Status</th>
+
+                    <th>Assigned Worker</th>
+
+                    <th>Date</th>
+
+                    <th>Action</th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody
+                id="requestTableBody"
+            >
+
+                <tr>
+
+                    <td
+                        colspan="10"
+                        style="text-align:center;"
+                    >
+                        Loading...
+                    </td>
+
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
 </div>
 
 
-<!-- =====================================================
+
+<!-- =================================================
      REQUEST MODAL
-===================================================== -->
+================================================= -->
 
-<div id="requestModal">
-
+<div
+    id="requestModal"
+    class="modal"
+>
 
     <div class="modal-content">
 
@@ -1326,6 +1021,7 @@ tr:hover td {
         </div>
 
 
+
         <!-- DETAILS -->
 
         <div class="detail-grid">
@@ -1338,7 +1034,6 @@ tr:hover td {
                 </label>
 
                 <span id="detailTicketId">
-                    -
                 </span>
 
             </div>
@@ -1351,7 +1046,6 @@ tr:hover td {
                 </label>
 
                 <span id="detailRequestor">
-                    -
                 </span>
 
             </div>
@@ -1364,7 +1058,6 @@ tr:hover td {
                 </label>
 
                 <span id="detailRequestorDepartment">
-                    -
                 </span>
 
             </div>
@@ -1377,7 +1070,6 @@ tr:hover td {
                 </label>
 
                 <span id="detailCategory">
-                    -
                 </span>
 
             </div>
@@ -1390,7 +1082,6 @@ tr:hover td {
                 </label>
 
                 <span id="detailPriority">
-                    -
                 </span>
 
             </div>
@@ -1403,7 +1094,6 @@ tr:hover td {
                 </label>
 
                 <span id="detailStatus">
-                    -
                 </span>
 
             </div>
@@ -1416,7 +1106,6 @@ tr:hover td {
                 </label>
 
                 <span id="detailLocation">
-                    -
                 </span>
 
             </div>
@@ -1442,13 +1131,13 @@ tr:hover td {
                 </label>
 
                 <span id="detailCreated">
-                    -
                 </span>
 
             </div>
 
 
         </div>
+
 
 
         <div class="detail-box">
@@ -1458,10 +1147,12 @@ tr:hover td {
             </label>
 
             <span id="detailTitle">
-                -
             </span>
 
         </div>
+
+
+        <br>
 
 
         <div class="detail-box">
@@ -1471,13 +1162,15 @@ tr:hover td {
             </label>
 
             <span id="detailDescription">
-                -
             </span>
 
         </div>
 
 
-        <!-- ASSIGN -->
+
+        <!-- =================================================
+             ASSIGN WORKER
+        ================================================= -->
 
         <div
             class="assign-section"
@@ -1498,10 +1191,12 @@ tr:hover td {
                         Select Worker *
                     </label>
 
-                    <select id="workerSelect">
+                    <select
+                        id="workerSelect"
+                    >
 
                         <option value="">
-                            Select Worker
+                            Loading workers...
                         </option>
 
                     </select>
@@ -1554,13 +1249,16 @@ tr:hover td {
         </div>
 
 
-        <br>
 
+        <!-- =================================================
+             TIMELINE
+        ================================================= -->
+
+        <br>
 
         <h3>
             Request Timeline
         </h3>
-
 
         <div
             class="timeline"
@@ -1571,2568 +1269,549 @@ tr:hover td {
 
     </div>
 
-
 </div>
 
 
-<!-- =====================================================
+
+<!-- =================================================
      FIREBASE
-===================================================== -->
+================================================= -->
 
 <script type="module">
 
-/* =========================================================
-   FIREBASE
-========================================================= */
-
-import {
-    initializeApp
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import {
     getFirestore,
     collection,
     getDocs,
+    query,
+    where,
     doc,
     getDoc,
-    addDoc,
     updateDoc,
-    serverTimestamp,
-    query,
-    where
+    addDoc,
+    serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-import {
-    getAuth,
-    onAuthStateChanged
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-
-
-/* =========================================================
-   FIREBASE CONFIG
-   IMPORTANT:
-   USE THE SAME CONFIG FROM YOUR EXISTING STAFF LOGIN
-========================================================= */
-
 const firebaseConfig = {
-
     apiKey: "AIzaSyAIv3091VM-gkmdwEAn7OhXWd9Cm2zh2bo",
-  authDomain: "maasc-2026.firebaseapp.com",
-  projectId: "maasc-2026",
-  storageBucket: "maasc-2026.appspot.com",
-  messagingSenderId: "585813001586",
-  appId: "1:585813001586:web:664e0e90ff0725d2e849eb"
-
+    authDomain: "maasc-2026.firebaseapp.com",
+    projectId: "maasc-2026",
+    storageBucket: "maasc-2026.appspot.com",
+    messagingSenderId: "585813001586",
+    appId: "1:585813001586:web:664e0e90ff0725d2e849eb"
 };
-
-
-/* =========================================================
-   INITIALIZE FIREBASE
-========================================================= */
 
 const app = initializeApp(firebaseConfig);
-
 const db = getFirestore(app);
-
 const auth = getAuth(app);
 
-
-/* =========================================================
-   GLOBAL VARIABLES
-========================================================= */
-
-let currentUser = null;
-
 let currentHead = null;
-
-let currentDepartment = "";
-
+let currentRequestId = null;
+let workers = [];
 let allRequests = [];
 
-let currentRequest = null;
+function clean(value){
+    return value === undefined || value === null ? "" : String(value).trim();
+}
 
+function safeDepartmentId(department){
+    return clean(department).replace(/[\\/]/g,"_").replace(/\s+/g,"_").replace(/[.#$\[\]]/g,"_");
+}
 
-/* =========================================================
-   DOM READY
-========================================================= */
+function normalizeStaff(data,id){
+    return {
+        firestoreId:id,
+        ...data,
+        staffId: clean(data.staffId || data.staffID || id),
+        name: clean(data.name || data.staffName || data.fullName || data.displayName || id)
+    };
+}
 
-document.addEventListener("DOMContentLoaded", function () {
+async function getStaffById(staffId){
+    staffId=clean(staffId);
+    if(!staffId) return null;
+    try{
+        const snap=await getDoc(doc(db,"staff",staffId));
+        return snap.exists() ? normalizeStaff(snap.data(),snap.id) : null;
+    }catch(e){
+        console.warn("Staff ID lookup failed:",e);
+        return null;
+    }
+}
 
-    console.log("Service Request Head Portal Loaded");
+async function getStaffByAuthUser(user){
+    if(!user) return null;
 
-    setupFilters();
+    const direct=await getStaffById(user.uid);
+    if(direct) return direct;
 
-});
+    try{
+        const q=query(collection(db,"staff"),where("uid","==",user.uid));
+        const snap=await getDocs(q);
+        if(!snap.empty) return normalizeStaff(snap.docs[0].data(),snap.docs[0].id);
+    }catch(e){ console.warn("UID staff query failed:",e); }
 
+    if(user.email){
+        try{
+            const q=query(collection(db,"staff"),where("email","==",user.email));
+            const snap=await getDocs(q);
+            if(!snap.empty) return normalizeStaff(snap.docs[0].data(),snap.docs[0].id);
+        }catch(e){ console.warn("Email staff query failed:",e); }
+    }
 
-/* =========================================================
-   AUTHENTICATION CHECK
-========================================================= */
+    return null;
+}
 
-onAuthStateChanged(auth, async function (user) {
-
-    console.log("AUTH STATE:", user);
-
-    if (!user) {
-
-        showAccessViolation(
-            "You are not logged in. Please login first."
-        );
-
+function collectIds(value,result){
+    if(value===undefined || value===null) return;
+    if(typeof value === "object"){
+        [value.staffId,value.staffID,value.staff_id,value.id,value.userId,value.userID].forEach(v=>{
+            const id=clean(v); if(id) result.push(id);
+        });
         return;
+    }
+    const raw=clean(value);
+    if(raw) result.push(raw);
+}
 
+function collectStorageIds(){
+    const result=[];
+    const keys=[
+        "staffId","staffID","currentStaffId","currentStaffID",
+        "loggedInStaffId","loggedInStaffID","userStaffId","currentStaff",
+        "loggedInStaff","staffData","staff","currentUser","user"
+    ];
+
+    [sessionStorage,localStorage].forEach(storage=>{
+        keys.forEach(key=>{
+            try{
+                const raw=storage.getItem(key);
+                if(!raw) return;
+                collectIds(raw,result);
+                try{ collectIds(JSON.parse(raw),result); }catch(e){}
+            }catch(e){}
+        });
+    });
+
+    try{
+        const params=new URLSearchParams(location.search);
+        collectIds(params.get("staffId"),result);
+    }catch(e){}
+
+    return [...new Set(result.map(clean).filter(Boolean))];
+}
+
+function isDepartmentHead(staff){
+    const role=clean(staff.role).toLowerCase();
+    const serviceRole=clean(staff.serviceRole).toUpperCase();
+    return role === "department head" ||
+           (serviceRole === "DEPARTMENT_HEAD" && staff.serviceHeadActive === true);
+}
+
+async function findLoggedInHead(){
+    /* Firebase Authentication first */
+    const authUser=auth.currentUser;
+    if(authUser){
+        const staff=await getStaffByAuthUser(authUser);
+        if(staff && isDepartmentHead(staff)) return staff;
     }
 
-
-    currentUser = user;
-
-    console.log("Logged in UID:", user.uid);
-
-    console.log("Logged in Email:", user.email);
-
-
-    try {
-
-        await verifyDepartmentHead();
-
-    } catch (error) {
-
-        console.error(
-            "HEAD VERIFICATION ERROR:",
-            error
-        );
-
-        showAccessViolation(
-            "Unable to verify your Department Head account."
-        );
-
+    /* ERP login storage fallback */
+    for(const id of collectStorageIds()){
+        const staff=await getStaffById(id);
+        if(staff && isDepartmentHead(staff)) return staff;
     }
 
-});
+    /* Final fallback: active Department Head matching stored department */
+    const stored=localStorage.getItem("currentStaff") || sessionStorage.getItem("currentStaff");
+    let storedData=null;
+    try{ storedData=stored ? JSON.parse(stored) : null; }catch(e){}
 
-
-/* =========================================================
-   VERIFY DEPARTMENT HEAD
-========================================================= */
-
-async function verifyDepartmentHead() {
-
-    console.log(
-        "Checking staff profile..."
-    );
-
-
-    let staffData = null;
-
-    let staffDocId = null;
-
-
-    /* =====================================================
-       METHOD 1
-       Try Firebase UID as document ID
-    ===================================================== */
-
-    try {
-
-        const uidRef = doc(
-            db,
-            "staff",
-            currentUser.uid
-        );
-
-        const uidSnap = await getDoc(uidRef);
-
-
-        if (uidSnap.exists()) {
-
-            staffData = uidSnap.data();
-
-            staffDocId = uidSnap.id;
-
-            console.log(
-                "Staff found using UID document:",
-                staffDocId
-            );
-
-        }
-
-    } catch (error) {
-
-        console.log(
-            "UID lookup failed:",
-            error.message
-        );
-
-    }
-
-
-    /* =====================================================
-       METHOD 2
-       Try staffId saved by login
-    ===================================================== */
-
-    if (!staffData) {
-
-        const possibleStaffIds = [
-
-            localStorage.getItem("staffId"),
-
-            sessionStorage.getItem("staffId"),
-
-            localStorage.getItem("currentStaffId"),
-
-            sessionStorage.getItem("currentStaffId")
-
-        ];
-
-
-        for (
-            const possibleId of possibleStaffIds
-        ) {
-
-            if (!possibleId) {
-                continue;
+    const department=clean(storedData?.department);
+    if(department){
+        try{
+            const q=query(collection(db,"staff"),where("serviceHeadDepartment","==",department));
+            const snap=await getDocs(q);
+            for(const d of snap.docs){
+                const staff=normalizeStaff(d.data(),d.id);
+                if(isDepartmentHead(staff)) return staff;
             }
-
-
-            try {
-
-                const staffRef = doc(
-                    db,
-                    "staff",
-                    possibleId
-                );
-
-                const staffSnap =
-                    await getDoc(staffRef);
-
-
-                if (staffSnap.exists()) {
-
-                    staffData =
-                        staffSnap.data();
-
-                    staffDocId =
-                        staffSnap.id;
-
-                    console.log(
-                        "Staff found using staffId:",
-                        staffDocId
-                    );
-
-                    break;
-
-                }
-
-            } catch (error) {
-
-                console.log(
-                    "Staff ID lookup failed:",
-                    error.message
-                );
-
-            }
-
-        }
-
+        }catch(e){ console.warn("Department Head fallback failed:",e); }
     }
 
+    return null;
+}
 
-    /* =====================================================
-       METHOD 3
-       Search staff collection by email
-       if email field exists
-    ===================================================== */
+function showLoading(message){
+    const box=document.getElementById("headLoadingScreen");
+    const msg=document.getElementById("headLoadingMessage");
+    if(msg) msg.textContent=message;
+    if(box) box.style.display="flex";
+    document.querySelectorAll(".header,.container").forEach(el=>el.style.visibility="hidden");
+}
 
-    if (!staffData && currentUser.email) {
+function showDashboard(){
+    const box=document.getElementById("headLoadingScreen");
+    const violation=document.getElementById("headAccessViolation");
+    if(box) box.style.display="none";
+    if(violation) violation.style.display="none";
+    document.querySelectorAll(".header,.container").forEach(el=>el.style.visibility="visible");
+}
 
-        try {
+function showAccessViolation(message){
+    const loading=document.getElementById("headLoadingScreen");
+    const violation=document.getElementById("headAccessViolation");
+    const text=document.getElementById("headAccessMessage");
+    if(loading) loading.style.display="none";
+    if(text) text.textContent=message;
+    if(violation) violation.style.display="flex";
+    document.querySelectorAll(".header,.container").forEach(el=>el.style.visibility="hidden");
+}
 
-            const staffQuery = query(
+async function initializeCurrentHead(){
+    const staff=await findLoggedInHead();
 
-                collection(
-                    db,
-                    "staff"
-                ),
-
-                where(
-                    "email",
-                    "==",
-                    currentUser.email
-                )
-
-            );
-
-
-            const staffSnap =
-                await getDocs(staffQuery);
-
-
-            if (!staffSnap.empty) {
-
-                const firstDoc =
-                    staffSnap.docs[0];
-
-                staffData =
-                    firstDoc.data();
-
-                staffDocId =
-                    firstDoc.id;
-
-
-                console.log(
-                    "Staff found using email:",
-                    staffDocId
-                );
-
-            }
-
-        } catch (error) {
-
-            console.log(
-                "Email lookup failed:",
-                error.message
-            );
-
-        }
-
+    if(!staff){
+        showAccessViolation("You are not authorized. No active Department Head account was found for this login.");
+        return false;
     }
 
-
-    /* =====================================================
-       METHOD 4
-       Search staff collection using staffId
-       from local/session storage
-    ===================================================== */
-
-    if (!staffData) {
-
-        const storedStaffId =
-
-            localStorage.getItem("staffId") ||
-
-            sessionStorage.getItem("staffId");
-
-
-        if (storedStaffId) {
-
-            try {
-
-                const staffQuery = query(
-
-                    collection(
-                        db,
-                        "staff"
-                    ),
-
-                    where(
-                        "staffId",
-                        "==",
-                        storedStaffId
-                    )
-
-                );
-
-
-                const staffSnap =
-                    await getDocs(staffQuery);
-
-
-                if (!staffSnap.empty) {
-
-                    const firstDoc =
-                        staffSnap.docs[0];
-
-                    staffData =
-                        firstDoc.data();
-
-                    staffDocId =
-                        firstDoc.id;
-
-
-                    console.log(
-                        "Staff found by staffId field:",
-                        staffDocId
-                    );
-
-                }
-
-            } catch (error) {
-
-                console.log(
-                    "staffId field lookup failed:",
-                    error.message
-                );
-
-            }
-
-        }
-
+    const department=clean(staff.serviceHeadDepartment || staff.department);
+    if(!department){
+        showAccessViolation("Your Department Head account has no department assigned.");
+        return false;
     }
 
-
-    /* =====================================================
-       NO STAFF PROFILE
-    ===================================================== */
-
-    if (!staffData) {
-
-        console.error(
-            "No staff profile found for logged-in user."
-        );
-
-
-        showAccessViolation(
-
-            "Your Firebase login is valid, but your staff profile could not be found."
-
-        );
-
-
-        return;
-
-    }
-
-
-    console.log(
-        "STAFF PROFILE:",
-        staffData
-    );
-
-
-    /* =====================================================
-       GET ROLE
-       
-       Supports:
-       
-       role = "Department Head"
-       
-       OR
-       
-       serviceRole = "DEPARTMENT_HEAD"
-    ===================================================== */
-
-    const role =
-        String(
-            staffData.role ||
-            ""
-        ).trim();
-
-
-    const serviceRole =
-        String(
-            staffData.serviceRole ||
-            ""
-        ).trim();
-
-
-    const isNormalHeadRole =
-
-        role.toLowerCase() ===
-        "department head";
-
-
-    const isServiceHeadRole =
-
-        serviceRole.toUpperCase() ===
-        "DEPARTMENT_HEAD";
-
-
-    const serviceHeadActive =
-
-        staffData.serviceHeadActive === true;
-
-
-    /* =====================================================
-       DETERMINE HEAD STATUS
-    ===================================================== */
-
-    const isHead =
-
-        isNormalHeadRole ||
-
-        (
-            isServiceHeadRole &&
-            serviceHeadActive
-        );
-
-
-    console.log(
-        "ROLE:",
-        role
-    );
-
-    console.log(
-        "SERVICE ROLE:",
-        serviceRole
-    );
-
-    console.log(
-        "SERVICE HEAD ACTIVE:",
-        serviceHeadActive
-    );
-
-    console.log(
-        "IS HEAD:",
-        isHead
-    );
-
-
-    /* =====================================================
-       NOT HEAD
-    ===================================================== */
-
-    if (!isHead) {
-
-        showAccessViolation(
-
-            "Access denied. Your staff account is not assigned as a Department Head."
-
-        );
-
-
-        return;
-
-    }
-
-
-    /* =====================================================
-       DETERMINE DEPARTMENT
-    ===================================================== */
-
-    const department =
-
-        String(
-
-            staffData.serviceHeadDepartment ||
-
-            staffData.department ||
-
-            ""
-
-        ).trim();
-
-
-    if (!department) {
-
-        showAccessViolation(
-
-            "Your Department Head account does not have a department assigned."
-
-        );
-
-
-        return;
-
-    }
-
-
-    /* =====================================================
-       STORE HEAD INFORMATION
-    ===================================================== */
-
-    currentHead = {
-
-        ...staffData,
-
-        staffDocId: staffDocId
-
+    currentHead={
+        headId:clean(staff.staffId || staff.firestoreId),
+        headName:clean(staff.name || staff.staffName || staff.staffId),
+        department:department,
+        departmentId:safeDepartmentId(department),
+        role:"DEPARTMENT_HEAD",
+        firestoreId:staff.firestoreId
     };
 
+    const name=document.getElementById("headName");
+    const dep=document.getElementById("headDepartment");
+    if(name) name.textContent=currentHead.headName;
+    if(dep) dep.textContent=currentHead.department;
 
-    currentDepartment = department;
-
-
-    console.log(
-        "AUTHORIZED HEAD:",
-        currentHead
-    );
-
-    console.log(
-        "HEAD DEPARTMENT:",
-        currentDepartment
-    );
-
-
-    /* =====================================================
-       DISPLAY HEAD INFORMATION
-    ===================================================== */
-
-    const headNameElement =
-        document.getElementById(
-            "headName"
-        );
-
-
-    const headDepartmentElement =
-        document.getElementById(
-            "headDepartment"
-        );
-
-
-    if (headNameElement) {
-
-        headNameElement.textContent =
-
-            staffData.name ||
-
-            staffData.staffName ||
-
-            staffData.displayName ||
-
-            staffDocId ||
-
-            "Department Head";
-
+    /* Verify department assignment record if it exists. */
+    try{
+        const ref=doc(db,"serviceDepartmentHeads",currentHead.departmentId);
+        const snap=await getDoc(ref);
+        if(snap.exists()){
+            const data=snap.data();
+            if(data.active === true && data.headId && clean(data.headId)!==currentHead.headId){
+                showAccessViolation("Access denied. Another Department Head is assigned to this department.");
+                return false;
+            }
+        }
+    }catch(e){
+        console.warn("Department Head assignment verification skipped:",e);
     }
-
-
-    if (headDepartmentElement) {
-
-        headDepartmentElement.textContent =
-
-            currentDepartment;
-
-    }
-
-
-    /* =====================================================
-       SHOW DASHBOARD
-    ===================================================== */
 
     showDashboard();
-
-
-    /* =====================================================
-       LOAD REQUESTS
-    ===================================================== */
-
-    await loadRequests();
-
-
-    /* =====================================================
-       LOAD WORKERS
-    ===================================================== */
-
-    await loadWorkers();
-
+    console.log("CURRENT DEPARTMENT HEAD:",currentHead);
+    return true;
 }
 
+async function loadWorkers(){
+    workers=[];
+    const select=document.getElementById("workerSelect");
+    if(select) select.innerHTML='<option value="">Loading workers...</option>';
 
-/* =========================================================
-   SHOW DASHBOARD
-========================================================= */
-
-function showDashboard() {
-
-    const loadingBox =
-        document.getElementById(
-            "loadingBox"
-        );
-
-
-    const accessBox =
-        document.getElementById(
-            "accessBox"
-        );
-
-
-    const dashboard =
-        document.getElementById(
-            "dashboard"
-        );
-
-
-    if (loadingBox) {
-
-        loadingBox.style.display =
-            "none";
-
+    try{
+        const snap=await getDocs(collection(db,"staff"));
+        snap.forEach(d=>{
+            const staff=normalizeStaff(d.data(),d.id);
+            const department=clean(staff.serviceDepartment || staff.department);
+            if(department.toLowerCase()!==currentHead.department.toLowerCase()) return;
+            if(clean(staff.staffId)===currentHead.headId || d.id===currentHead.firestoreId) return;
+            if(isDepartmentHead(staff)) return;
+            workers.push(staff);
+        });
+        populateWorkers("");
+    }catch(error){
+        console.error("Worker loading error:",error);
+        if(select) select.innerHTML='<option value="">Unable to load workers</option>';
     }
-
-
-    if (accessBox) {
-
-        accessBox.style.display =
-            "none";
-
-    }
-
-
-    if (dashboard) {
-
-        dashboard.style.display =
-            "block";
-
-    }
-
 }
 
-
-/* =========================================================
-   SHOW ACCESS VIOLATION
-========================================================= */
-
-function showAccessViolation(message) {
-
-    console.error(
-        "ACCESS VIOLATION:",
-        message
-    );
-
-
-    const loadingBox =
-        document.getElementById(
-            "loadingBox"
-        );
-
-
-    const dashboard =
-        document.getElementById(
-            "dashboard"
-        );
-
-
-    const accessBox =
-        document.getElementById(
-            "accessBox"
-        );
-
-
-    const accessMessage =
-        document.getElementById(
-            "accessMessage"
-        );
-
-
-    if (loadingBox) {
-
-        loadingBox.style.display =
-            "none";
-
-    }
-
-
-    if (dashboard) {
-
-        dashboard.style.display =
-            "none";
-
-    }
-
-
-    if (accessMessage) {
-
-        accessMessage.textContent =
-            message;
-
-    }
-
-
-    if (accessBox) {
-
-        accessBox.style.display =
-            "flex";
-
-    }
-
-}
-
-
-/* =========================================================
-   LOAD SERVICE REQUESTS
-========================================================= */
-
-async function loadRequests() {
-
-    const tableBody =
-        document.getElementById(
-            "requestTableBody"
-        );
-
-
-    if (tableBody) {
-
-        tableBody.innerHTML = `
-
-            <tr>
-
-                <td colspan="10"
-                    style="text-align:center;">
-
-                    Loading requests...
-
-                </td>
-
-            </tr>
-
-        `;
-
-    }
-
-
-    try {
-
-        console.log(
-            "Loading service requests..."
-        );
-
-
-        const snapshot =
-            await getDocs(
-
-                collection(
-                    db,
-                    "serviceRequests"
-                )
-
-            );
-
-
-        allRequests = [];
-
-
-        snapshot.forEach(
-            function (requestDoc) {
-
-                const data =
-                    requestDoc.data();
-
-
-                /*
-                 * Department matching
-                 *
-                 * Supports several possible
-                 * field names.
-                 */
-
-                const requestDepartment =
-
-                    String(
-
-                        data.department ||
-
-                        data.requestorDepartment ||
-
-                        data.requesterDepartment ||
-
-                        data.staffDepartment ||
-
-                        ""
-
-                    ).trim();
-
-
-                if (
-
-                    requestDepartment
-                        .toLowerCase() ===
-                    currentDepartment
-                        .toLowerCase()
-
-                ) {
-
-                    allRequests.push({
-
-                        id:
-                            requestDoc.id,
-
-                        ...data
-
-                    });
-
-                }
-
+async function loadRequests(){
+    const tbody=document.getElementById("requestTableBody");
+    if(tbody) tbody.innerHTML='<tr><td colspan="10" style="text-align:center;">Loading requests...</td></tr>';
+    if(!currentHead) return;
+
+    try{
+        const snap=await getDocs(collection(db,"serviceRequests"));
+        allRequests=[];
+
+        snap.forEach(d=>{
+            const data=d.data();
+            const assignedHead=clean(data.assignedHeadId || data.headId || data.departmentHeadId);
+            const requestDepartment=clean(data.serviceDepartment || data.department || data.requestorDepartment || data.requesterDepartment);
+
+            if(assignedHead){
+                if(assignedHead===currentHead.headId) allRequests.push({id:d.id,...data});
+                return;
             }
-        );
 
+            if(requestDepartment && requestDepartment.toLowerCase()===currentHead.department.toLowerCase()){
+                allRequests.push({id:d.id,...data});
+            }
+        });
 
-        console.log(
-            "Department requests:",
-            allRequests
-        );
-
-
+        allRequests.sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));
         updateStatistics();
-
-
-        applyFilters();
-
-
-    } catch (error) {
-
-        console.error(
-            "LOAD REQUESTS ERROR:",
-            error
-        );
-
-
-        if (tableBody) {
-
-            tableBody.innerHTML = `
-
-                <tr>
-
-                    <td colspan="10"
-                        style="text-align:center;color:red;">
-
-                        Unable to load service requests.
-
-                        <br>
-
-                        ${escapeHtml(
-                            error.message
-                        )}
-
-                    </td>
-
-                </tr>
-
-            `;
-
-        }
-
+        renderRequests();
+    }catch(error){
+        console.error("Request loading error:",error);
+        if(tbody) tbody.innerHTML='<tr><td colspan="10" style="text-align:center;color:#b91c1c;">Unable to load service requests.</td></tr>';
     }
-
 }
 
-
-/* =========================================================
-   UPDATE STATISTICS
-========================================================= */
-
-function updateStatistics() {
-
-    let total = 0;
-
-    let newRequests = 0;
-
-    let assigned = 0;
-
-    let progress = 0;
-
-    let completed = 0;
-
-
-    allRequests.forEach(
-        function (request) {
-
-            total++;
-
-
-            const status =
-
-                String(
-
-                    request.status ||
-
-                    ""
-
-                ).toUpperCase();
-
-
-            if (
-
-                status === "SUBMITTED" ||
-
-                status === "RECEIVED"
-
-            ) {
-
-                newRequests++;
-
-            }
-
-
-            if (
-
-                status === "ASSIGNED"
-
-            ) {
-
-                assigned++;
-
-            }
-
-
-            if (
-
-                status === "IN_PROGRESS"
-
-            ) {
-
-                progress++;
-
-            }
-
-
-            if (
-
-                status === "WORK_COMPLETED" ||
-
-                status === "HEAD_VERIFICATION" ||
-
-                status === "CLOSED"
-
-            ) {
-
-                completed++;
-
-            }
-
-        }
-    );
-
-
-    setText(
-        "totalCount",
-        total
-    );
-
-
-    setText(
-        "newCount",
-        newRequests
-    );
-
-
-    setText(
-        "assignedCount",
-        assigned
-    );
-
-
-    setText(
-        "progressCount",
-        progress
-    );
-
-
-    setText(
-        "completedCount",
-        completed
-    );
-
+function updateStatistics(){
+    let total=0,newCount=0,assigned=0,progress=0,completed=0;
+    allRequests.forEach(r=>{
+        total++;
+        const s=clean(r.status).toUpperCase();
+        if(s==="SUBMITTED" || s==="RECEIVED") newCount++;
+        if(s==="ASSIGNED") assigned++;
+        if(s==="IN_PROGRESS") progress++;
+        if(s==="WORK_COMPLETED" || s==="HEAD_VERIFICATION" || s==="CLOSED") completed++;
+    });
+    document.getElementById("totalCount").textContent=total;
+    document.getElementById("newCount").textContent=newCount;
+    document.getElementById("assignedCount").textContent=assigned;
+    document.getElementById("progressCount").textContent=progress;
+    document.getElementById("completedCount").textContent=completed;
 }
 
-
-/* =========================================================
-   APPLY FILTERS
-========================================================= */
-
-function applyFilters() {
-
-    const statusFilter =
-        getValue(
-            "statusFilter"
-        );
-
-
-    const priorityFilter =
-        getValue(
-            "priorityFilter"
-        );
-
-
-    const categoryFilter =
-        getValue(
-            "categoryFilter"
-        );
-
-
-    const searchText =
-
-        getValue(
-            "searchBox"
-        )
-        .toLowerCase();
-
-
-    const filtered =
-        allRequests.filter(
-            function (request) {
-
-
-                const status =
-
-                    String(
-
-                        request.status ||
-
-                        ""
-
-                    ).toUpperCase();
-
-
-                const priority =
-
-                    String(
-
-                        request.priority ||
-
-                        ""
-
-                    );
-
-
-                const category =
-
-                    String(
-
-                        request.category ||
-
-                        ""
-
-                    );
-
-
-                const ticket =
-
-                    String(
-
-                        request.ticketId ||
-
-                        request.ticket ||
-
-                        request.id ||
-
-                        ""
-
-                    ).toLowerCase();
-
-
-                const title =
-
-                    String(
-
-                        request.title ||
-
-                        request.requestTitle ||
-
-                        ""
-
-                    ).toLowerCase();
-
-
-                const requestor =
-
-                    String(
-
-                        request.requestorName ||
-
-                        request.requestor ||
-
-                        request.staffName ||
-
-                        request.name ||
-
-                        ""
-
-                    ).toLowerCase();
-
-
-                const assignedWorker =
-
-                    String(
-
-                        request.assignedWorkerName ||
-
-                        request.assignedWorker ||
-
-                        request.workerName ||
-
-                        ""
-
-                    ).toLowerCase();
-
-
-                const matchesStatus =
-
-                    statusFilter === "ALL" ||
-
-                    status ===
-                        statusFilter;
-
-
-                const matchesPriority =
-
-                    priorityFilter === "ALL" ||
-
-                    priority ===
-                        priorityFilter;
-
-
-                const matchesCategory =
-
-                    categoryFilter === "ALL" ||
-
-                    category ===
-                        categoryFilter;
-
-
-                const matchesSearch =
-
-                    !searchText ||
-
-                    ticket.includes(
-                        searchText
-                    ) ||
-
-                    title.includes(
-                        searchText
-                    ) ||
-
-                    requestor.includes(
-                        searchText
-                    ) ||
-
-                    assignedWorker.includes(
-                        searchText
-                    );
-
-
-                return (
-
-                    matchesStatus &&
-
-                    matchesPriority &&
-
-                    matchesCategory &&
-
-                    matchesSearch
-
-                );
-
-            }
-        );
-
-
-    renderRequests(
-        filtered
-    );
-
-}
-
-
-/* =========================================================
-   RENDER REQUESTS
-========================================================= */
-
-function renderRequests(requests) {
-
-    const tableBody =
-        document.getElementById(
-            "requestTableBody"
-        );
-
-
-    if (!tableBody) {
+function renderRequests(){
+    const tbody=document.getElementById("requestTableBody");
+    if(!tbody) return;
+
+    const status=document.getElementById("statusFilter")?.value || "ALL";
+    const priority=document.getElementById("priorityFilter")?.value || "ALL";
+    const category=document.getElementById("categoryFilter")?.value || "ALL";
+    const search=clean(document.getElementById("searchBox")?.value).toLowerCase();
+
+    const list=allRequests.filter(r=>{
+        const s=clean(r.status).toUpperCase();
+        const p=clean(r.priority);
+        const c=clean(r.category);
+        const text=[r.ticketId,r.requestorName,r.title,r.assignedWorkerName,r.requestor,r.staffName].map(clean).join(" ").toLowerCase();
+        return (status==="ALL" || s===status) &&
+               (priority==="ALL" || p===priority) &&
+               (category==="ALL" || c===category) &&
+               (!search || text.includes(search));
+    });
+
+    if(!list.length){
+        tbody.innerHTML='<tr><td colspan="10" style="text-align:center;">No service requests found.</td></tr>';
         return;
     }
 
-
-    if (!requests.length) {
-
-        tableBody.innerHTML = `
-
-            <tr>
-
-                <td colspan="10"
-                    style="text-align:center;">
-
-                    No service requests found.
-
-                </td>
-
-            </tr>
-
+    tbody.innerHTML="";
+    list.forEach((r,i)=>{
+        const tr=document.createElement("tr");
+        const ticket=clean(r.ticketId || r.id);
+        const requestor=clean(r.requestorName || r.requestor || r.staffName);
+        const title=clean(r.title || r.requestTitle);
+        const worker=clean(r.assignedWorkerName) || "Not Assigned";
+        tr.innerHTML=`
+            <td>${i+1}</td>
+            <td>${escapeHtml(ticket)}</td>
+            <td>${escapeHtml(requestor)}</td>
+            <td>${escapeHtml(title)}</td>
+            <td>${escapeHtml(r.category || "-")}</td>
+            <td>${escapeHtml(r.priority || "-")}</td>
+            <td>${getStatusBadge(r.status)}</td>
+            <td>${escapeHtml(worker)}</td>
+            <td>${formatDate(r.createdAt)}</td>
+            <td><button class="view-btn" type="button" onclick="openRequest('${escapeHtml(r.id)}')">View</button></td>
         `;
-
-        return;
-
-    }
-
-
-    tableBody.innerHTML = "";
-
-
-    requests.forEach(
-        function (request, index) {
-
-
-            const ticketId =
-
-                request.ticketId ||
-
-                request.ticket ||
-
-                request.id ||
-
-                "-";
-
-
-            const requestor =
-
-                request.requestorName ||
-
-                request.requestor ||
-
-                request.staffName ||
-
-                request.name ||
-
-                "-";
-
-
-            const title =
-
-                request.title ||
-
-                request.requestTitle ||
-
-                "-";
-
-
-            const category =
-
-                request.category ||
-
-                "-";
-
-
-            const priority =
-
-                request.priority ||
-
-                "-";
-
-
-            const status =
-
-                request.status ||
-
-                "-";
-
-
-            const worker =
-
-                request.assignedWorkerName ||
-
-                request.assignedWorker ||
-
-                request.workerName ||
-
-                "Not Assigned";
-
-
-            const date =
-
-                formatDate(
-
-                    request.createdAt ||
-
-                    request.createdDate ||
-
-                    request.date
-
-                );
-
-
-            const row =
-                document.createElement(
-                    "tr"
-                );
-
-
-            row.innerHTML = `
-
-                <td>
-                    ${index + 1}
-                </td>
-
-                <td>
-                    <strong>
-                        ${escapeHtml(ticketId)}
-                    </strong>
-                </td>
-
-                <td>
-                    ${escapeHtml(requestor)}
-                </td>
-
-                <td>
-                    ${escapeHtml(title)}
-                </td>
-
-                <td>
-                    ${escapeHtml(category)}
-                </td>
-
-                <td>
-                    ${escapeHtml(priority)}
-                </td>
-
-                <td>
-                    ${escapeHtml(status)}
-                </td>
-
-                <td>
-                    ${escapeHtml(worker)}
-                </td>
-
-                <td>
-                    ${escapeHtml(date)}
-                </td>
-
-                <td>
-
-                    <button
-                        type="button"
-                        class="view-btn"
-                        data-id="${escapeHtml(request.id)}"
-                    >
-                        View
-                    </button>
-
-                </td>
-
-            `;
-
-
-            const viewButton =
-                row.querySelector(
-                    ".view-btn"
-                );
-
-
-            if (viewButton) {
-
-                viewButton.addEventListener(
-                    "click",
-                    function () {
-
-                        openRequest(
-                            request.id
-                        );
-
-                    }
-                );
-
-            }
-
-
-            tableBody.appendChild(
-                row
-            );
-
-        }
-    );
-
+        tbody.appendChild(tr);
+    });
 }
 
+window.openRequest=async function(requestId){
+    currentRequestId=requestId;
+    const ref=doc(db,"serviceRequests",requestId);
+    const snap=await getDoc(ref);
+    if(!snap.exists()){ alert("Request not found."); return; }
+    const r=snap.data();
 
-/* =========================================================
-   OPEN REQUEST
-========================================================= */
+    document.getElementById("detailTicketId").textContent=r.ticketId || requestId;
+    document.getElementById("detailRequestor").textContent=r.requestorName || r.requestor || "-";
+    document.getElementById("detailRequestorDepartment").textContent=r.requestorDepartment || r.department || "-";
+    document.getElementById("detailCategory").textContent=r.category || "-";
+    document.getElementById("detailPriority").textContent=r.priority || "-";
+    document.getElementById("detailStatus").innerHTML=getStatusBadge(r.status);
+    document.getElementById("detailLocation").textContent=r.location || "-";
+    document.getElementById("detailWorker").textContent=r.assignedWorkerName || "Not Assigned";
+    document.getElementById("detailCreated").textContent=formatDateTime(r.createdAt);
+    document.getElementById("detailTitle").textContent=r.title || r.requestTitle || "-";
+    document.getElementById("detailDescription").textContent=r.description || "-";
+    document.getElementById("expectedDate").value=r.expectedCompletionDate || "";
+    document.getElementById("headRemarks").value=r.headRemarks || "";
 
-async function openRequest(requestId) {
+    populateWorkers(r.assignedWorkerId || "");
+    await loadTimeline(requestId);
+    document.getElementById("requestModal").style.display="block";
+};
 
-    const request =
-        allRequests.find(
-            function (item) {
-
-                return item.id ===
-                    requestId;
-
-            }
-        );
-
-
-    if (!request) {
-
-        alert(
-            "Request not found."
-        );
-
-        return;
-
-    }
-
-
-    currentRequest =
-        request;
-
-
-    fillRequestDetails(
-        request
-    );
-
-
-    await loadWorkers();
-
-
-    const modal =
-        document.getElementById(
-            "requestModal"
-        );
-
-
-    if (modal) {
-
-        modal.style.display =
-            "flex";
-
-    }
-
+function populateWorkers(selected){
+    const select=document.getElementById("workerSelect");
+    if(!select) return;
+    select.innerHTML='<option value="">Select Worker</option>';
+    workers.forEach(w=>{
+        const id=clean(w.staffId || w.firestoreId);
+        const option=document.createElement("option");
+        option.value=id;
+        option.textContent=clean(w.name || w.staffName || id);
+        if(id===clean(selected)) option.selected=true;
+        select.appendChild(option);
+    });
+    if(!workers.length) select.innerHTML='<option value="">No workers found</option>';
 }
 
-
-/* =========================================================
-   FILL REQUEST DETAILS
-========================================================= */
-
-function fillRequestDetails(request) {
-
-    setText(
-        "detailTicketId",
-
-        request.ticketId ||
-
-        request.ticket ||
-
-        request.id ||
-
-        "-"
-    );
-
-
-    setText(
-        "detailRequestor",
-
-        request.requestorName ||
-
-        request.requestor ||
-
-        request.staffName ||
-
-        request.name ||
-
-        "-"
-    );
-
-
-    setText(
-        "detailRequestorDepartment",
-
-        request.department ||
-
-        request.requestorDepartment ||
-
-        "-"
-    );
-
-
-    setText(
-        "detailCategory",
-
-        request.category ||
-
-        "-"
-    );
-
-
-    setText(
-        "detailPriority",
-
-        request.priority ||
-
-        "-"
-    );
-
-
-    setText(
-        "detailStatus",
-
-        request.status ||
-
-        "-"
-    );
-
-
-    setText(
-        "detailLocation",
-
-        request.location ||
-
-        "-"
-    );
-
-
-    setText(
-        "detailWorker",
-
-        request.assignedWorkerName ||
-
-        request.assignedWorker ||
-
-        request.workerName ||
-
-        "Not Assigned"
-    );
-
-
-    setText(
-        "detailCreated",
-
-        formatDate(
-
-            request.createdAt ||
-
-            request.createdDate ||
-
-            request.date
-
-        )
-    );
-
-
-    setText(
-        "detailTitle",
-
-        request.title ||
-
-        request.requestTitle ||
-
-        "-"
-    );
-
-
-    setText(
-        "detailDescription",
-
-        request.description ||
-
-        request.details ||
-
-        "-"
-    );
-
-
-    const workerSelect =
-        document.getElementById(
-            "workerSelect"
-        );
-
-
-    if (workerSelect) {
-
-        workerSelect.value =
-
-            request.assignedWorkerId ||
-
-            "";
-
-    }
-
-
-    const expectedDate =
-        document.getElementById(
-            "expectedDate"
-        );
-
-
-    if (expectedDate) {
-
-        expectedDate.value =
-
-            request.expectedCompletionDate ||
-
-            "";
-
-    }
-
-
-    const headRemarks =
-        document.getElementById(
-            "headRemarks"
-        );
-
-
-    if (headRemarks) {
-
-        headRemarks.value =
-
-            request.headRemarks ||
-
-            "";
-
-    }
-
-
-    renderTimeline(
-        request
-    );
-
-}
-
-
-/* =========================================================
-   LOAD WORKERS
-========================================================= */
-
-async function loadWorkers() {
-
-    const workerSelect =
-        document.getElementById(
-            "workerSelect"
-        );
-
-
-    if (!workerSelect) {
-        return;
-    }
-
-
-    workerSelect.innerHTML = `
-
-        <option value="">
-            Loading workers...
-        </option>
-
-    `;
-
-
-    try {
-
-        const snapshot =
-            await getDocs(
-
-                collection(
-                    db,
-                    "staff"
-                )
-
-            );
-
-
-        workerSelect.innerHTML = `
-
-            <option value="">
-                Select Worker
-            </option>
-
-        `;
-
-
-        let workerCount = 0;
-
-
-        snapshot.forEach(
-            function (staffDoc) {
-
-                const staff =
-                    staffDoc.data();
-
-
-                const department =
-
-                    String(
-
-                        staff.department ||
-
-                        ""
-
-                    ).trim();
-
-
-                /*
-                 * Only workers from the
-                 * Department Head's department.
-                 */
-
-                if (
-
-                    department.toLowerCase() !==
-
-                    currentDepartment.toLowerCase()
-
-                ) {
-
-                    return;
-
-                }
-
-
-                /*
-                 * Do not show the current
-                 * Department Head as worker.
-                 */
-
-                const staffRole =
-
-                    String(
-
-                        staff.role ||
-
-                        staff.serviceRole ||
-
-                        ""
-
-                    ).toUpperCase();
-
-
-                if (
-
-                    staffDoc.id ===
-                    currentHead.staffDocId
-
-                ) {
-
-                    return;
-
-                }
-
-
-                if (
-
-                    staffRole ===
-                    "DEPARTMENT HEAD"
-
-                ) {
-
-                    return;
-
-                }
-
-
-                if (
-
-                    staffRole ===
-                    "DEPARTMENT_HEAD"
-
-                ) {
-
-                    return;
-
-                }
-
-
-                const staffId =
-
-                    staff.staffId ||
-
-                    staffDoc.id;
-
-
-                const staffName =
-
-                    staff.name ||
-
-                    staff.staffName ||
-
-                    staff.displayName ||
-
-                    staffId;
-
-
-                const option =
-                    document.createElement(
-                        "option"
-                    );
-
-
-                option.value =
-                    staffId;
-
-
-                option.textContent =
-
-                    staffName +
-                    " (" +
-                    staffId +
-                    ")";
-
-
-                option.dataset.name =
-                    staffName;
-
-
-                workerSelect.appendChild(
-                    option
-                );
-
-
-                workerCount++;
-
-            }
-        );
-
-
-        console.log(
-            "Workers loaded:",
-            workerCount
-        );
-
-
-        if (workerCount === 0) {
-
-            workerSelect.innerHTML = `
-
-                <option value="">
-                    No workers found in ${escapeHtml(
-                        currentDepartment
-                    )}
-                </option>
-
-            `;
-
-        }
-
-
-    } catch (error) {
-
-        console.error(
-            "LOAD WORKERS ERROR:",
-            error
-        );
-
-
-        workerSelect.innerHTML = `
-
-            <option value="">
-                Unable to load workers
-            </option>
-
-        `;
-
-    }
-
-}
-
-
-/* =========================================================
-   ASSIGN WORKER
-========================================================= */
-
-async function assignWorker() {
-
-    if (!currentRequest) {
-
-        alert(
-            "No request selected."
-        );
-
-        return;
-
-    }
-
-
-    const workerSelect =
-        document.getElementById(
-            "workerSelect"
-        );
-
-
-    const expectedDate =
-        document.getElementById(
-            "expectedDate"
-        );
-
-
-    const headRemarks =
-        document.getElementById(
-            "headRemarks"
-        );
-
-
-    if (!workerSelect) {
-        return;
-    }
-
-
-    const workerId =
-        workerSelect.value;
-
-
-    if (!workerId) {
-
-        alert(
-            "Please select a worker."
-        );
-
-        return;
-
-    }
-
-
-    const selectedOption =
-
-        workerSelect.options[
-            workerSelect.selectedIndex
-        ];
-
-
-    const workerName =
-
-        selectedOption.dataset.name ||
-
-        selectedOption.textContent;
-
-
-    try {
-
-        const requestRef = doc(
-
-            db,
-
-            "serviceRequests",
-
-            currentRequest.id
-
-        );
-
-
-        await updateDoc(
-            requestRef,
-            {
-
-                assignedWorkerId:
-                    workerId,
-
-                assignedWorkerName:
-                    workerName,
-
-                assignedBy:
-                    currentHead.staffId ||
-                    currentHead.staffDocId,
-
-                assignedByName:
-                    currentHead.name ||
-                    currentHead.staffName ||
-                    "",
-
-                assignedDepartment:
-                    currentDepartment,
-
-                assignedAt:
-                    serverTimestamp(),
-
-                expectedCompletionDate:
-                    expectedDate.value || null,
-
-                headRemarks:
-                    headRemarks.value.trim(),
-
-                status:
-                    "ASSIGNED",
-
-                updatedAt:
-                    serverTimestamp()
-
-            }
-        );
-
-
-        alert(
-            "Worker assigned successfully."
-        );
-
+window.assignWorker=async function(){
+    if(!currentRequestId) return;
+    const workerId=document.getElementById("workerSelect").value;
+    const expectedDate=document.getElementById("expectedDate").value;
+    const remarks=document.getElementById("headRemarks").value.trim();
+    if(!workerId){ alert("Please select a worker."); return; }
+    const worker=workers.find(w=>clean(w.staffId || w.firestoreId)===workerId);
+    if(!worker){ alert("Selected worker not found."); return; }
+    const workerName=clean(worker.name || worker.staffName || workerId);
+
+    try{
+        await updateDoc(doc(db,"serviceRequests",currentRequestId),{
+            assignedWorkerId:workerId,
+            assignedWorkerName:workerName,
+            assignedHeadId:currentHead.headId,
+            assignedHeadName:currentHead.headName,
+            expectedCompletionDate:expectedDate || null,
+            headRemarks:remarks,
+            status:"ASSIGNED",
+            updatedAt:serverTimestamp()
+        });
+
+        await addDoc(collection(db,"serviceRequests",currentRequestId,"timeline"),{
+            action:"WORKER_ASSIGNED",
+            title:"Worker assigned",
+            description:workerName+" was assigned by "+currentHead.headName+(remarks ? ". Remarks: "+remarks : ""),
+            performedById:currentHead.headId,
+            performedByName:currentHead.headName,
+            performedByRole:"DEPARTMENT_HEAD",
+            assignedWorkerId:workerId,
+            assignedWorkerName:workerName,
+            timestamp:serverTimestamp()
+        });
 
         closeModal();
-
-
         await loadRequests();
-
-
-    } catch (error) {
-
-        console.error(
-            "ASSIGN WORKER ERROR:",
-            error
-        );
-
-
-        alert(
-
-            "Unable to assign worker.\n\n" +
-
-            error.message
-
-        );
-
+        alert("Worker assigned successfully.");
+    }catch(error){
+        console.error("Assign Worker Error:",error);
+        alert("Unable to assign worker.\n\n"+error.message);
     }
-
-}
-
-
-/* =========================================================
-   TIMELINE
-========================================================= */
-
-function renderTimeline(request) {
-
-    const timeline =
-        document.getElementById(
-            "requestTimeline"
-        );
-
-
-    if (!timeline) {
-        return;
-    }
-
-
-    timeline.innerHTML = "";
-
-
-    const events = [];
-
-
-    if (request.createdAt) {
-
-        events.push({
-
-            title:
-                "Request Created",
-
-            date:
-                request.createdAt
-
-        });
-
-    }
-
-
-    if (request.receivedAt) {
-
-        events.push({
-
-            title:
-                "Request Received",
-
-            date:
-                request.receivedAt
-
-        });
-
-    }
-
-
-    if (request.assignedAt) {
-
-        events.push({
-
-            title:
-                "Worker Assigned",
-
-            date:
-                request.assignedAt
-
-        });
-
-    }
-
-
-    if (request.startedAt) {
-
-        events.push({
-
-            title:
-                "Work Started",
-
-            date:
-                request.startedAt
-
-        });
-
-    }
-
-
-    if (request.completedAt) {
-
-        events.push({
-
-            title:
-                "Work Completed",
-
-            date:
-                request.completedAt
-
-        });
-
-    }
-
-
-    if (request.closedAt) {
-
-        events.push({
-
-            title:
-                "Request Closed",
-
-            date:
-                request.closedAt
-
-        });
-
-    }
-
-
-    if (!events.length) {
-
-        timeline.innerHTML = `
-
-            <div class="timeline-item">
-
-                No timeline information available.
-
-            </div>
-
-        `;
-
-        return;
-
-    }
-
-
-    events.forEach(
-        function (event) {
-
-            const div =
-                document.createElement(
-                    "div"
-                );
-
-
-            div.className =
-                "timeline-item";
-
-
-            div.innerHTML = `
-
-                <strong>
-                    ${escapeHtml(
-                        event.title
-                    )}
-                </strong>
-
-                <small>
-                    ${escapeHtml(
-                        formatDate(
-                            event.date
-                        )
-                    )}
-                </small>
-
-            `;
-
-
-            timeline.appendChild(
-                div
-            );
-
-        }
-    );
-
-}
-
-
-/* =========================================================
-   CLOSE MODAL
-========================================================= */
-
-window.closeModal = function () {
-
-    const modal =
-        document.getElementById(
-            "requestModal"
-        );
-
-
-    if (modal) {
-
-        modal.style.display =
-            "none";
-
-    }
-
-
-    currentRequest =
-        null;
-
 };
 
+async function loadTimeline(requestId){
+    const timeline=document.getElementById("requestTimeline");
+    timeline.innerHTML="<p>Loading timeline...</p>";
+    try{
+        const snap=await getDocs(collection(db,"serviceRequests",requestId,"timeline"));
+        const entries=[];
+        snap.forEach(d=>entries.push(d.data()));
+        entries.sort((a,b)=>(a.timestamp?.seconds||0)-(b.timestamp?.seconds||0));
+        timeline.innerHTML="";
+        if(!entries.length){ timeline.innerHTML="<p>No timeline available.</p>"; return; }
+        entries.forEach(e=>{
+            const div=document.createElement("div");
+            div.className="timeline-item";
+            div.innerHTML=`<div class="timeline-title">${escapeHtml(e.title || e.action || "Update")}</div><div class="timeline-date">${formatDateTime(e.timestamp)}</div><div class="timeline-description">${escapeHtml(e.description || "")}</div>`;
+            timeline.appendChild(div);
+        });
+    }catch(error){
+        console.error("Timeline error:",error);
+        timeline.innerHTML="<p>Unable to load timeline.</p>";
+    }
+}
 
-/* =========================================================
-   GO BACK
-========================================================= */
+function getStatusBadge(status){
+    const s=clean(status).toUpperCase() || "SUBMITTED";
+    const classes={SUBMITTED:"status-submitted",RECEIVED:"status-received",ASSIGNED:"status-assigned",IN_PROGRESS:"status-progress",WORK_COMPLETED:"status-completed",HEAD_VERIFICATION:"status-verification",CLOSED:"status-closed",REOPENED:"status-reopened"};
+    return `<span class="status ${classes[s] || "status-submitted"}">${escapeHtml(s.replaceAll("_"," "))}</span>`;
+}
 
-window.goBack = function () {
+function formatDate(ts){
+    if(!ts) return "-";
+    try{
+        const d=typeof ts.toDate === "function" ? ts.toDate() : new Date(ts);
+        return isNaN(d.getTime()) ? "-" : d.toLocaleDateString("en-IN");
+    }catch(e){ return "-"; }
+}
 
-    window.history.back();
+function formatDateTime(ts){
+    if(!ts) return "-";
+    try{
+        const d=typeof ts.toDate === "function" ? ts.toDate() : new Date(ts);
+        return isNaN(d.getTime()) ? "-" : d.toLocaleString("en-IN");
+    }catch(e){ return "-"; }
+}
 
+function escapeHtml(value){
+    return clean(value).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;");
+}
+
+window.closeModal=function(){
+    const modal=document.getElementById("requestModal");
+    if(modal) modal.style.display="none";
+    currentRequestId=null;
 };
 
+window.addEventListener("click",e=>{
+    const modal=document.getElementById("requestModal");
+    if(e.target===modal) closeModal();
+});
 
-/* =========================================================
-   MAKE ASSIGN WORKER AVAILABLE
-========================================================= */
-
-window.assignWorker =
-    assignWorker;
-
-
-/* =========================================================
-   FILTER EVENTS
-========================================================= */
-
-function setupFilters() {
-
-    const statusFilter =
-        document.getElementById(
-            "statusFilter"
-        );
-
-
-    const priorityFilter =
-        document.getElementById(
-            "priorityFilter"
-        );
-
-
-    const categoryFilter =
-        document.getElementById(
-            "categoryFilter"
-        );
-
-
-    const searchBox =
-        document.getElementById(
-            "searchBox"
-        );
-
-
-    if (statusFilter) {
-
-        statusFilter.addEventListener(
-            "change",
-            applyFilters
-        );
-
-    }
-
-
-    if (priorityFilter) {
-
-        priorityFilter.addEventListener(
-            "change",
-            applyFilters
-        );
-
-    }
-
-
-    if (categoryFilter) {
-
-        categoryFilter.addEventListener(
-            "change",
-            applyFilters
-        );
-
-    }
-
-
-    if (searchBox) {
-
-        searchBox.addEventListener(
-            "input",
-            applyFilters
-        );
-
-    }
-
+function setupFilters(){
+    ["statusFilter","priorityFilter","categoryFilter","searchBox"].forEach(id=>{
+        const el=document.getElementById(id);
+        if(el) el.addEventListener(id==="searchBox" ? "input" : "change",renderRequests);
+    });
 }
 
-
-/* =========================================================
-   UTILITY - SET TEXT
-========================================================= */
-
-function setText(
-    id,
-    value
-) {
-
-    const element =
-        document.getElementById(
-            id
-        );
-
-
-    if (element) {
-
-        element.textContent =
-            value == null
-                ? "-"
-                : String(value);
-
+async function initializePage(){
+    showLoading("Verifying Department Head account...");
+    setupFilters();
+    try{
+        const ok=await initializeCurrentHead();
+        if(!ok) return;
+        await loadWorkers();
+        await loadRequests();
+    }catch(error){
+        console.error("HEAD DASHBOARD ERROR:",error);
+        showAccessViolation(error.message || "Unable to load Department Head dashboard.");
     }
-
 }
 
-
-/* =========================================================
-   UTILITY - GET VALUE
-========================================================= */
-
-function getValue(id) {
-
-    const element =
-        document.getElementById(
-            id
-        );
-
-
-    if (!element) {
-
-        return "ALL";
-
-    }
-
-
-    return element.value;
-
-}
-
-
-/* =========================================================
-   UTILITY - FORMAT DATE
-========================================================= */
-
-function formatDate(value) {
-
-    if (!value) {
-
-        return "-";
-
-    }
-
-
-    try {
-
-        let date;
-
-
-        if (
-            value &&
-            typeof value.toDate ===
-            "function"
-        ) {
-
-            date =
-                value.toDate();
-
-        }
-
-        else if (
-            value instanceof Date
-        ) {
-
-            date =
-                value;
-
-        }
-
-        else if (
-            typeof value ===
-            "string"
-        ) {
-
-            date =
-                new Date(value);
-
-        }
-
-        else if (
-            typeof value ===
-            "number"
-        ) {
-
-            date =
-                new Date(value);
-
-        }
-
-
-        if (
-            !date ||
-            isNaN(date.getTime())
-        ) {
-
-            return String(value);
-
-        }
-
-
-        return date.toLocaleString(
-            "en-IN"
-        );
-
-
-    } catch (error) {
-
-        return String(value);
-
-    }
-
-}
-
-
-/* =========================================================
-   UTILITY - ESCAPE HTML
-========================================================= */
-
-function escapeHtml(value) {
-
-    if (value === null ||
-        value === undefined) {
-
-        return "";
-
-    }
-
-
-    return String(value)
-
-        .replace(
-            /&/g,
-            "&amp;"
-        )
-
-        .replace(
-            /</g,
-            "&lt;"
-        )
-
-        .replace(
-            />/g,
-            "&gt;"
-        )
-
-        .replace(
-            /"/g,
-            "&quot;"
-        )
-
-        .replace(
-            /'/g,
-            "&#039;"
-        );
-
+/* Firebase Auth session is used when available. If the existing ERP login
+   stores the Staff ID in sessionStorage/localStorage, that is used as the
+   fallback so this page works with the existing staff portal. */
+if(auth.currentUser){
+    initializePage();
+}else{
+    initializePage();
 }
 
 </script>
-
 
 </body>
 
