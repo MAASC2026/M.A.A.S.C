@@ -1,0 +1,2241 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Worker Assignment Portal</title>
+
+<style>
+
+*{
+    box-sizing:border-box;
+}
+
+body{
+    margin:0;
+    font-family:Arial,Helvetica,sans-serif;
+    background:#f4f6f9;
+    color:#222;
+}
+
+.loading,
+.access{
+    position:fixed;
+    inset:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-direction:column;
+    background:#f4f6f9;
+    text-align:center;
+    z-index:9999;
+}
+
+.access{
+    display:none;
+}
+
+.access-icon{
+    font-size:65px;
+    margin-bottom:15px;
+}
+
+.access h2{
+    color:#c62828;
+}
+
+.access button{
+    padding:11px 25px;
+    border:0;
+    border-radius:6px;
+    background:#333;
+    color:#fff;
+    cursor:pointer;
+}
+
+#app{
+    display:none;
+}
+
+.header{
+    background:#fff;
+    padding:20px 30px;
+    border-bottom:1px solid #ddd;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.header h2{
+    margin:0 0 5px;
+}
+
+.header small{
+    color:#777;
+}
+
+.head-info{
+    text-align:right;
+}
+
+.head-info strong{
+    display:block;
+}
+
+.head-info span{
+    display:block;
+    color:#666;
+    margin-top:5px;
+}
+
+.container{
+    max-width:1200px;
+    margin:auto;
+    padding:30px;
+}
+
+.card{
+    background:#fff;
+    border-radius:10px;
+    padding:25px;
+    box-shadow:0 2px 10px rgba(0,0,0,.06);
+    margin-bottom:25px;
+}
+
+.card h3{
+    margin-top:0;
+}
+
+.filters{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:15px;
+    margin-bottom:20px;
+}
+
+.form-group{
+    display:flex;
+    flex-direction:column;
+    gap:7px;
+}
+
+.form-group label{
+    font-size:13px;
+    font-weight:bold;
+    color:#555;
+}
+
+input,
+select{
+    width:100%;
+    padding:11px;
+    border:1px solid #ccc;
+    border-radius:6px;
+    font-size:14px;
+}
+
+.table-container{
+    overflow-x:auto;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+th,
+td{
+    padding:13px;
+    border-bottom:1px solid #eee;
+    text-align:left;
+}
+
+th{
+    background:#f7f8fa;
+    font-size:13px;
+}
+
+td{
+    font-size:14px;
+}
+
+.badge{
+    display:inline-block;
+    padding:5px 10px;
+    border-radius:20px;
+    font-size:12px;
+    font-weight:bold;
+}
+
+.worker{
+    background:#d4edda;
+    color:#155724;
+}
+
+.staff{
+    background:#eee;
+    color:#555;
+}
+
+.action-btn{
+    padding:8px 14px;
+    border:0;
+    border-radius:5px;
+    cursor:pointer;
+    background:#1976d2;
+    color:#fff;
+}
+
+.action-btn:hover{
+    background:#125ca1;
+}
+
+.remove-btn{
+    background:#c62828;
+}
+
+.remove-btn:hover{
+    background:#9b1c1c;
+}
+
+.empty{
+    text-align:center;
+    padding:40px;
+    color:#777;
+}
+
+.message{
+    display:none;
+    padding:12px 15px;
+    border-radius:6px;
+    margin-bottom:20px;
+}
+
+.message.success{
+    display:block;
+    background:#d4edda;
+    color:#155724;
+}
+
+.message.error{
+    display:block;
+    background:#f8d7da;
+    color:#721c24;
+}
+
+.modal{
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.55);
+    z-index:5000;
+    padding:30px 15px;
+    overflow:auto;
+}
+
+.modal-content{
+    background:#fff;
+    max-width:550px;
+    margin:auto;
+    border-radius:10px;
+    padding:25px;
+}
+
+.modal-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:20px;
+}
+
+.modal-header h3{
+    margin:0;
+}
+
+.close{
+    border:0;
+    background:none;
+    font-size:28px;
+    cursor:pointer;
+}
+
+.save-btn{
+    width:100%;
+    margin-top:20px;
+    padding:12px;
+    border:0;
+    border-radius:6px;
+    background:#1976d2;
+    color:#fff;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+@media(max-width:700px){
+
+    .header{
+        flex-direction:column;
+        align-items:flex-start;
+        gap:15px;
+    }
+
+    .head-info{
+        text-align:left;
+    }
+
+    .container{
+        padding:15px;
+    }
+
+    .filters{
+        grid-template-columns:1fr;
+    }
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+
+<!-- =====================================================
+     LOADING
+===================================================== -->
+
+<div
+    id="loading"
+    class="loading"
+>
+
+    <h2>
+        Checking Access
+    </h2>
+
+    <p>
+        Verifying Department Head account...
+    </p>
+
+</div>
+
+
+<!-- =====================================================
+     ACCESS VIOLATION
+===================================================== -->
+
+<div
+    id="access"
+    class="access"
+>
+
+    <div class="access-icon">
+        🚫
+    </div>
+
+    <h2>
+        ACCESS VIOLATION
+    </h2>
+
+    <p id="accessMessage">
+        You are not authorized to access this portal.
+    </p>
+
+    <button
+        onclick="goBack()"
+    >
+        Go Back
+    </button>
+
+</div>
+
+
+<!-- =====================================================
+     APPLICATION
+===================================================== -->
+
+<div id="app">
+
+
+    <!-- HEADER -->
+
+    <div class="header">
+
+        <div>
+
+            <h2>
+                Worker Assignment Portal
+            </h2>
+
+            <small>
+                Assign Existing Staff as Service Workers
+            </small>
+
+        </div>
+
+
+        <div class="head-info">
+
+            <strong id="headName">
+                Loading...
+            </strong>
+
+            <span id="headDepartment">
+                Loading...
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <div class="container">
+
+
+        <div
+            id="message"
+            class="message"
+        ></div>
+
+
+        <!-- =================================================
+             ASSIGN WORKER
+        ================================================= -->
+
+        <div class="card">
+
+            <h3>
+                Assign Staff as Worker
+            </h3>
+
+            <div class="filters">
+
+
+                <div class="form-group">
+
+                    <label>
+                        Select Staff
+                    </label>
+
+                    <select
+                        id="staffSelect"
+                    >
+
+                        <option value="">
+                            Loading staff...
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Search Staff
+                    </label>
+
+                    <input
+                        type="text"
+                        id="searchBox"
+                        placeholder="Search name or staff ID"
+                    >
+
+                </div>
+
+            </div>
+
+
+            <button
+                class="save-btn"
+                onclick="assignSelectedWorker()"
+            >
+                Assign Selected Staff as Worker
+            </button>
+
+        </div>
+
+
+        <!-- =================================================
+             WORKERS
+        ================================================= -->
+
+        <div class="card">
+
+            <h3>
+                Department Workers
+            </h3>
+
+
+            <div class="table-container">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>S.No</th>
+
+                            <th>Staff ID</th>
+
+                            <th>Name</th>
+
+                            <th>Department</th>
+
+                            <th>Role</th>
+
+                            <th>Action</th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody
+                        id="workerTable"
+                    >
+
+                        <tr>
+
+                            <td
+                                colspan="6"
+                                class="empty"
+                            >
+                                Loading workers...
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+
+        <!-- =================================================
+             ALL DEPARTMENT STAFF
+        ================================================= -->
+
+        <div class="card">
+
+            <h3>
+                Department Staff
+            </h3>
+
+
+            <div class="table-container">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>S.No</th>
+
+                            <th>Staff ID</th>
+
+                            <th>Name</th>
+
+                            <th>Department</th>
+
+                            <th>Current Role</th>
+
+                            <th>Action</th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody
+                        id="staffTable"
+                    >
+
+                        <tr>
+
+                            <td
+                                colspan="6"
+                                class="empty"
+                            >
+                                Loading...
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     CONFIRM MODAL
+===================================================== -->
+
+<div
+    id="confirmModal"
+    class="modal"
+>
+
+    <div class="modal-content">
+
+        <div class="modal-header">
+
+            <h3>
+                Confirm Worker Assignment
+            </h3>
+
+            <button
+                class="close"
+                onclick="closeModal()"
+            >
+                &times;
+            </button>
+
+        </div>
+
+
+        <p>
+            You are assigning:
+        </p>
+
+
+        <div
+            id="selectedStaffDetails"
+            style="
+                background:#f7f8fa;
+                padding:15px;
+                border-radius:7px;
+            "
+        >
+        </div>
+
+
+        <button
+            class="save-btn"
+            onclick="confirmAssignment()"
+        >
+            Confirm Assignment
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     FIREBASE
+===================================================== -->
+
+<script type="module">
+
+import {
+    initializeApp
+}
+from
+"https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+
+import {
+    getAuth,
+    onAuthStateChanged
+}
+from
+"https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+
+import {
+    getFirestore,
+    collection,
+    getDocs,
+    query,
+    where,
+    doc,
+    getDoc,
+    updateDoc,
+    serverTimestamp
+}
+from
+"https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+
+// =====================================================
+// FIREBASE CONFIG
+// =====================================================
+
+const firebaseConfig = {
+
+    apiKey:
+        "AIzaSyAIv3091VM-gkmdwEAn7OhXWd9Cm2zh2bo",
+
+    authDomain:
+        "maasc-2026.firebaseapp.com",
+
+    projectId:
+        "maasc-2026",
+
+    storageBucket:
+        "maasc-2026.appspot.com",
+
+    messagingSenderId:
+        "585813001586",
+
+    appId:
+        "1:585813001586:web:664e0e90ff0725d2e849eb"
+
+};
+
+
+const app =
+    initializeApp(
+        firebaseConfig
+    );
+
+
+const auth =
+    getAuth(app);
+
+
+const db =
+    getFirestore(app);
+
+
+// =====================================================
+// GLOBALS
+// =====================================================
+
+let currentUser = null;
+
+let currentHead = null;
+
+let departmentStaff = [];
+
+let selectedStaff = null;
+
+
+// =====================================================
+// HELPERS
+// =====================================================
+
+function clean(value){
+
+    if(
+        value === undefined ||
+        value === null
+    ){
+
+        return "";
+
+    }
+
+    return String(value).trim();
+
+}
+
+
+function normalize(value){
+
+    return clean(value)
+        .toLowerCase()
+        .replace(/\s+/g," ");
+
+}
+
+
+function escapeHtml(value){
+
+    return clean(value)
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
+
+}
+
+
+function getStaffId(data){
+
+    return clean(
+        data.staffId ||
+        data.staffID ||
+        data.staff_id ||
+        data.id
+    );
+
+}
+
+
+function getName(data){
+
+    return clean(
+        data.name ||
+        data.staffName ||
+        data.fullName ||
+        data.displayName
+    );
+
+}
+
+
+// =====================================================
+// AUTH
+// =====================================================
+
+onAuthStateChanged(
+    auth,
+    async user => {
+
+        console.log(
+            "HEAD AUTH:",
+            user
+        );
+
+
+        if(!user){
+
+            showAccess(
+                "You are not logged in. Please login first."
+            );
+
+            return;
+
+        }
+
+
+        currentUser =
+            user;
+
+
+        try{
+
+            currentHead =
+                await findHead();
+
+
+            if(!currentHead){
+
+                showAccess(
+                    "Staff profile not found."
+                );
+
+                return;
+
+            }
+
+
+            console.log(
+                "CURRENT HEAD:",
+                currentHead
+            );
+
+
+            /*
+             * HEAD CHECK
+             */
+
+            if(
+                clean(
+                    currentHead.role
+                ) !==
+                "Department Head"
+            ){
+
+                showAccess(
+                    "Only Department Heads can assign workers."
+                );
+
+                return;
+
+            }
+
+
+            const department =
+                clean(
+                    currentHead.department
+                );
+
+
+            if(!department){
+
+                showAccess(
+                    "Department is not configured in your staff profile."
+                );
+
+                return;
+
+            }
+
+
+            document.getElementById(
+                "headName"
+            ).textContent =
+                getName(
+                    currentHead
+                );
+
+
+            document.getElementById(
+                "headDepartment"
+            ).textContent =
+                department;
+
+
+            document.getElementById(
+                "loading"
+            ).style.display =
+                "none";
+
+
+            document.getElementById(
+                "app"
+            ).style.display =
+                "block";
+
+
+            await loadDepartmentStaff();
+
+        }
+
+        catch(error){
+
+            console.error(
+                error
+            );
+
+
+            showAccess(
+                error.message ||
+                "Unable to verify account."
+            );
+
+        }
+
+    }
+);
+
+
+// =====================================================
+// FIND HEAD
+// =====================================================
+
+async function findHead(){
+
+    let result = null;
+
+
+    /*
+     * UID
+     */
+
+    if(
+        currentUser &&
+        currentUser.uid
+    ){
+
+        try{
+
+            const q =
+                query(
+                    collection(
+                        db,
+                        "staff"
+                    ),
+                    where(
+                        "uid",
+                        "==",
+                        currentUser.uid
+                    )
+                );
+
+
+            const snap =
+                await getDocs(q);
+
+
+            if(
+                !snap.empty
+            ){
+
+                result = {
+
+                    id:
+                        snap.docs[0].id,
+
+                    ...snap.docs[0].data()
+
+                };
+
+            }
+
+        }
+
+        catch(error){
+
+            console.warn(
+                error
+            );
+
+        }
+
+    }
+
+
+    /*
+     * Email
+     */
+
+    if(
+        !result &&
+        currentUser.email
+    ){
+
+        try{
+
+            const q =
+                query(
+                    collection(
+                        db,
+                        "staff"
+                    ),
+                    where(
+                        "email",
+                        "==",
+                        currentUser.email
+                    )
+                );
+
+
+            const snap =
+                await getDocs(q);
+
+
+            if(
+                !snap.empty
+            ){
+
+                result = {
+
+                    id:
+                        snap.docs[0].id,
+
+                    ...snap.docs[0].data()
+
+                };
+
+            }
+
+        }
+
+        catch(error){
+
+            console.warn(
+                error
+            );
+
+        }
+
+    }
+
+
+    /*
+     * UID as document ID
+     */
+
+    if(
+        !result &&
+        currentUser.uid
+    ){
+
+        try{
+
+            const ref =
+                doc(
+                    db,
+                    "staff",
+                    currentUser.uid
+                );
+
+
+            const snap =
+                await getDoc(
+                    ref
+                );
+
+
+            if(
+                snap.exists()
+            ){
+
+                result = {
+
+                    id:
+                        snap.id,
+
+                    ...snap.data()
+
+                };
+
+            }
+
+        }
+
+        catch(error){
+
+            console.warn(
+                error
+            );
+
+        }
+
+    }
+
+
+    /*
+     * Local/session storage staff ID
+     */
+
+    if(!result){
+
+        const keys = [
+
+            "staffId",
+            "staffID",
+            "currentStaffId",
+            "currentStaffID",
+            "loggedInStaffId"
+
+        ];
+
+
+        for(
+            const storage of
+            [
+                localStorage,
+                sessionStorage
+            ]
+        ){
+
+            for(
+                const key of keys
+            ){
+
+                const id =
+                    storage.getItem(
+                        key
+                    );
+
+
+                if(!id){
+
+                    continue;
+
+                }
+
+
+                try{
+
+                    const q =
+                        query(
+                            collection(
+                                db,
+                                "staff"
+                            ),
+                            where(
+                                "staffId",
+                                "==",
+                                id
+                            )
+                        );
+
+
+                    const snap =
+                        await getDocs(q);
+
+
+                    if(
+                        !snap.empty
+                    ){
+
+                        result = {
+
+                            id:
+                                snap.docs[0].id,
+
+                            ...snap.docs[0].data()
+
+                        };
+
+
+                        break;
+
+                    }
+
+                }
+
+                catch(error){
+
+                    console.warn(
+                        error
+                    );
+
+                }
+
+            }
+
+
+            if(result){
+
+                break;
+
+            }
+
+        }
+
+    }
+
+
+    return result;
+
+}
+
+
+// =====================================================
+// ACCESS
+// =====================================================
+
+function showAccess(
+    message
+){
+
+    document.getElementById(
+        "loading"
+    ).style.display =
+        "none";
+
+
+    document.getElementById(
+        "app"
+    ).style.display =
+        "none";
+
+
+    document.getElementById(
+        "accessMessage"
+    ).textContent =
+        message;
+
+
+    document.getElementById(
+        "access"
+    ).style.display =
+        "flex";
+
+}
+
+
+window.goBack =
+function(){
+
+    history.back();
+
+};
+
+
+// =====================================================
+// LOAD DEPARTMENT STAFF
+// =====================================================
+
+async function loadDepartmentStaff(){
+
+    const department =
+        clean(
+            currentHead.department
+        );
+
+
+    try{
+
+        const q =
+            query(
+                collection(
+                    db,
+                    "staff"
+                ),
+                where(
+                    "department",
+                    "==",
+                    department
+                )
+            );
+
+
+        const snap =
+            await getDocs(q);
+
+
+        departmentStaff = [];
+
+
+        snap.forEach(
+            d => {
+
+                const data =
+                    d.data();
+
+
+                departmentStaff.push({
+
+                    firestoreId:
+                        d.id,
+
+                    ...data
+
+                });
+
+            }
+        );
+
+
+        /*
+         * Remove current Head
+         */
+
+        const headId =
+            getStaffId(
+                currentHead
+            );
+
+
+        departmentStaff =
+            departmentStaff.filter(
+                staff => {
+
+                    return (
+                        getStaffId(
+                            staff
+                        ) !==
+                        headId
+                    );
+
+                }
+            );
+
+
+        /*
+         * Sort by name
+         */
+
+        departmentStaff.sort(
+            (
+                a,
+                b
+            ) => {
+
+                return getName(a)
+                    .localeCompare(
+                        getName(b)
+                    );
+
+            }
+        );
+
+
+        renderStaff();
+
+        renderWorkers();
+
+        loadSelect();
+
+    }
+
+    catch(error){
+
+        console.error(
+            "STAFF LOAD ERROR:",
+            error
+        );
+
+
+        document.getElementById(
+            "staffTable"
+        ).innerHTML = `
+
+            <tr>
+
+                <td
+                    colspan="6"
+                    class="empty"
+                >
+                    ${escapeHtml(
+                        error.message
+                    )}
+                </td>
+
+            </tr>
+
+        `;
+
+    }
+
+}
+
+
+// =====================================================
+// RENDER ALL STAFF
+// =====================================================
+
+function renderStaff(){
+
+    const tbody =
+        document.getElementById(
+            "staffTable"
+        );
+
+
+    if(
+        !departmentStaff.length
+    ){
+
+        tbody.innerHTML = `
+
+            <tr>
+
+                <td
+                    colspan="6"
+                    class="empty"
+                >
+                    No staff found in your department.
+                </td>
+
+            </tr>
+
+        `;
+
+        return;
+
+    }
+
+
+    tbody.innerHTML =
+        "";
+
+
+    departmentStaff.forEach(
+        (
+            staff,
+            index
+        ) => {
+
+            const role =
+                clean(
+                    staff.role
+                );
+
+
+            const isWorker =
+                role ===
+                "Worker";
+
+
+            const row =
+                document.createElement(
+                    "tr"
+                );
+
+
+            row.innerHTML = `
+
+                <td>
+                    ${index + 1}
+                </td>
+
+                <td>
+                    ${escapeHtml(
+                        getStaffId(
+                            staff
+                        ) ||
+                        "-"
+                    )}
+                </td>
+
+                <td>
+                    <strong>
+                        ${escapeHtml(
+                            getName(
+                                staff
+                            ) ||
+                            "-"
+                        )}
+                    </strong>
+                </td>
+
+                <td>
+                    ${escapeHtml(
+                        staff.department ||
+                        "-"
+                    )}
+                </td>
+
+                <td>
+
+                    <span
+                        class="badge ${
+                            isWorker
+                            ? "worker"
+                            : "staff"
+                        }"
+                    >
+                        ${escapeHtml(
+                            role ||
+                            "Staff"
+                        )}
+                    </span>
+
+                </td>
+
+                <td>
+
+                    ${
+                        isWorker
+
+                        ?
+
+                        `
+                        <button
+                            class="action-btn remove-btn"
+                            onclick="removeWorker(
+                                '${escapeHtml(
+                                    staff.firestoreId
+                                )}'
+                            )"
+                        >
+                            Remove Worker
+                        </button>
+                        `
+
+                        :
+
+                        `
+                        <button
+                            class="action-btn"
+                            onclick="selectWorker(
+                                '${escapeHtml(
+                                    staff.firestoreId
+                                )}'
+                            )"
+                        >
+                            Assign as Worker
+                        </button>
+                        `
+
+                    }
+
+                </td>
+
+            `;
+
+
+            tbody.appendChild(
+                row
+            );
+
+        }
+    );
+
+}
+
+
+// =====================================================
+// RENDER WORKERS
+// =====================================================
+
+function renderWorkers(){
+
+    const tbody =
+        document.getElementById(
+            "workerTable"
+        );
+
+
+    const workers =
+        departmentStaff.filter(
+            staff =>
+                clean(
+                    staff.role
+                ) ===
+                "Worker"
+        );
+
+
+    if(
+        !workers.length
+    ){
+
+        tbody.innerHTML = `
+
+            <tr>
+
+                <td
+                    colspan="6"
+                    class="empty"
+                >
+                    No workers assigned yet.
+                </td>
+
+            </tr>
+
+        `;
+
+        return;
+
+    }
+
+
+    tbody.innerHTML =
+        "";
+
+
+    workers.forEach(
+        (
+            staff,
+            index
+        ) => {
+
+            const row =
+                document.createElement(
+                    "tr"
+                );
+
+
+            row.innerHTML = `
+
+                <td>
+                    ${index + 1}
+                </td>
+
+                <td>
+                    ${escapeHtml(
+                        getStaffId(
+                            staff
+                        )
+                    )}
+                </td>
+
+                <td>
+                    <strong>
+                        ${escapeHtml(
+                            getName(
+                                staff
+                            )
+                        )}
+                    </strong>
+                </td>
+
+                <td>
+                    ${escapeHtml(
+                        staff.department ||
+                        "-"
+                    )}
+                </td>
+
+                <td>
+
+                    <span
+                        class="badge worker"
+                    >
+                        Worker
+                    </span>
+
+                </td>
+
+                <td>
+
+                    <button
+                        class="action-btn remove-btn"
+                        onclick="removeWorker(
+                            '${escapeHtml(
+                                staff.firestoreId
+                            )}'
+                        )"
+                    >
+                        Remove Worker
+                    </button>
+
+                </td>
+
+            `;
+
+
+            tbody.appendChild(
+                row
+            );
+
+        }
+    );
+
+}
+
+
+// =====================================================
+// LOAD SELECT
+// =====================================================
+
+function loadSelect(){
+
+    const select =
+        document.getElementById(
+            "staffSelect"
+        );
+
+
+    select.innerHTML = `
+
+        <option value="">
+            Select Staff
+        </option>
+
+    `;
+
+
+    departmentStaff.forEach(
+        staff => {
+
+            /*
+             * Do not show existing workers
+             */
+
+            if(
+                clean(
+                    staff.role
+                ) ===
+                "Worker"
+            ){
+
+                return;
+
+            }
+
+
+            const option =
+                document.createElement(
+                    "option"
+                );
+
+
+            option.value =
+                staff.firestoreId;
+
+
+            option.textContent =
+                getStaffId(
+                    staff
+                ) +
+                " - " +
+                getName(
+                    staff
+                );
+
+
+            select.appendChild(
+                option
+            );
+
+        }
+    );
+
+}
+
+
+// =====================================================
+// SELECT WORKER
+// =====================================================
+
+window.selectWorker =
+function(
+    firestoreId
+){
+
+    const staff =
+        departmentStaff.find(
+            item =>
+                item.firestoreId ===
+                firestoreId
+        );
+
+
+    if(!staff){
+
+        return;
+
+    }
+
+
+    selectedStaff =
+        staff;
+
+
+    document.getElementById(
+        "staffSelect"
+    ).value =
+        firestoreId;
+
+
+    document.getElementById(
+        "selectedStaffDetails"
+    ).innerHTML = `
+
+        <strong>
+            ${escapeHtml(
+                getName(
+                    staff
+                )
+            )}
+        </strong>
+
+        <br><br>
+
+        Staff ID:
+        ${escapeHtml(
+            getStaffId(
+                staff
+            )
+        )}
+
+        <br>
+
+        Department:
+        ${escapeHtml(
+            staff.department ||
+            "-"
+        )}
+
+        <br>
+
+        Current Role:
+        ${escapeHtml(
+            staff.role ||
+            "Staff"
+        )}
+
+    `;
+
+
+    document.getElementById(
+        "confirmModal"
+    ).style.display =
+        "block";
+
+};
+
+
+// =====================================================
+// ASSIGN SELECTED
+// =====================================================
+
+window.assignSelectedWorker =
+function(){
+
+    const id =
+        document.getElementById(
+            "staffSelect"
+        ).value;
+
+
+    if(!id){
+
+        showMessage(
+            "Please select a staff member.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    selectWorker(
+        id
+    );
+
+};
+
+
+// =====================================================
+// CONFIRM ASSIGNMENT
+// =====================================================
+
+window.confirmAssignment =
+async function(){
+
+    if(!selectedStaff){
+
+        return;
+
+    }
+
+
+    const firestoreId =
+        selectedStaff.firestoreId;
+
+
+    try{
+
+        const staffRef =
+            doc(
+                db,
+                "staff",
+                firestoreId
+            );
+
+
+        await updateDoc(
+            staffRef,
+            {
+
+                role:
+                    "Worker",
+
+                workerAssigned:
+                    true,
+
+                workerAssignedBy:
+                    getStaffId(
+                        currentHead
+                    ),
+
+                workerAssignedByName:
+                    getName(
+                        currentHead
+                    ),
+
+                workerAssignedAt:
+                    serverTimestamp()
+
+            }
+        );
+
+
+        /*
+         * Update local data
+         */
+
+        const index =
+            departmentStaff.findIndex(
+                staff =>
+                    staff.firestoreId ===
+                    firestoreId
+            );
+
+
+        if(index !== -1){
+
+            departmentStaff[
+                index
+            ].role =
+                "Worker";
+
+
+            departmentStaff[
+                index
+            ].workerAssigned =
+                true;
+
+        }
+
+
+        closeModal();
+
+        renderStaff();
+
+        renderWorkers();
+
+        loadSelect();
+
+
+        showMessage(
+            getName(
+                selectedStaff
+            ) +
+            " has been assigned as Worker successfully.",
+            "success"
+        );
+
+
+        selectedStaff =
+            null;
+
+    }
+
+    catch(error){
+
+        console.error(
+            "ASSIGN WORKER ERROR:",
+            error
+        );
+
+
+        showMessage(
+            error.message ||
+            "Unable to assign worker.",
+            "error"
+        );
+
+    }
+
+};
+
+
+// =====================================================
+// REMOVE WORKER
+// =====================================================
+
+window.removeWorker =
+async function(
+    firestoreId
+){
+
+    const staff =
+        departmentStaff.find(
+            item =>
+                item.firestoreId ===
+                firestoreId
+        );
+
+
+    if(!staff){
+
+        return;
+
+    }
+
+
+    const confirmRemove =
+        confirm(
+            "Remove " +
+            getName(
+                staff
+            ) +
+            " from Worker role?"
+        );
+
+
+    if(!confirmRemove){
+
+        return;
+
+    }
+
+
+    try{
+
+        const staffRef =
+            doc(
+                db,
+                "staff",
+                firestoreId
+            );
+
+
+        await updateDoc(
+            staffRef,
+            {
+
+                role:
+                    "Staff",
+
+                workerAssigned:
+                    false,
+
+                workerRemovedBy:
+                    getStaffId(
+                        currentHead
+                    ),
+
+                workerRemovedByName:
+                    getName(
+                        currentHead
+                    ),
+
+                workerRemovedAt:
+                    serverTimestamp()
+
+            }
+        );
+
+
+        staff.role =
+            "Staff";
+
+
+        staff.workerAssigned =
+            false;
+
+
+        renderStaff();
+
+        renderWorkers();
+
+        loadSelect();
+
+
+        showMessage(
+            getName(
+                staff
+            ) +
+            " is no longer a Worker.",
+            "success"
+        );
+
+    }
+
+    catch(error){
+
+        console.error(
+            "REMOVE WORKER ERROR:",
+            error
+        );
+
+
+        showMessage(
+            error.message ||
+            "Unable to remove worker.",
+            "error"
+        );
+
+    }
+
+};
+
+
+// =====================================================
+// SEARCH
+// =====================================================
+
+document
+.getElementById(
+    "searchBox"
+)
+.addEventListener(
+    "input",
+    function(){
+
+        const value =
+            this.value
+            .trim()
+            .toLowerCase();
+
+
+        const rows =
+            document.querySelectorAll(
+                "#staffTable tr"
+            );
+
+
+        rows.forEach(
+            row => {
+
+                const text =
+                    row.textContent
+                    .toLowerCase();
+
+
+                row.style.display =
+                    text.includes(
+                        value
+                    )
+                    ? ""
+                    : "none";
+
+            }
+        );
+
+    }
+);
+
+
+// =====================================================
+// CLOSE MODAL
+// =====================================================
+
+window.closeModal =
+function(){
+
+    document.getElementById(
+        "confirmModal"
+    ).style.display =
+        "none";
+
+    selectedStaff =
+        null;
+
+};
+
+
+// =====================================================
+// MESSAGE
+// =====================================================
+
+function showMessage(
+    text,
+    type
+){
+
+    const box =
+        document.getElementById(
+            "message"
+        );
+
+
+    box.textContent =
+        text;
+
+
+    box.className =
+        "message " +
+        type;
+
+
+    setTimeout(
+        () => {
+
+            box.className =
+                "message";
+
+            box.textContent =
+                "";
+
+        },
+        5000
+    );
+
+}
+
+
+console.log(
+    "WORKER ASSIGNMENT PORTAL LOADED"
+);
+
+</script>
+
+</body>
+
+</html>
