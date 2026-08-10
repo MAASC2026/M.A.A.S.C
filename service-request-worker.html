@@ -1707,56 +1707,198 @@ function getStorageStaffIds(){
 
 async function findCurrentStaff(){
 
-    let staff = null;
+    // =====================================================
+    // IMPORTANT:
+    // The browser can contain old staff IDs from previous logins.
+    // Do NOT immediately return the first staff document found.
+    //
+    // Example:
+    // SHT038 = normal staff
+    // SHT002 = active assigned Worker
+    //
+    // The worker portal must select SHT002.
+    // =====================================================
 
-    // Existing college staff session has priority.
-    // This prevents Firebase Auth from selecting another staff account.
     const ids = getStorageStaffIds();
 
     console.log("STAFF SESSION IDS:", ids);
 
+    const candidates = [];
+    const seen = new Set();
+
+    async function addCandidate(staff, source){
+
+        if(!staff) return;
+
+        const sid = getStaffId(staff);
+
+        if(!sid) return;
+
+        const key = sid.toUpperCase();
+
+        if(seen.has(key)) return;
+
+        seen.add(key);
+
+        console.log(
+            "STAFF CANDIDATE:",
+            source,
+            sid,
+            staff
+        );
+
+        candidates.push(staff);
+    }
+
+
+    // =====================================================
+    // CHECK EVERY STORED STAFF ID
+    // =====================================================
+
     for(const id of ids){
 
-        staff = await getStaffByDocumentId(id);
+        const value = clean(id);
 
-        if(staff){
-            console.log("STAFF FOUND BY DOCUMENT ID:", id, staff);
-            return staff;
+        if(!value) continue;
+
+        // Ignore JSON objects that accidentally reached the ID list.
+        if(value.startsWith("{") || value.startsWith("[")){
+            continue;
         }
 
+        let staff = null;
+
+        // Document ID lookup
+        staff = await getStaffByDocumentId(value);
+
+        if(staff){
+            await addCandidate(
+                staff,
+                "document:" + value
+            );
+            continue;
+        }
+
+        // staffId field lookup
         try{
+
             const q = query(
                 collection(db, "staff"),
-                where("staffId", "==", id)
+                where("staffId", "==", value)
             );
 
             const snap = await getDocs(q);
 
             if(!snap.empty){
+
                 const d = snap.docs[0];
-                staff = normalizeStaff(d.data(), d.id);
-                console.log("STAFF FOUND BY staffId:", id, staff);
-                return staff;
+
+                staff = normalizeStaff(
+                    d.data(),
+                    d.id
+                );
+
+                await addCandidate(
+                    staff,
+                    "staffId:" + value
+                );
             }
+
         }catch(error){
-            console.warn("staffId lookup failed:", error);
+
+            console.warn(
+                "staffId lookup failed:",
+                value,
+                error
+            );
         }
     }
 
-    // Firebase Auth UID
+
+    // =====================================================
+    // CHECK FIREBASE AUTH PROFILE TOO
+    // =====================================================
+
     if(currentUser && currentUser.uid){
-        staff = await getStaffByUid(currentUser.uid);
-        if(staff) return staff;
 
-        staff = await getStaffByDocumentId(currentUser.uid);
-        if(staff) return staff;
+        let staff =
+            await getStaffByUid(
+                currentUser.uid
+            );
+
+        if(staff){
+            await addCandidate(
+                staff,
+                "firebase-uid"
+            );
+        }
+
+        staff =
+            await getStaffByDocumentId(
+                currentUser.uid
+            );
+
+        if(staff){
+            await addCandidate(
+                staff,
+                "firebase-document"
+            );
+        }
     }
 
-    // Firebase Auth email
+
+    // Firebase email
     if(currentUser && currentUser.email){
-        staff = await getStaffByEmail(currentUser.email);
-        if(staff) return staff;
+
+        const staff =
+            await getStaffByEmail(
+                currentUser.email
+            );
+
+        if(staff){
+            await addCandidate(
+                staff,
+                "firebase-email"
+            );
+        }
     }
+
+
+    // =====================================================
+    // CRITICAL WORKER SELECTION
+    // Choose the active assigned Worker from all candidates.
+    // =====================================================
+
+    const worker =
+        candidates.find(
+            staff =>
+                isAssignedWorker(staff)
+        );
+
+    if(worker){
+
+        console.log(
+            "ACTIVE WORKER SELECTED:",
+            getStaffId(worker),
+            worker
+        );
+
+        return worker;
+    }
+
+
+    // No assigned worker found. Return the first candidate so the
+    // normal access-denied screen can be displayed.
+    if(candidates.length){
+
+        console.log(
+            "NO ACTIVE WORKER FOUND. FIRST PROFILE:",
+            candidates[0]
+        );
+
+        return candidates[0];
+    }
+
 
     return null;
 }
