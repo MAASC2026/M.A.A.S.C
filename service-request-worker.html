@@ -5,829 +5,425 @@
 
 <meta charset="UTF-8">
 
-<meta name="viewport"
-      content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Service Request - Worker Portal</title>
 
-
 <style>
 
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
 }
 
-
-body {
-
-    font-family:
-        Arial,
-        Helvetica,
-        sans-serif;
-
-    background: #f4f6f9;
-
-    color: #222;
-
+body{
+    font-family:Arial,Helvetica,sans-serif;
+    background:#f4f6f9;
+    color:#222;
 }
 
-
-/* =====================================================
-   HEADER
-===================================================== */
-
-.page-header {
-
-    background: #ffffff;
-
-    padding: 22px 30px;
-
-    display: flex;
-
-    justify-content: space-between;
-
-    align-items: center;
-
-    border-bottom: 1px solid #ddd;
-
+#loadingBox{
+    position:fixed;
+    inset:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-direction:column;
+    background:#f4f6f9;
+    z-index:9999;
 }
 
-
-.page-header h2 {
-
-    margin-bottom: 5px;
-
+#loadingBox h2{
+    margin-bottom:10px;
 }
 
-
-.page-header small {
-
-    color: #777;
-
+#loadingBox p{
+    color:#666;
 }
 
-
-.worker-info {
-
-    display: flex;
-
-    flex-direction: column;
-
-    align-items: flex-end;
-
-    gap: 5px;
-
+#accessBox{
+    display:none;
+    position:fixed;
+    inset:0;
+    align-items:center;
+    justify-content:center;
+    flex-direction:column;
+    text-align:center;
+    background:#f4f6f9;
+    z-index:9999;
+    padding:25px;
 }
 
-
-.worker-info strong {
-
-    font-size: 17px;
-
+.access-icon{
+    font-size:65px;
+    margin-bottom:15px;
 }
 
-
-.worker-info span {
-
-    color: #666;
-
-    font-size: 14px;
-
+#accessBox h2{
+    color:#c62828;
+    margin-bottom:10px;
 }
 
-
-/* =====================================================
-   LOADING
-===================================================== */
-
-.loading-box {
-
-    position: fixed;
-
-    inset: 0;
-
-    background: #f4f6f9;
-
-    display: flex;
-
-    flex-direction: column;
-
-    justify-content: center;
-
-    align-items: center;
-
-    text-align: center;
-
-    z-index: 1000;
-
+#accessBox p{
+    color:#666;
+    margin-bottom:20px;
 }
 
-
-.loading-box h2 {
-
-    margin-bottom: 10px;
-
+#accessBox button{
+    border:0;
+    background:#333;
+    color:#fff;
+    padding:11px 25px;
+    border-radius:6px;
+    cursor:pointer;
 }
 
-
-.loading-box p {
-
-    color: #666;
-
+#dashboard{
+    display:none;
 }
 
-
-/* =====================================================
-   ACCESS VIOLATION
-===================================================== */
-
-.access-box {
-
-    position: fixed;
-
-    inset: 0;
-
-    background: #f4f6f9;
-
-    display: none;
-
-    flex-direction: column;
-
-    justify-content: center;
-
-    align-items: center;
-
-    text-align: center;
-
-    padding: 30px;
-
-    z-index: 1001;
-
+.page-header{
+    background:#fff;
+    padding:22px 30px;
+    border-bottom:1px solid #ddd;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
 }
 
-
-.access-icon {
-
-    font-size: 60px;
-
-    margin-bottom: 15px;
-
+.page-header h2{
+    margin-bottom:5px;
 }
 
-
-.access-box h2 {
-
-    color: #c62828;
-
-    margin-bottom: 10px;
-
+.page-header small{
+    color:#777;
 }
 
-
-.access-box p {
-
-    color: #666;
-
-    margin-bottom: 20px;
-
+.worker-info{
+    display:flex;
+    flex-direction:column;
+    align-items:flex-end;
+    gap:5px;
 }
 
-
-.access-box button {
-
-    border: none;
-
-    background: #333;
-
-    color: white;
-
-    padding: 11px 24px;
-
-    border-radius: 6px;
-
-    cursor: pointer;
-
+.worker-info strong{
+    font-size:17px;
 }
 
-
-/* =====================================================
-   DASHBOARD
-===================================================== */
-
-#dashboard {
-
-    display: none;
-
+.worker-info span{
+    color:#666;
+    font-size:14px;
 }
 
-
-.container {
-
-    padding: 25px 30px;
-
+.container{
+    padding:25px 30px;
 }
 
-
-/* =====================================================
-   STATISTICS
-===================================================== */
-
-.stats {
-
-    display: grid;
-
-    grid-template-columns:
-        repeat(4, 1fr);
-
-    gap: 18px;
-
-    margin-bottom: 25px;
-
+.stats{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:18px;
+    margin-bottom:25px;
 }
 
-
-.stat-card {
-
-    background: white;
-
-    border-radius: 10px;
-
-    padding: 20px;
-
-    box-shadow:
-        0 2px 8px rgba(0,0,0,0.06);
-
+.stat-card{
+    background:#fff;
+    border-radius:10px;
+    padding:20px;
+    box-shadow:0 2px 8px rgba(0,0,0,.06);
 }
 
-
-.stat-title {
-
-    color: #777;
-
-    font-size: 14px;
-
-    margin-bottom: 10px;
-
+.stat-title{
+    color:#777;
+    font-size:14px;
+    margin-bottom:10px;
 }
 
-
-.stat-number {
-
-    font-size: 30px;
-
-    font-weight: bold;
-
+.stat-number{
+    font-size:30px;
+    font-weight:bold;
 }
 
-
-/* =====================================================
-   WORK SECTION
-===================================================== */
-
-.work-section {
-
-    background: white;
-
-    border-radius: 10px;
-
-    padding: 22px;
-
-    box-shadow:
-        0 2px 8px rgba(0,0,0,0.06);
-
+.work-section{
+    background:#fff;
+    border-radius:10px;
+    padding:22px;
+    box-shadow:0 2px 8px rgba(0,0,0,.06);
 }
 
-
-.work-section h3 {
-
-    margin-bottom: 20px;
-
+.work-section h3{
+    margin-bottom:20px;
 }
 
-
-/* =====================================================
-   FILTERS
-===================================================== */
-
-.filters {
-
-    display: grid;
-
-    grid-template-columns:
-        220px 1fr;
-
-    gap: 15px;
-
-    margin-bottom: 20px;
-
+.filters{
+    display:grid;
+    grid-template-columns:220px 1fr;
+    gap:15px;
+    margin-bottom:20px;
 }
 
-
-.form-group {
-
-    display: flex;
-
-    flex-direction: column;
-
-    gap: 7px;
-
+.form-group{
+    display:flex;
+    flex-direction:column;
+    gap:7px;
 }
 
-
-.form-group label {
-
-    font-size: 13px;
-
-    font-weight: bold;
-
-    color: #555;
-
+.form-group label{
+    font-size:13px;
+    font-weight:bold;
+    color:#555;
 }
-
 
 .form-group select,
-
 .form-group input,
-
-.form-group textarea {
-
-    padding: 10px;
-
-    border: 1px solid #ccc;
-
-    border-radius: 6px;
-
-    font-size: 14px;
-
+.form-group textarea{
+    padding:10px;
+    border:1px solid #ccc;
+    border-radius:6px;
+    font-size:14px;
+    font-family:inherit;
 }
 
-
-.form-group textarea {
-
-    min-height: 100px;
-
-    resize: vertical;
-
+.form-group textarea{
+    min-height:100px;
+    resize:vertical;
 }
 
-
-/* =====================================================
-   TABLE
-===================================================== */
-
-.table-container {
-
-    width: 100%;
-
-    overflow-x: auto;
-
+.table-container{
+    width:100%;
+    overflow-x:auto;
 }
 
-
-table {
-
-    width: 100%;
-
-    border-collapse: collapse;
-
+table{
+    width:100%;
+    border-collapse:collapse;
 }
 
-
-thead {
-
-    background: #f5f5f5;
-
+thead{
+    background:#f5f5f5;
 }
-
 
 th,
-
-td {
-
-    padding: 12px;
-
-    border-bottom: 1px solid #eee;
-
-    text-align: left;
-
-    white-space: nowrap;
-
+td{
+    padding:12px;
+    border-bottom:1px solid #eee;
+    text-align:left;
+    white-space:nowrap;
 }
 
-
-th {
-
-    font-size: 13px;
-
+th{
+    font-size:13px;
 }
 
-
-td {
-
-    font-size: 14px;
-
+td{
+    font-size:14px;
 }
 
-
-.view-btn {
-
-    border: none;
-
-    background: #1976d2;
-
-    color: white;
-
-    padding: 7px 14px;
-
-    border-radius: 5px;
-
-    cursor: pointer;
-
+.view-btn{
+    border:0;
+    background:#1976d2;
+    color:#fff;
+    padding:7px 14px;
+    border-radius:5px;
+    cursor:pointer;
 }
 
-
-/* =====================================================
-   NO WORK
-===================================================== */
-
-.no-work {
-
-    display: none;
-
-    text-align: center;
-
-    padding: 70px 20px;
-
+.no-work{
+    display:none;
+    text-align:center;
+    padding:70px 20px;
 }
 
-
-.no-work-icon {
-
-    font-size: 65px;
-
-    margin-bottom: 15px;
-
+.no-work-icon{
+    font-size:65px;
+    margin-bottom:15px;
 }
 
-
-.no-work h2 {
-
-    margin-bottom: 10px;
-
+.no-work h2{
+    margin-bottom:10px;
 }
 
-
-.no-work p {
-
-    color: #777;
-
-    max-width: 500px;
-
-    margin: auto;
-
-    line-height: 1.6;
-
+.no-work p{
+    color:#777;
+    max-width:500px;
+    margin:auto;
+    line-height:1.6;
 }
 
-
-/* =====================================================
-   MODAL
-===================================================== */
-
-.modal {
-
-    position: fixed;
-
-    inset: 0;
-
-    background:
-        rgba(0,0,0,0.55);
-
-    display: none;
-
-    align-items: center;
-
-    justify-content: center;
-
-    padding: 20px;
-
-    z-index: 2000;
-
+.modal{
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.55);
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+    z-index:5000;
 }
 
-
-.modal-content {
-
-    background: white;
-
-    width: 100%;
-
-    max-width: 900px;
-
-    max-height: 90vh;
-
-    overflow-y: auto;
-
-    border-radius: 10px;
-
-    padding: 25px;
-
+.modal-content{
+    background:#fff;
+    width:100%;
+    max-width:900px;
+    max-height:90vh;
+    overflow-y:auto;
+    border-radius:10px;
+    padding:25px;
 }
 
-
-.modal-header {
-
-    display: flex;
-
-    justify-content: space-between;
-
-    align-items: center;
-
-    margin-bottom: 22px;
-
+.modal-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:22px;
 }
 
-
-.close-btn {
-
-    border: none;
-
-    background: transparent;
-
-    font-size: 28px;
-
-    cursor: pointer;
-
+.close-btn{
+    border:0;
+    background:transparent;
+    font-size:28px;
+    cursor:pointer;
 }
 
-
-/* =====================================================
-   DETAILS
-===================================================== */
-
-.detail-grid {
-
-    display: grid;
-
-    grid-template-columns:
-        repeat(3, 1fr);
-
-    gap: 15px;
-
-    margin-bottom: 18px;
-
+.detail-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:15px;
 }
 
-
-.detail-box {
-
-    background: #f8f9fa;
-
-    border-radius: 7px;
-
-    padding: 13px;
-
-    margin-bottom: 15px;
-
+.detail-box{
+    background:#f8f9fa;
+    border-radius:7px;
+    padding:13px;
+    margin-bottom:15px;
 }
 
-
-.detail-box label {
-
-    display: block;
-
-    font-size: 12px;
-
-    color: #777;
-
-    margin-bottom: 6px;
-
-    font-weight: bold;
-
+.detail-box label{
+    display:block;
+    font-size:12px;
+    color:#777;
+    margin-bottom:6px;
+    font-weight:bold;
 }
 
-
-.detail-box span {
-
-    display: block;
-
-    line-height: 1.5;
-
+.detail-box span{
+    display:block;
+    line-height:1.5;
+    word-break:break-word;
 }
 
-
-/* =====================================================
-   WORK ACTION
-===================================================== */
-
-.worker-action-section {
-
-    border-top: 1px solid #eee;
-
-    margin-top: 20px;
-
-    padding-top: 20px;
-
+.worker-action-section{
+    border-top:1px solid #eee;
+    margin-top:20px;
+    padding-top:20px;
 }
 
-
-.worker-action-section h4 {
-
-    margin-bottom: 15px;
-
+.worker-action-section h4{
+    margin-bottom:15px;
 }
 
-
-.action-grid {
-
-    display: grid;
-
-    grid-template-columns:
-        1fr 1fr;
-
-    gap: 15px;
-
+.action-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:15px;
 }
 
-
-.action-grid .full {
-
-    grid-column: 1 / -1;
-
+.action-grid .full{
+    grid-column:1/-1;
 }
 
-
-.action-btn {
-
-    border: none;
-
-    padding: 11px 20px;
-
-    border-radius: 6px;
-
-    cursor: pointer;
-
-    font-weight: bold;
-
+.action-btn{
+    border:0;
+    padding:11px 20px;
+    border-radius:6px;
+    cursor:pointer;
+    font-weight:bold;
+    margin-right:8px;
 }
 
-
-.start-btn {
-
-    background: #1976d2;
-
-    color: white;
-
+.start-btn{
+    background:#1976d2;
+    color:#fff;
 }
 
-
-.complete-btn {
-
-    background: #2e7d32;
-
-    color: white;
-
+.complete-btn{
+    background:#2e7d32;
+    color:#fff;
 }
 
-
-.action-btn:disabled {
-
-    opacity: .5;
-
-    cursor: not-allowed;
-
+.action-btn:disabled{
+    opacity:.5;
+    cursor:not-allowed;
 }
 
-
-/* =====================================================
-   TIMELINE
-===================================================== */
-
-.timeline {
-
-    margin-top: 15px;
-
+.timeline{
+    margin-top:15px;
 }
 
-
-.timeline-item {
-
-    border-left: 3px solid #1976d2;
-
-    padding: 10px 15px;
-
-    margin-bottom: 12px;
-
-    background: #f8f9fa;
-
+.timeline-item{
+    border-left:3px solid #1976d2;
+    padding:10px 15px;
+    margin-bottom:12px;
+    background:#f8f9fa;
 }
 
-
-.timeline-item strong {
-
-    display: block;
-
-    margin-bottom: 5px;
-
+.timeline-item strong{
+    display:block;
+    margin-bottom:5px;
 }
 
-
-.timeline-item small {
-
-    color: #777;
-
+.timeline-item small{
+    color:#777;
+    display:block;
 }
 
+@media(max-width:900px){
 
-/* =====================================================
-   MOBILE
-===================================================== */
-
-@media (max-width: 900px) {
-
-    .stats {
-
-        grid-template-columns:
-            repeat(2, 1fr);
-
+    .stats{
+        grid-template-columns:repeat(2,1fr);
     }
 
-
-    .detail-grid {
-
-        grid-template-columns:
-            repeat(2, 1fr);
-
+    .detail-grid{
+        grid-template-columns:repeat(2,1fr);
     }
 
 }
 
+@media(max-width:600px){
 
-@media (max-width: 600px) {
-
-    .page-header {
-
-        flex-direction: column;
-
-        align-items: flex-start;
-
-        gap: 15px;
-
+    .page-header{
+        flex-direction:column;
+        align-items:flex-start;
+        gap:15px;
     }
 
-
-    .worker-info {
-
-        align-items: flex-start;
-
+    .worker-info{
+        align-items:flex-start;
     }
 
-
-    .container {
-
-        padding: 15px;
-
+    .container{
+        padding:15px;
     }
 
-
-    .stats {
-
-        grid-template-columns:
-            1fr;
-
+    .stats{
+        grid-template-columns:1fr;
     }
 
-
-    .filters {
-
-        grid-template-columns:
-            1fr;
-
+    .filters{
+        grid-template-columns:1fr;
     }
 
-
-    .detail-grid {
-
-        grid-template-columns:
-            1fr;
-
+    .detail-grid{
+        grid-template-columns:1fr;
     }
 
-
-    .action-grid {
-
-        grid-template-columns:
-            1fr;
-
+    .action-grid{
+        grid-template-columns:1fr;
     }
 
-
-    .action-grid .full {
-
-        grid-column: auto;
-
+    .action-grid .full{
+        grid-column:auto;
     }
 
 }
@@ -836,25 +432,21 @@ td {
 
 </head>
 
-
 <body>
 
 
 <!-- =====================================================
-     CHECKING LOGIN
+     LOADING
 ===================================================== -->
 
-<div
-    class="loading-box"
-    id="loadingBox"
->
+<div id="loadingBox">
 
     <h2>
         Checking Worker Account
     </h2>
 
     <p>
-        Please wait while we verify your account...
+        Verifying your staff account...
     </p>
 
 </div>
@@ -864,10 +456,7 @@ td {
      ACCESS VIOLATION
 ===================================================== -->
 
-<div
-    class="access-box"
-    id="accessBox"
->
+<div id="accessBox">
 
     <div class="access-icon">
         🚫
@@ -898,9 +487,7 @@ td {
 <div id="dashboard">
 
 
-    <!-- =================================================
-         HEADER
-    ================================================= -->
+    <!-- HEADER -->
 
     <div class="page-header">
 
@@ -936,10 +523,6 @@ td {
     </div>
 
 
-    <!-- =================================================
-         MAIN
-    ================================================= -->
-
     <div class="container">
 
 
@@ -948,7 +531,6 @@ td {
         ================================================= -->
 
         <div class="stats">
-
 
             <div class="stat-card">
 
@@ -1013,26 +595,21 @@ td {
 
             </div>
 
-
         </div>
 
 
         <!-- =================================================
-             WORK SECTION
+             REQUESTS
         ================================================= -->
 
         <div class="work-section">
-
 
             <h3>
                 My Assigned Service Requests
             </h3>
 
 
-            <!-- FILTERS -->
-
             <div class="filters">
-
 
                 <div class="form-group">
 
@@ -1040,9 +617,7 @@ td {
                         Status
                     </label>
 
-                    <select
-                        id="statusFilter"
-                    >
+                    <select id="statusFilter">
 
                         <option value="ALL">
                             All Work
@@ -1079,13 +654,10 @@ td {
 
                 </div>
 
-
             </div>
 
 
-            <!-- =================================================
-                 NO WORK MESSAGE
-            ================================================= -->
+            <!-- NO WORK -->
 
             <div
                 class="no-work"
@@ -1112,9 +684,7 @@ td {
             </div>
 
 
-            <!-- =================================================
-                 TABLE
-            ================================================= -->
+            <!-- TABLE -->
 
             <div
                 class="table-container"
@@ -1127,50 +697,21 @@ td {
 
                         <tr>
 
-                            <th>
-                                S.No
-                            </th>
-
-                            <th>
-                                Ticket ID
-                            </th>
-
-                            <th>
-                                Requestor
-                            </th>
-
-                            <th>
-                                Title
-                            </th>
-
-                            <th>
-                                Category
-                            </th>
-
-                            <th>
-                                Priority
-                            </th>
-
-                            <th>
-                                Status
-                            </th>
-
-                            <th>
-                                Expected Date
-                            </th>
-
-                            <th>
-                                Action
-                            </th>
+                            <th>S.No</th>
+                            <th>Ticket ID</th>
+                            <th>Requestor</th>
+                            <th>Title</th>
+                            <th>Category</th>
+                            <th>Priority</th>
+                            <th>Status</th>
+                            <th>Expected Date</th>
+                            <th>Action</th>
 
                         </tr>
 
                     </thead>
 
-
-                    <tbody
-                        id="workTableBody"
-                    >
+                    <tbody id="workTableBody">
 
                         <tr>
 
@@ -1189,9 +730,7 @@ td {
 
             </div>
 
-
         </div>
-
 
     </div>
 
@@ -1199,7 +738,7 @@ td {
 
 
 <!-- =====================================================
-     REQUEST MODAL
+     MODAL
 ===================================================== -->
 
 <div
@@ -1207,11 +746,8 @@ td {
     id="requestModal"
 >
 
-
     <div class="modal-content">
 
-
-        <!-- HEADER -->
 
         <div class="modal-header">
 
@@ -1229,10 +765,6 @@ td {
 
         </div>
 
-
-        <!-- =================================================
-             DETAILS
-        ================================================= -->
 
         <div class="detail-grid">
 
@@ -1266,7 +798,7 @@ td {
             <div class="detail-box">
 
                 <label>
-                    Department
+                    Requestor Department
                 </label>
 
                 <span id="detailDepartment">
@@ -1353,11 +885,8 @@ td {
 
             </div>
 
-
         </div>
 
-
-        <!-- TITLE -->
 
         <div class="detail-box">
 
@@ -1372,8 +901,6 @@ td {
         </div>
 
 
-        <!-- DESCRIPTION -->
-
         <div class="detail-box">
 
             <label>
@@ -1386,8 +913,6 @@ td {
 
         </div>
 
-
-        <!-- HEAD REMARKS -->
 
         <div class="detail-box">
 
@@ -1408,7 +933,6 @@ td {
 
         <div
             class="worker-action-section"
-            id="workerActionSection"
         >
 
             <h4>
@@ -1422,7 +946,7 @@ td {
                 <div class="form-group">
 
                     <label>
-                        Work Remarks
+                        Worker Remarks
                     </label>
 
                     <textarea
@@ -1470,17 +994,13 @@ td {
 
                 </div>
 
-
             </div>
 
         </div>
 
 
-        <!-- =================================================
-             TIMELINE
-        ================================================= -->
-
         <br>
+
 
         <h3>
             Request Timeline
@@ -1501,33 +1021,37 @@ td {
 
 
 <!-- =====================================================
-     FIREBASE JAVASCRIPT
+     FIREBASE
 ===================================================== -->
 
-<script type="module">
 <script type="module">
 
 import {
     initializeApp
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+} from
+"https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
 
 import {
     getAuth,
     onAuthStateChanged
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+} from
+"https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
 
 import {
     getFirestore,
     collection,
+    getDocs,
     query,
     where,
-    getDocs,
     doc,
     getDoc,
     updateDoc,
-    serverTimestamp,
-    orderBy
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    addDoc,
+    serverTimestamp
+} from
+"https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 
 // =====================================================
@@ -1536,25 +1060,39 @@ import {
 
 const firebaseConfig = {
 
-   apiKey: "AIzaSyAIv3091VM-gkmdwEAn7OhXWd9Cm2zh2bo",
-  authDomain: "maasc-2026.firebaseapp.com",
-  projectId: "maasc-2026",
-  storageBucket: "maasc-2026.appspot.com",
-  messagingSenderId: "585813001586",
-  appId: "1:585813001586:web:664e0e90ff0725d2e849eb"
+    apiKey:
+        "AIzaSyAIv3091VM-gkmdwEAn7OhXWd9Cm2zh2bo",
+
+    authDomain:
+        "maasc-2026.firebaseapp.com",
+
+    projectId:
+        "maasc-2026",
+
+    storageBucket:
+        "maasc-2026.appspot.com",
+
+    messagingSenderId:
+        "585813001586",
+
+    appId:
+        "1:585813001586:web:664e0e90ff0725d2e849eb"
 
 };
 
 
 // =====================================================
-// FIREBASE INITIALIZATION
+// INITIALIZE
 // =====================================================
 
-const app = initializeApp(firebaseConfig);
+const app =
+    initializeApp(firebaseConfig);
 
-const auth = getAuth(app);
+const auth =
+    getAuth(app);
 
-const db = getFirestore(app);
+const db =
+    getFirestore(app);
 
 
 // =====================================================
@@ -1586,15 +1124,6 @@ const dashboard =
 const accessMessage =
     document.getElementById("accessMessage");
 
-const workerName =
-    document.getElementById("workerName");
-
-const workerDepartment =
-    document.getElementById("workerDepartment");
-
-const workerId =
-    document.getElementById("workerId");
-
 const workTableBody =
     document.getElementById("workTableBody");
 
@@ -1606,246 +1135,584 @@ const noWork =
 
 
 // =====================================================
-// AUTHENTICATION
+// STAFF ID CLEANER
 // =====================================================
 
-onAuthStateChanged(auth, async (user) => {
+function cleanStaffId(value){
 
-    console.log(
-        "WORKER AUTH STATE:",
-        user
-    );
+    if(
+        value === undefined ||
+        value === null
+    ){
 
-
-    if (!user) {
-
-        showAccessViolation(
-            "You are not logged in. Please login first."
-        );
-
-        return;
+        return "";
 
     }
 
-
-    currentUser = user;
-
-
-    try {
-
-        await loadWorkerProfile(user);
-
-    }
-
-    catch (error) {
-
-        console.error(
-            "Worker profile error:",
-            error
-        );
-
-        showAccessViolation(
-            "Unable to load your staff profile."
-        );
-
-    }
-
-});
-
-
-// =====================================================
-// LOAD STAFF PROFILE
-// =====================================================
-
-async function loadWorkerProfile(user) {
-
-    let staffSnapshot = null;
-
-
-    // -------------------------------------------------
-    // FIRST: SEARCH BY UID
-    // -------------------------------------------------
-
-    try {
-
-        const uidQuery = query(
-            collection(db, "staff"),
-            where("uid", "==", user.uid)
-        );
-
-        const uidSnapshot =
-            await getDocs(uidQuery);
-
-
-        if (!uidSnapshot.empty) {
-
-            staffSnapshot =
-                uidSnapshot.docs[0];
-
-        }
-
-    }
-
-    catch (error) {
-
-        console.warn(
-            "UID staff search failed:",
-            error
-        );
-
-    }
-
-
-    // -------------------------------------------------
-    // SECOND: SEARCH BY EMAIL
-    // -------------------------------------------------
-
-    if (!staffSnapshot && user.email) {
-
-        try {
-
-            const emailQuery = query(
-                collection(db, "staff"),
-                where("email", "==", user.email)
-            );
-
-            const emailSnapshot =
-                await getDocs(emailQuery);
-
-
-            if (!emailSnapshot.empty) {
-
-                staffSnapshot =
-                    emailSnapshot.docs[0];
-
-            }
-
-        }
-
-        catch (error) {
-
-            console.warn(
-                "Email staff search failed:",
-                error
-            );
-
-        }
-
-    }
-
-
-    // -------------------------------------------------
-    // NO STAFF PROFILE
-    // -------------------------------------------------
-
-    if (!staffSnapshot) {
-
-        showAccessViolation(
-            "Your Firebase login was successful, but your staff profile was not found."
-        );
-
-        return;
-
-    }
-
-
-    currentStaff = {
-
-        id: staffSnapshot.id,
-
-        ...staffSnapshot.data()
-
-    };
-
-
-    console.log(
-        "CURRENT STAFF:",
-        currentStaff
-    );
-
-
-    // =================================================
-    // STAFF DETAILS
-    // =================================================
-
-    const staffId =
-        currentStaff.staffId ||
-        currentStaff.id ||
-        "";
-
-    const name =
-        currentStaff.name ||
-        currentStaff.staffName ||
-        currentStaff.displayName ||
-        user.displayName ||
-        "Worker";
-
-    const department =
-        currentStaff.department ||
-        currentStaff.dep ||
-        currentStaff.departmentName ||
-        "";
-
-
-    // =================================================
-    // WORKER ACCESS
-    // =================================================
-
-    /*
-        IMPORTANT:
-
-        A worker does NOT need to be Department Head.
-
-        Any authenticated staff member can use this
-        portal IF a service request has been assigned
-        to that staff member.
-
-        Therefore we do NOT check:
-
-        role == Department Head
-
-        here.
-    */
-
-
-    workerName.textContent =
-        name;
-
-    workerDepartment.textContent =
-        department || "Department not set";
-
-    workerId.textContent =
-        staffId || "Staff ID not set";
-
-
-    // =================================================
-    // SHOW DASHBOARD
-    // =================================================
-
-    loadingBox.style.display =
-        "none";
-
-    accessBox.style.display =
-        "none";
-
-    dashboard.style.display =
-        "block";
-
-
-    // =================================================
-    // LOAD ASSIGNED WORK
-    // =================================================
-
-    await loadAssignedRequests();
+    return String(value).trim();
 
 }
 
 
 // =====================================================
-// LOAD ASSIGNED SERVICE REQUESTS
+// FIND STAFF BY DOCUMENT ID
 // =====================================================
 
-async function loadAssignedRequests() {
+async function findStaffByDocumentId(
+    staffId
+){
+
+    staffId =
+        cleanStaffId(staffId);
+
+
+    if(!staffId){
+
+        return null;
+
+    }
+
+
+    try{
+
+        const staffRef =
+            doc(
+                db,
+                "staff",
+                staffId
+            );
+
+
+        const staffSnap =
+            await getDoc(staffRef);
+
+
+        if(
+            !staffSnap.exists()
+        ){
+
+            return null;
+
+        }
+
+
+        const data =
+            staffSnap.data();
+
+
+        return {
+
+            firestoreId:
+                staffSnap.id,
+
+            ...data,
+
+            staffId:
+                data.staffId ||
+                staffSnap.id,
+
+            staffName:
+                data.staffName ||
+                data.name ||
+                data.fullName ||
+                ""
+
+        };
+
+    }
+
+    catch(error){
+
+        console.error(
+            "Staff document lookup:",
+            error
+        );
+
+        return null;
+
+    }
+
+}
+
+
+// =====================================================
+// FIND STAFF BY UID
+// =====================================================
+
+async function findStaffByUid(uid){
+
+    if(!uid){
+
+        return null;
+
+    }
+
+
+    try{
+
+        const q =
+            query(
+                collection(
+                    db,
+                    "staff"
+                ),
+                where(
+                    "uid",
+                    "==",
+                    uid
+                )
+            );
+
+
+        const snap =
+            await getDocs(q);
+
+
+        if(
+            !snap.empty
+        ){
+
+            const item =
+                snap.docs[0];
+
+
+            const data =
+                item.data();
+
+
+            return {
+
+                firestoreId:
+                    item.id,
+
+                ...data,
+
+                staffId:
+                    data.staffId ||
+                    item.id,
+
+                staffName:
+                    data.staffName ||
+                    data.name ||
+                    data.fullName ||
+                    ""
+
+            };
+
+        }
+
+    }
+
+    catch(error){
+
+        console.warn(
+            "UID lookup failed:",
+            error
+        );
+
+    }
+
+
+    return null;
+
+}
+
+
+// =====================================================
+// FIND STAFF BY EMAIL
+// =====================================================
+
+async function findStaffByEmail(
+    email
+){
+
+    if(!email){
+
+        return null;
+
+    }
+
+
+    try{
+
+        const q =
+            query(
+                collection(
+                    db,
+                    "staff"
+                ),
+                where(
+                    "email",
+                    "==",
+                    email
+                )
+            );
+
+
+        const snap =
+            await getDocs(q);
+
+
+        if(
+            !snap.empty
+        ){
+
+            const item =
+                snap.docs[0];
+
+
+            const data =
+                item.data();
+
+
+            return {
+
+                firestoreId:
+                    item.id,
+
+                ...data,
+
+                staffId:
+                    data.staffId ||
+                    item.id,
+
+                staffName:
+                    data.staffName ||
+                    data.name ||
+                    data.fullName ||
+                    ""
+
+            };
+
+        }
+
+    }
+
+    catch(error){
+
+        console.warn(
+            "Email lookup failed:",
+            error
+        );
+
+    }
+
+
+    return null;
+
+}
+
+
+// =====================================================
+// FIND STAFF FROM STORAGE
+// =====================================================
+
+async function findStaffFromStorage(){
+
+    const possibleIds = [];
+
+
+    const keys = [
+
+        "staffId",
+
+        "currentStaffId",
+
+        "staff",
+
+        "currentStaff",
+
+        "loggedInStaff",
+
+        "user",
+
+        "currentUser"
+
+    ];
+
+
+    function readStorage(storage){
+
+        keys.forEach(
+            key => {
+
+                try{
+
+                    const raw =
+                        storage.getItem(key);
+
+
+                    if(!raw){
+
+                        return;
+
+                    }
+
+
+                    if(
+                        !possibleIds.includes(
+                            raw
+                        )
+                    ){
+
+                        possibleIds.push(
+                            raw
+                        );
+
+                    }
+
+
+                    try{
+
+                        const parsed =
+                            JSON.parse(raw);
+
+
+                        const ids = [
+
+                            parsed?.staffId,
+
+                            parsed?.staffID,
+
+                            parsed?.staff_id,
+
+                            parsed?.id
+
+                        ];
+
+
+                        ids.forEach(
+                            id => {
+
+                                if(id){
+
+                                    possibleIds.push(
+                                        String(id)
+                                    );
+
+                                }
+
+                            }
+                        );
+
+                    }
+
+                    catch{
+
+                    }
+
+                }
+
+                catch{
+
+                }
+
+            }
+        );
+
+    }
+
+
+    readStorage(
+        localStorage
+    );
+
+    readStorage(
+        sessionStorage
+    );
+
+
+    for(
+        const id of possibleIds
+    ){
+
+        const staff =
+            await findStaffByDocumentId(
+                id
+            );
+
+
+        if(staff){
+
+            return staff;
+
+        }
+
+    }
+
+
+    return null;
+
+}
+
+
+// =====================================================
+// LOAD LOGGED IN STAFF
+// =====================================================
+
+async function loadLoggedInStaff(){
+
+    let staff = null;
+
+
+    staff =
+        await findStaffByUid(
+            currentUser.uid
+        );
+
+
+    if(!staff){
+
+        staff =
+            await findStaffByEmail(
+                currentUser.email
+            );
+
+    }
+
+
+    if(!staff){
+
+        staff =
+            await findStaffFromStorage();
+
+    }
+
+
+    return staff;
+
+}
+
+
+// =====================================================
+// AUTH
+// =====================================================
+
+onAuthStateChanged(
+    auth,
+    async user => {
+
+        console.log(
+            "WORKER AUTH STATE:",
+            user
+        );
+
+
+        if(!user){
+
+            showAccessViolation(
+                "You are not logged in. Please login first."
+            );
+
+            return;
+
+        }
+
+
+        currentUser =
+            user;
+
+
+        try{
+
+            currentStaff =
+                await loadLoggedInStaff();
+
+
+            if(!currentStaff){
+
+                showAccessViolation(
+                    "Your login is valid, but your staff profile was not found."
+                );
+
+                return;
+
+            }
+
+
+            console.log(
+                "WORKER STAFF:",
+                currentStaff
+            );
+
+
+            const staffId =
+                currentStaff.staffId ||
+                currentStaff.firestoreId;
+
+
+            const name =
+                currentStaff.staffName ||
+                currentStaff.name ||
+                currentStaff.fullName ||
+                currentUser.displayName ||
+                "Worker";
+
+
+            const department =
+                currentStaff.department ||
+                "";
+
+
+            document.getElementById(
+                "workerName"
+            ).textContent =
+                name;
+
+
+            document.getElementById(
+                "workerDepartment"
+            ).textContent =
+                department ||
+                "Department not set";
+
+
+            document.getElementById(
+                "workerId"
+            ).textContent =
+                staffId ||
+                "Staff ID not found";
+
+
+            loadingBox.style.display =
+                "none";
+
+
+            accessBox.style.display =
+                "none";
+
+
+            dashboard.style.display =
+                "block";
+
+
+            await loadAssignedRequests();
+
+        }
+
+        catch(error){
+
+            console.error(
+                "WORKER INITIALIZATION ERROR:",
+                error
+            );
+
+
+            showAccessViolation(
+                "Unable to load your staff account."
+            );
+
+        }
+
+    }
+);
+
+
+// =====================================================
+// LOAD ASSIGNED REQUESTS
+// =====================================================
+
+async function loadAssignedRequests(){
 
     workTableBody.innerHTML = `
 
@@ -1864,15 +1731,13 @@ async function loadAssignedRequests() {
 
 
     const staffId =
-        currentStaff.staffId ||
-        currentStaff.id;
-
-
-    if (!staffId) {
-
-        console.error(
-            "No staffId found for worker."
+        cleanStaffId(
+            currentStaff.staffId ||
+            currentStaff.firestoreId
         );
+
+
+    if(!staffId){
 
         showNoWork();
 
@@ -1882,42 +1747,25 @@ async function loadAssignedRequests() {
 
 
     console.log(
-        "SEARCHING ASSIGNED WORK FOR:",
+        "WORKER STAFF ID:",
         staffId
     );
 
 
-    try {
+    try{
 
-        /*
-            IMPORTANT:
-
-            The Department Head portal must save
-            the selected worker's STAFF ID into:
-
-            assignedWorkerId
-
-            Example:
-
-            assignedWorkerId:
-                "STAFF001"
-        */
-
-
-        const q = query(
-
-            collection(
-                db,
-                "serviceRequests"
-            ),
-
-            where(
-                "assignedWorkerId",
-                "==",
-                staffId
-            )
-
-        );
+        const q =
+            query(
+                collection(
+                    db,
+                    "serviceRequests"
+                ),
+                where(
+                    "assignedWorkerId",
+                    "==",
+                    staffId
+                )
+            );
 
 
         const snapshot =
@@ -1927,17 +1775,20 @@ async function loadAssignedRequests() {
         assignedRequests = [];
 
 
-        snapshot.forEach((requestDoc) => {
+        snapshot.forEach(
+            item => {
 
-            assignedRequests.push({
+                assignedRequests.push({
 
-                id: requestDoc.id,
+                    id:
+                        item.id,
 
-                ...requestDoc.data()
+                    ...item.data()
 
-            });
+                });
 
-        });
+            }
+        );
 
 
         console.log(
@@ -1950,13 +1801,12 @@ async function loadAssignedRequests() {
 
         applyFilters();
 
-
     }
 
-    catch (error) {
+    catch(error){
 
         console.error(
-            "Error loading assigned requests:",
+            "LOAD WORK ERROR:",
             error
         );
 
@@ -1973,8 +1823,10 @@ async function loadAssignedRequests() {
                     "
                 >
                     Unable to load assigned work.
-                    <br>
-                    Check Firestore permissions.
+                    <br><br>
+                    ${escapeHtml(
+                        error.message
+                    )}
                 </td>
 
             </tr>
@@ -1990,7 +1842,7 @@ async function loadAssignedRequests() {
 // STATISTICS
 // =====================================================
 
-function updateStatistics() {
+function updateStatistics(){
 
     const assigned =
         assignedRequests.length;
@@ -1998,25 +1850,28 @@ function updateStatistics() {
 
     const newWork =
         assignedRequests.filter(
-            request =>
-                normalizeStatus(request.status)
-                === "ASSIGNED"
+            item =>
+                normalizeStatus(
+                    item.status
+                ) === "ASSIGNED"
         ).length;
 
 
     const progress =
         assignedRequests.filter(
-            request =>
-                normalizeStatus(request.status)
-                === "IN_PROGRESS"
+            item =>
+                normalizeStatus(
+                    item.status
+                ) === "IN_PROGRESS"
         ).length;
 
 
     const completed =
         assignedRequests.filter(
-            request =>
-                normalizeStatus(request.status)
-                === "WORK_COMPLETED"
+            item =>
+                normalizeStatus(
+                    item.status
+                ) === "WORK_COMPLETED"
         ).length;
 
 
@@ -2047,132 +1902,129 @@ function updateStatistics() {
 
 
 // =====================================================
-// NORMALIZE STATUS
+// STATUS
 // =====================================================
 
-function normalizeStatus(status) {
+function normalizeStatus(value){
 
     return String(
-        status || ""
+        value || ""
     )
     .trim()
     .toUpperCase()
-    .replace(/ /g, "_");
+    .replace(/ /g,"_");
 
 }
 
 
 // =====================================================
-// FILTER EVENTS
+// FILTER
 // =====================================================
 
 document
-    .getElementById("statusFilter")
-    .addEventListener(
-        "change",
-        applyFilters
-    );
+.getElementById("statusFilter")
+.addEventListener(
+    "change",
+    applyFilters
+);
 
 
 document
-    .getElementById("searchBox")
-    .addEventListener(
-        "input",
-        applyFilters
-    );
+.getElementById("searchBox")
+.addEventListener(
+    "input",
+    applyFilters
+);
 
 
-// =====================================================
-// APPLY FILTERS
-// =====================================================
+function applyFilters(){
 
-function applyFilters() {
-
-    const status =
-        document
-            .getElementById("statusFilter")
-            .value;
+    const selectedStatus =
+        document.getElementById(
+            "statusFilter"
+        ).value;
 
 
     const search =
-        document
-            .getElementById("searchBox")
-            .value
-            .trim()
-            .toLowerCase();
+        document.getElementById(
+            "searchBox"
+        ).value
+        .trim()
+        .toLowerCase();
 
 
-    let filtered =
+    let list =
         [...assignedRequests];
 
 
-    // -------------------------------------------------
-    // STATUS
-    // -------------------------------------------------
+    if(
+        selectedStatus !== "ALL"
+    ){
 
-    if (status !== "ALL") {
-
-        filtered =
-            filtered.filter(
-                request =>
+        list =
+            list.filter(
+                item =>
                     normalizeStatus(
-                        request.status
-                    ) === status
+                        item.status
+                    ) === selectedStatus
             );
 
     }
 
 
-    // -------------------------------------------------
-    // SEARCH
-    // -------------------------------------------------
+    if(search){
 
-    if (search) {
-
-        filtered =
-            filtered.filter(
-                request => {
+        list =
+            list.filter(
+                item => {
 
                     const ticket =
                         String(
-                            request.ticketId ||
+                            item.ticketId ||
                             ""
                         ).toLowerCase();
 
 
                     const title =
                         String(
-                            request.title ||
-                            request.requestTitle ||
+                            item.title ||
+                            item.requestTitle ||
                             ""
                         ).toLowerCase();
 
 
                     const category =
                         String(
-                            request.category ||
+                            item.category ||
                             ""
                         ).toLowerCase();
 
 
                     const requestor =
                         String(
-                            request.requestorName ||
-                            request.requestor ||
-                            request.staffName ||
+                            item.requestorName ||
+                            item.requestor ||
                             ""
                         ).toLowerCase();
 
 
                     return (
 
-                        ticket.includes(search) ||
+                        ticket.includes(
+                            search
+                        ) ||
 
-                        title.includes(search) ||
+                        title.includes(
+                            search
+                        ) ||
 
-                        category.includes(search) ||
+                        category.includes(
+                            search
+                        ) ||
 
-                        requestor.includes(search)
+                        requestor.includes(
+                            search
+                        )
 
                     );
 
@@ -2182,18 +2034,18 @@ function applyFilters() {
     }
 
 
-    renderRequests(filtered);
+    renderRequests(list);
 
 }
 
 
 // =====================================================
-// RENDER REQUESTS
+// RENDER
 // =====================================================
 
-function renderRequests(requests) {
+function renderRequests(list){
 
-    if (!requests.length) {
+    if(!list.length){
 
         showNoWork();
 
@@ -2205,6 +2057,7 @@ function renderRequests(requests) {
     noWork.style.display =
         "none";
 
+
     workTableContainer.style.display =
         "block";
 
@@ -2213,50 +2066,18 @@ function renderRequests(requests) {
         "";
 
 
-    requests.forEach(
-        (request, index) => {
+    list.forEach(
+        (item,index) => {
 
             const row =
-                document.createElement("tr");
+                document.createElement(
+                    "tr"
+                );
 
 
-            const ticketId =
-                request.ticketId ||
-                request.id ||
-                "-";
-
-
-            const requestor =
-                request.requestorName ||
-                request.requestor ||
-                request.staffName ||
-                "-";
-
-
-            const title =
-                request.title ||
-                request.requestTitle ||
-                "-";
-
-
-            const category =
-                request.category ||
-                "-";
-
-
-            const priority =
-                request.priority ||
-                "-";
-
-
-            const status =
-                request.status ||
-                "-";
-
-
-            const expectedDate =
-                request.expectedCompletion ||
-                request.expectedDate ||
+            const expected =
+                item.expectedDate ||
+                item.expectedCompletion ||
                 "-";
 
 
@@ -2267,38 +2088,62 @@ function renderRequests(requests) {
                 </td>
 
                 <td>
-                    ${escapeHtml(ticketId)}
+                    ${escapeHtml(
+                        item.ticketId ||
+                        item.id
+                    )}
                 </td>
 
                 <td>
-                    ${escapeHtml(requestor)}
+                    ${escapeHtml(
+                        item.requestorName ||
+                        item.requestor ||
+                        "-"
+                    )}
                 </td>
 
                 <td>
-                    ${escapeHtml(title)}
+                    ${escapeHtml(
+                        item.title ||
+                        item.requestTitle ||
+                        "-"
+                    )}
                 </td>
 
                 <td>
-                    ${escapeHtml(category)}
+                    ${escapeHtml(
+                        item.category ||
+                        "-"
+                    )}
                 </td>
 
                 <td>
-                    ${escapeHtml(priority)}
+                    ${escapeHtml(
+                        item.priority ||
+                        "-"
+                    )}
                 </td>
 
                 <td>
-                    ${escapeHtml(status)}
+                    ${escapeHtml(
+                        item.status ||
+                        "-"
+                    )}
                 </td>
 
                 <td>
-                    ${escapeHtml(expectedDate)}
+                    ${escapeHtml(
+                        expected
+                    )}
                 </td>
 
                 <td>
 
                     <button
                         class="view-btn"
-                        onclick="openRequest('${request.id}')"
+                        data-id="${escapeHtml(
+                            item.id
+                        )}"
                     >
                         View
                     </button>
@@ -2308,7 +2153,25 @@ function renderRequests(requests) {
             `;
 
 
-            workTableBody.appendChild(row);
+            row
+            .querySelector(
+                ".view-btn"
+            )
+            .addEventListener(
+                "click",
+                () => {
+
+                    openRequest(
+                        item.id
+                    );
+
+                }
+            );
+
+
+            workTableBody.appendChild(
+                row
+            );
 
         }
     );
@@ -2320,10 +2183,11 @@ function renderRequests(requests) {
 // NO WORK
 // =====================================================
 
-function showNoWork() {
+function showNoWork(){
 
     workTableContainer.style.display =
         "none";
+
 
     noWork.style.display =
         "block";
@@ -2332,131 +2196,44 @@ function showNoWork() {
 
 
 // =====================================================
-// ESCAPE HTML
-// =====================================================
-
-function escapeHtml(value) {
-
-    return String(value ?? "")
-        .replace(
-            /&/g,
-            "&amp;"
-        )
-        .replace(
-            /</g,
-            "&lt;"
-        )
-        .replace(
-            />/g,
-            "&gt;"
-        )
-        .replace(
-            /"/g,
-            "&quot;"
-        )
-        .replace(
-            /'/g,
-            "&#039;"
-        );
-
-}
-
-
-// =====================================================
-// ACCESS VIOLATION
-// =====================================================
-
-function showAccessViolation(message) {
-
-    loadingBox.style.display =
-        "none";
-
-    dashboard.style.display =
-        "none";
-
-    accessMessage.textContent =
-        message;
-
-    accessBox.style.display =
-        "flex";
-
-}
-
-
-window.goBack = function() {
-
-    window.history.back();
-
-};
-
-
-// =====================================================
-// DATE FORMATTER
-// =====================================================
-
-function formatDate(value) {
-
-    if (!value) {
-
-        return "-";
-
-    }
-
-
-    try {
-
-        if (
-            typeof value.toDate ===
-            "function"
-        ) {
-
-            return value
-                .toDate()
-                .toLocaleString();
-
-        }
-
-
-        if (
-            value instanceof Date
-        ) {
-
-            return value.toLocaleString();
-
-        }
-
-
-        return new Date(value)
-            .toLocaleString();
-
-    }
-
-    catch {
-
-        return String(value);
-
-    }
-
-}
-
-
-// =====================================================
 // OPEN REQUEST
 // =====================================================
 
-window.openRequest = async function(requestId) {
+window.openRequest =
+async function(requestId){
 
-    const request =
+    const found =
         assignedRequests.find(
             item =>
                 item.id === requestId
         );
 
 
-    if (!request) {
+    if(!found){
+
+        return;
+
+    }
+
+
+    const ref =
+        doc(
+            db,
+            "serviceRequests",
+            requestId
+        );
+
+
+    const snap =
+        await getDoc(ref);
+
+
+    if(
+        !snap.exists()
+    ){
 
         alert(
-            "Service request not found."
+            "This request no longer exists."
         );
 
         return;
@@ -2464,118 +2241,19 @@ window.openRequest = async function(requestId) {
     }
 
 
-    currentRequest =
-        request;
+    currentRequest = {
+
+        id:
+            requestId,
+
+        ...snap.data()
+
+    };
 
 
-    // Details are loaded in Part 3
-
-    document.getElementById(
-        "detailTicketId"
-    ).textContent =
-        request.ticketId ||
-        request.id ||
-        "-";
-
-
-    document.getElementById(
-        "detailRequestor"
-    ).textContent =
-        request.requestorName ||
-        request.requestor ||
-        request.staffName ||
-        "-";
-
-
-    document.getElementById(
-        "detailDepartment"
-    ).textContent =
-        request.requestorDepartment ||
-        request.department ||
-        "-";
-
-
-    document.getElementById(
-        "detailCategory"
-    ).textContent =
-        request.category ||
-        "-";
-
-
-    document.getElementById(
-        "detailPriority"
-    ).textContent =
-        request.priority ||
-        "-";
-
-
-    document.getElementById(
-        "detailStatus"
-    ).textContent =
-        request.status ||
-        "-";
-
-
-    document.getElementById(
-        "detailLocation"
-    ).textContent =
-        request.location ||
-        "-";
-
-
-    document.getElementById(
-        "detailWorker"
-    ).textContent =
-        request.assignedWorkerName ||
-        request.workerName ||
-        currentStaff.name ||
-        "Assigned Worker";
-
-
-    document.getElementById(
-        "detailExpectedDate"
-    ).textContent =
-        request.expectedCompletion ||
-        request.expectedDate ||
-        "-";
-
-
-    document.getElementById(
-        "detailTitle"
-    ).textContent =
-        request.title ||
-        request.requestTitle ||
-        "-";
-
-
-    document.getElementById(
-        "detailDescription"
-    ).textContent =
-        request.description ||
-        "-";
-
-
-    document.getElementById(
-        "detailHeadRemarks"
-    ).textContent =
-        request.headRemarks ||
-        "No remarks";
-
-
-    document.getElementById(
-        "workerRemarks"
-    ).value =
-        "";
-
-
-    document.getElementById(
-        "completionDetails"
-    ).value =
-        "";
-
+    fillRequestDetails();
 
     updateActionButtons();
-
 
     document.getElementById(
         "requestModal"
@@ -2583,35 +2261,135 @@ window.openRequest = async function(requestId) {
         "flex";
 
 
-    await loadTimeline(requestId);
+    await loadTimeline(
+        requestId
+    );
 
 };
 
 
 // =====================================================
-// CLOSE MODAL
+// DETAILS
 // =====================================================
 
-window.closeModal = function() {
+function fillRequestDetails(){
+
+    const r =
+        currentRequest;
+
 
     document.getElementById(
-        "requestModal"
-    ).style.display =
-        "none";
+        "detailTicketId"
+    ).textContent =
+        r.ticketId ||
+        r.id ||
+        "-";
 
-    currentRequest =
-        null;
 
-};
+    document.getElementById(
+        "detailRequestor"
+    ).textContent =
+        r.requestorName ||
+        r.requestor ||
+        "-";
+
+
+    document.getElementById(
+        "detailDepartment"
+    ).textContent =
+        r.requestorDepartment ||
+        r.department ||
+        "-";
+
+
+    document.getElementById(
+        "detailCategory"
+    ).textContent =
+        r.category ||
+        "-";
+
+
+    document.getElementById(
+        "detailPriority"
+    ).textContent =
+        r.priority ||
+        "-";
+
+
+    document.getElementById(
+        "detailStatus"
+    ).textContent =
+        r.status ||
+        "-";
+
+
+    document.getElementById(
+        "detailLocation"
+    ).textContent =
+        r.location ||
+        "-";
+
+
+    document.getElementById(
+        "detailWorker"
+    ).textContent =
+        r.assignedWorkerName ||
+        "Assigned Worker";
+
+
+    document.getElementById(
+        "detailExpectedDate"
+    ).textContent =
+        r.expectedDate ||
+        r.expectedCompletion ||
+        "-";
+
+
+    document.getElementById(
+        "detailTitle"
+    ).textContent =
+        r.title ||
+        r.requestTitle ||
+        "-";
+
+
+    document.getElementById(
+        "detailDescription"
+    ).textContent =
+        r.description ||
+        "-";
+
+
+    document.getElementById(
+        "detailHeadRemarks"
+    ).textContent =
+        r.headRemarks ||
+        "No remarks";
+
+
+    document.getElementById(
+        "workerRemarks"
+    ).value =
+        r.workerRemarks ||
+        "";
+
+
+    document.getElementById(
+        "completionDetails"
+    ).value =
+        r.completionDetails ||
+        "";
+
+}
 
 
 // =====================================================
-// UPDATE ACTION BUTTONS
+// ACTION BUTTONS
 // =====================================================
 
-function updateActionButtons() {
+function updateActionButtons(){
 
-    if (!currentRequest) {
+    if(!currentRequest){
 
         return;
 
@@ -2624,141 +2402,83 @@ function updateActionButtons() {
         );
 
 
-    const startButton =
+    const start =
         document.getElementById(
             "startWorkBtn"
         );
 
 
-    const completeButton =
+    const complete =
         document.getElementById(
             "completeWorkBtn"
         );
 
 
-    if (
+    if(
         status === "ASSIGNED" ||
-        status === "RECEIVED" ||
-        status === "SUBMITTED"
-    ) {
+        status === "RECEIVED"
+    ){
 
-        startButton.disabled =
+        start.disabled =
             false;
 
-        completeButton.disabled =
+        complete.disabled =
             true;
 
     }
 
-    else if (
+    else if(
         status === "IN_PROGRESS"
-    ) {
+    ){
 
-        startButton.disabled =
+        start.disabled =
             true;
 
-        completeButton.disabled =
+        complete.disabled =
             false;
 
     }
 
-    else {
+    else{
 
-        startButton.disabled =
+        start.disabled =
             true;
 
-        completeButton.disabled =
+        complete.disabled =
             true;
 
     }
 
 }
 
-
-// =====================================================
-// TIMELINE
-// =====================================================
-
-async function loadTimeline(requestId) {
-
-    const timeline =
-        document.getElementById(
-            "requestTimeline"
-        );
-
-
-    timeline.innerHTML = `
-
-        <div class="timeline-item">
-
-            <strong>
-                Loading timeline...
-            </strong>
-
-        </div>
-
-    `;
-
-
-    // Timeline loading/update will be completed
-    // in Part 3.
-
-
-    timeline.innerHTML = `
-
-        <div class="timeline-item">
-
-            <strong>
-                Request Assigned
-            </strong>
-
-            <small>
-                This request is assigned to you.
-            </small>
-
-        </div>
-
-    `;
-
-}
 
 // =====================================================
 // START WORK
 // =====================================================
 
-window.startWork = async function () {
+window.startWork =
+async function(){
 
-    if (!currentRequest) {
-
-        alert("Please select a service request.");
-
-        return;
-
-    }
-
-
-    if (!currentUser || !currentStaff) {
-
-        alert("Worker account not loaded.");
+    if(!currentRequest){
 
         return;
 
     }
 
 
-    const currentStatus =
+    const status =
         normalizeStatus(
             currentRequest.status
         );
 
 
-    if (
-        currentStatus !== "ASSIGNED" &&
-        currentStatus !== "RECEIVED"
-    ) {
+    if(
+        status !== "ASSIGNED" &&
+        status !== "RECEIVED"
+    ){
 
         alert(
-            "This request cannot be started now."
+            "This request cannot be started."
         );
 
         return;
@@ -2772,47 +2492,14 @@ window.startWork = async function () {
         ).value.trim();
 
 
-    const requestRef =
-        doc(
-            db,
-            "serviceRequests",
-            currentRequest.id
-        );
+    try{
 
-
-    try {
-
-        const timelineEntry = {
-
-            action: "WORK_STARTED",
-
-            status: "IN_PROGRESS",
-
-            staffId:
-                currentStaff.staffId ||
-                currentStaff.id,
-
-            staffName:
-                currentStaff.name ||
-                currentStaff.staffName ||
-                currentUser.displayName ||
-                "Worker",
-
-            remarks:
-                remarks || "Work started",
-
-            timestamp:
-                new Date().toISOString()
-
-        };
-
-
-        const existingTimeline =
-            Array.isArray(
-                currentRequest.timeline
-            )
-                ? currentRequest.timeline
-                : [];
+        const requestRef =
+            doc(
+                db,
+                "serviceRequests",
+                currentRequest.id
+            );
 
 
         await updateDoc(
@@ -2823,20 +2510,23 @@ window.startWork = async function () {
                     "IN_PROGRESS",
 
                 workerRemarks:
-                    remarks || "",
+                    remarks,
 
                 workStartedAt:
                     serverTimestamp(),
 
                 updatedAt:
-                    serverTimestamp(),
-
-                timeline: [
-                    ...existingTimeline,
-                    timelineEntry
-                ]
+                    serverTimestamp()
 
             }
+        );
+
+
+        await addTimeline(
+            currentRequest.id,
+            "WORK_STARTED",
+            "Work started by worker.",
+            remarks
         );
 
 
@@ -2845,45 +2535,30 @@ window.startWork = async function () {
 
 
         currentRequest.workerRemarks =
-            remarks || "";
+            remarks;
 
 
-        currentRequest.timeline = [
-
-            ...existingTimeline,
-
-            timelineEntry
-
-        ];
-
-
-        alert(
-            "Work started successfully."
-        );
-
-
-        updateStatistics();
-
-        applyFilters();
+        fillRequestDetails();
 
         updateActionButtons();
+
+        await loadAssignedRequests();
 
         await loadTimeline(
             currentRequest.id
         );
 
 
-        document.getElementById(
-            "detailStatus"
-        ).textContent =
-            "IN_PROGRESS";
+        alert(
+            "Work started successfully."
+        );
 
     }
 
-    catch (error) {
+    catch(error){
 
         console.error(
-            "START WORK ERROR:",
+            "START WORK:",
             error
         );
 
@@ -2902,42 +2577,28 @@ window.startWork = async function () {
 // COMPLETE WORK
 // =====================================================
 
-window.completeWork = async function () {
+window.completeWork =
+async function(){
 
-    if (!currentRequest) {
-
-        alert(
-            "Please select a service request."
-        );
+    if(!currentRequest){
 
         return;
 
     }
 
 
-    if (!currentUser || !currentStaff) {
-
-        alert(
-            "Worker account not loaded."
-        );
-
-        return;
-
-    }
-
-
-    const currentStatus =
+    const status =
         normalizeStatus(
             currentRequest.status
         );
 
 
-    if (
-        currentStatus !== "IN_PROGRESS"
-    ) {
+    if(
+        status !== "IN_PROGRESS"
+    ){
 
         alert(
-            "You must start the work before completing it."
+            "Start the work before marking it completed."
         );
 
         return;
@@ -2946,86 +2607,36 @@ window.completeWork = async function () {
 
 
     const workerRemarks =
-        document
-            .getElementById(
-                "workerRemarks"
-            )
-            .value
-            .trim();
+        document.getElementById(
+            "workerRemarks"
+        ).value.trim();
 
 
-    const completionDetails =
-        document
-            .getElementById(
-                "completionDetails"
-            )
-            .value
-            .trim();
+    const completion =
+        document.getElementById(
+            "completionDetails"
+        ).value.trim();
 
 
-    if (!completionDetails) {
+    if(!completion){
 
         alert(
-            "Please enter the completion details."
+            "Please enter completion details."
         );
-
-        document
-            .getElementById(
-                "completionDetails"
-            )
-            .focus();
 
         return;
 
     }
 
 
-    const requestRef =
-        doc(
-            db,
-            "serviceRequests",
-            currentRequest.id
-        );
+    try{
 
-
-    try {
-
-        const timelineEntry = {
-
-            action:
-                "WORK_COMPLETED",
-
-            status:
-                "WORK_COMPLETED",
-
-            staffId:
-                currentStaff.staffId ||
-                currentStaff.id,
-
-            staffName:
-                currentStaff.name ||
-                currentStaff.staffName ||
-                currentUser.displayName ||
-                "Worker",
-
-            remarks:
-                workerRemarks || "",
-
-            completionDetails:
-                completionDetails,
-
-            timestamp:
-                new Date().toISOString()
-
-        };
-
-
-        const existingTimeline =
-            Array.isArray(
-                currentRequest.timeline
-            )
-                ? currentRequest.timeline
-                : [];
+        const requestRef =
+            doc(
+                db,
+                "serviceRequests",
+                currentRequest.id
+            );
 
 
         await updateDoc(
@@ -3036,23 +2647,26 @@ window.completeWork = async function () {
                     "WORK_COMPLETED",
 
                 workerRemarks:
-                    workerRemarks || "",
+                    workerRemarks,
 
                 completionDetails:
-                    completionDetails,
+                    completion,
 
                 workCompletedAt:
                     serverTimestamp(),
 
                 updatedAt:
-                    serverTimestamp(),
-
-                timeline: [
-                    ...existingTimeline,
-                    timelineEntry
-                ]
+                    serverTimestamp()
 
             }
+        );
+
+
+        await addTimeline(
+            currentRequest.id,
+            "WORK_COMPLETED",
+            "Work completed by worker.",
+            completion
         );
 
 
@@ -3061,56 +2675,40 @@ window.completeWork = async function () {
 
 
         currentRequest.workerRemarks =
-            workerRemarks || "";
+            workerRemarks;
 
 
         currentRequest.completionDetails =
-            completionDetails;
+            completion;
 
 
-        currentRequest.timeline = [
-
-            ...existingTimeline,
-
-            timelineEntry
-
-        ];
-
-
-        alert(
-            "Work marked as completed successfully."
-        );
-
-
-        updateStatistics();
-
-        applyFilters();
+        fillRequestDetails();
 
         updateActionButtons();
 
-
-        document.getElementById(
-            "detailStatus"
-        ).textContent =
-            "WORK_COMPLETED";
-
+        await loadAssignedRequests();
 
         await loadTimeline(
             currentRequest.id
         );
 
+
+        alert(
+            "Work completed successfully."
+        );
+
     }
 
-    catch (error) {
+    catch(error){
 
         console.error(
-            "COMPLETE WORK ERROR:",
+            "COMPLETE WORK:",
             error
         );
 
 
         alert(
-            "Unable to complete the work.\n\n" +
+            "Unable to complete work.\n\n" +
             error.message
         );
 
@@ -3120,22 +2718,98 @@ window.completeWork = async function () {
 
 
 // =====================================================
-// LOAD TIMELINE FROM REQUEST DOCUMENT
+// ADD TIMELINE
 // =====================================================
 
-async function loadTimeline(requestId) {
+async function addTimeline(
+    requestId,
+    action,
+    title,
+    description
+){
 
-    const timeline =
+    try{
+
+        const staffId =
+            currentStaff.staffId ||
+            currentStaff.firestoreId;
+
+
+        const staffName =
+            currentStaff.staffName ||
+            currentStaff.name ||
+            currentUser.displayName ||
+            "Worker";
+
+
+        const timelineRef =
+            collection(
+                db,
+                "serviceRequests",
+                requestId,
+                "timeline"
+            );
+
+
+        await addDoc(
+            timelineRef,
+            {
+
+                action:
+                    action,
+
+                title:
+                    title,
+
+                description:
+                    description || "",
+
+                performedById:
+                    staffId,
+
+                performedByName:
+                    staffName,
+
+                performedByRole:
+                    "WORKER",
+
+                timestamp:
+                    serverTimestamp()
+
+            }
+        );
+
+    }
+
+    catch(error){
+
+        console.error(
+            "TIMELINE SAVE ERROR:",
+            error
+        );
+
+    }
+
+}
+
+
+// =====================================================
+// LOAD TIMELINE
+// =====================================================
+
+async function loadTimeline(
+    requestId
+){
+
+    const container =
         document.getElementById(
             "requestTimeline"
         );
 
 
-    timeline.innerHTML = `
+    container.innerHTML = `
 
-        <div
-            class="timeline-item"
-        >
+        <div class="timeline-item">
 
             <strong>
                 Loading timeline...
@@ -3146,34 +2820,33 @@ async function loadTimeline(requestId) {
     `;
 
 
-    try {
+    try{
 
-        const requestRef =
-            doc(
+        const timelineRef =
+            collection(
                 db,
                 "serviceRequests",
-                requestId
+                requestId,
+                "timeline"
             );
 
 
-        const requestSnapshot =
-            await getDoc(
-                requestRef
+        const snapshot =
+            await getDocs(
+                timelineRef
             );
 
 
-        if (
-            !requestSnapshot.exists()
-        ) {
+        if(
+            snapshot.empty
+        ){
 
-            timeline.innerHTML = `
+            container.innerHTML = `
 
-                <div
-                    class="timeline-item"
-                >
+                <div class="timeline-item">
 
                     <strong>
-                        Timeline unavailable
+                        No timeline entries
                     </strong>
 
                 </div>
@@ -3185,173 +2858,129 @@ async function loadTimeline(requestId) {
         }
 
 
-        const data =
-            requestSnapshot.data();
+        const entries = [];
 
 
-        currentRequest = {
+        snapshot.forEach(
+            item => {
 
-            ...currentRequest,
+                entries.push({
 
-            ...data,
+                    id:
+                        item.id,
 
-            id: requestId
+                    ...item.data()
 
-        };
+                });
 
-
-        const entries =
-            Array.isArray(
-                data.timeline
-            )
-                ? data.timeline
-                : [];
+            }
+        );
 
 
-        if (!entries.length) {
+        entries.sort(
+            (a,b) => {
 
-            timeline.innerHTML = `
-
-                <div
-                    class="timeline-item"
-                >
-
-                    <strong>
-                        Request Assigned
-                    </strong>
-
-                    <small>
-                        This request is assigned to you.
-                    </small>
-
-                </div>
-
-            `;
-
-            return;
-
-        }
+                const ta =
+                    getTimestampValue(
+                        a.timestamp
+                    );
 
 
-        timeline.innerHTML =
+                const tb =
+                    getTimestampValue(
+                        b.timestamp
+                    );
+
+
+                return tb - ta;
+
+            }
+        );
+
+
+        container.innerHTML =
             "";
 
 
-        const reversedEntries =
-            [...entries].reverse();
-
-
-        reversedEntries.forEach(
+        entries.forEach(
             entry => {
 
-                const item =
+                const div =
                     document.createElement(
                         "div"
                     );
 
 
-                item.className =
+                div.className =
                     "timeline-item";
 
 
-                const action =
-                    formatTimelineAction(
-                        entry.action
-                    );
-
-
-                const staffName =
-                    entry.staffName ||
+                const performedBy =
+                    entry.performedByName ||
                     "Staff";
 
 
-                const remarks =
-                    entry.remarks ||
-                    "";
-
-
-                const completionDetails =
-                    entry.completionDetails ||
-                    "";
-
-
-                const timestamp =
-                    entry.timestamp
-                        ? formatDate(
-                            entry.timestamp
-                        )
-                        : "";
-
-
-                item.innerHTML = `
+                div.innerHTML = `
 
                     <strong>
-                        ${escapeHtml(action)}
+                        ${escapeHtml(
+                            entry.title ||
+                            formatAction(
+                                entry.action
+                            )
+                        )}
                     </strong>
 
                     <small>
                         By:
-                        ${escapeHtml(staffName)}
+                        ${escapeHtml(
+                            performedBy
+                        )}
                     </small>
 
                     ${
-                        remarks
-                            ? `
-                                <div
-                                    style="
-                                        margin-top:7px;
-                                    "
-                                >
-                                    ${escapeHtml(
-                                        remarks
-                                    )}
-                                </div>
-                            `
-                            : ""
+                        entry.description
+                        ?
+                        `
+                        <div
+                            style="
+                                margin-top:7px;
+                            "
+                        >
+                            ${escapeHtml(
+                                entry.description
+                            )}
+                        </div>
+                        `
+                        :
+                        ""
                     }
 
                     ${
-                        completionDetails
-                            ? `
-                                <div
-                                    style="
-                                        margin-top:7px;
-                                    "
-                                >
-                                    <strong>
-                                        Completion:
-                                    </strong>
-
-                                    ${escapeHtml(
-                                        completionDetails
-                                    )}
-                                </div>
-                            `
-                            : ""
-                    }
-
-                    ${
-                        timestamp
-                            ? `
-                                <small
-                                    style="
-                                        display:block;
-                                        margin-top:7px;
-                                    "
-                                >
-                                    ${escapeHtml(
-                                        timestamp
-                                    )}
-                                </small>
-                            `
-                            : ""
+                        entry.timestamp
+                        ?
+                        `
+                        <small
+                            style="
+                                margin-top:7px;
+                            "
+                        >
+                            ${escapeHtml(
+                                formatTimestamp(
+                                    entry.timestamp
+                                )
+                            )}
+                        </small>
+                        `
+                        :
+                        ""
                     }
 
                 `;
 
 
-                timeline.appendChild(
-                    item
+                container.appendChild(
+                    div
                 );
 
             }
@@ -3359,29 +2988,21 @@ async function loadTimeline(requestId) {
 
     }
 
-    catch (error) {
+    catch(error){
 
         console.error(
-            "TIMELINE ERROR:",
+            "TIMELINE LOAD:",
             error
         );
 
 
-        timeline.innerHTML = `
+        container.innerHTML = `
 
-            <div
-                class="timeline-item"
-            >
+            <div class="timeline-item">
 
                 <strong>
                     Unable to load timeline
                 </strong>
-
-                <small>
-                    ${escapeHtml(
-                        error.message
-                    )}
-                </small>
 
             </div>
 
@@ -3393,108 +3014,167 @@ async function loadTimeline(requestId) {
 
 
 // =====================================================
-// FORMAT TIMELINE ACTION
+// TIMESTAMP VALUE
 // =====================================================
 
-function formatTimelineAction(action) {
+function getTimestampValue(
+    value
+){
 
-    const value =
-        String(
-            action || ""
-        )
-        .trim()
-        .toUpperCase();
+    if(
+        value &&
+        typeof value.toMillis ===
+        "function"
+    ){
 
+        return value.toMillis();
 
-    const actions = {
-
-        REQUEST_SUBMITTED:
-            "Request Submitted",
-
-        REQUEST_RECEIVED:
-            "Request Received",
-
-        WORKER_ASSIGNED:
-            "Worker Assigned",
-
-        WORK_STARTED:
-            "Work Started",
-
-        WORK_COMPLETED:
-            "Work Completed",
-
-        HEAD_VERIFICATION:
-            "Head Verification",
-
-        REQUEST_CLOSED:
-            "Request Closed",
-
-        REQUEST_REOPENED:
-            "Request Reopened"
-
-    };
+    }
 
 
-    return (
-        actions[value] ||
-        value
-            .replace(/_/g, " ")
-            .replace(
-                /\b\w/g,
-                letter =>
-                    letter.toUpperCase()
+    if(
+        value &&
+        typeof value.toDate ===
+        "function"
+    ){
+
+        return value.toDate().getTime();
+
+    }
+
+
+    if(value){
+
+        const date =
+            new Date(value);
+
+
+        if(
+            !isNaN(
+                date.getTime()
             )
+        ){
+
+            return date.getTime();
+
+        }
+
+    }
+
+
+    return 0;
+
+}
+
+
+// =====================================================
+// FORMAT TIMESTAMP
+// =====================================================
+
+function formatTimestamp(
+    value
+){
+
+    try{
+
+        if(
+            value &&
+            typeof value.toDate ===
+            "function"
+        ){
+
+            return value
+                .toDate()
+                .toLocaleString();
+
+        }
+
+
+        const date =
+            new Date(value);
+
+
+        if(
+            !isNaN(
+                date.getTime()
+            )
+        ){
+
+            return date.toLocaleString();
+
+        }
+
+    }
+
+    catch{
+
+    }
+
+
+    return "";
+
+}
+
+
+// =====================================================
+// FORMAT ACTION
+// =====================================================
+
+function formatAction(
+    action
+){
+
+    return String(
+        action || ""
+    )
+    .replace(
+        /_/g,
+        " "
+    )
+    .toLowerCase()
+    .replace(
+        /\b\w/g,
+        char =>
+            char.toUpperCase()
     );
 
 }
 
 
 // =====================================================
-// REFRESH WORKER REQUESTS
+// CLOSE MODAL
 // =====================================================
 
-window.refreshWorkerRequests =
-    async function () {
+window.closeModal =
+function(){
 
-        await loadAssignedRequests();
+    document.getElementById(
+        "requestModal"
+    ).style.display =
+        "none";
 
-    };
+    currentRequest =
+        null;
+
+};
 
 
 // =====================================================
-// CLOSE MODAL WHEN CLICKING OUTSIDE
+// OUTSIDE MODAL CLICK
 // =====================================================
 
 document
-    .getElementById("requestModal")
-    .addEventListener(
-        "click",
-        function (event) {
+.getElementById("requestModal")
+.addEventListener(
+    "click",
+    event => {
 
-            if (
-                event.target ===
-                this
-            ) {
-
-                closeModal();
-
-            }
-
-        }
-    );
-
-
-// =====================================================
-// ESC KEY
-// =====================================================
-
-document.addEventListener(
-    "keydown",
-    function (event) {
-
-        if (
-            event.key === "Escape"
-        ) {
+        if(
+            event.target ===
+            document.getElementById(
+                "requestModal"
+            )
+        ){
 
             closeModal();
 
@@ -3505,23 +3185,111 @@ document.addEventListener(
 
 
 // =====================================================
-// FINAL
+// ESC
 // =====================================================
 
-console.log(
-    "Worker Portal Loaded Successfully"
+document.addEventListener(
+    "keydown",
+    event => {
+
+        if(
+            event.key === "Escape"
+        ){
+
+            closeModal();
+
+        }
+
+    }
 );
 
+
+// =====================================================
+// ACCESS VIOLATION
+// =====================================================
+
+function showAccessViolation(
+    message
+){
+
+    loadingBox.style.display =
+        "none";
+
+
+    dashboard.style.display =
+        "none";
+
+
+    accessMessage.textContent =
+        message;
+
+
+    accessBox.style.display =
+        "flex";
+
+}
+
+
+window.goBack =
+function(){
+
+    window.history.back();
+
+};
+
+
+// =====================================================
+// ESCAPE HTML
+// =====================================================
+
+function escapeHtml(
+    value
+){
+
+    return String(
+        value ?? ""
+    )
+    .replace(
+        /&/g,
+        "&amp;"
+    )
+    .replace(
+        /</g,
+        "&lt;"
+    )
+    .replace(
+        />/g,
+        "&gt;"
+    )
+    .replace(
+        /"/g,
+        "&quot;"
+    )
+    .replace(
+        /'/g,
+        "&#039;"
+    );
+
+}
+
+
+// =====================================================
+// REFRESH
+// =====================================================
+
+window.refreshWorkerRequests =
+async function(){
+
+    await loadAssignedRequests();
+
+};
+
+
 console.log(
-    "Worker Portal Part 2 Loaded"
+    "SERVICE REQUEST WORKER PORTAL LOADED"
 );
 
-  
-
 </script>
-
-</script>
-
 
 </body>
 
