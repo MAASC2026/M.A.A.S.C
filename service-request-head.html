@@ -1581,52 +1581,42 @@ tr:hover td {
 
 <script type="module">
 
+/* =========================================================
+   FIREBASE
+========================================================= */
 
 import {
     initializeApp
-}
-from
-"https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-
-
-import {
-    getAuth,
-    onAuthStateChanged,
-    setPersistence,
-    browserLocalPersistence
-}
-from
-"https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
 import {
     getFirestore,
     collection,
     getDocs,
-    getDoc,
     doc,
-    query,
-    where,
+    getDoc,
+    addDoc,
     updateDoc,
-    serverTimestamp
-}
-from
-"https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    serverTimestamp,
+    query,
+    where
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+import {
+    getAuth,
+    onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 
-
-/* =====================================================
-   FIREBASE CONFIGURATION
-
+/* =========================================================
+   FIREBASE CONFIG
    IMPORTANT:
-   USE THE EXACT SAME CONFIG FROM YOUR WORKING
-   STAFF LOGIN PAGE.
-===================================================== */
-
+   USE THE SAME CONFIG FROM YOUR EXISTING STAFF LOGIN
+========================================================= */
 
 const firebaseConfig = {
 
-     apiKey: "AIzaSyAIv3091VM-gkmdwEAn7OhXWd9Cm2zh2bo",
+    apiKey: "AIzaSyAIv3091VM-gkmdwEAn7OhXWd9Cm2zh2bo",
   authDomain: "maasc-2026.firebaseapp.com",
   projectId: "maasc-2026",
   storageBucket: "maasc-2026.appspot.com",
@@ -1636,294 +1626,229 @@ const firebaseConfig = {
 };
 
 
+/* =========================================================
+   INITIALIZE FIREBASE
+========================================================= */
 
-const app =
-    initializeApp(
-        firebaseConfig
-    );
+const app = initializeApp(firebaseConfig);
 
+const db = getFirestore(app);
 
-const auth =
-    getAuth(
-        app
-    );
+const auth = getAuth(app);
 
 
-const db =
-    getFirestore(
-        app
-    );
-
-
-
-/* =====================================================
+/* =========================================================
    GLOBAL VARIABLES
-===================================================== */
+========================================================= */
 
+let currentUser = null;
 
-let currentStaff = null;
+let currentHead = null;
+
+let currentDepartment = "";
 
 let allRequests = [];
 
 let currentRequest = null;
 
-let workers = [];
+
+/* =========================================================
+   DOM READY
+========================================================= */
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    console.log("Service Request Head Portal Loaded");
+
+    setupFilters();
+
+});
 
 
+/* =========================================================
+   AUTHENTICATION CHECK
+========================================================= */
 
-/* =====================================================
-   NORMALIZE
-===================================================== */
+onAuthStateChanged(auth, async function (user) {
 
+    console.log("AUTH STATE:", user);
 
-function normalize(value) {
+    if (!user) {
 
-    return String(
-        value ?? ""
-    )
-    .trim()
-    .toLowerCase();
+        showAccessViolation(
+            "You are not logged in. Please login first."
+        );
 
-}
-
-
-
-/* =====================================================
-   GET VALUE FROM MULTIPLE POSSIBLE FIELD NAMES
-===================================================== */
-
-
-function firstValue(
-    data,
-    fields,
-    defaultValue = ""
-) {
-
-    for (
-        const field of fields
-    ) {
-
-        if (
-            data[field] !== undefined &&
-            data[field] !== null &&
-            data[field] !== ""
-        ) {
-
-            return data[field];
-
-        }
+        return;
 
     }
 
 
-    return defaultValue;
+    currentUser = user;
 
-}
+    console.log("Logged in UID:", user.uid);
 
+    console.log("Logged in Email:", user.email);
 
-
-/* =====================================================
-   ACCESS VIOLATION
-===================================================== */
-
-
-function showAccessViolation(
-    message
-) {
-
-    document.getElementById(
-        "loadingScreen"
-    ).style.display =
-        "none";
-
-
-    document.getElementById(
-        "mainApplication"
-    ).style.display =
-        "none";
-
-
-    document.getElementById(
-        "accessViolation"
-    ).style.display =
-        "flex";
-
-
-    document.getElementById(
-        "accessMessage"
-    ).textContent =
-        message;
-
-}
-
-
-
-/* =====================================================
-   GO BACK
-===================================================== */
-
-
-window.goBack =
-function() {
-
-    window.history.back();
-
-};
-
-
-
-/* =====================================================
-   FIND STAFF PROFILE
-===================================================== */
-
-
-async function findStaffProfile(
-    user
-) {
-
-    console.log(
-        "Finding staff profile..."
-    );
-
-
-    /*
-     * -----------------------------------------------
-     * OPTION 1
-     * STAFF DOCUMENT ID = AUTH UID
-     * -----------------------------------------------
-     */
 
     try {
 
-        const directRef =
-            doc(
-                db,
-                "staff",
-                user.uid
-            );
+        await verifyDepartmentHead();
+
+    } catch (error) {
+
+        console.error(
+            "HEAD VERIFICATION ERROR:",
+            error
+        );
+
+        showAccessViolation(
+            "Unable to verify your Department Head account."
+        );
+
+    }
+
+});
 
 
-        const directSnap =
-            await getDoc(
-                directRef
-            );
+/* =========================================================
+   VERIFY DEPARTMENT HEAD
+========================================================= */
+
+async function verifyDepartmentHead() {
+
+    console.log(
+        "Checking staff profile..."
+    );
 
 
-        if (
-            directSnap.exists()
-        ) {
+    let staffData = null;
+
+    let staffDocId = null;
+
+
+    /* =====================================================
+       METHOD 1
+       Try Firebase UID as document ID
+    ===================================================== */
+
+    try {
+
+        const uidRef = doc(
+            db,
+            "staff",
+            currentUser.uid
+        );
+
+        const uidSnap = await getDoc(uidRef);
+
+
+        if (uidSnap.exists()) {
+
+            staffData = uidSnap.data();
+
+            staffDocId = uidSnap.id;
 
             console.log(
-                "Staff found using Auth UID"
+                "Staff found using UID document:",
+                staffDocId
             );
-
-
-            return {
-
-                id:
-                    directSnap.id,
-
-                data:
-                    directSnap.data()
-
-            };
 
         }
 
-    }
-    catch(error) {
+    } catch (error) {
 
         console.log(
             "UID lookup failed:",
-            error
+            error.message
         );
 
     }
 
 
+    /* =====================================================
+       METHOD 2
+       Try staffId saved by login
+    ===================================================== */
 
-    /*
-     * -----------------------------------------------
-     * OPTION 2
-     * SEARCH EMAIL
-     * -----------------------------------------------
-     */
+    if (!staffData) {
 
-    if (
-        user.email
-    ) {
+        const possibleStaffIds = [
 
-        try {
+            localStorage.getItem("staffId"),
 
-            const q =
-                query(
+            sessionStorage.getItem("staffId"),
 
-                    collection(
-                        db,
-                        "staff"
-                    ),
+            localStorage.getItem("currentStaffId"),
 
-                    where(
-                        "email",
-                        "==",
-                        user.email
-                    )
+            sessionStorage.getItem("currentStaffId")
 
-                );
+        ];
 
 
-            const snapshot =
-                await getDocs(
-                    q
-                );
+        for (
+            const possibleId of possibleStaffIds
+        ) {
 
-
-            if (
-                !snapshot.empty
-            ) {
-
-                console.log(
-                    "Staff found using email"
-                );
-
-
-                return {
-
-                    id:
-                        snapshot.docs[0].id,
-
-                    data:
-                        snapshot.docs[0].data()
-
-                };
-
+            if (!possibleId) {
+                continue;
             }
 
-        }
-        catch(error) {
 
-            console.log(
-                "Email lookup failed:",
-                error
-            );
+            try {
+
+                const staffRef = doc(
+                    db,
+                    "staff",
+                    possibleId
+                );
+
+                const staffSnap =
+                    await getDoc(staffRef);
+
+
+                if (staffSnap.exists()) {
+
+                    staffData =
+                        staffSnap.data();
+
+                    staffDocId =
+                        staffSnap.id;
+
+                    console.log(
+                        "Staff found using staffId:",
+                        staffDocId
+                    );
+
+                    break;
+
+                }
+
+            } catch (error) {
+
+                console.log(
+                    "Staff ID lookup failed:",
+                    error.message
+                );
+
+            }
 
         }
 
     }
 
 
+    /* =====================================================
+       METHOD 3
+       Search staff collection by email
+       if email field exists
+    ===================================================== */
 
-    /*
-     * -----------------------------------------------
-     * OPTION 3
-     * SEARCH UID FIELD
-     * -----------------------------------------------
-     */
+    if (!staffData && currentUser.email) {
 
-    try {
+        try {
 
-        const q =
-            query(
+            const staffQuery = query(
 
                 collection(
                     db,
@@ -1931,735 +1856,536 @@ async function findStaffProfile(
                 ),
 
                 where(
-                    "uid",
+                    "email",
                     "==",
-                    user.uid
+                    currentUser.email
                 )
 
             );
 
 
-        const snapshot =
-            await getDocs(
-                q
-            );
+            const staffSnap =
+                await getDocs(staffQuery);
 
 
-        if (
-            !snapshot.empty
-        ) {
+            if (!staffSnap.empty) {
 
-            console.log(
-                "Staff found using uid field"
-            );
+                const firstDoc =
+                    staffSnap.docs[0];
 
+                staffData =
+                    firstDoc.data();
 
-            return {
+                staffDocId =
+                    firstDoc.id;
 
-                id:
-                    snapshot.docs[0].id,
-
-                data:
-                    snapshot.docs[0].data()
-
-            };
-
-        }
-
-    }
-    catch(error) {
-
-        console.log(
-            "UID field lookup failed:",
-            error
-        );
-
-    }
-
-
-
-    /*
-     * -----------------------------------------------
-     * OPTION 4
-     * SEARCH ALL STAFF DOCUMENTS
-     *
-     * This is useful because your screenshot shows
-     * SHT001 as the document ID.
-     * -----------------------------------------------
-     */
-
-    try {
-
-        const snapshot =
-            await getDocs(
-                collection(
-                    db,
-                    "staff"
-                )
-            );
-
-
-        for (
-            const staffDoc
-            of snapshot.docs
-        ) {
-
-            const data =
-                staffDoc.data();
-
-
-            const staffId =
-                firstValue(
-                    data,
-                    [
-                        "staffId",
-                        "staffID",
-                        "staff_id"
-                    ]
-                );
-
-
-            const email =
-                firstValue(
-                    data,
-                    [
-                        "email",
-                        "mail"
-                    ]
-                );
-
-
-            const uid =
-                firstValue(
-                    data,
-                    [
-                        "uid",
-                        "authUid",
-                        "authUID"
-                    ]
-                );
-
-
-            /*
-             * Match Auth information.
-             */
-
-            if (
-                normalize(uid) ===
-                normalize(user.uid)
-            ) {
-
-                return {
-
-                    id:
-                        staffDoc.id,
-
-                    data:
-                        data
-
-                };
-
-            }
-
-
-            if (
-                user.email &&
-                normalize(email) ===
-                normalize(user.email)
-            ) {
-
-                return {
-
-                    id:
-                        staffDoc.id,
-
-                    data:
-                        data
-
-                };
-
-            }
-
-        }
-
-    }
-    catch(error) {
-
-        console.error(
-            "Staff collection search error:",
-            error
-        );
-
-    }
-
-
-    return null;
-
-}
-
-
-
-/* =====================================================
-   VERIFY DEPARTMENT HEAD
-===================================================== */
-
-
-async function verifyDepartmentHead(
-    user
-) {
-
-    try {
-
-        console.log(
-            "================================"
-        );
-
-        console.log(
-            "VERIFYING DEPARTMENT HEAD"
-        );
-
-        console.log(
-            "AUTH UID:",
-            user.uid
-        );
-
-        console.log(
-            "AUTH EMAIL:",
-            user.email
-        );
-
-        console.log(
-            "================================"
-        );
-
-
-        const staffProfile =
-            await findStaffProfile(
-                user
-            );
-
-
-        if (
-            !staffProfile
-        ) {
-
-            showAccessViolation(
-
-                "Your Firebase account is logged in, but no matching staff profile was found."
-
-            );
-
-            return;
-
-        }
-
-
-        const staffData =
-            staffProfile.data;
-
-
-        console.log(
-            "STAFF DOCUMENT:",
-            staffProfile.id
-        );
-
-
-        console.log(
-            "STAFF DATA:",
-            staffData
-        );
-
-
-        /*
-         * -----------------------------------------------
-         * STAFF INFORMATION
-         * -----------------------------------------------
-         */
-
-        const staffId =
-            firstValue(
-                staffData,
-                [
-                    "staffId",
-                    "staffID",
-                    "staff_id"
-                ],
-                staffProfile.id
-            );
-
-
-        const name =
-            firstValue(
-                staffData,
-                [
-                    "name",
-                    "staffName",
-                    "fullName"
-                ],
-                "Unknown Staff"
-            );
-
-
-        const department =
-            firstValue(
-                staffData,
-                [
-                    "department"
-                ]
-            );
-
-
-        /*
-         * -----------------------------------------------
-         * HEAD ROLE
-         *
-         * SUPPORT BOTH YOUR OLD AND NEW STRUCTURE
-         * -----------------------------------------------
-         */
-
-        const role =
-            firstValue(
-                staffData,
-                [
-                    "role"
-                ]
-            );
-
-
-        const serviceRole =
-            firstValue(
-                staffData,
-                [
-                    "serviceRole"
-                ]
-            );
-
-
-        const roleIsHead =
-
-            normalize(role) ===
-            "department head";
-
-
-        const serviceRoleIsHead =
-
-            normalize(serviceRole) ===
-            "department_head";
-
-
-        const isHead =
-            roleIsHead ||
-            serviceRoleIsHead;
-
-
-
-        /*
-         * -----------------------------------------------
-         * ACTIVE CHECK
-         * -----------------------------------------------
-         */
-
-        const serviceHeadActive =
-            staffData.serviceHeadActive ===
-            true;
-
-
-        /*
-         * -----------------------------------------------
-         * HEAD DEPARTMENT
-         * -----------------------------------------------
-         */
-
-        const serviceHeadDepartment =
-            firstValue(
-                staffData,
-                [
-                    "serviceHeadDepartment",
-                    "headDepartment",
-                    "department"
-                ]
-            );
-
-
-        /*
-         * -----------------------------------------------
-         * DEPARTMENT MATCH
-         * -----------------------------------------------
-         */
-
-        const sameDepartment =
-
-            normalize(
-                department
-            ) ===
-
-            normalize(
-                serviceHeadDepartment
-            );
-
-
-        console.log(
-            "STAFF ID:",
-            staffId
-        );
-
-        console.log(
-            "NAME:",
-            name
-        );
-
-        console.log(
-            "DEPARTMENT:",
-            department
-        );
-
-        console.log(
-            "ROLE:",
-            role
-        );
-
-        console.log(
-            "SERVICE ROLE:",
-            serviceRole
-        );
-
-        console.log(
-            "IS HEAD:",
-            isHead
-        );
-
-        console.log(
-            "HEAD ACTIVE:",
-            serviceHeadActive
-        );
-
-        console.log(
-            "HEAD DEPARTMENT:",
-            serviceHeadDepartment
-        );
-
-        console.log(
-            "SAME DEPARTMENT:",
-            sameDepartment
-        );
-
-
-
-        /*
-         * -----------------------------------------------
-         * ACCESS CHECK
-         * -----------------------------------------------
-         */
-
-        if (
-            !isHead
-        ) {
-
-            showAccessViolation(
-
-                "Access denied. Your staff account is not assigned as a Department Head."
-
-            );
-
-            return;
-
-        }
-
-
-        if (
-            !serviceHeadActive
-        ) {
-
-            showAccessViolation(
-
-                "Access denied. Your Department Head assignment is inactive."
-
-            );
-
-            return;
-
-        }
-
-
-        if (
-            !sameDepartment
-        ) {
-
-            showAccessViolation(
-
-                "Access denied. Your Department Head department does not match your staff department."
-
-            );
-
-            return;
-
-        }
-
-
-
-        /*
-         * -----------------------------------------------
-         * ACCESS GRANTED
-         * -----------------------------------------------
-         */
-
-        currentStaff = {
-
-            uid:
-                user.uid,
-
-            email:
-                user.email || "",
-
-            staffId:
-                staffId,
-
-            name:
-                name,
-
-            department:
-                department,
-
-            role:
-                role,
-
-            serviceRole:
-                serviceRole,
-
-            serviceHeadActive:
-                serviceHeadActive,
-
-            serviceHeadDepartment:
-                serviceHeadDepartment,
-
-            documentId:
-                staffProfile.id
-
-        };
-
-
-        window.currentStaff =
-            currentStaff;
-
-
-        console.log(
-            "================================"
-        );
-
-        console.log(
-            "ACCESS GRANTED"
-        );
-
-        console.log(
-            currentStaff
-        );
-
-        console.log(
-            "================================"
-        );
-
-
-
-        /*
-         * -----------------------------------------------
-         * DISPLAY HEAD
-         * -----------------------------------------------
-         */
-
-        document.getElementById(
-            "headName"
-        ).textContent =
-            name;
-
-
-        document.getElementById(
-            "headDepartment"
-        ).textContent =
-            department;
-
-
-
-        /*
-         * -----------------------------------------------
-         * SHOW DASHBOARD
-         * -----------------------------------------------
-         */
-
-        document.getElementById(
-            "loadingScreen"
-        ).style.display =
-            "none";
-
-
-        document.getElementById(
-            "accessViolation"
-        ).style.display =
-            "none";
-
-
-        document.getElementById(
-            "mainApplication"
-        ).style.display =
-            "block";
-
-
-
-        /*
-         * -----------------------------------------------
-         * LOAD DATA
-         * -----------------------------------------------
-         */
-
-        await loadRequests();
-
-        await loadWorkers();
-
-        setupFilters();
-
-    }
-    catch(error) {
-
-        console.error(
-            "Department Head verification error:",
-            error
-        );
-
-
-        showAccessViolation(
-
-            "Error while checking Department Head access: " +
-            error.message
-
-        );
-
-    }
-
-}
-
-
-
-/* =====================================================
-   AUTHENTICATION
-===================================================== */
-
-
-async function startAuthentication() {
-
-    try {
-
-        /*
-         * Restore login using browser local persistence.
-         */
-
-        await setPersistence(
-            auth,
-            browserLocalPersistence
-        );
-
-
-        console.log(
-            "Firebase Auth persistence enabled"
-        );
-
-
-        onAuthStateChanged(
-            auth,
-            async (user) => {
 
                 console.log(
-                    "Firebase Auth state:",
-                    user
+                    "Staff found using email:",
+                    staffDocId
+                );
+
+            }
+
+        } catch (error) {
+
+            console.log(
+                "Email lookup failed:",
+                error.message
+            );
+
+        }
+
+    }
+
+
+    /* =====================================================
+       METHOD 4
+       Search staff collection using staffId
+       from local/session storage
+    ===================================================== */
+
+    if (!staffData) {
+
+        const storedStaffId =
+
+            localStorage.getItem("staffId") ||
+
+            sessionStorage.getItem("staffId");
+
+
+        if (storedStaffId) {
+
+            try {
+
+                const staffQuery = query(
+
+                    collection(
+                        db,
+                        "staff"
+                    ),
+
+                    where(
+                        "staffId",
+                        "==",
+                        storedStaffId
+                    )
+
                 );
 
 
-                if (
-                    !user
-                ) {
+                const staffSnap =
+                    await getDocs(staffQuery);
 
-                    showAccessViolation(
 
-                        "You are not logged in through Firebase Authentication. Please login using the staff login page first."
+                if (!staffSnap.empty) {
 
+                    const firstDoc =
+                        staffSnap.docs[0];
+
+                    staffData =
+                        firstDoc.data();
+
+                    staffDocId =
+                        firstDoc.id;
+
+
+                    console.log(
+                        "Staff found by staffId field:",
+                        staffDocId
                     );
-
-                    return;
 
                 }
 
+            } catch (error) {
 
-                await verifyDepartmentHead(
-                    user
+                console.log(
+                    "staffId field lookup failed:",
+                    error.message
                 );
 
             }
-        );
+
+        }
 
     }
-    catch(error) {
+
+
+    /* =====================================================
+       NO STAFF PROFILE
+    ===================================================== */
+
+    if (!staffData) {
 
         console.error(
-            "Authentication initialization error:",
-            error
+            "No staff profile found for logged-in user."
         );
 
 
         showAccessViolation(
 
-            "Firebase Authentication error: " +
-            error.message
+            "Your Firebase login is valid, but your staff profile could not be found."
 
         );
+
+
+        return;
+
+    }
+
+
+    console.log(
+        "STAFF PROFILE:",
+        staffData
+    );
+
+
+    /* =====================================================
+       GET ROLE
+       
+       Supports:
+       
+       role = "Department Head"
+       
+       OR
+       
+       serviceRole = "DEPARTMENT_HEAD"
+    ===================================================== */
+
+    const role =
+        String(
+            staffData.role ||
+            ""
+        ).trim();
+
+
+    const serviceRole =
+        String(
+            staffData.serviceRole ||
+            ""
+        ).trim();
+
+
+    const isNormalHeadRole =
+
+        role.toLowerCase() ===
+        "department head";
+
+
+    const isServiceHeadRole =
+
+        serviceRole.toUpperCase() ===
+        "DEPARTMENT_HEAD";
+
+
+    const serviceHeadActive =
+
+        staffData.serviceHeadActive === true;
+
+
+    /* =====================================================
+       DETERMINE HEAD STATUS
+    ===================================================== */
+
+    const isHead =
+
+        isNormalHeadRole ||
+
+        (
+            isServiceHeadRole &&
+            serviceHeadActive
+        );
+
+
+    console.log(
+        "ROLE:",
+        role
+    );
+
+    console.log(
+        "SERVICE ROLE:",
+        serviceRole
+    );
+
+    console.log(
+        "SERVICE HEAD ACTIVE:",
+        serviceHeadActive
+    );
+
+    console.log(
+        "IS HEAD:",
+        isHead
+    );
+
+
+    /* =====================================================
+       NOT HEAD
+    ===================================================== */
+
+    if (!isHead) {
+
+        showAccessViolation(
+
+            "Access denied. Your staff account is not assigned as a Department Head."
+
+        );
+
+
+        return;
+
+    }
+
+
+    /* =====================================================
+       DETERMINE DEPARTMENT
+    ===================================================== */
+
+    const department =
+
+        String(
+
+            staffData.serviceHeadDepartment ||
+
+            staffData.department ||
+
+            ""
+
+        ).trim();
+
+
+    if (!department) {
+
+        showAccessViolation(
+
+            "Your Department Head account does not have a department assigned."
+
+        );
+
+
+        return;
+
+    }
+
+
+    /* =====================================================
+       STORE HEAD INFORMATION
+    ===================================================== */
+
+    currentHead = {
+
+        ...staffData,
+
+        staffDocId: staffDocId
+
+    };
+
+
+    currentDepartment = department;
+
+
+    console.log(
+        "AUTHORIZED HEAD:",
+        currentHead
+    );
+
+    console.log(
+        "HEAD DEPARTMENT:",
+        currentDepartment
+    );
+
+
+    /* =====================================================
+       DISPLAY HEAD INFORMATION
+    ===================================================== */
+
+    const headNameElement =
+        document.getElementById(
+            "headName"
+        );
+
+
+    const headDepartmentElement =
+        document.getElementById(
+            "headDepartment"
+        );
+
+
+    if (headNameElement) {
+
+        headNameElement.textContent =
+
+            staffData.name ||
+
+            staffData.staffName ||
+
+            staffData.displayName ||
+
+            staffDocId ||
+
+            "Department Head";
+
+    }
+
+
+    if (headDepartmentElement) {
+
+        headDepartmentElement.textContent =
+
+            currentDepartment;
+
+    }
+
+
+    /* =====================================================
+       SHOW DASHBOARD
+    ===================================================== */
+
+    showDashboard();
+
+
+    /* =====================================================
+       LOAD REQUESTS
+    ===================================================== */
+
+    await loadRequests();
+
+
+    /* =====================================================
+       LOAD WORKERS
+    ===================================================== */
+
+    await loadWorkers();
+
+}
+
+
+/* =========================================================
+   SHOW DASHBOARD
+========================================================= */
+
+function showDashboard() {
+
+    const loadingBox =
+        document.getElementById(
+            "loadingBox"
+        );
+
+
+    const accessBox =
+        document.getElementById(
+            "accessBox"
+        );
+
+
+    const dashboard =
+        document.getElementById(
+            "dashboard"
+        );
+
+
+    if (loadingBox) {
+
+        loadingBox.style.display =
+            "none";
+
+    }
+
+
+    if (accessBox) {
+
+        accessBox.style.display =
+            "none";
+
+    }
+
+
+    if (dashboard) {
+
+        dashboard.style.display =
+            "block";
 
     }
 
 }
 
 
+/* =========================================================
+   SHOW ACCESS VIOLATION
+========================================================= */
 
-/* =====================================================
+function showAccessViolation(message) {
+
+    console.error(
+        "ACCESS VIOLATION:",
+        message
+    );
+
+
+    const loadingBox =
+        document.getElementById(
+            "loadingBox"
+        );
+
+
+    const dashboard =
+        document.getElementById(
+            "dashboard"
+        );
+
+
+    const accessBox =
+        document.getElementById(
+            "accessBox"
+        );
+
+
+    const accessMessage =
+        document.getElementById(
+            "accessMessage"
+        );
+
+
+    if (loadingBox) {
+
+        loadingBox.style.display =
+            "none";
+
+    }
+
+
+    if (dashboard) {
+
+        dashboard.style.display =
+            "none";
+
+    }
+
+
+    if (accessMessage) {
+
+        accessMessage.textContent =
+            message;
+
+    }
+
+
+    if (accessBox) {
+
+        accessBox.style.display =
+            "flex";
+
+    }
+
+}
+
+
+/* =========================================================
    LOAD SERVICE REQUESTS
-===================================================== */
-
+========================================================= */
 
 async function loadRequests() {
 
-    const tbody =
+    const tableBody =
         document.getElementById(
             "requestTableBody"
         );
 
 
-    tbody.innerHTML = `
+    if (tableBody) {
 
-        <tr>
+        tableBody.innerHTML = `
 
-            <td
-                colspan="10"
-                style="text-align:center;"
-            >
-                Loading requests...
-            </td>
+            <tr>
 
-        </tr>
+                <td colspan="10"
+                    style="text-align:center;">
 
-    `;
+                    Loading requests...
+
+                </td>
+
+            </tr>
+
+        `;
+
+    }
 
 
     try {
 
-        /*
-         * We intentionally load the collection and filter
-         * in JavaScript.
-         *
-         * This avoids Firestore composite-index problems.
-         */
+        console.log(
+            "Loading service requests..."
+        );
+
 
         const snapshot =
             await getDocs(
+
                 collection(
                     db,
                     "serviceRequests"
                 )
+
             );
 
 
@@ -2667,56 +2393,55 @@ async function loadRequests() {
 
 
         snapshot.forEach(
-            (requestDoc) => {
+            function (requestDoc) {
 
                 const data =
                     requestDoc.data();
 
 
                 /*
-                 * Department can have different field names
-                 * depending on your service-request portal.
+                 * Department matching
+                 *
+                 * Supports several possible
+                 * field names.
                  */
 
                 const requestDepartment =
-                    firstValue(
-                        data,
-                        [
-                            "department",
-                            "requestorDepartment",
-                            "requesterDepartment",
-                            "staffDepartment",
-                            "requestDepartment"
-                        ]
-                    );
 
+                    String(
 
-                /*
-                 * Only show this Department Head's department.
-                 */
+                        data.department ||
+
+                        data.requestorDepartment ||
+
+                        data.requesterDepartment ||
+
+                        data.staffDepartment ||
+
+                        ""
+
+                    ).trim();
+
 
                 if (
-                    normalize(
-                        requestDepartment
-                    ) !==
-                    normalize(
-                        currentStaff.department
-                    )
+
+                    requestDepartment
+                        .toLowerCase() ===
+                    currentDepartment
+                        .toLowerCase()
+
                 ) {
 
-                    return;
+                    allRequests.push({
+
+                        id:
+                            requestDoc.id,
+
+                        ...data
+
+                    });
 
                 }
-
-
-                allRequests.push({
-
-                    id:
-                        requestDoc.id,
-
-                    ...data
-
-                });
 
             }
         );
@@ -2731,51 +2456,56 @@ async function loadRequests() {
         updateStatistics();
 
 
-        renderRequests();
+        applyFilters();
 
 
-    }
-    catch(error) {
+    } catch (error) {
 
         console.error(
-            "Load requests error:",
+            "LOAD REQUESTS ERROR:",
             error
         );
 
 
-        tbody.innerHTML = `
+        if (tableBody) {
 
-            <tr>
+            tableBody.innerHTML = `
 
-                <td
-                    colspan="10"
-                    style="text-align:center;color:red;"
-                >
-                    Unable to load service requests.
-                    <br>
-                    ${escapeHtml(error.message)}
-                </td>
+                <tr>
 
-            </tr>
+                    <td colspan="10"
+                        style="text-align:center;color:red;">
 
-        `;
+                        Unable to load service requests.
+
+                        <br>
+
+                        ${escapeHtml(
+                            error.message
+                        )}
+
+                    </td>
+
+                </tr>
+
+            `;
+
+        }
 
     }
 
 }
 
 
-
-/* =====================================================
-   STATISTICS
-===================================================== */
-
+/* =========================================================
+   UPDATE STATISTICS
+========================================================= */
 
 function updateStatistics() {
 
     let total = 0;
 
-    let newCount = 0;
+    let newRequests = 0;
 
     let assigned = 0;
 
@@ -2784,40 +2514,40 @@ function updateStatistics() {
     let completed = 0;
 
 
-    total =
-        allRequests.length;
-
-
     allRequests.forEach(
-        request => {
+        function (request) {
+
+            total++;
+
 
             const status =
-                normalize(
-                    firstValue(
-                        request,
-                        [
-                            "status",
-                            "requestStatus"
-                        ]
-                    )
-                );
+
+                String(
+
+                    request.status ||
+
+                    ""
+
+                ).toUpperCase();
 
 
             if (
-                status ===
-                "submitted" ||
-                status ===
-                "received"
+
+                status === "SUBMITTED" ||
+
+                status === "RECEIVED"
+
             ) {
 
-                newCount++;
+                newRequests++;
 
             }
 
 
             if (
-                status ===
-                "assigned"
+
+                status === "ASSIGNED"
+
             ) {
 
                 assigned++;
@@ -2826,8 +2556,9 @@ function updateStatistics() {
 
 
             if (
-                status ===
-                "in_progress"
+
+                status === "IN_PROGRESS"
+
             ) {
 
                 progress++;
@@ -2836,10 +2567,13 @@ function updateStatistics() {
 
 
             if (
-                status ===
-                "work_completed" ||
-                status ===
-                "closed"
+
+                status === "WORK_COMPLETED" ||
+
+                status === "HEAD_VERIFICATION" ||
+
+                status === "CLOSED"
+
             ) {
 
                 completed++;
@@ -2850,199 +2584,222 @@ function updateStatistics() {
     );
 
 
-    document.getElementById(
-        "totalCount"
-    ).textContent =
-        total;
+    setText(
+        "totalCount",
+        total
+    );
 
 
-    document.getElementById(
-        "newCount"
-    ).textContent =
-        newCount;
+    setText(
+        "newCount",
+        newRequests
+    );
 
 
-    document.getElementById(
-        "assignedCount"
-    ).textContent =
-        assigned;
+    setText(
+        "assignedCount",
+        assigned
+    );
 
 
-    document.getElementById(
-        "progressCount"
-    ).textContent =
-        progress;
+    setText(
+        "progressCount",
+        progress
+    );
 
 
-    document.getElementById(
-        "completedCount"
-    ).textContent =
-        completed;
+    setText(
+        "completedCount",
+        completed
+    );
 
 }
 
 
+/* =========================================================
+   APPLY FILTERS
+========================================================= */
 
-/* =====================================================
-   RENDER REQUESTS
-===================================================== */
-
-
-function renderRequests() {
-
-    const tbody =
-        document.getElementById(
-            "requestTableBody"
-        );
-
+function applyFilters() {
 
     const statusFilter =
-        document.getElementById(
+        getValue(
             "statusFilter"
-        ).value;
+        );
 
 
     const priorityFilter =
-        document.getElementById(
+        getValue(
             "priorityFilter"
-        ).value;
+        );
 
 
     const categoryFilter =
-        document.getElementById(
+        getValue(
             "categoryFilter"
-        ).value;
-
-
-    const search =
-        normalize(
-            document.getElementById(
-                "searchBox"
-            ).value
         );
+
+
+    const searchText =
+
+        getValue(
+            "searchBox"
+        )
+        .toLowerCase();
 
 
     const filtered =
         allRequests.filter(
-            request => {
+            function (request) {
+
 
                 const status =
-                    firstValue(
-                        request,
-                        [
-                            "status",
-                            "requestStatus"
-                        ]
-                    );
+
+                    String(
+
+                        request.status ||
+
+                        ""
+
+                    ).toUpperCase();
 
 
                 const priority =
-                    firstValue(
-                        request,
-                        [
-                            "priority"
-                        ]
+
+                    String(
+
+                        request.priority ||
+
+                        ""
+
                     );
 
 
                 const category =
-                    firstValue(
-                        request,
-                        [
-                            "category"
-                        ]
+
+                    String(
+
+                        request.category ||
+
+                        ""
+
                     );
 
 
-                const ticketId =
-                    firstValue(
-                        request,
-                        [
-                            "ticketId",
-                            "ticketID",
-                            "ticket"
-                        ],
-                        request.id
-                    );
+                const ticket =
+
+                    String(
+
+                        request.ticketId ||
+
+                        request.ticket ||
+
+                        request.id ||
+
+                        ""
+
+                    ).toLowerCase();
 
 
                 const title =
-                    firstValue(
-                        request,
-                        [
-                            "title",
-                            "requestTitle"
-                        ]
-                    );
+
+                    String(
+
+                        request.title ||
+
+                        request.requestTitle ||
+
+                        ""
+
+                    ).toLowerCase();
 
 
                 const requestor =
-                    firstValue(
-                        request,
-                        [
-                            "requestor",
-                            "requestorName",
-                            "requesterName",
-                            "staffName",
-                            "name"
-                        ]
-                    );
+
+                    String(
+
+                        request.requestorName ||
+
+                        request.requestor ||
+
+                        request.staffName ||
+
+                        request.name ||
+
+                        ""
+
+                    ).toLowerCase();
 
 
-                const statusMatch =
+                const assignedWorker =
+
+                    String(
+
+                        request.assignedWorkerName ||
+
+                        request.assignedWorker ||
+
+                        request.workerName ||
+
+                        ""
+
+                    ).toLowerCase();
+
+
+                const matchesStatus =
 
                     statusFilter === "ALL" ||
 
-                    normalize(status) ===
-                    normalize(statusFilter);
+                    status ===
+                        statusFilter;
 
 
-                const priorityMatch =
+                const matchesPriority =
 
                     priorityFilter === "ALL" ||
 
-                    normalize(priority) ===
-                    normalize(priorityFilter);
+                    priority ===
+                        priorityFilter;
 
 
-                const categoryMatch =
+                const matchesCategory =
 
                     categoryFilter === "ALL" ||
 
-                    normalize(category) ===
-                    normalize(categoryFilter);
+                    category ===
+                        categoryFilter;
 
 
-                const searchText =
+                const matchesSearch =
 
-                    normalize(
-                        ticketId
-                    ) + " " +
+                    !searchText ||
 
-                    normalize(
-                        title
-                    ) + " " +
+                    ticket.includes(
+                        searchText
+                    ) ||
 
-                    normalize(
-                        requestor
-                    );
+                    title.includes(
+                        searchText
+                    ) ||
 
+                    requestor.includes(
+                        searchText
+                    ) ||
 
-                const searchMatch =
-
-                    !search ||
-
-                    searchText.includes(
-                        search
+                    assignedWorker.includes(
+                        searchText
                     );
 
 
                 return (
 
-                    statusMatch &&
-                    priorityMatch &&
-                    categoryMatch &&
-                    searchMatch
+                    matchesStatus &&
+
+                    matchesPriority &&
+
+                    matchesCategory &&
+
+                    matchesSearch
 
                 );
 
@@ -3050,19 +2807,41 @@ function renderRequests() {
         );
 
 
-    if (
-        filtered.length === 0
-    ) {
+    renderRequests(
+        filtered
+    );
 
-        tbody.innerHTML = `
+}
+
+
+/* =========================================================
+   RENDER REQUESTS
+========================================================= */
+
+function renderRequests(requests) {
+
+    const tableBody =
+        document.getElementById(
+            "requestTableBody"
+        );
+
+
+    if (!tableBody) {
+        return;
+    }
+
+
+    if (!requests.length) {
+
+        tableBody.innerHTML = `
 
             <tr>
 
-                <td
-                    colspan="10"
-                    style="text-align:center;"
-                >
+                <td colspan="10"
+                    style="text-align:center;">
+
                     No service requests found.
+
                 </td>
 
             </tr>
@@ -3074,261 +2853,206 @@ function renderRequests() {
     }
 
 
-    tbody.innerHTML =
-        filtered.map(
-            (request, index) => {
-
-                const ticketId =
-                    firstValue(
-                        request,
-                        [
-                            "ticketId",
-                            "ticketID",
-                            "ticket"
-                        ],
-                        request.id
-                    );
+    tableBody.innerHTML = "";
 
 
-                const requestor =
-                    firstValue(
-                        request,
-                        [
-                            "requestor",
-                            "requestorName",
-                            "requesterName",
-                            "staffName",
-                            "name"
-                        ],
-                        "-"
-                    );
+    requests.forEach(
+        function (request, index) {
 
 
-                const title =
-                    firstValue(
-                        request,
-                        [
-                            "title",
-                            "requestTitle"
-                        ],
-                        "-"
-                    );
+            const ticketId =
+
+                request.ticketId ||
+
+                request.ticket ||
+
+                request.id ||
+
+                "-";
 
 
-                const category =
-                    firstValue(
-                        request,
-                        [
-                            "category"
-                        ],
-                        "-"
-                    );
+            const requestor =
+
+                request.requestorName ||
+
+                request.requestor ||
+
+                request.staffName ||
+
+                request.name ||
+
+                "-";
 
 
-                const priority =
-                    firstValue(
-                        request,
-                        [
-                            "priority"
-                        ],
-                        "-"
-                    );
+            const title =
+
+                request.title ||
+
+                request.requestTitle ||
+
+                "-";
 
 
-                const status =
-                    firstValue(
-                        request,
-                        [
-                            "status",
-                            "requestStatus"
-                        ],
-                        "SUBMITTED"
-                    );
+            const category =
+
+                request.category ||
+
+                "-";
 
 
-                const worker =
-                    firstValue(
-                        request,
-                        [
-                            "assignedWorkerName",
-                            "workerName",
-                            "assignedToName",
-                            "assignedWorker"
-                        ],
-                        "Not Assigned"
-                    );
+            const priority =
+
+                request.priority ||
+
+                "-";
 
 
-                const date =
-                    formatDate(
-                        firstValue(
-                            request,
-                            [
-                                "createdAt",
-                                "createdDate",
-                                "date"
-                            ]
-                        )
-                    );
+            const status =
+
+                request.status ||
+
+                "-";
 
 
-                return `
+            const worker =
 
-                    <tr>
+                request.assignedWorkerName ||
 
-                        <td>
-                            ${index + 1}
-                        </td>
+                request.assignedWorker ||
 
-                        <td>
-                            <strong>
-                                ${escapeHtml(ticketId)}
-                            </strong>
-                        </td>
+                request.workerName ||
 
-                        <td>
-                            ${escapeHtml(requestor)}
-                        </td>
-
-                        <td>
-                            ${escapeHtml(title)}
-                        </td>
-
-                        <td>
-                            ${escapeHtml(category)}
-                        </td>
-
-                        <td>
-                            ${escapeHtml(priority)}
-                        </td>
-
-                        <td>
-
-                            <span
-                                class="status-badge status-${escapeHtml(status)}"
-                            >
-                                ${escapeHtml(status)}
-                            </span>
-
-                        </td>
-
-                        <td>
-                            ${escapeHtml(worker)}
-                        </td>
-
-                        <td>
-                            ${escapeHtml(date)}
-                        </td>
-
-                        <td>
-
-                            <button
-                                class="view-btn"
-                                data-request-id="${escapeHtml(request.id)}"
-                            >
-                                View
-                            </button>
-
-                        </td>
-
-                    </tr>
-
-                `;
-
-            }
-        ).join("");
+                "Not Assigned";
 
 
-    /*
-     * Add button listeners.
-     */
+            const date =
 
-    tbody
-        .querySelectorAll(
-            ".view-btn"
-        )
-        .forEach(
-            button => {
+                formatDate(
 
-                button.addEventListener(
+                    request.createdAt ||
+
+                    request.createdDate ||
+
+                    request.date
+
+                );
+
+
+            const row =
+                document.createElement(
+                    "tr"
+                );
+
+
+            row.innerHTML = `
+
+                <td>
+                    ${index + 1}
+                </td>
+
+                <td>
+                    <strong>
+                        ${escapeHtml(ticketId)}
+                    </strong>
+                </td>
+
+                <td>
+                    ${escapeHtml(requestor)}
+                </td>
+
+                <td>
+                    ${escapeHtml(title)}
+                </td>
+
+                <td>
+                    ${escapeHtml(category)}
+                </td>
+
+                <td>
+                    ${escapeHtml(priority)}
+                </td>
+
+                <td>
+                    ${escapeHtml(status)}
+                </td>
+
+                <td>
+                    ${escapeHtml(worker)}
+                </td>
+
+                <td>
+                    ${escapeHtml(date)}
+                </td>
+
+                <td>
+
+                    <button
+                        type="button"
+                        class="view-btn"
+                        data-id="${escapeHtml(request.id)}"
+                    >
+                        View
+                    </button>
+
+                </td>
+
+            `;
+
+
+            const viewButton =
+                row.querySelector(
+                    ".view-btn"
+                );
+
+
+            if (viewButton) {
+
+                viewButton.addEventListener(
                     "click",
-                    () => {
+                    function () {
 
                         openRequest(
-                            button.dataset.requestId
+                            request.id
                         );
 
                     }
                 );
 
             }
-        );
-
-}
 
 
+            tableBody.appendChild(
+                row
+            );
 
-/* =====================================================
-   FILTER EVENTS
-===================================================== */
-
-
-function setupFilters() {
-
-    document.getElementById(
-        "statusFilter"
-    ).addEventListener(
-        "change",
-        renderRequests
-    );
-
-
-    document.getElementById(
-        "priorityFilter"
-    ).addEventListener(
-        "change",
-        renderRequests
-    );
-
-
-    document.getElementById(
-        "categoryFilter"
-    ).addEventListener(
-        "change",
-        renderRequests
-    );
-
-
-    document.getElementById(
-        "searchBox"
-    ).addEventListener(
-        "input",
-        renderRequests
+        }
     );
 
 }
 
 
-
-/* =====================================================
+/* =========================================================
    OPEN REQUEST
-===================================================== */
+========================================================= */
 
-
-window.openRequest =
-async function(requestId) {
+async function openRequest(requestId) {
 
     const request =
         allRequests.find(
-            item =>
-                item.id ===
-                requestId
+            function (item) {
+
+                return item.id ===
+                    requestId;
+
+            }
         );
 
 
-    if (
-        !request
-    ) {
+    if (!request) {
+
+        alert(
+            "Request not found."
+        );
 
         return;
 
@@ -3339,282 +3063,237 @@ async function(requestId) {
         request;
 
 
-    const ticketId =
-        firstValue(
-            request,
-            [
-                "ticketId",
-                "ticketID",
-                "ticket"
-            ],
-            request.id
+    fillRequestDetails(
+        request
+    );
+
+
+    await loadWorkers();
+
+
+    const modal =
+        document.getElementById(
+            "requestModal"
         );
 
 
-    const requestor =
-        firstValue(
-            request,
-            [
-                "requestor",
-                "requestorName",
-                "requesterName",
-                "staffName",
-                "name"
-            ],
-            "-"
-        );
+    if (modal) {
+
+        modal.style.display =
+            "flex";
+
+    }
+
+}
 
 
-    const requestDepartment =
-        firstValue(
-            request,
-            [
-                "department",
-                "requestorDepartment",
-                "requesterDepartment",
-                "requestDepartment"
-            ],
-            "-"
-        );
+/* =========================================================
+   FILL REQUEST DETAILS
+========================================================= */
 
-
-    const category =
-        firstValue(
-            request,
-            [
-                "category"
-            ],
-            "-"
-        );
-
-
-    const priority =
-        firstValue(
-            request,
-            [
-                "priority"
-            ],
-            "-"
-        );
-
-
-    const status =
-        firstValue(
-            request,
-            [
-                "status",
-                "requestStatus"
-            ],
-            "-"
-        );
-
-
-    const location =
-        firstValue(
-            request,
-            [
-                "location"
-            ],
-            "-"
-        );
-
-
-    const worker =
-        firstValue(
-            request,
-            [
-                "assignedWorkerName",
-                "workerName",
-                "assignedToName",
-                "assignedWorker"
-            ],
-            "Not Assigned"
-        );
-
-
-    const created =
-        formatDate(
-            firstValue(
-                request,
-                [
-                    "createdAt",
-                    "createdDate",
-                    "date"
-                ]
-            )
-        );
-
-
-    const title =
-        firstValue(
-            request,
-            [
-                "title",
-                "requestTitle"
-            ],
-            "-"
-        );
-
-
-    const description =
-        firstValue(
-            request,
-            [
-                "description",
-                "details",
-                "requestDescription"
-            ],
-            "-"
-        );
-
-
+function fillRequestDetails(request) {
 
     setText(
         "detailTicketId",
-        ticketId
+
+        request.ticketId ||
+
+        request.ticket ||
+
+        request.id ||
+
+        "-"
     );
 
 
     setText(
         "detailRequestor",
-        requestor
+
+        request.requestorName ||
+
+        request.requestor ||
+
+        request.staffName ||
+
+        request.name ||
+
+        "-"
     );
 
 
     setText(
         "detailRequestorDepartment",
-        requestDepartment
+
+        request.department ||
+
+        request.requestorDepartment ||
+
+        "-"
     );
 
 
     setText(
         "detailCategory",
-        category
+
+        request.category ||
+
+        "-"
     );
 
 
     setText(
         "detailPriority",
-        priority
+
+        request.priority ||
+
+        "-"
     );
 
 
     setText(
         "detailStatus",
-        status
+
+        request.status ||
+
+        "-"
     );
 
 
     setText(
         "detailLocation",
-        location
+
+        request.location ||
+
+        "-"
     );
 
 
     setText(
         "detailWorker",
-        worker
+
+        request.assignedWorkerName ||
+
+        request.assignedWorker ||
+
+        request.workerName ||
+
+        "Not Assigned"
     );
 
 
     setText(
         "detailCreated",
-        created
+
+        formatDate(
+
+            request.createdAt ||
+
+            request.createdDate ||
+
+            request.date
+
+        )
     );
 
 
     setText(
         "detailTitle",
-        title
+
+        request.title ||
+
+        request.requestTitle ||
+
+        "-"
     );
 
 
     setText(
         "detailDescription",
-        description
+
+        request.description ||
+
+        request.details ||
+
+        "-"
     );
 
 
-    /*
-     * Load timeline.
-     */
-
-    loadTimeline(
-        request
-    );
-
-
-    /*
-     * Reset assignment controls.
-     */
-
-    document.getElementById(
-        "workerSelect"
-    ).value =
-        "";
-
-
-    document.getElementById(
-        "expectedDate"
-    ).value =
-        "";
-
-
-    document.getElementById(
-        "headRemarks"
-    ).value =
-        "";
-
-
-    /*
-     * Open modal.
-     */
-
-    document.getElementById(
-        "requestModal"
-    ).style.display =
-        "block";
-
-};
-
-
-
-/* =====================================================
-   CLOSE MODAL
-===================================================== */
-
-
-window.closeModal =
-function() {
-
-    document.getElementById(
-        "requestModal"
-    ).style.display =
-        "none";
-
-
-
-    currentRequest =
-        null;
-
-};
-
-
-
-/* =====================================================
-   LOAD WORKERS
-===================================================== */
-
-
-async function loadWorkers() {
-
-    const select =
+    const workerSelect =
         document.getElementById(
             "workerSelect"
         );
 
 
-    select.innerHTML = `
+    if (workerSelect) {
+
+        workerSelect.value =
+
+            request.assignedWorkerId ||
+
+            "";
+
+    }
+
+
+    const expectedDate =
+        document.getElementById(
+            "expectedDate"
+        );
+
+
+    if (expectedDate) {
+
+        expectedDate.value =
+
+            request.expectedCompletionDate ||
+
+            "";
+
+    }
+
+
+    const headRemarks =
+        document.getElementById(
+            "headRemarks"
+        );
+
+
+    if (headRemarks) {
+
+        headRemarks.value =
+
+            request.headRemarks ||
+
+            "";
+
+    }
+
+
+    renderTimeline(
+        request
+    );
+
+}
+
+
+/* =========================================================
+   LOAD WORKERS
+========================================================= */
+
+async function loadWorkers() {
+
+    const workerSelect =
+        document.getElementById(
+            "workerSelect"
+        );
+
+
+    if (!workerSelect) {
+        return;
+    }
+
+
+    workerSelect.innerHTML = `
 
         <option value="">
             Loading workers...
@@ -3627,148 +3306,16 @@ async function loadWorkers() {
 
         const snapshot =
             await getDocs(
+
                 collection(
                     db,
                     "staff"
                 )
+
             );
 
 
-        workers = [];
-
-
-        snapshot.forEach(
-            staffDoc => {
-
-                const data =
-                    staffDoc.data();
-
-
-                const department =
-                    firstValue(
-                        data,
-                        [
-                            "department"
-                        ]
-                    );
-
-
-                /*
-                 * Only workers from this department.
-                 */
-
-                if (
-                    normalize(
-                        department
-                    ) !==
-                    normalize(
-                        currentStaff.department
-                    )
-                ) {
-
-                    return;
-
-                }
-
-
-                const active =
-                    data.active !== false;
-
-
-                if (
-                    !active
-                ) {
-
-                    return;
-
-                }
-
-
-                const role =
-                    normalize(
-                        firstValue(
-                            data,
-                            [
-                                "role"
-                            ]
-                        )
-                    );
-
-
-                const serviceRole =
-                    normalize(
-                        firstValue(
-                            data,
-                            [
-                                "serviceRole"
-                            ]
-                        )
-                    );
-
-
-                /*
-                 * Don't show another Department Head
-                 * as normal worker.
-                 */
-
-                if (
-                    role ===
-                    "department head" ||
-
-                    serviceRole ===
-                    "department_head"
-                ) {
-
-                    return;
-
-                }
-
-
-                workers.push({
-
-                    id:
-                        staffDoc.id,
-
-                    staffId:
-                        firstValue(
-                            data,
-                            [
-                                "staffId",
-                                "staffID"
-                            ],
-                            staffDoc.id
-                        ),
-
-                    name:
-                        firstValue(
-                            data,
-                            [
-                                "name",
-                                "staffName",
-                                "fullName"
-                            ],
-                            "Unnamed Staff"
-                        ),
-
-                    department:
-                        department
-
-                });
-
-            }
-        );
-
-
-        workers.sort(
-            (a,b) =>
-                String(a.name)
-                .localeCompare(
-                    String(b.name)
-                )
-        );
-
-
-        select.innerHTML = `
+        workerSelect.innerHTML = `
 
             <option value="">
                 Select Worker
@@ -3777,8 +3324,116 @@ async function loadWorkers() {
         `;
 
 
-        workers.forEach(
-            worker => {
+        let workerCount = 0;
+
+
+        snapshot.forEach(
+            function (staffDoc) {
+
+                const staff =
+                    staffDoc.data();
+
+
+                const department =
+
+                    String(
+
+                        staff.department ||
+
+                        ""
+
+                    ).trim();
+
+
+                /*
+                 * Only workers from the
+                 * Department Head's department.
+                 */
+
+                if (
+
+                    department.toLowerCase() !==
+
+                    currentDepartment.toLowerCase()
+
+                ) {
+
+                    return;
+
+                }
+
+
+                /*
+                 * Do not show the current
+                 * Department Head as worker.
+                 */
+
+                const staffRole =
+
+                    String(
+
+                        staff.role ||
+
+                        staff.serviceRole ||
+
+                        ""
+
+                    ).toUpperCase();
+
+
+                if (
+
+                    staffDoc.id ===
+                    currentHead.staffDocId
+
+                ) {
+
+                    return;
+
+                }
+
+
+                if (
+
+                    staffRole ===
+                    "DEPARTMENT HEAD"
+
+                ) {
+
+                    return;
+
+                }
+
+
+                if (
+
+                    staffRole ===
+                    "DEPARTMENT_HEAD"
+
+                ) {
+
+                    return;
+
+                }
+
+
+                const staffId =
+
+                    staff.staffId ||
+
+                    staffDoc.id;
+
+
+                const staffName =
+
+                    staff.name ||
+
+                    staff.staffName ||
+
+                    staff.displayName ||
+
+                    staffId;
+
 
                 const option =
                     document.createElement(
@@ -3787,50 +3442,65 @@ async function loadWorkers() {
 
 
                 option.value =
-                    worker.id;
+                    staffId;
 
 
                 option.textContent =
-                    worker.staffId +
-                    " - " +
-                    worker.name;
+
+                    staffName +
+                    " (" +
+                    staffId +
+                    ")";
 
 
-                select.appendChild(
+                option.dataset.name =
+                    staffName;
+
+
+                workerSelect.appendChild(
                     option
                 );
+
+
+                workerCount++;
 
             }
         );
 
 
-        if (
-            workers.length === 0
-        ) {
+        console.log(
+            "Workers loaded:",
+            workerCount
+        );
 
-            select.innerHTML = `
+
+        if (workerCount === 0) {
+
+            workerSelect.innerHTML = `
 
                 <option value="">
-                    No workers found
+                    No workers found in ${escapeHtml(
+                        currentDepartment
+                    )}
                 </option>
 
             `;
 
         }
 
-    }
-    catch(error) {
+
+    } catch (error) {
 
         console.error(
-            "Worker loading error:",
+            "LOAD WORKERS ERROR:",
             error
         );
 
 
-        select.innerHTML = `
+        workerSelect.innerHTML = `
 
             <option value="">
-                Error loading workers
+                Unable to load workers
             </option>
 
         `;
@@ -3840,18 +3510,13 @@ async function loadWorkers() {
 }
 
 
-
-/* =====================================================
+/* =========================================================
    ASSIGN WORKER
-===================================================== */
+========================================================= */
 
+async function assignWorker() {
 
-window.assignWorker =
-async function() {
-
-    if (
-        !currentRequest
-    ) {
+    if (!currentRequest) {
 
         alert(
             "No request selected."
@@ -3862,15 +3527,34 @@ async function() {
     }
 
 
-    const workerId =
+    const workerSelect =
         document.getElementById(
             "workerSelect"
-        ).value;
+        );
 
 
-    if (
-        !workerId
-    ) {
+    const expectedDate =
+        document.getElementById(
+            "expectedDate"
+        );
+
+
+    const headRemarks =
+        document.getElementById(
+            "headRemarks"
+        );
+
+
+    if (!workerSelect) {
+        return;
+    }
+
+
+    const workerId =
+        workerSelect.value;
+
+
+    if (!workerId) {
 
         alert(
             "Please select a worker."
@@ -3881,79 +3565,68 @@ async function() {
     }
 
 
-    const worker =
-        workers.find(
-            item =>
-                item.id ===
-                workerId
-        );
+    const selectedOption =
+
+        workerSelect.options[
+            workerSelect.selectedIndex
+        ];
 
 
-    if (
-        !worker
-    ) {
+    const workerName =
 
-        alert(
-            "Selected worker was not found."
-        );
+        selectedOption.dataset.name ||
 
-        return;
-
-    }
-
-
-    const expectedDate =
-        document.getElementById(
-            "expectedDate"
-        ).value;
-
-
-    const headRemarks =
-        document.getElementById(
-            "headRemarks"
-        ).value
-        .trim();
+        selectedOption.textContent;
 
 
     try {
 
-        const requestRef =
-            doc(
-                db,
-                "serviceRequests",
-                currentRequest.id
-            );
+        const requestRef = doc(
+
+            db,
+
+            "serviceRequests",
+
+            currentRequest.id
+
+        );
 
 
         await updateDoc(
             requestRef,
             {
 
+                assignedWorkerId:
+                    workerId,
+
+                assignedWorkerName:
+                    workerName,
+
+                assignedBy:
+                    currentHead.staffId ||
+                    currentHead.staffDocId,
+
+                assignedByName:
+                    currentHead.name ||
+                    currentHead.staffName ||
+                    "",
+
+                assignedDepartment:
+                    currentDepartment,
+
+                assignedAt:
+                    serverTimestamp(),
+
+                expectedCompletionDate:
+                    expectedDate.value || null,
+
+                headRemarks:
+                    headRemarks.value.trim(),
+
                 status:
                     "ASSIGNED",
 
-                assignedWorkerId:
-                    worker.staffId,
-
-                assignedWorkerName:
-                    worker.name,
-
-                assignedByHeadId:
-                    currentStaff.staffId,
-
-                assignedByHeadName:
-                    currentStaff.name,
-
-                assignedByHeadDepartment:
-                    currentStaff.department,
-
-                expectedCompletion:
-                    expectedDate || null,
-
-                headRemarks:
-                    headRemarks,
-
-                assignedAt:
+                updatedAt:
                     serverTimestamp()
 
             }
@@ -3970,85 +3643,148 @@ async function() {
 
         await loadRequests();
 
-    }
-    catch(error) {
+
+    } catch (error) {
 
         console.error(
-            "Assignment error:",
+            "ASSIGN WORKER ERROR:",
             error
         );
 
 
         alert(
-            "Unable to assign worker:\n\n" +
+
+            "Unable to assign worker.\n\n" +
+
             error.message
+
         );
 
     }
 
-};
+}
 
 
-
-/* =====================================================
+/* =========================================================
    TIMELINE
-===================================================== */
+========================================================= */
 
+function renderTimeline(request) {
 
-function loadTimeline(
-    request
-) {
-
-    const container =
+    const timeline =
         document.getElementById(
             "requestTimeline"
         );
 
 
-    container.innerHTML = "";
+    if (!timeline) {
+        return;
+    }
 
 
-    /*
-     * If your request already contains a timeline array,
-     * display it.
-     */
-
-    const timeline =
-        Array.isArray(
-            request.timeline
-        )
-        ?
-        request.timeline
-        :
-        [];
+    timeline.innerHTML = "";
 
 
-    if (
-        timeline.length === 0
-    ) {
+    const events = [];
 
-        container.innerHTML = `
+
+    if (request.createdAt) {
+
+        events.push({
+
+            title:
+                "Request Created",
+
+            date:
+                request.createdAt
+
+        });
+
+    }
+
+
+    if (request.receivedAt) {
+
+        events.push({
+
+            title:
+                "Request Received",
+
+            date:
+                request.receivedAt
+
+        });
+
+    }
+
+
+    if (request.assignedAt) {
+
+        events.push({
+
+            title:
+                "Worker Assigned",
+
+            date:
+                request.assignedAt
+
+        });
+
+    }
+
+
+    if (request.startedAt) {
+
+        events.push({
+
+            title:
+                "Work Started",
+
+            date:
+                request.startedAt
+
+        });
+
+    }
+
+
+    if (request.completedAt) {
+
+        events.push({
+
+            title:
+                "Work Completed",
+
+            date:
+                request.completedAt
+
+        });
+
+    }
+
+
+    if (request.closedAt) {
+
+        events.push({
+
+            title:
+                "Request Closed",
+
+            date:
+                request.closedAt
+
+        });
+
+    }
+
+
+    if (!events.length) {
+
+        timeline.innerHTML = `
 
             <div class="timeline-item">
 
-                <strong>
-                    Request Created
-                </strong>
-
-                <small>
-                    ${escapeHtml(
-                        formatDate(
-                            firstValue(
-                                request,
-                                [
-                                    "createdAt",
-                                    "createdDate",
-                                    "date"
-                                ]
-                            )
-                        )
-                    )}
-                </small>
+                No timeline information available.
 
             </div>
 
@@ -4059,65 +3795,41 @@ function loadTimeline(
     }
 
 
-    timeline.forEach(
-        item => {
+    events.forEach(
+        function (event) {
 
-            const title =
-                firstValue(
-                    item,
-                    [
-                        "title",
-                        "action",
-                        "status"
-                    ],
-                    "Update"
+            const div =
+                document.createElement(
+                    "div"
                 );
 
 
-            const description =
-                firstValue(
-                    item,
-                    [
-                        "description",
-                        "remarks",
-                        "message"
-                    ],
-                    ""
-                );
+            div.className =
+                "timeline-item";
 
 
-            const date =
-                formatDate(
-                    firstValue(
-                        item,
-                        [
-                            "timestamp",
-                            "createdAt",
-                            "date"
-                        ]
-                    )
-                );
+            div.innerHTML = `
 
+                <strong>
+                    ${escapeHtml(
+                        event.title
+                    )}
+                </strong>
 
-            container.innerHTML += `
-
-                <div class="timeline-item">
-
-                    <strong>
-                        ${escapeHtml(title)}
-                    </strong>
-
-                    <div>
-                        ${escapeHtml(description)}
-                    </div>
-
-                    <small>
-                        ${escapeHtml(date)}
-                    </small>
-
-                </div>
+                <small>
+                    ${escapeHtml(
+                        formatDate(
+                            event.date
+                        )
+                    )}
+                </small>
 
             `;
+
+
+            timeline.appendChild(
+                div
+            );
 
         }
     );
@@ -4125,11 +3837,126 @@ function loadTimeline(
 }
 
 
+/* =========================================================
+   CLOSE MODAL
+========================================================= */
 
-/* =====================================================
-   SET TEXT
-===================================================== */
+window.closeModal = function () {
 
+    const modal =
+        document.getElementById(
+            "requestModal"
+        );
+
+
+    if (modal) {
+
+        modal.style.display =
+            "none";
+
+    }
+
+
+    currentRequest =
+        null;
+
+};
+
+
+/* =========================================================
+   GO BACK
+========================================================= */
+
+window.goBack = function () {
+
+    window.history.back();
+
+};
+
+
+/* =========================================================
+   MAKE ASSIGN WORKER AVAILABLE
+========================================================= */
+
+window.assignWorker =
+    assignWorker;
+
+
+/* =========================================================
+   FILTER EVENTS
+========================================================= */
+
+function setupFilters() {
+
+    const statusFilter =
+        document.getElementById(
+            "statusFilter"
+        );
+
+
+    const priorityFilter =
+        document.getElementById(
+            "priorityFilter"
+        );
+
+
+    const categoryFilter =
+        document.getElementById(
+            "categoryFilter"
+        );
+
+
+    const searchBox =
+        document.getElementById(
+            "searchBox"
+        );
+
+
+    if (statusFilter) {
+
+        statusFilter.addEventListener(
+            "change",
+            applyFilters
+        );
+
+    }
+
+
+    if (priorityFilter) {
+
+        priorityFilter.addEventListener(
+            "change",
+            applyFilters
+        );
+
+    }
+
+
+    if (categoryFilter) {
+
+        categoryFilter.addEventListener(
+            "change",
+            applyFilters
+        );
+
+    }
+
+
+    if (searchBox) {
+
+        searchBox.addEventListener(
+            "input",
+            applyFilters
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   UTILITY - SET TEXT
+========================================================= */
 
 function setText(
     id,
@@ -4142,31 +3969,49 @@ function setText(
         );
 
 
-    if (
-        element
-    ) {
+    if (element) {
 
         element.textContent =
-            value || "-";
+            value == null
+                ? "-"
+                : String(value);
 
     }
 
 }
 
 
+/* =========================================================
+   UTILITY - GET VALUE
+========================================================= */
 
-/* =====================================================
-   FORMAT DATE
-===================================================== */
+function getValue(id) {
+
+    const element =
+        document.getElementById(
+            id
+        );
 
 
-function formatDate(
-    value
-) {
+    if (!element) {
 
-    if (
-        !value
-    ) {
+        return "ALL";
+
+    }
+
+
+    return element.value;
+
+}
+
+
+/* =========================================================
+   UTILITY - FORMAT DATE
+========================================================= */
+
+function formatDate(value) {
+
+    if (!value) {
 
         return "-";
 
@@ -4175,157 +4020,116 @@ function formatDate(
 
     try {
 
-        /*
-         * Firestore Timestamp
-         */
+        let date;
+
 
         if (
+            value &&
             typeof value.toDate ===
             "function"
         ) {
 
-            return value
-                .toDate()
-                .toLocaleString();
+            date =
+                value.toDate();
 
         }
 
-
-        /*
-         * JavaScript Date
-         */
-
-        if (
+        else if (
             value instanceof Date
         ) {
 
-            return value.toLocaleString();
+            date =
+                value;
 
         }
 
-
-        /*
-         * Firestore timestamp object
-         */
-
-        if (
-            value.seconds !== undefined
+        else if (
+            typeof value ===
+            "string"
         ) {
 
-            return new Date(
-                value.seconds * 1000
-            ).toLocaleString();
+            date =
+                new Date(value);
 
         }
 
+        else if (
+            typeof value ===
+            "number"
+        ) {
 
-        /*
-         * Normal string/date
-         */
+            date =
+                new Date(value);
 
-        const date =
-            new Date(
-                value
-            );
+        }
 
 
         if (
-            !isNaN(
-                date.getTime()
-            )
+            !date ||
+            isNaN(date.getTime())
         ) {
 
-            return date.toLocaleString();
+            return String(value);
 
         }
 
 
-        return String(
-            value
+        return date.toLocaleString(
+            "en-IN"
         );
 
-    }
-    catch(error) {
 
-        return String(
-            value
-        );
+    } catch (error) {
+
+        return String(value);
 
     }
 
 }
 
 
+/* =========================================================
+   UTILITY - ESCAPE HTML
+========================================================= */
 
-/* =====================================================
-   ESCAPE HTML
-===================================================== */
+function escapeHtml(value) {
 
+    if (value === null ||
+        value === undefined) {
 
-function escapeHtml(
-    value
-) {
-
-    return String(
-        value ?? ""
-    )
-    .replace(
-        /&/g,
-        "&amp;"
-    )
-    .replace(
-        /</g,
-        "&lt;"
-    )
-    .replace(
-        />/g,
-        "&gt;"
-    )
-    .replace(
-        /"/g,
-        "&quot;"
-    )
-    .replace(
-        /'/g,
-        "&#039;"
-    );
-
-}
-
-
-
-/* =====================================================
-   CLOSE MODAL WHEN CLICK OUTSIDE
-===================================================== */
-
-
-document.getElementById(
-    "requestModal"
-).addEventListener(
-    "click",
-    function(event) {
-
-        if (
-            event.target ===
-            this
-        ) {
-
-            closeModal();
-
-        }
+        return "";
 
     }
-);
 
 
+    return String(value)
 
-/* =====================================================
-   START APPLICATION
-===================================================== */
+        .replace(
+            /&/g,
+            "&amp;"
+        )
 
+        .replace(
+            /</g,
+            "&lt;"
+        )
 
-startAuthentication();
+        .replace(
+            />/g,
+            "&gt;"
+        )
 
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+
+        .replace(
+            /'/g,
+            "&#039;"
+        );
+
+}
 
 </script>
 
