@@ -1,0 +1,3528 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
+
+<title>Service Request - Worker Portal</title>
+
+
+<style>
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+
+body {
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+    background: #f4f6f9;
+
+    color: #222;
+
+}
+
+
+/* =====================================================
+   HEADER
+===================================================== */
+
+.page-header {
+
+    background: #ffffff;
+
+    padding: 22px 30px;
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    border-bottom: 1px solid #ddd;
+
+}
+
+
+.page-header h2 {
+
+    margin-bottom: 5px;
+
+}
+
+
+.page-header small {
+
+    color: #777;
+
+}
+
+
+.worker-info {
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: flex-end;
+
+    gap: 5px;
+
+}
+
+
+.worker-info strong {
+
+    font-size: 17px;
+
+}
+
+
+.worker-info span {
+
+    color: #666;
+
+    font-size: 14px;
+
+}
+
+
+/* =====================================================
+   LOADING
+===================================================== */
+
+.loading-box {
+
+    position: fixed;
+
+    inset: 0;
+
+    background: #f4f6f9;
+
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content: center;
+
+    align-items: center;
+
+    text-align: center;
+
+    z-index: 1000;
+
+}
+
+
+.loading-box h2 {
+
+    margin-bottom: 10px;
+
+}
+
+
+.loading-box p {
+
+    color: #666;
+
+}
+
+
+/* =====================================================
+   ACCESS VIOLATION
+===================================================== */
+
+.access-box {
+
+    position: fixed;
+
+    inset: 0;
+
+    background: #f4f6f9;
+
+    display: none;
+
+    flex-direction: column;
+
+    justify-content: center;
+
+    align-items: center;
+
+    text-align: center;
+
+    padding: 30px;
+
+    z-index: 1001;
+
+}
+
+
+.access-icon {
+
+    font-size: 60px;
+
+    margin-bottom: 15px;
+
+}
+
+
+.access-box h2 {
+
+    color: #c62828;
+
+    margin-bottom: 10px;
+
+}
+
+
+.access-box p {
+
+    color: #666;
+
+    margin-bottom: 20px;
+
+}
+
+
+.access-box button {
+
+    border: none;
+
+    background: #333;
+
+    color: white;
+
+    padding: 11px 24px;
+
+    border-radius: 6px;
+
+    cursor: pointer;
+
+}
+
+
+/* =====================================================
+   DASHBOARD
+===================================================== */
+
+#dashboard {
+
+    display: none;
+
+}
+
+
+.container {
+
+    padding: 25px 30px;
+
+}
+
+
+/* =====================================================
+   STATISTICS
+===================================================== */
+
+.stats {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, 1fr);
+
+    gap: 18px;
+
+    margin-bottom: 25px;
+
+}
+
+
+.stat-card {
+
+    background: white;
+
+    border-radius: 10px;
+
+    padding: 20px;
+
+    box-shadow:
+        0 2px 8px rgba(0,0,0,0.06);
+
+}
+
+
+.stat-title {
+
+    color: #777;
+
+    font-size: 14px;
+
+    margin-bottom: 10px;
+
+}
+
+
+.stat-number {
+
+    font-size: 30px;
+
+    font-weight: bold;
+
+}
+
+
+/* =====================================================
+   WORK SECTION
+===================================================== */
+
+.work-section {
+
+    background: white;
+
+    border-radius: 10px;
+
+    padding: 22px;
+
+    box-shadow:
+        0 2px 8px rgba(0,0,0,0.06);
+
+}
+
+
+.work-section h3 {
+
+    margin-bottom: 20px;
+
+}
+
+
+/* =====================================================
+   FILTERS
+===================================================== */
+
+.filters {
+
+    display: grid;
+
+    grid-template-columns:
+        220px 1fr;
+
+    gap: 15px;
+
+    margin-bottom: 20px;
+
+}
+
+
+.form-group {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 7px;
+
+}
+
+
+.form-group label {
+
+    font-size: 13px;
+
+    font-weight: bold;
+
+    color: #555;
+
+}
+
+
+.form-group select,
+
+.form-group input,
+
+.form-group textarea {
+
+    padding: 10px;
+
+    border: 1px solid #ccc;
+
+    border-radius: 6px;
+
+    font-size: 14px;
+
+}
+
+
+.form-group textarea {
+
+    min-height: 100px;
+
+    resize: vertical;
+
+}
+
+
+/* =====================================================
+   TABLE
+===================================================== */
+
+.table-container {
+
+    width: 100%;
+
+    overflow-x: auto;
+
+}
+
+
+table {
+
+    width: 100%;
+
+    border-collapse: collapse;
+
+}
+
+
+thead {
+
+    background: #f5f5f5;
+
+}
+
+
+th,
+
+td {
+
+    padding: 12px;
+
+    border-bottom: 1px solid #eee;
+
+    text-align: left;
+
+    white-space: nowrap;
+
+}
+
+
+th {
+
+    font-size: 13px;
+
+}
+
+
+td {
+
+    font-size: 14px;
+
+}
+
+
+.view-btn {
+
+    border: none;
+
+    background: #1976d2;
+
+    color: white;
+
+    padding: 7px 14px;
+
+    border-radius: 5px;
+
+    cursor: pointer;
+
+}
+
+
+/* =====================================================
+   NO WORK
+===================================================== */
+
+.no-work {
+
+    display: none;
+
+    text-align: center;
+
+    padding: 70px 20px;
+
+}
+
+
+.no-work-icon {
+
+    font-size: 65px;
+
+    margin-bottom: 15px;
+
+}
+
+
+.no-work h2 {
+
+    margin-bottom: 10px;
+
+}
+
+
+.no-work p {
+
+    color: #777;
+
+    max-width: 500px;
+
+    margin: auto;
+
+    line-height: 1.6;
+
+}
+
+
+/* =====================================================
+   MODAL
+===================================================== */
+
+.modal {
+
+    position: fixed;
+
+    inset: 0;
+
+    background:
+        rgba(0,0,0,0.55);
+
+    display: none;
+
+    align-items: center;
+
+    justify-content: center;
+
+    padding: 20px;
+
+    z-index: 2000;
+
+}
+
+
+.modal-content {
+
+    background: white;
+
+    width: 100%;
+
+    max-width: 900px;
+
+    max-height: 90vh;
+
+    overflow-y: auto;
+
+    border-radius: 10px;
+
+    padding: 25px;
+
+}
+
+
+.modal-header {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    margin-bottom: 22px;
+
+}
+
+
+.close-btn {
+
+    border: none;
+
+    background: transparent;
+
+    font-size: 28px;
+
+    cursor: pointer;
+
+}
+
+
+/* =====================================================
+   DETAILS
+===================================================== */
+
+.detail-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, 1fr);
+
+    gap: 15px;
+
+    margin-bottom: 18px;
+
+}
+
+
+.detail-box {
+
+    background: #f8f9fa;
+
+    border-radius: 7px;
+
+    padding: 13px;
+
+    margin-bottom: 15px;
+
+}
+
+
+.detail-box label {
+
+    display: block;
+
+    font-size: 12px;
+
+    color: #777;
+
+    margin-bottom: 6px;
+
+    font-weight: bold;
+
+}
+
+
+.detail-box span {
+
+    display: block;
+
+    line-height: 1.5;
+
+}
+
+
+/* =====================================================
+   WORK ACTION
+===================================================== */
+
+.worker-action-section {
+
+    border-top: 1px solid #eee;
+
+    margin-top: 20px;
+
+    padding-top: 20px;
+
+}
+
+
+.worker-action-section h4 {
+
+    margin-bottom: 15px;
+
+}
+
+
+.action-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        1fr 1fr;
+
+    gap: 15px;
+
+}
+
+
+.action-grid .full {
+
+    grid-column: 1 / -1;
+
+}
+
+
+.action-btn {
+
+    border: none;
+
+    padding: 11px 20px;
+
+    border-radius: 6px;
+
+    cursor: pointer;
+
+    font-weight: bold;
+
+}
+
+
+.start-btn {
+
+    background: #1976d2;
+
+    color: white;
+
+}
+
+
+.complete-btn {
+
+    background: #2e7d32;
+
+    color: white;
+
+}
+
+
+.action-btn:disabled {
+
+    opacity: .5;
+
+    cursor: not-allowed;
+
+}
+
+
+/* =====================================================
+   TIMELINE
+===================================================== */
+
+.timeline {
+
+    margin-top: 15px;
+
+}
+
+
+.timeline-item {
+
+    border-left: 3px solid #1976d2;
+
+    padding: 10px 15px;
+
+    margin-bottom: 12px;
+
+    background: #f8f9fa;
+
+}
+
+
+.timeline-item strong {
+
+    display: block;
+
+    margin-bottom: 5px;
+
+}
+
+
+.timeline-item small {
+
+    color: #777;
+
+}
+
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
+@media (max-width: 900px) {
+
+    .stats {
+
+        grid-template-columns:
+            repeat(2, 1fr);
+
+    }
+
+
+    .detail-grid {
+
+        grid-template-columns:
+            repeat(2, 1fr);
+
+    }
+
+}
+
+
+@media (max-width: 600px) {
+
+    .page-header {
+
+        flex-direction: column;
+
+        align-items: flex-start;
+
+        gap: 15px;
+
+    }
+
+
+    .worker-info {
+
+        align-items: flex-start;
+
+    }
+
+
+    .container {
+
+        padding: 15px;
+
+    }
+
+
+    .stats {
+
+        grid-template-columns:
+            1fr;
+
+    }
+
+
+    .filters {
+
+        grid-template-columns:
+            1fr;
+
+    }
+
+
+    .detail-grid {
+
+        grid-template-columns:
+            1fr;
+
+    }
+
+
+    .action-grid {
+
+        grid-template-columns:
+            1fr;
+
+    }
+
+
+    .action-grid .full {
+
+        grid-column: auto;
+
+    }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<!-- =====================================================
+     CHECKING LOGIN
+===================================================== -->
+
+<div
+    class="loading-box"
+    id="loadingBox"
+>
+
+    <h2>
+        Checking Worker Account
+    </h2>
+
+    <p>
+        Please wait while we verify your account...
+    </p>
+
+</div>
+
+
+<!-- =====================================================
+     ACCESS VIOLATION
+===================================================== -->
+
+<div
+    class="access-box"
+    id="accessBox"
+>
+
+    <div class="access-icon">
+        🚫
+    </div>
+
+    <h2>
+        ACCESS VIOLATION
+    </h2>
+
+    <p id="accessMessage">
+        You are not authorized to access this page.
+    </p>
+
+    <button
+        type="button"
+        onclick="goBack()"
+    >
+        Go Back
+    </button>
+
+</div>
+
+
+<!-- =====================================================
+     DASHBOARD
+===================================================== -->
+
+<div id="dashboard">
+
+
+    <!-- =================================================
+         HEADER
+    ================================================= -->
+
+    <div class="page-header">
+
+        <div>
+
+            <h2>
+                Service Request Management
+            </h2>
+
+            <small>
+                Worker Portal
+            </small>
+
+        </div>
+
+
+        <div class="worker-info">
+
+            <strong id="workerName">
+                Loading...
+            </strong>
+
+            <span id="workerDepartment">
+                Loading...
+            </span>
+
+            <span id="workerId">
+                Loading...
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <!-- =================================================
+         MAIN
+    ================================================= -->
+
+    <div class="container">
+
+
+        <!-- =================================================
+             STATISTICS
+        ================================================= -->
+
+        <div class="stats">
+
+
+            <div class="stat-card">
+
+                <div class="stat-title">
+                    Assigned
+                </div>
+
+                <div
+                    class="stat-number"
+                    id="assignedCount"
+                >
+                    0
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-title">
+                    New Work
+                </div>
+
+                <div
+                    class="stat-number"
+                    id="newCount"
+                >
+                    0
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-title">
+                    In Progress
+                </div>
+
+                <div
+                    class="stat-number"
+                    id="progressCount"
+                >
+                    0
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-title">
+                    Completed
+                </div>
+
+                <div
+                    class="stat-number"
+                    id="completedCount"
+                >
+                    0
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+        <!-- =================================================
+             WORK SECTION
+        ================================================= -->
+
+        <div class="work-section">
+
+
+            <h3>
+                My Assigned Service Requests
+            </h3>
+
+
+            <!-- FILTERS -->
+
+            <div class="filters">
+
+
+                <div class="form-group">
+
+                    <label>
+                        Status
+                    </label>
+
+                    <select
+                        id="statusFilter"
+                    >
+
+                        <option value="ALL">
+                            All Work
+                        </option>
+
+                        <option value="ASSIGNED">
+                            Assigned
+                        </option>
+
+                        <option value="IN_PROGRESS">
+                            In Progress
+                        </option>
+
+                        <option value="WORK_COMPLETED">
+                            Work Completed
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Search
+                    </label>
+
+                    <input
+                        type="text"
+                        id="searchBox"
+                        placeholder="Ticket / title / category"
+                    >
+
+                </div>
+
+
+            </div>
+
+
+            <!-- =================================================
+                 NO WORK MESSAGE
+            ================================================= -->
+
+            <div
+                class="no-work"
+                id="noWork"
+            >
+
+                <div class="no-work-icon">
+                    😊
+                </div>
+
+                <h2>
+                    No Work Assigned
+                </h2>
+
+                <p>
+                    You currently have no service requests
+                    assigned to you.
+                    <br><br>
+                    Please relax — when your Department Head
+                    assigns a service request to you, it will
+                    automatically appear here.
+                </p>
+
+            </div>
+
+
+            <!-- =================================================
+                 TABLE
+            ================================================= -->
+
+            <div
+                class="table-container"
+                id="workTableContainer"
+            >
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                S.No
+                            </th>
+
+                            <th>
+                                Ticket ID
+                            </th>
+
+                            <th>
+                                Requestor
+                            </th>
+
+                            <th>
+                                Title
+                            </th>
+
+                            <th>
+                                Category
+                            </th>
+
+                            <th>
+                                Priority
+                            </th>
+
+                            <th>
+                                Status
+                            </th>
+
+                            <th>
+                                Expected Date
+                            </th>
+
+                            <th>
+                                Action
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody
+                        id="workTableBody"
+                    >
+
+                        <tr>
+
+                            <td
+                                colspan="9"
+                                style="text-align:center;"
+                            >
+                                Loading...
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     REQUEST MODAL
+===================================================== -->
+
+<div
+    class="modal"
+    id="requestModal"
+>
+
+
+    <div class="modal-content">
+
+
+        <!-- HEADER -->
+
+        <div class="modal-header">
+
+            <h3>
+                Service Request
+            </h3>
+
+            <button
+                type="button"
+                class="close-btn"
+                onclick="closeModal()"
+            >
+                &times;
+            </button>
+
+        </div>
+
+
+        <!-- =================================================
+             DETAILS
+        ================================================= -->
+
+        <div class="detail-grid">
+
+
+            <div class="detail-box">
+
+                <label>
+                    Ticket ID
+                </label>
+
+                <span id="detailTicketId">
+                    -
+                </span>
+
+            </div>
+
+
+            <div class="detail-box">
+
+                <label>
+                    Requestor
+                </label>
+
+                <span id="detailRequestor">
+                    -
+                </span>
+
+            </div>
+
+
+            <div class="detail-box">
+
+                <label>
+                    Department
+                </label>
+
+                <span id="detailDepartment">
+                    -
+                </span>
+
+            </div>
+
+
+            <div class="detail-box">
+
+                <label>
+                    Category
+                </label>
+
+                <span id="detailCategory">
+                    -
+                </span>
+
+            </div>
+
+
+            <div class="detail-box">
+
+                <label>
+                    Priority
+                </label>
+
+                <span id="detailPriority">
+                    -
+                </span>
+
+            </div>
+
+
+            <div class="detail-box">
+
+                <label>
+                    Status
+                </label>
+
+                <span id="detailStatus">
+                    -
+                </span>
+
+            </div>
+
+
+            <div class="detail-box">
+
+                <label>
+                    Location
+                </label>
+
+                <span id="detailLocation">
+                    -
+                </span>
+
+            </div>
+
+
+            <div class="detail-box">
+
+                <label>
+                    Assigned Worker
+                </label>
+
+                <span id="detailWorker">
+                    -
+                </span>
+
+            </div>
+
+
+            <div class="detail-box">
+
+                <label>
+                    Expected Completion
+                </label>
+
+                <span id="detailExpectedDate">
+                    -
+                </span>
+
+            </div>
+
+
+        </div>
+
+
+        <!-- TITLE -->
+
+        <div class="detail-box">
+
+            <label>
+                Request Title
+            </label>
+
+            <span id="detailTitle">
+                -
+            </span>
+
+        </div>
+
+
+        <!-- DESCRIPTION -->
+
+        <div class="detail-box">
+
+            <label>
+                Description
+            </label>
+
+            <span id="detailDescription">
+                -
+            </span>
+
+        </div>
+
+
+        <!-- HEAD REMARKS -->
+
+        <div class="detail-box">
+
+            <label>
+                Department Head Remarks
+            </label>
+
+            <span id="detailHeadRemarks">
+                No remarks
+            </span>
+
+        </div>
+
+
+        <!-- =================================================
+             WORK ACTION
+        ================================================= -->
+
+        <div
+            class="worker-action-section"
+            id="workerActionSection"
+        >
+
+            <h4>
+                Work Update
+            </h4>
+
+
+            <div class="action-grid">
+
+
+                <div class="form-group">
+
+                    <label>
+                        Work Remarks
+                    </label>
+
+                    <textarea
+                        id="workerRemarks"
+                        placeholder="Enter your work remarks..."
+                    ></textarea>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Completion Details
+                    </label>
+
+                    <textarea
+                        id="completionDetails"
+                        placeholder="Describe the work completed..."
+                    ></textarea>
+
+                </div>
+
+
+                <div class="form-group full">
+
+                    <button
+                        type="button"
+                        class="action-btn start-btn"
+                        id="startWorkBtn"
+                        onclick="startWork()"
+                    >
+                        Start Work
+                    </button>
+
+
+                    <button
+                        type="button"
+                        class="action-btn complete-btn"
+                        id="completeWorkBtn"
+                        onclick="completeWork()"
+                    >
+                        Mark Work Completed
+                    </button>
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+
+        <!-- =================================================
+             TIMELINE
+        ================================================= -->
+
+        <br>
+
+        <h3>
+            Request Timeline
+        </h3>
+
+
+        <div
+            class="timeline"
+            id="requestTimeline"
+        >
+
+        </div>
+
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     FIREBASE JAVASCRIPT
+===================================================== -->
+
+<script type="module">
+<script type="module">
+
+import {
+    initializeApp
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+import {
+    getAuth,
+    onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+import {
+    getFirestore,
+    collection,
+    query,
+    where,
+    getDocs,
+    doc,
+    getDoc,
+    updateDoc,
+    serverTimestamp,
+    orderBy
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+
+// =====================================================
+// FIREBASE CONFIG
+// =====================================================
+
+const firebaseConfig = {
+
+   apiKey: "AIzaSyAIv3091VM-gkmdwEAn7OhXWd9Cm2zh2bo",
+  authDomain: "maasc-2026.firebaseapp.com",
+  projectId: "maasc-2026",
+  storageBucket: "maasc-2026.appspot.com",
+  messagingSenderId: "585813001586",
+  appId: "1:585813001586:web:664e0e90ff0725d2e849eb"
+
+};
+
+
+// =====================================================
+// FIREBASE INITIALIZATION
+// =====================================================
+
+const app = initializeApp(firebaseConfig);
+
+const auth = getAuth(app);
+
+const db = getFirestore(app);
+
+
+// =====================================================
+// GLOBAL VARIABLES
+// =====================================================
+
+let currentUser = null;
+
+let currentStaff = null;
+
+let assignedRequests = [];
+
+let currentRequest = null;
+
+
+// =====================================================
+// DOM
+// =====================================================
+
+const loadingBox =
+    document.getElementById("loadingBox");
+
+const accessBox =
+    document.getElementById("accessBox");
+
+const dashboard =
+    document.getElementById("dashboard");
+
+const accessMessage =
+    document.getElementById("accessMessage");
+
+const workerName =
+    document.getElementById("workerName");
+
+const workerDepartment =
+    document.getElementById("workerDepartment");
+
+const workerId =
+    document.getElementById("workerId");
+
+const workTableBody =
+    document.getElementById("workTableBody");
+
+const workTableContainer =
+    document.getElementById("workTableContainer");
+
+const noWork =
+    document.getElementById("noWork");
+
+
+// =====================================================
+// AUTHENTICATION
+// =====================================================
+
+onAuthStateChanged(auth, async (user) => {
+
+    console.log(
+        "WORKER AUTH STATE:",
+        user
+    );
+
+
+    if (!user) {
+
+        showAccessViolation(
+            "You are not logged in. Please login first."
+        );
+
+        return;
+
+    }
+
+
+    currentUser = user;
+
+
+    try {
+
+        await loadWorkerProfile(user);
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Worker profile error:",
+            error
+        );
+
+        showAccessViolation(
+            "Unable to load your staff profile."
+        );
+
+    }
+
+});
+
+
+// =====================================================
+// LOAD STAFF PROFILE
+// =====================================================
+
+async function loadWorkerProfile(user) {
+
+    let staffSnapshot = null;
+
+
+    // -------------------------------------------------
+    // FIRST: SEARCH BY UID
+    // -------------------------------------------------
+
+    try {
+
+        const uidQuery = query(
+            collection(db, "staff"),
+            where("uid", "==", user.uid)
+        );
+
+        const uidSnapshot =
+            await getDocs(uidQuery);
+
+
+        if (!uidSnapshot.empty) {
+
+            staffSnapshot =
+                uidSnapshot.docs[0];
+
+        }
+
+    }
+
+    catch (error) {
+
+        console.warn(
+            "UID staff search failed:",
+            error
+        );
+
+    }
+
+
+    // -------------------------------------------------
+    // SECOND: SEARCH BY EMAIL
+    // -------------------------------------------------
+
+    if (!staffSnapshot && user.email) {
+
+        try {
+
+            const emailQuery = query(
+                collection(db, "staff"),
+                where("email", "==", user.email)
+            );
+
+            const emailSnapshot =
+                await getDocs(emailQuery);
+
+
+            if (!emailSnapshot.empty) {
+
+                staffSnapshot =
+                    emailSnapshot.docs[0];
+
+            }
+
+        }
+
+        catch (error) {
+
+            console.warn(
+                "Email staff search failed:",
+                error
+            );
+
+        }
+
+    }
+
+
+    // -------------------------------------------------
+    // NO STAFF PROFILE
+    // -------------------------------------------------
+
+    if (!staffSnapshot) {
+
+        showAccessViolation(
+            "Your Firebase login was successful, but your staff profile was not found."
+        );
+
+        return;
+
+    }
+
+
+    currentStaff = {
+
+        id: staffSnapshot.id,
+
+        ...staffSnapshot.data()
+
+    };
+
+
+    console.log(
+        "CURRENT STAFF:",
+        currentStaff
+    );
+
+
+    // =================================================
+    // STAFF DETAILS
+    // =================================================
+
+    const staffId =
+        currentStaff.staffId ||
+        currentStaff.id ||
+        "";
+
+    const name =
+        currentStaff.name ||
+        currentStaff.staffName ||
+        currentStaff.displayName ||
+        user.displayName ||
+        "Worker";
+
+    const department =
+        currentStaff.department ||
+        currentStaff.dep ||
+        currentStaff.departmentName ||
+        "";
+
+
+    // =================================================
+    // WORKER ACCESS
+    // =================================================
+
+    /*
+        IMPORTANT:
+
+        A worker does NOT need to be Department Head.
+
+        Any authenticated staff member can use this
+        portal IF a service request has been assigned
+        to that staff member.
+
+        Therefore we do NOT check:
+
+        role == Department Head
+
+        here.
+    */
+
+
+    workerName.textContent =
+        name;
+
+    workerDepartment.textContent =
+        department || "Department not set";
+
+    workerId.textContent =
+        staffId || "Staff ID not set";
+
+
+    // =================================================
+    // SHOW DASHBOARD
+    // =================================================
+
+    loadingBox.style.display =
+        "none";
+
+    accessBox.style.display =
+        "none";
+
+    dashboard.style.display =
+        "block";
+
+
+    // =================================================
+    // LOAD ASSIGNED WORK
+    // =================================================
+
+    await loadAssignedRequests();
+
+}
+
+
+// =====================================================
+// LOAD ASSIGNED SERVICE REQUESTS
+// =====================================================
+
+async function loadAssignedRequests() {
+
+    workTableBody.innerHTML = `
+
+        <tr>
+
+            <td
+                colspan="9"
+                style="text-align:center;"
+            >
+                Loading your assigned work...
+            </td>
+
+        </tr>
+
+    `;
+
+
+    const staffId =
+        currentStaff.staffId ||
+        currentStaff.id;
+
+
+    if (!staffId) {
+
+        console.error(
+            "No staffId found for worker."
+        );
+
+        showNoWork();
+
+        return;
+
+    }
+
+
+    console.log(
+        "SEARCHING ASSIGNED WORK FOR:",
+        staffId
+    );
+
+
+    try {
+
+        /*
+            IMPORTANT:
+
+            The Department Head portal must save
+            the selected worker's STAFF ID into:
+
+            assignedWorkerId
+
+            Example:
+
+            assignedWorkerId:
+                "STAFF001"
+        */
+
+
+        const q = query(
+
+            collection(
+                db,
+                "serviceRequests"
+            ),
+
+            where(
+                "assignedWorkerId",
+                "==",
+                staffId
+            )
+
+        );
+
+
+        const snapshot =
+            await getDocs(q);
+
+
+        assignedRequests = [];
+
+
+        snapshot.forEach((requestDoc) => {
+
+            assignedRequests.push({
+
+                id: requestDoc.id,
+
+                ...requestDoc.data()
+
+            });
+
+        });
+
+
+        console.log(
+            "ASSIGNED REQUESTS:",
+            assignedRequests
+        );
+
+
+        updateStatistics();
+
+        applyFilters();
+
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Error loading assigned requests:",
+            error
+        );
+
+
+        workTableBody.innerHTML = `
+
+            <tr>
+
+                <td
+                    colspan="9"
+                    style="
+                        text-align:center;
+                        color:#c62828;
+                    "
+                >
+                    Unable to load assigned work.
+                    <br>
+                    Check Firestore permissions.
+                </td>
+
+            </tr>
+
+        `;
+
+    }
+
+}
+
+
+// =====================================================
+// STATISTICS
+// =====================================================
+
+function updateStatistics() {
+
+    const assigned =
+        assignedRequests.length;
+
+
+    const newWork =
+        assignedRequests.filter(
+            request =>
+                normalizeStatus(request.status)
+                === "ASSIGNED"
+        ).length;
+
+
+    const progress =
+        assignedRequests.filter(
+            request =>
+                normalizeStatus(request.status)
+                === "IN_PROGRESS"
+        ).length;
+
+
+    const completed =
+        assignedRequests.filter(
+            request =>
+                normalizeStatus(request.status)
+                === "WORK_COMPLETED"
+        ).length;
+
+
+    document.getElementById(
+        "assignedCount"
+    ).textContent =
+        assigned;
+
+
+    document.getElementById(
+        "newCount"
+    ).textContent =
+        newWork;
+
+
+    document.getElementById(
+        "progressCount"
+    ).textContent =
+        progress;
+
+
+    document.getElementById(
+        "completedCount"
+    ).textContent =
+        completed;
+
+}
+
+
+// =====================================================
+// NORMALIZE STATUS
+// =====================================================
+
+function normalizeStatus(status) {
+
+    return String(
+        status || ""
+    )
+    .trim()
+    .toUpperCase()
+    .replace(/ /g, "_");
+
+}
+
+
+// =====================================================
+// FILTER EVENTS
+// =====================================================
+
+document
+    .getElementById("statusFilter")
+    .addEventListener(
+        "change",
+        applyFilters
+    );
+
+
+document
+    .getElementById("searchBox")
+    .addEventListener(
+        "input",
+        applyFilters
+    );
+
+
+// =====================================================
+// APPLY FILTERS
+// =====================================================
+
+function applyFilters() {
+
+    const status =
+        document
+            .getElementById("statusFilter")
+            .value;
+
+
+    const search =
+        document
+            .getElementById("searchBox")
+            .value
+            .trim()
+            .toLowerCase();
+
+
+    let filtered =
+        [...assignedRequests];
+
+
+    // -------------------------------------------------
+    // STATUS
+    // -------------------------------------------------
+
+    if (status !== "ALL") {
+
+        filtered =
+            filtered.filter(
+                request =>
+                    normalizeStatus(
+                        request.status
+                    ) === status
+            );
+
+    }
+
+
+    // -------------------------------------------------
+    // SEARCH
+    // -------------------------------------------------
+
+    if (search) {
+
+        filtered =
+            filtered.filter(
+                request => {
+
+                    const ticket =
+                        String(
+                            request.ticketId ||
+                            ""
+                        ).toLowerCase();
+
+
+                    const title =
+                        String(
+                            request.title ||
+                            request.requestTitle ||
+                            ""
+                        ).toLowerCase();
+
+
+                    const category =
+                        String(
+                            request.category ||
+                            ""
+                        ).toLowerCase();
+
+
+                    const requestor =
+                        String(
+                            request.requestorName ||
+                            request.requestor ||
+                            request.staffName ||
+                            ""
+                        ).toLowerCase();
+
+
+                    return (
+
+                        ticket.includes(search) ||
+
+                        title.includes(search) ||
+
+                        category.includes(search) ||
+
+                        requestor.includes(search)
+
+                    );
+
+                }
+            );
+
+    }
+
+
+    renderRequests(filtered);
+
+}
+
+
+// =====================================================
+// RENDER REQUESTS
+// =====================================================
+
+function renderRequests(requests) {
+
+    if (!requests.length) {
+
+        showNoWork();
+
+        return;
+
+    }
+
+
+    noWork.style.display =
+        "none";
+
+    workTableContainer.style.display =
+        "block";
+
+
+    workTableBody.innerHTML =
+        "";
+
+
+    requests.forEach(
+        (request, index) => {
+
+            const row =
+                document.createElement("tr");
+
+
+            const ticketId =
+                request.ticketId ||
+                request.id ||
+                "-";
+
+
+            const requestor =
+                request.requestorName ||
+                request.requestor ||
+                request.staffName ||
+                "-";
+
+
+            const title =
+                request.title ||
+                request.requestTitle ||
+                "-";
+
+
+            const category =
+                request.category ||
+                "-";
+
+
+            const priority =
+                request.priority ||
+                "-";
+
+
+            const status =
+                request.status ||
+                "-";
+
+
+            const expectedDate =
+                request.expectedCompletion ||
+                request.expectedDate ||
+                "-";
+
+
+            row.innerHTML = `
+
+                <td>
+                    ${index + 1}
+                </td>
+
+                <td>
+                    ${escapeHtml(ticketId)}
+                </td>
+
+                <td>
+                    ${escapeHtml(requestor)}
+                </td>
+
+                <td>
+                    ${escapeHtml(title)}
+                </td>
+
+                <td>
+                    ${escapeHtml(category)}
+                </td>
+
+                <td>
+                    ${escapeHtml(priority)}
+                </td>
+
+                <td>
+                    ${escapeHtml(status)}
+                </td>
+
+                <td>
+                    ${escapeHtml(expectedDate)}
+                </td>
+
+                <td>
+
+                    <button
+                        class="view-btn"
+                        onclick="openRequest('${request.id}')"
+                    >
+                        View
+                    </button>
+
+                </td>
+
+            `;
+
+
+            workTableBody.appendChild(row);
+
+        }
+    );
+
+}
+
+
+// =====================================================
+// NO WORK
+// =====================================================
+
+function showNoWork() {
+
+    workTableContainer.style.display =
+        "none";
+
+    noWork.style.display =
+        "block";
+
+}
+
+
+// =====================================================
+// ESCAPE HTML
+// =====================================================
+
+function escapeHtml(value) {
+
+    return String(value ?? "")
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+        .replace(
+            /</g,
+            "&lt;"
+        )
+        .replace(
+            />/g,
+            "&gt;"
+        )
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+        .replace(
+            /'/g,
+            "&#039;"
+        );
+
+}
+
+
+// =====================================================
+// ACCESS VIOLATION
+// =====================================================
+
+function showAccessViolation(message) {
+
+    loadingBox.style.display =
+        "none";
+
+    dashboard.style.display =
+        "none";
+
+    accessMessage.textContent =
+        message;
+
+    accessBox.style.display =
+        "flex";
+
+}
+
+
+window.goBack = function() {
+
+    window.history.back();
+
+};
+
+
+// =====================================================
+// DATE FORMATTER
+// =====================================================
+
+function formatDate(value) {
+
+    if (!value) {
+
+        return "-";
+
+    }
+
+
+    try {
+
+        if (
+            typeof value.toDate ===
+            "function"
+        ) {
+
+            return value
+                .toDate()
+                .toLocaleString();
+
+        }
+
+
+        if (
+            value instanceof Date
+        ) {
+
+            return value.toLocaleString();
+
+        }
+
+
+        return new Date(value)
+            .toLocaleString();
+
+    }
+
+    catch {
+
+        return String(value);
+
+    }
+
+}
+
+
+// =====================================================
+// OPEN REQUEST
+// =====================================================
+
+window.openRequest = async function(requestId) {
+
+    const request =
+        assignedRequests.find(
+            item =>
+                item.id === requestId
+        );
+
+
+    if (!request) {
+
+        alert(
+            "Service request not found."
+        );
+
+        return;
+
+    }
+
+
+    currentRequest =
+        request;
+
+
+    // Details are loaded in Part 3
+
+    document.getElementById(
+        "detailTicketId"
+    ).textContent =
+        request.ticketId ||
+        request.id ||
+        "-";
+
+
+    document.getElementById(
+        "detailRequestor"
+    ).textContent =
+        request.requestorName ||
+        request.requestor ||
+        request.staffName ||
+        "-";
+
+
+    document.getElementById(
+        "detailDepartment"
+    ).textContent =
+        request.requestorDepartment ||
+        request.department ||
+        "-";
+
+
+    document.getElementById(
+        "detailCategory"
+    ).textContent =
+        request.category ||
+        "-";
+
+
+    document.getElementById(
+        "detailPriority"
+    ).textContent =
+        request.priority ||
+        "-";
+
+
+    document.getElementById(
+        "detailStatus"
+    ).textContent =
+        request.status ||
+        "-";
+
+
+    document.getElementById(
+        "detailLocation"
+    ).textContent =
+        request.location ||
+        "-";
+
+
+    document.getElementById(
+        "detailWorker"
+    ).textContent =
+        request.assignedWorkerName ||
+        request.workerName ||
+        currentStaff.name ||
+        "Assigned Worker";
+
+
+    document.getElementById(
+        "detailExpectedDate"
+    ).textContent =
+        request.expectedCompletion ||
+        request.expectedDate ||
+        "-";
+
+
+    document.getElementById(
+        "detailTitle"
+    ).textContent =
+        request.title ||
+        request.requestTitle ||
+        "-";
+
+
+    document.getElementById(
+        "detailDescription"
+    ).textContent =
+        request.description ||
+        "-";
+
+
+    document.getElementById(
+        "detailHeadRemarks"
+    ).textContent =
+        request.headRemarks ||
+        "No remarks";
+
+
+    document.getElementById(
+        "workerRemarks"
+    ).value =
+        "";
+
+
+    document.getElementById(
+        "completionDetails"
+    ).value =
+        "";
+
+
+    updateActionButtons();
+
+
+    document.getElementById(
+        "requestModal"
+    ).style.display =
+        "flex";
+
+
+    await loadTimeline(requestId);
+
+};
+
+
+// =====================================================
+// CLOSE MODAL
+// =====================================================
+
+window.closeModal = function() {
+
+    document.getElementById(
+        "requestModal"
+    ).style.display =
+        "none";
+
+    currentRequest =
+        null;
+
+};
+
+
+// =====================================================
+// UPDATE ACTION BUTTONS
+// =====================================================
+
+function updateActionButtons() {
+
+    if (!currentRequest) {
+
+        return;
+
+    }
+
+
+    const status =
+        normalizeStatus(
+            currentRequest.status
+        );
+
+
+    const startButton =
+        document.getElementById(
+            "startWorkBtn"
+        );
+
+
+    const completeButton =
+        document.getElementById(
+            "completeWorkBtn"
+        );
+
+
+    if (
+        status === "ASSIGNED" ||
+        status === "RECEIVED" ||
+        status === "SUBMITTED"
+    ) {
+
+        startButton.disabled =
+            false;
+
+        completeButton.disabled =
+            true;
+
+    }
+
+    else if (
+        status === "IN_PROGRESS"
+    ) {
+
+        startButton.disabled =
+            true;
+
+        completeButton.disabled =
+            false;
+
+    }
+
+    else {
+
+        startButton.disabled =
+            true;
+
+        completeButton.disabled =
+            true;
+
+    }
+
+}
+
+
+// =====================================================
+// TIMELINE
+// =====================================================
+
+async function loadTimeline(requestId) {
+
+    const timeline =
+        document.getElementById(
+            "requestTimeline"
+        );
+
+
+    timeline.innerHTML = `
+
+        <div class="timeline-item">
+
+            <strong>
+                Loading timeline...
+            </strong>
+
+        </div>
+
+    `;
+
+
+    // Timeline loading/update will be completed
+    // in Part 3.
+
+
+    timeline.innerHTML = `
+
+        <div class="timeline-item">
+
+            <strong>
+                Request Assigned
+            </strong>
+
+            <small>
+                This request is assigned to you.
+            </small>
+
+        </div>
+
+    `;
+
+}
+
+// =====================================================
+// START WORK
+// =====================================================
+
+window.startWork = async function () {
+
+    if (!currentRequest) {
+
+        alert("Please select a service request.");
+
+        return;
+
+    }
+
+
+    if (!currentUser || !currentStaff) {
+
+        alert("Worker account not loaded.");
+
+        return;
+
+    }
+
+
+    const currentStatus =
+        normalizeStatus(
+            currentRequest.status
+        );
+
+
+    if (
+        currentStatus !== "ASSIGNED" &&
+        currentStatus !== "RECEIVED"
+    ) {
+
+        alert(
+            "This request cannot be started now."
+        );
+
+        return;
+
+    }
+
+
+    const remarks =
+        document.getElementById(
+            "workerRemarks"
+        ).value.trim();
+
+
+    const requestRef =
+        doc(
+            db,
+            "serviceRequests",
+            currentRequest.id
+        );
+
+
+    try {
+
+        const timelineEntry = {
+
+            action: "WORK_STARTED",
+
+            status: "IN_PROGRESS",
+
+            staffId:
+                currentStaff.staffId ||
+                currentStaff.id,
+
+            staffName:
+                currentStaff.name ||
+                currentStaff.staffName ||
+                currentUser.displayName ||
+                "Worker",
+
+            remarks:
+                remarks || "Work started",
+
+            timestamp:
+                new Date().toISOString()
+
+        };
+
+
+        const existingTimeline =
+            Array.isArray(
+                currentRequest.timeline
+            )
+                ? currentRequest.timeline
+                : [];
+
+
+        await updateDoc(
+            requestRef,
+            {
+
+                status:
+                    "IN_PROGRESS",
+
+                workerRemarks:
+                    remarks || "",
+
+                workStartedAt:
+                    serverTimestamp(),
+
+                updatedAt:
+                    serverTimestamp(),
+
+                timeline: [
+                    ...existingTimeline,
+                    timelineEntry
+                ]
+
+            }
+        );
+
+
+        currentRequest.status =
+            "IN_PROGRESS";
+
+
+        currentRequest.workerRemarks =
+            remarks || "";
+
+
+        currentRequest.timeline = [
+
+            ...existingTimeline,
+
+            timelineEntry
+
+        ];
+
+
+        alert(
+            "Work started successfully."
+        );
+
+
+        updateStatistics();
+
+        applyFilters();
+
+        updateActionButtons();
+
+        await loadTimeline(
+            currentRequest.id
+        );
+
+
+        document.getElementById(
+            "detailStatus"
+        ).textContent =
+            "IN_PROGRESS";
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "START WORK ERROR:",
+            error
+        );
+
+
+        alert(
+            "Unable to start work.\n\n" +
+            error.message
+        );
+
+    }
+
+};
+
+
+// =====================================================
+// COMPLETE WORK
+// =====================================================
+
+window.completeWork = async function () {
+
+    if (!currentRequest) {
+
+        alert(
+            "Please select a service request."
+        );
+
+        return;
+
+    }
+
+
+    if (!currentUser || !currentStaff) {
+
+        alert(
+            "Worker account not loaded."
+        );
+
+        return;
+
+    }
+
+
+    const currentStatus =
+        normalizeStatus(
+            currentRequest.status
+        );
+
+
+    if (
+        currentStatus !== "IN_PROGRESS"
+    ) {
+
+        alert(
+            "You must start the work before completing it."
+        );
+
+        return;
+
+    }
+
+
+    const workerRemarks =
+        document
+            .getElementById(
+                "workerRemarks"
+            )
+            .value
+            .trim();
+
+
+    const completionDetails =
+        document
+            .getElementById(
+                "completionDetails"
+            )
+            .value
+            .trim();
+
+
+    if (!completionDetails) {
+
+        alert(
+            "Please enter the completion details."
+        );
+
+        document
+            .getElementById(
+                "completionDetails"
+            )
+            .focus();
+
+        return;
+
+    }
+
+
+    const requestRef =
+        doc(
+            db,
+            "serviceRequests",
+            currentRequest.id
+        );
+
+
+    try {
+
+        const timelineEntry = {
+
+            action:
+                "WORK_COMPLETED",
+
+            status:
+                "WORK_COMPLETED",
+
+            staffId:
+                currentStaff.staffId ||
+                currentStaff.id,
+
+            staffName:
+                currentStaff.name ||
+                currentStaff.staffName ||
+                currentUser.displayName ||
+                "Worker",
+
+            remarks:
+                workerRemarks || "",
+
+            completionDetails:
+                completionDetails,
+
+            timestamp:
+                new Date().toISOString()
+
+        };
+
+
+        const existingTimeline =
+            Array.isArray(
+                currentRequest.timeline
+            )
+                ? currentRequest.timeline
+                : [];
+
+
+        await updateDoc(
+            requestRef,
+            {
+
+                status:
+                    "WORK_COMPLETED",
+
+                workerRemarks:
+                    workerRemarks || "",
+
+                completionDetails:
+                    completionDetails,
+
+                workCompletedAt:
+                    serverTimestamp(),
+
+                updatedAt:
+                    serverTimestamp(),
+
+                timeline: [
+                    ...existingTimeline,
+                    timelineEntry
+                ]
+
+            }
+        );
+
+
+        currentRequest.status =
+            "WORK_COMPLETED";
+
+
+        currentRequest.workerRemarks =
+            workerRemarks || "";
+
+
+        currentRequest.completionDetails =
+            completionDetails;
+
+
+        currentRequest.timeline = [
+
+            ...existingTimeline,
+
+            timelineEntry
+
+        ];
+
+
+        alert(
+            "Work marked as completed successfully."
+        );
+
+
+        updateStatistics();
+
+        applyFilters();
+
+        updateActionButtons();
+
+
+        document.getElementById(
+            "detailStatus"
+        ).textContent =
+            "WORK_COMPLETED";
+
+
+        await loadTimeline(
+            currentRequest.id
+        );
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "COMPLETE WORK ERROR:",
+            error
+        );
+
+
+        alert(
+            "Unable to complete the work.\n\n" +
+            error.message
+        );
+
+    }
+
+};
+
+
+// =====================================================
+// LOAD TIMELINE FROM REQUEST DOCUMENT
+// =====================================================
+
+async function loadTimeline(requestId) {
+
+    const timeline =
+        document.getElementById(
+            "requestTimeline"
+        );
+
+
+    timeline.innerHTML = `
+
+        <div
+            class="timeline-item"
+        >
+
+            <strong>
+                Loading timeline...
+            </strong>
+
+        </div>
+
+    `;
+
+
+    try {
+
+        const requestRef =
+            doc(
+                db,
+                "serviceRequests",
+                requestId
+            );
+
+
+        const requestSnapshot =
+            await getDoc(
+                requestRef
+            );
+
+
+        if (
+            !requestSnapshot.exists()
+        ) {
+
+            timeline.innerHTML = `
+
+                <div
+                    class="timeline-item"
+                >
+
+                    <strong>
+                        Timeline unavailable
+                    </strong>
+
+                </div>
+
+            `;
+
+            return;
+
+        }
+
+
+        const data =
+            requestSnapshot.data();
+
+
+        currentRequest = {
+
+            ...currentRequest,
+
+            ...data,
+
+            id: requestId
+
+        };
+
+
+        const entries =
+            Array.isArray(
+                data.timeline
+            )
+                ? data.timeline
+                : [];
+
+
+        if (!entries.length) {
+
+            timeline.innerHTML = `
+
+                <div
+                    class="timeline-item"
+                >
+
+                    <strong>
+                        Request Assigned
+                    </strong>
+
+                    <small>
+                        This request is assigned to you.
+                    </small>
+
+                </div>
+
+            `;
+
+            return;
+
+        }
+
+
+        timeline.innerHTML =
+            "";
+
+
+        const reversedEntries =
+            [...entries].reverse();
+
+
+        reversedEntries.forEach(
+            entry => {
+
+                const item =
+                    document.createElement(
+                        "div"
+                    );
+
+
+                item.className =
+                    "timeline-item";
+
+
+                const action =
+                    formatTimelineAction(
+                        entry.action
+                    );
+
+
+                const staffName =
+                    entry.staffName ||
+                    "Staff";
+
+
+                const remarks =
+                    entry.remarks ||
+                    "";
+
+
+                const completionDetails =
+                    entry.completionDetails ||
+                    "";
+
+
+                const timestamp =
+                    entry.timestamp
+                        ? formatDate(
+                            entry.timestamp
+                        )
+                        : "";
+
+
+                item.innerHTML = `
+
+                    <strong>
+                        ${escapeHtml(action)}
+                    </strong>
+
+                    <small>
+                        By:
+                        ${escapeHtml(staffName)}
+                    </small>
+
+                    ${
+                        remarks
+                            ? `
+                                <div
+                                    style="
+                                        margin-top:7px;
+                                    "
+                                >
+                                    ${escapeHtml(
+                                        remarks
+                                    )}
+                                </div>
+                            `
+                            : ""
+                    }
+
+                    ${
+                        completionDetails
+                            ? `
+                                <div
+                                    style="
+                                        margin-top:7px;
+                                    "
+                                >
+                                    <strong>
+                                        Completion:
+                                    </strong>
+
+                                    ${escapeHtml(
+                                        completionDetails
+                                    )}
+                                </div>
+                            `
+                            : ""
+                    }
+
+                    ${
+                        timestamp
+                            ? `
+                                <small
+                                    style="
+                                        display:block;
+                                        margin-top:7px;
+                                    "
+                                >
+                                    ${escapeHtml(
+                                        timestamp
+                                    )}
+                                </small>
+                            `
+                            : ""
+                    }
+
+                `;
+
+
+                timeline.appendChild(
+                    item
+                );
+
+            }
+        );
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "TIMELINE ERROR:",
+            error
+        );
+
+
+        timeline.innerHTML = `
+
+            <div
+                class="timeline-item"
+            >
+
+                <strong>
+                    Unable to load timeline
+                </strong>
+
+                <small>
+                    ${escapeHtml(
+                        error.message
+                    )}
+                </small>
+
+            </div>
+
+        `;
+
+    }
+
+}
+
+
+// =====================================================
+// FORMAT TIMELINE ACTION
+// =====================================================
+
+function formatTimelineAction(action) {
+
+    const value =
+        String(
+            action || ""
+        )
+        .trim()
+        .toUpperCase();
+
+
+    const actions = {
+
+        REQUEST_SUBMITTED:
+            "Request Submitted",
+
+        REQUEST_RECEIVED:
+            "Request Received",
+
+        WORKER_ASSIGNED:
+            "Worker Assigned",
+
+        WORK_STARTED:
+            "Work Started",
+
+        WORK_COMPLETED:
+            "Work Completed",
+
+        HEAD_VERIFICATION:
+            "Head Verification",
+
+        REQUEST_CLOSED:
+            "Request Closed",
+
+        REQUEST_REOPENED:
+            "Request Reopened"
+
+    };
+
+
+    return (
+        actions[value] ||
+        value
+            .replace(/_/g, " ")
+            .replace(
+                /\b\w/g,
+                letter =>
+                    letter.toUpperCase()
+            )
+    );
+
+}
+
+
+// =====================================================
+// REFRESH WORKER REQUESTS
+// =====================================================
+
+window.refreshWorkerRequests =
+    async function () {
+
+        await loadAssignedRequests();
+
+    };
+
+
+// =====================================================
+// CLOSE MODAL WHEN CLICKING OUTSIDE
+// =====================================================
+
+document
+    .getElementById("requestModal")
+    .addEventListener(
+        "click",
+        function (event) {
+
+            if (
+                event.target ===
+                this
+            ) {
+
+                closeModal();
+
+            }
+
+        }
+    );
+
+
+// =====================================================
+// ESC KEY
+// =====================================================
+
+document.addEventListener(
+    "keydown",
+    function (event) {
+
+        if (
+            event.key === "Escape"
+        ) {
+
+            closeModal();
+
+        }
+
+    }
+);
+
+
+// =====================================================
+// FINAL
+// =====================================================
+
+console.log(
+    "Worker Portal Loaded Successfully"
+);
+
+console.log(
+    "Worker Portal Part 2 Loaded"
+);
+
+  
+
+</script>
+
+</script>
+
+
+</body>
+
+</html>
