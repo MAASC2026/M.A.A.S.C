@@ -1851,8 +1851,40 @@ async function findCurrentStaff(){
 
 
 // =====================================================
-// AUTH STATE
+// WORKER ACCESS CHECK
 // =====================================================
+
+function isAssignedWorker(staff){
+
+    if(!staff){
+        return false;
+    }
+
+    const role =
+        normalize(
+            staff.role
+        );
+
+    const active =
+        staff.workerActive === true;
+
+    const assigned =
+        staff.workerAssigned === true;
+
+    return (
+        role === "WORKER" &&
+        active &&
+        assigned
+    );
+
+}
+
+
+// =====================================================
+// AUTH STATE + STAFF LOGIN FALLBACK
+// =====================================================
+
+let workerAccessChecked = false;
 
 onAuthStateChanged(
     auth,
@@ -1863,27 +1895,31 @@ onAuthStateChanged(
             user
         );
 
+        currentUser = user || null;
 
-        if(!user){
+        loadingScreen.style.display =
+            "flex";
 
-            showAccessViolation(
-                "You are not logged in. Please login first."
-            );
+        accessScreen.style.display =
+            "none";
 
-            return;
-
-        }
-
-
-        currentUser =
-            user;
-
+        dashboard.style.display =
+            "none";
 
         loadingMessage.textContent =
             "Loading staff profile...";
 
-
         try{
+
+            /*
+             * IMPORTANT:
+             *
+             * The college staff login may use Firebase Authentication
+             * OR the existing staff session/localStorage.
+             *
+             * Therefore a null Firebase Auth user must NOT immediately
+             * mean that the staff is logged out.
+             */
 
             currentStaff =
                 await findCurrentStaff();
@@ -1892,7 +1928,9 @@ onAuthStateChanged(
             if(!currentStaff){
 
                 showAccessViolation(
-                    "Firebase login is valid, but your staff profile was not found."
+                    user
+                        ? "Firebase login is valid, but your staff profile was not found."
+                        : "You are not logged in. Please login first."
                 );
 
                 return;
@@ -1901,9 +1939,38 @@ onAuthStateChanged(
 
 
             console.log(
-                "CURRENT WORKER:",
+                "WORKER STAFF PROFILE:",
                 currentStaff
             );
+
+
+            // =================================================
+            // STRICT WORKER CHECK
+            // =================================================
+
+            if(!isAssignedWorker(currentStaff)){
+
+                console.error(
+                    "WORKER ACCESS DENIED:",
+                    {
+                        staffId:
+                            getStaffId(currentStaff),
+                        role:
+                            currentStaff.role,
+                        workerActive:
+                            currentStaff.workerActive,
+                        workerAssigned:
+                            currentStaff.workerAssigned
+                    }
+                );
+
+                showAccessViolation(
+                    "Access denied. You are not assigned as an active Worker."
+                );
+
+                return;
+
+            }
 
 
             const staffId =
@@ -1911,17 +1978,26 @@ onAuthStateChanged(
                     currentStaff
                 );
 
-
             const name =
                 getStaffName(
                     currentStaff
                 );
 
-
             const department =
                 getDepartment(
                     currentStaff
                 );
+
+
+            if(!staffId){
+
+                showAccessViolation(
+                    "Worker Staff ID was not found."
+                );
+
+                return;
+
+            }
 
 
             document.getElementById(
@@ -1944,8 +2020,26 @@ onAuthStateChanged(
                 staffId;
 
 
-            showDashboard();
+            workerAccessChecked =
+                true;
 
+
+            console.log(
+                "WORKER ACCESS GRANTED:",
+                {
+                    staffId,
+                    name,
+                    department,
+                    role: currentStaff.role,
+                    workerActive:
+                        currentStaff.workerActive,
+                    workerAssigned:
+                        currentStaff.workerAssigned
+                }
+            );
+
+
+            showDashboard();
 
             await loadRequests();
 
@@ -1957,7 +2051,6 @@ onAuthStateChanged(
                 "WORKER INITIALIZATION ERROR:",
                 error
             );
-
 
             showAccessViolation(
                 error.message ||
