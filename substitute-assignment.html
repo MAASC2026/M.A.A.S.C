@@ -758,144 +758,33 @@ function setToday() {
 // ============================================================
 // LOAD STAFF
 // ============================================================
+function showLoading(text = "Please wait...") {
 
-async function loadStaff() {
+    const overlay = document.getElementById("loadingOverlay");
+    const loadingText = document.getElementById("loadingText");
 
-    try {
-
-        showLoading(
-            "Loading staff..."
-        );
-
-
-        const snapshot =
-            await getDocs(
-                collection(
-                    db,
-                    STAFF_COLLECTION
-                )
-            );
-
-
-        allStaff = [];
-
-
-        snapshot.forEach(
-            docSnap => {
-
-                const data =
-                    docSnap.data();
-
-                const name =
-                    String(
-                        data.name || ""
-                    ).trim();
-
-                const department =
-                    String(
-                        data.department || ""
-                    ).trim();
-
-
-                if (
-                    name &&
-                    department
-                ) {
-
-                    allStaff.push({
-
-                        id:
-                            docSnap.id,
-
-                        name:
-                            name,
-
-                        department:
-                            department
-
-                    });
-
-                }
-
-            }
-        );
-
-
-        allStaff.sort(
-            (a, b) =>
-                a.name.localeCompare(
-                    b.name,
-                    undefined,
-                    {
-                        sensitivity:
-                            "base"
-                    }
-                )
-        );
-
-
-        staffSelector.innerHTML =
-            `<option value="">
-                Select your name
-            </option>`;
-
-
-        allStaff.forEach(
-            staff => {
-
-                const option =
-                    document.createElement(
-                        "option"
-                    );
-
-                option.value =
-                    staff.id;
-
-                option.textContent =
-                    `${staff.name} — ${staff.department}`;
-
-                staffSelector.appendChild(
-                    option
-                );
-
-            }
-        );
-
-
-        staffCount.textContent =
-            allStaff.length;
-
-
-        hideLoading();
-
-
-    } catch (error) {
-
-        console.error(
-            "STAFF LOAD ERROR:",
-            error
-        );
-
-
-        hideLoading();
-
-
-        staffSelector.innerHTML =
-            `<option value="">
-                Unable to load staff
-            </option>`;
-
-
-        showMessage(
-            "Unable to load staff. Check Firestore rules and collection name.",
-            "error"
-        );
-
+    if (loadingText) {
+        loadingText.textContent = text;
     }
 
+    if (overlay) {
+        overlay.style.display = "flex";
+    }
+
+    document.body.style.cursor = "wait";
 }
 
 
+function hideLoading() {
+
+    const overlay = document.getElementById("loadingOverlay");
+
+    if (overlay) {
+        overlay.style.display = "none";
+    }
+
+    document.body.style.cursor = "default";
+}
 // ============================================================
 // STAFF SELECTION
 // ============================================================
