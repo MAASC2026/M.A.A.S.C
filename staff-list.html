@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html>
 <head>
@@ -5,15 +6,32 @@
 <title>Staff List</title>
 
 <style>
-table{
-width:100%;
-border-collapse:collapse;
+table {
+    width: 100%;
+    border-collapse: collapse;
 }
 
-th,td{
-border:1px solid #ccc;
-padding:10px;
-text-align:center;
+th, td {
+    border: 1px solid #ccc;
+    padding: 10px;
+    text-align: center;
+}
+
+th {
+    background: #f2f2f2;
+}
+
+.delete-btn {
+    background: #dc3545;
+    color: white;
+    border: none;
+    padding: 7px 14px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.delete-btn:hover {
+    background: #b02a37;
 }
 </style>
 </head>
@@ -23,16 +41,17 @@ text-align:center;
 <h2>Staff List</h2>
 
 <table>
-
 <thead>
 <tr>
-<th>Staff ID</th>
-<th>Name</th>
-<th>Department</th>
+    <th>Staff ID</th>
+    <th>Name</th>
+    <th>Department</th>
+    <th>Action</th>
 </tr>
 </thead>
 
-<tbody id="tbody"></tbody>
+<tbody id="tbody">
+</tbody>
 
 </table>
 
@@ -41,31 +60,151 @@ text-align:center;
 import { db } from "./firebase-config.js";
 
 import {
-collection,
-getDocs
+    collection,
+    getDocs,
+    deleteDoc,
+    doc
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const tbody = document.getElementById("tbody");
+
+
+// =====================================================
+// LOAD STAFF
+// =====================================================
+
+async function loadStaff() {
+
+    tbody.innerHTML = `
+        <tr>
+            <td colspan="4">Loading staff...</td>
+        </tr>
+    `;
+
+    try {
+
+        const querySnapshot = await getDocs(
+            collection(db, "staff")
+        );
+
+        tbody.innerHTML = "";
+
+        if (querySnapshot.empty) {
+
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="4">No staff found</td>
+                </tr>
+            `;
+
+            return;
+        }
+
+
+        querySnapshot.forEach((docu) => {
+
+            const data = docu.data();
+
+            const staffId = data.staffId || "";
+            const name = data.name || "";
+            const department = data.department || "";
+
+            tbody.innerHTML += `
+                <tr id="row-${docu.id}">
+                    <td>${staffId}</td>
+                    <td>${name}</td>
+                    <td>${department}</td>
+
+                    <td>
+                        <button
+                            class="delete-btn"
+                            onclick="deleteStaff('${docu.id}', '${staffId}', '${name.replace(/'/g, "\\'")}')">
+                            Delete
+                        </button>
+                    </td>
+                </tr>
+            `;
+        });
+
+    } catch (error) {
+
+        console.error("Error loading staff:", error);
+
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="4">
+                    Error loading staff: ${error.message}
+                </td>
+            </tr>
+        `;
+    }
 }
-from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-const tbody=document.getElementById("tbody");
 
-const querySnapshot=
-await getDocs(collection(db,"staff"));
+// =====================================================
+// DELETE STAFF
+// =====================================================
 
-querySnapshot.forEach((docu)=>{
+window.deleteStaff = async function(docId, staffId, name) {
 
-const data=docu.data();
+    const confirmed = confirm(
+        "Are you sure you want to delete this staff member?\n\n" +
+        "Staff ID: " + staffId + "\n" +
+        "Name: " + name
+    );
 
-tbody.innerHTML+=`
-<tr>
-<td>${data.staffId}</td>
-<td>${data.name}</td>
-<td>${data.department}</td>
-</tr>
-`;
+    if (!confirmed) {
+        return;
+    }
 
-});
+
+    try {
+
+        await deleteDoc(
+            doc(db, "staff", docId)
+        );
+
+
+        alert("Staff deleted successfully.");
+
+        // Remove row immediately
+        const row = document.getElementById("row-" + docId);
+
+        if (row) {
+            row.remove();
+        }
+
+
+        // Check if table is now empty
+        if (tbody.children.length === 0) {
+
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="4">No staff found</td>
+                </tr>
+            `;
+        }
+
+    } catch (error) {
+
+        console.error("Delete error:", error);
+
+        alert(
+            "Unable to delete staff.\n\n" +
+            error.message
+        );
+    }
+};
+
+
+// =====================================================
+// INITIAL LOAD
+// =====================================================
+
+loadStaff();
 
 </script>
 
 </body>
 </html>
+```
