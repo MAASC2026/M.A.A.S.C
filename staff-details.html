@@ -10,7 +10,7 @@
         name="viewport"
         content="width=device-width, initial-scale=1.0">
 
-    <title>My Personal Details</title>
+    <title>My Staff Details</title>
 
 
     <style>
@@ -29,19 +29,21 @@
         }
 
 
-        /* ================================
+        /* =====================================================
            HEADER
-        ================================= */
+        ====================================================== */
 
         .header {
             background: #500454;
             color: white;
             padding: 20px 30px;
+
             display: flex;
             justify-content: space-between;
             align-items: center;
+
             flex-wrap: wrap;
-            gap: 10px;
+            gap: 15px;
         }
 
 
@@ -65,65 +67,79 @@
         .staff-info strong {
             display: block;
             font-size: 16px;
+            margin-bottom: 4px;
         }
 
 
         .staff-info span {
+            display: block;
             font-size: 13px;
             opacity: 0.9;
         }
 
 
-        /* ================================
-           CONTAINER
-        ================================= */
+        /* =====================================================
+           MAIN CONTAINER
+        ====================================================== */
 
         .container {
             width: 95%;
-            max-width: 1100px;
+            max-width: 1150px;
             margin: 25px auto;
         }
 
 
-        /* ================================
+        /* =====================================================
            CARD
-        ================================= */
+        ====================================================== */
 
         .card {
             background: white;
+            border-radius: 10px;
             padding: 25px;
             margin-bottom: 20px;
-            border-radius: 10px;
+
             box-shadow:
-                0 3px 12px rgba(0,0,0,0.08);
+                0 3px 12px rgba(0, 0, 0, 0.08);
         }
 
 
         .card h2 {
             color: #500454;
             font-size: 20px;
+
+            border-bottom: 2px solid #eeeeee;
+
             padding-bottom: 10px;
             margin-bottom: 20px;
-            border-bottom: 2px solid #eeeeee;
         }
 
 
-        /* ================================
-           PERSONAL GRID
-        ================================= */
+        /* =====================================================
+           DETAILS GRID
+        ====================================================== */
 
         .details-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 18px;
+            gap: 16px;
         }
 
 
+        /* =====================================================
+           DETAIL BOX
+        ====================================================== */
+
         .detail-box {
             border: 1px solid #e2e8f0;
-            border-radius: 7px;
+
+            border-radius: 8px;
+
             padding: 14px;
+
             background: #fafafa;
+
+            min-height: 70px;
         }
 
 
@@ -133,42 +149,59 @@
 
 
         .detail-label {
+            font-size: 11px;
+
             color: #64748b;
-            font-size: 12px;
+
             font-weight: bold;
-            margin-bottom: 6px;
+
+            margin-bottom: 7px;
+
             text-transform: uppercase;
+
+            letter-spacing: 0.3px;
         }
 
 
         .detail-value {
-            color: #1e293b;
             font-size: 15px;
-            min-height: 20px;
+
+            color: #1e293b;
+
+            line-height: 1.5;
+
             word-break: break-word;
+
+            white-space: pre-wrap;
         }
 
 
-        /* ================================
+        /* =====================================================
            LOADING
-        ================================= */
+        ====================================================== */
 
-        .loading {
+        .loading-card {
             text-align: center;
-            padding: 40px;
-            color: #500454;
-            font-size: 16px;
+            padding: 50px 20px;
         }
 
 
         .spinner {
-            width: 35px;
-            height: 35px;
+            width: 40px;
+            height: 40px;
+
             border: 4px solid #ddd;
-            border-top: 4px solid #500454;
+
+            border-top:
+                4px solid #500454;
+
             border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 15px;
+
+            animation:
+                spin 1s linear infinite;
+
+            margin:
+                0 auto 15px;
         }
 
 
@@ -185,52 +218,89 @@
         }
 
 
-        /* ================================
+        .loading-text {
+            color: #500454;
+            font-size: 15px;
+        }
+
+
+        /* =====================================================
            MESSAGE
-        ================================= */
+        ====================================================== */
 
         .message {
             display: none;
-            padding: 18px;
+
+            padding: 15px;
+
             border-radius: 7px;
-            text-align: center;
+
             margin-bottom: 20px;
+
+            text-align: center;
+
+            font-size: 14px;
         }
 
 
         .message.error {
             display: block;
+
             background: #fee2e2;
+
             color: #991b1b;
         }
 
 
         .message.info {
             display: block;
+
             background: #dbeafe;
+
             color: #1e40af;
         }
 
 
-        /* ================================
-           BUTTON
-        ================================= */
+        .message.success {
+            display: block;
 
-        .button-area {
-            margin-top: 20px;
+            background: #dcfce7;
+
+            color: #166534;
+        }
+
+
+        /* =====================================================
+           LOGOUT
+        ====================================================== */
+
+        .bottom-area {
             display: flex;
+
             justify-content: flex-end;
+
+            margin-top: 10px;
+
+            margin-bottom: 30px;
         }
 
 
         .logout-btn {
-            background: #dc2626;
-            color: white;
             border: none;
-            padding: 10px 18px;
+
+            background: #dc2626;
+
+            color: white;
+
+            padding: 11px 22px;
+
             border-radius: 6px;
-            cursor: pointer;
+
+            font-size: 14px;
+
             font-weight: bold;
+
+            cursor: pointer;
         }
 
 
@@ -239,14 +309,19 @@
         }
 
 
-        /* ================================
+        /* =====================================================
            MOBILE
-        ================================= */
+        ====================================================== */
 
         @media (max-width: 700px) {
 
             .header {
                 padding: 18px;
+            }
+
+
+            .header-left h1 {
+                font-size: 20px;
             }
 
 
@@ -257,6 +332,12 @@
 
             .container {
                 width: 92%;
+                margin-top: 18px;
+            }
+
+
+            .card {
+                padding: 18px;
             }
 
 
@@ -269,6 +350,16 @@
                 grid-column: auto;
             }
 
+
+            .bottom-area {
+                justify-content: stretch;
+            }
+
+
+            .logout-btn {
+                width: 100%;
+            }
+
         }
 
     </style>
@@ -279,9 +370,9 @@
 <body>
 
 
-    <!-- =================================
+    <!-- =====================================================
          HEADER
-    ================================== -->
+    ====================================================== -->
 
     <div class="header">
 
@@ -289,11 +380,11 @@
         <div class="header-left">
 
             <h1>
-                My Personal Details
+                My Staff Details
             </h1>
 
             <p>
-                Staff Portal
+                Staff Personal & Professional Information
             </p>
 
         </div>
@@ -301,11 +392,15 @@
 
         <div class="staff-info">
 
-            <strong id="staffName">
+            <strong id="headerStaffName">
                 Loading...
             </strong>
 
-            <span id="staffId">
+            <span id="headerStaffId">
+                Loading...
+            </span>
+
+            <span id="headerDepartment">
                 Loading...
             </span>
 
@@ -316,12 +411,14 @@
 
 
 
-    <!-- =================================
+    <!-- =====================================================
          MAIN
-    ================================== -->
+    ====================================================== -->
 
     <div class="container">
 
+
+        <!-- MESSAGE -->
 
         <div
             id="message"
@@ -329,25 +426,121 @@
         </div>
 
 
-        <!-- =================================
+
+        <!-- =================================================
              LOADING
-        ================================== -->
+        ================================================== -->
 
         <div
-            id="loading"
-            class="card loading">
+            id="loadingCard"
+            class="card loading-card">
 
             <div class="spinner"></div>
 
-            Loading your personal details...
+            <div class="loading-text">
+
+                Loading your details...
+
+            </div>
 
         </div>
 
 
 
-        <!-- =================================
+        <!-- =================================================
+             BASIC STAFF INFORMATION
+        ================================================== -->
+
+        <div
+            id="basicCard"
+            class="card"
+            style="display:none;">
+
+            <h2>
+                Staff Information
+            </h2>
+
+
+            <div class="details-grid">
+
+
+                <!-- STAFF ID -->
+
+                <div class="detail-box">
+
+                    <div class="detail-label">
+                        Staff ID
+                    </div>
+
+                    <div
+                        id="viewStaffId"
+                        class="detail-value">
+                        -
+                    </div>
+
+                </div>
+
+
+                <!-- STAFF NAME -->
+
+                <div class="detail-box">
+
+                    <div class="detail-label">
+                        Staff Name
+                    </div>
+
+                    <div
+                        id="viewStaffName"
+                        class="detail-value">
+                        -
+                    </div>
+
+                </div>
+
+
+                <!-- DEPARTMENT -->
+
+                <div class="detail-box">
+
+                    <div class="detail-label">
+                        Department
+                    </div>
+
+                    <div
+                        id="viewDepartment"
+                        class="detail-value">
+                        -
+                    </div>
+
+                </div>
+
+
+                <!-- DESIGNATION -->
+
+                <div class="detail-box">
+
+                    <div class="detail-label">
+                        Designation
+                    </div>
+
+                    <div
+                        id="viewDesignation"
+                        class="detail-value">
+                        -
+                    </div>
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+
+
+        <!-- =================================================
              PERSONAL DETAILS
-        ================================== -->
+        ================================================== -->
 
         <div
             id="personalCard"
@@ -362,40 +555,6 @@
             <div class="details-grid">
 
 
-                <!-- STAFF NAME -->
-
-                <div class="detail-box">
-
-                    <div class="detail-label">
-                        Staff Name
-                    </div>
-
-                    <div
-                        class="detail-value"
-                        id="viewStaffName">
-                        -
-                    </div>
-
-                </div>
-
-
-                <!-- STAFF ID -->
-
-                <div class="detail-box">
-
-                    <div class="detail-label">
-                        Staff ID
-                    </div>
-
-                    <div
-                        class="detail-value"
-                        id="viewStaffId">
-                        -
-                    </div>
-
-                </div>
-
-
                 <!-- DATE OF BIRTH -->
 
                 <div class="detail-box">
@@ -405,8 +564,8 @@
                     </div>
 
                     <div
-                        class="detail-value"
-                        id="dateOfBirth">
+                        id="viewDateOfBirth"
+                        class="detail-value">
                         -
                     </div>
 
@@ -422,8 +581,8 @@
                     </div>
 
                     <div
-                        class="detail-value"
-                        id="gender">
+                        id="viewGender"
+                        class="detail-value">
                         -
                     </div>
 
@@ -439,8 +598,8 @@
                     </div>
 
                     <div
-                        class="detail-value"
-                        id="bloodGroup">
+                        id="viewBloodGroup"
+                        class="detail-value">
                         -
                     </div>
 
@@ -456,8 +615,8 @@
                     </div>
 
                     <div
-                        class="detail-value"
-                        id="maritalStatus">
+                        id="viewMaritalStatus"
+                        class="detail-value">
                         -
                     </div>
 
@@ -473,8 +632,8 @@
                     </div>
 
                     <div
-                        class="detail-value"
-                        id="personalMobile">
+                        id="viewPersonalMobile"
+                        class="detail-value">
                         -
                     </div>
 
@@ -490,8 +649,8 @@
                     </div>
 
                     <div
-                        class="detail-value"
-                        id="personalEmail">
+                        id="viewPersonalEmail"
+                        class="detail-value">
                         -
                     </div>
 
@@ -507,8 +666,8 @@
                     </div>
 
                     <div
-                        class="detail-value"
-                        id="alternateMobile">
+                        id="viewAlternateMobile"
+                        class="detail-value">
                         -
                     </div>
 
@@ -524,8 +683,8 @@
                     </div>
 
                     <div
-                        class="detail-value"
-                        id="nationality">
+                        id="viewNationality"
+                        class="detail-value">
                         -
                     </div>
 
@@ -541,8 +700,8 @@
                     </div>
 
                     <div
-                        class="detail-value"
-                        id="district">
+                        id="viewDistrict"
+                        class="detail-value">
                         -
                     </div>
 
@@ -558,8 +717,8 @@
                     </div>
 
                     <div
-                        class="detail-value"
-                        id="state">
+                        id="viewState"
+                        class="detail-value">
                         -
                     </div>
 
@@ -575,15 +734,15 @@
                     </div>
 
                     <div
-                        class="detail-value"
-                        id="pincode">
+                        id="viewPincode"
+                        class="detail-value">
                         -
                     </div>
 
                 </div>
 
 
-                <!-- ADDRESS -->
+                <!-- PERMANENT ADDRESS -->
 
                 <div class="detail-box full">
 
@@ -592,8 +751,8 @@
                     </div>
 
                     <div
-                        class="detail-value"
-                        id="permanentAddress">
+                        id="viewPermanentAddress"
+                        class="detail-value">
                         -
                     </div>
 
@@ -602,29 +761,145 @@
 
             </div>
 
-
         </div>
 
 
 
-        <!-- =================================
-             NO DETAILS
-        ================================== -->
+        <!-- =================================================
+             PROFESSIONAL DETAILS
+        ================================================== -->
 
         <div
-            id="noDetailsCard"
+            id="professionalCard"
             class="card"
             style="display:none;">
 
             <h2>
-                Personal Details
+                Professional Details
             </h2>
 
-            <div class="message info"
-                 style="display:block;">
 
-                Your personal details have not
-                been entered by the administrator yet.
+            <div class="details-grid">
+
+
+                <!-- QUALIFICATION -->
+
+                <div class="detail-box">
+
+                    <div class="detail-label">
+                        Highest Qualification
+                    </div>
+
+                    <div
+                        id="viewQualification"
+                        class="detail-value">
+                        -
+                    </div>
+
+                </div>
+
+
+                <!-- SPECIALIZATION -->
+
+                <div class="detail-box">
+
+                    <div class="detail-label">
+                        Specialization
+                    </div>
+
+                    <div
+                        id="viewSpecialization"
+                        class="detail-value">
+                        -
+                    </div>
+
+                </div>
+
+
+                <!-- DATE OF JOINING -->
+
+                <div class="detail-box">
+
+                    <div class="detail-label">
+                        Date of Joining
+                    </div>
+
+                    <div
+                        id="viewDateOfJoining"
+                        class="detail-value">
+                        -
+                    </div>
+
+                </div>
+
+
+                <!-- EXPERIENCE -->
+
+                <div class="detail-box">
+
+                    <div class="detail-label">
+                        Total Experience
+                    </div>
+
+                    <div
+                        id="viewExperience"
+                        class="detail-value">
+                        -
+                    </div>
+
+                </div>
+
+
+                <!-- EMPLOYMENT TYPE -->
+
+                <div class="detail-box">
+
+                    <div class="detail-label">
+                        Employment Type
+                    </div>
+
+                    <div
+                        id="viewEmploymentType"
+                        class="detail-value">
+                        -
+                    </div>
+
+                </div>
+
+
+                <!-- OFFICIAL MAIL -->
+
+                <div class="detail-box">
+
+                    <div class="detail-label">
+                        Official Mail ID
+                    </div>
+
+                    <div
+                        id="viewOfficialEmail"
+                        class="detail-value">
+                        -
+                    </div>
+
+                </div>
+
+
+                <!-- PROFESSIONAL INFORMATION -->
+
+                <div class="detail-box full">
+
+                    <div class="detail-label">
+                        Additional Professional Information
+                    </div>
+
+                    <div
+                        id="viewProfessionalRemarks"
+                        class="detail-value">
+                        -
+                    </div>
+
+                </div>
+
 
             </div>
 
@@ -632,13 +907,43 @@
 
 
 
-        <!-- =================================
-             LOGOUT
-        ================================== -->
+        <!-- =================================================
+             NO DETAILS
+        ================================================== -->
 
-        <div class="button-area">
+        <div
+            id="noDetailsCard"
+            class="card"
+            style="display:none;">
+
+            <h2>
+                Details Not Available
+            </h2>
+
+            <div
+                class="message info"
+                style="display:block;">
+
+                Your staff details have not been
+                entered by the administrator yet.
+
+                Please contact the administrator.
+
+            </div>
+
+        </div>
+
+
+
+        <!-- =================================================
+             LOGOUT
+        ================================================== -->
+
+        <div
+            class="bottom-area">
 
             <button
+                type="button"
                 class="logout-btn"
                 id="logoutBtn">
 
@@ -653,20 +958,21 @@
 
 
 
-    <!-- =================================
-         FIREBASE
-    ================================== -->
+    <!-- =====================================================
+         FIREBASE JAVASCRIPT
+    ====================================================== -->
 
     <script type="module">
 
 
         // =====================================================
-        // FIREBASE
+        // FIREBASE IMPORT
         // =====================================================
 
         import {
             db
-        } from "./firebase-config.js";
+        }
+        from "./firebase-config.js";
 
 
         import {
@@ -679,18 +985,59 @@
 
 
         // =====================================================
+        // SESSION DATA
+        // =====================================================
+
+        const role =
+            sessionStorage.getItem(
+                "role"
+            );
+
+
+        const staffId =
+            sessionStorage.getItem(
+                "staffId"
+            );
+
+
+        const sessionStaffName =
+            sessionStorage.getItem(
+                "staffName"
+            );
+
+
+        const sessionDepartment =
+            sessionStorage.getItem(
+                "department"
+            );
+
+
+
+        // =====================================================
         // ELEMENTS
         // =====================================================
 
-        const loading =
+        const loadingCard =
             document.getElementById(
-                "loading"
+                "loadingCard"
+            );
+
+
+        const basicCard =
+            document.getElementById(
+                "basicCard"
             );
 
 
         const personalCard =
             document.getElementById(
                 "personalCard"
+            );
+
+
+        const professionalCard =
+            document.getElementById(
+                "professionalCard"
             );
 
 
@@ -708,36 +1055,7 @@
 
 
         // =====================================================
-        // SESSION CHECK
-        // =====================================================
-
-        const role =
-            sessionStorage.getItem(
-                "role"
-            );
-
-
-        const staffId =
-            sessionStorage.getItem(
-                "staffId"
-            );
-
-
-        const staffName =
-            sessionStorage.getItem(
-                "staffName"
-            );
-
-
-        const department =
-            sessionStorage.getItem(
-                "department"
-            );
-
-
-
-        // =====================================================
-        // MAKE SURE STAFF IS LOGGED IN
+        // SESSION VALIDATION
         // =====================================================
 
         if (
@@ -753,47 +1071,56 @@
 
 
         // =====================================================
-        // DISPLAY LOGIN INFORMATION
+        // HEADER SESSION DATA
         // =====================================================
 
         document.getElementById(
-            "staffName"
+            "headerStaffName"
         ).textContent =
-            staffName || "Staff";
+            sessionStaffName ||
+            "Staff";
 
 
         document.getElementById(
-            "staffId"
+            "headerStaffId"
         ).textContent =
+            "Staff ID: " +
             staffId;
 
 
+        document.getElementById(
+            "headerDepartment"
+        ).textContent =
+            sessionDepartment ||
+            "";
+
+
 
         // =====================================================
-        // LOAD PERSONAL DETAILS
+        // LOAD STAFF PERSONAL DETAILS
         // =====================================================
 
-        async function loadPersonalDetails() {
+        async function loadStaffDetails() {
 
             try {
 
 
                 /*
-                 * IMPORTANT:
+                 * IMPORTANT
                  *
-                 * The same Staff ID that was stored
-                 * during login is used here.
+                 * The Staff ID comes directly from
+                 * the login session.
                  *
                  * Example:
                  *
-                 * SHT038
+                 * sessionStorage.staffId = SHT038
                  *
-                 * Firestore:
+                 * Then Firestore document:
                  *
-                 * staffPersonalDetails
-                 *      └── SHT038
+                 * staffPersonalDetails/SHT038
                  *
                  */
+
 
                 const personalRef =
                     doc(
@@ -809,7 +1136,7 @@
                     );
 
 
-                loading.style.display =
+                loadingCard.style.display =
                     "none";
 
 
@@ -831,98 +1158,171 @@
 
 
                 // =================================================
-                // DISPLAY PERSONAL DETAILS
+                // BASIC STAFF INFORMATION
                 // =================================================
-
-                setValue(
-                    "viewStaffName",
-                    data.staffName ||
-                    staffName ||
-                    "-"
-                );
-
 
                 setValue(
                     "viewStaffId",
                     data.staffId ||
-                    staffId ||
-                    "-"
+                    staffId
                 );
 
 
                 setValue(
-                    "dateOfBirth",
+                    "viewStaffName",
+                    data.staffName ||
+                    sessionStaffName
+                );
+
+
+                setValue(
+                    "viewDepartment",
+                    data.department ||
+                    sessionDepartment
+                );
+
+
+                setValue(
+                    "viewDesignation",
+                    data.designation
+                );
+
+
+                // =================================================
+                // PERSONAL DETAILS
+                // =================================================
+
+                setValue(
+                    "viewDateOfBirth",
                     data.dateOfBirth
                 );
 
 
                 setValue(
-                    "gender",
+                    "viewGender",
                     data.gender
                 );
 
 
                 setValue(
-                    "bloodGroup",
+                    "viewBloodGroup",
                     data.bloodGroup
                 );
 
 
                 setValue(
-                    "maritalStatus",
+                    "viewMaritalStatus",
                     data.maritalStatus
                 );
 
 
                 setValue(
-                    "personalMobile",
+                    "viewPersonalMobile",
                     data.personalMobile
                 );
 
 
                 setValue(
-                    "personalEmail",
+                    "viewPersonalEmail",
                     data.personalEmail
                 );
 
 
                 setValue(
-                    "alternateMobile",
+                    "viewAlternateMobile",
                     data.alternateMobile
                 );
 
 
                 setValue(
-                    "nationality",
+                    "viewNationality",
                     data.nationality
                 );
 
 
                 setValue(
-                    "permanentAddress",
+                    "viewPermanentAddress",
                     data.permanentAddress
                 );
 
 
                 setValue(
-                    "district",
+                    "viewDistrict",
                     data.district
                 );
 
 
                 setValue(
-                    "state",
+                    "viewState",
                     data.state
                 );
 
 
                 setValue(
-                    "pincode",
+                    "viewPincode",
                     data.pincode
                 );
 
 
+                // =================================================
+                // PROFESSIONAL DETAILS
+                // =================================================
+
+                setValue(
+                    "viewQualification",
+                    data.qualification
+                );
+
+
+                setValue(
+                    "viewSpecialization",
+                    data.specialization
+                );
+
+
+                setValue(
+                    "viewDateOfJoining",
+                    data.dateOfJoining
+                );
+
+
+                setValue(
+                    "viewExperience",
+                    data.experience
+                );
+
+
+                setValue(
+                    "viewEmploymentType",
+                    data.employmentType
+                );
+
+
+                setValue(
+                    "viewOfficialEmail",
+                    data.officialEmail
+                );
+
+
+                setValue(
+                    "viewProfessionalRemarks",
+                    data.professionalRemarks
+                );
+
+
+                // =================================================
+                // SHOW CARDS
+                // =================================================
+
+                basicCard.style.display =
+                    "block";
+
+
                 personalCard.style.display =
+                    "block";
+
+
+                professionalCard.style.display =
                     "block";
 
 
@@ -930,17 +1330,17 @@
             catch (error) {
 
                 console.error(
-                    "PERSONAL DETAILS ERROR:",
+                    "STAFF DETAILS LOAD ERROR:",
                     error
                 );
 
 
-                loading.style.display =
+                loadingCard.style.display =
                     "none";
 
 
                 message.textContent =
-                    "Unable to load your personal details: " +
+                    "Unable to load your staff details: " +
                     error.message;
 
 
@@ -962,13 +1362,13 @@
         // =====================================================
 
         function setValue(
-            id,
+            elementId,
             value
         ) {
 
             const element =
                 document.getElementById(
-                    id
+                    elementId
                 );
 
 
@@ -982,7 +1382,7 @@
             if (
                 value === undefined ||
                 value === null ||
-                value === ""
+                String(value).trim() === ""
             ) {
 
                 element.textContent =
@@ -992,7 +1392,7 @@
             else {
 
                 element.textContent =
-                    value;
+                    String(value);
 
             }
 
@@ -1011,17 +1411,21 @@
             "click",
             function () {
 
+
                 sessionStorage.removeItem(
                     "role"
                 );
+
 
                 sessionStorage.removeItem(
                     "staffId"
                 );
 
+
                 sessionStorage.removeItem(
                     "staffName"
                 );
+
 
                 sessionStorage.removeItem(
                     "department"
@@ -1040,7 +1444,7 @@
         // START
         // =====================================================
 
-        loadPersonalDetails();
+        loadStaffDetails();
 
 
     </script>
