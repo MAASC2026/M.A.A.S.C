@@ -1,0 +1,2375 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>Staff Personal Details - Admin</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f4f6f9;
+            color: #222;
+        }
+
+        .header {
+            background: #1e3a8a;
+            color: white;
+            padding: 20px 30px;
+        }
+
+        .header h1 {
+            font-size: 25px;
+            margin-bottom: 5px;
+        }
+
+        .header p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .container {
+            width: 95%;
+            max-width: 1200px;
+            margin: 25px auto;
+        }
+
+        .card {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .card h2 {
+            color: #1e3a8a;
+            font-size: 20px;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        .search-area {
+            display: grid;
+            grid-template-columns: 1fr 180px;
+            gap: 15px;
+            align-items: end;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 18px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group.full {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            font-size: 14px;
+            font-weight: bold;
+            color: #374151;
+            margin-bottom: 7px;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 11px 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            font-size: 14px;
+            outline: none;
+            background: white;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.08);
+        }
+
+        input[readonly] {
+            background: #f1f5f9;
+            color: #475569;
+        }
+
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .search-wrapper {
+            position: relative;
+        }
+
+        .suggestions {
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 100%;
+            background: white;
+            border: 1px solid #cbd5e1;
+            border-top: none;
+            max-height: 250px;
+            overflow-y: auto;
+            z-index: 999;
+            box-shadow: 0 5px 12px rgba(0, 0, 0, 0.12);
+        }
+
+        .suggestion-item {
+            padding: 12px;
+            cursor: pointer;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .suggestion-item:hover {
+            background: #eff6ff;
+        }
+
+        .suggestion-name {
+            font-weight: bold;
+            color: #1e293b;
+        }
+
+        .suggestion-info {
+            font-size: 12px;
+            color: #64748b;
+            margin-top: 4px;
+        }
+
+        button {
+            border: none;
+            border-radius: 6px;
+            padding: 12px 20px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .btn-primary {
+            background: #2563eb;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #1d4ed8;
+        }
+
+        .btn-secondary {
+            background: #64748b;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #475569;
+        }
+
+        .btn-danger {
+            background: #dc2626;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #b91c1c;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 25px;
+        }
+
+        .status {
+            display: none;
+            padding: 12px;
+            margin-top: 15px;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .status.success {
+            display: block;
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .status.error {
+            display: block;
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .status.info {
+            display: block;
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .staff-preview {
+            display: none;
+            margin-top: 18px;
+            padding: 15px;
+            border-radius: 8px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+        }
+
+        .preview-row {
+            display: grid;
+            grid-template-columns: 180px 1fr;
+            padding: 6px 0;
+        }
+
+        .preview-label {
+            font-weight: bold;
+            color: #475569;
+        }
+
+        .preview-value {
+            color: #1e293b;
+        }
+
+        .section-note {
+            background: #eff6ff;
+            color: #1e40af;
+            padding: 10px 12px;
+            border-radius: 6px;
+            margin-bottom: 18px;
+            font-size: 13px;
+        }
+
+        @media (max-width: 700px) {
+
+            .container {
+                width: 92%;
+            }
+
+            .search-area {
+                grid-template-columns: 1fr;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-group.full {
+                grid-column: auto;
+            }
+
+            .preview-row {
+                grid-template-columns: 1fr;
+            }
+
+            .buttons {
+                flex-direction: column;
+            }
+
+            button {
+                width: 100%;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- =====================================================
+         HEADER
+    ====================================================== -->
+
+    <div class="header">
+
+        <h1>
+            Staff Personal Details
+        </h1>
+
+        <p>
+            Administrator Portal
+        </p>
+
+    </div>
+
+
+    <div class="container">
+
+
+        <!-- =================================================
+             STAFF SEARCH
+        ================================================== -->
+
+        <div class="card">
+
+            <h2>
+                Select Staff
+            </h2>
+
+            <div class="section-note">
+
+                Enter the staff name or Staff ID.
+                Select the staff member from the list.
+
+            </div>
+
+
+            <div class="search-area">
+
+
+                <div class="form-group">
+
+                    <label>
+                        Staff Name / Staff ID
+                    </label>
+
+                    <div class="search-wrapper">
+
+                        <input
+                            type="text"
+                            id="staffSearch"
+                            placeholder="Enter staff name or Staff ID"
+                            autocomplete="off">
+
+                        <div
+                            id="suggestions"
+                            class="suggestions"
+                            style="display:none;">
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <button
+                    type="button"
+                    class="btn-secondary"
+                    id="loadStaffBtn">
+
+                    Load Staff
+
+                </button>
+
+
+            </div>
+
+
+            <div
+                id="status"
+                class="status">
+            </div>
+
+
+            <!-- STAFF PREVIEW -->
+
+            <div
+                id="staffPreview"
+                class="staff-preview">
+
+
+                <div class="preview-row">
+
+                    <div class="preview-label">
+                        Staff ID
+                    </div>
+
+                    <div
+                        class="preview-value"
+                        id="previewStaffId">
+                    </div>
+
+                </div>
+
+
+                <div class="preview-row">
+
+                    <div class="preview-label">
+                        Staff Name
+                    </div>
+
+                    <div
+                        class="preview-value"
+                        id="previewStaffName">
+                    </div>
+
+                </div>
+
+
+                <div class="preview-row">
+
+                    <div class="preview-label">
+                        Department
+                    </div>
+
+                    <div
+                        class="preview-value"
+                        id="previewDepartment">
+                    </div>
+
+                </div>
+
+
+                <div class="preview-row">
+
+                    <div class="preview-label">
+                        Designation
+                    </div>
+
+                    <div
+                        class="preview-value"
+                        id="previewDesignation">
+                    </div>
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+
+
+        <!-- =================================================
+             BASIC STAFF INFORMATION
+        ================================================== -->
+
+        <div
+            class="card"
+            id="detailsCard"
+            style="display:none;">
+
+            <h2>
+                Staff Information
+            </h2>
+
+
+            <div class="form-grid">
+
+
+                <div class="form-group">
+
+                    <label>
+                        Staff ID
+                    </label>
+
+                    <input
+                        type="text"
+                        id="staffId"
+                        readonly>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Staff Name
+                    </label>
+
+                    <input
+                        type="text"
+                        id="staffName"
+                        readonly>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Department
+                    </label>
+
+                    <input
+                        type="text"
+                        id="department"
+                        readonly>
+
+                </div>
+
+
+                <!-- EDITABLE DESIGNATION -->
+
+                <div class="form-group">
+
+                    <label>
+                        Designation
+                    </label>
+
+                    <input
+                        type="text"
+                        id="designation"
+                        placeholder="Enter designation">
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+
+
+        <!-- =================================================
+             PERSONAL DETAILS
+        ================================================== -->
+
+        <div
+            class="card"
+            id="personalCard"
+            style="display:none;">
+
+            <h2>
+                Personal Details
+            </h2>
+
+
+            <div class="form-grid">
+
+
+                <!-- DATE OF BIRTH -->
+
+                <div class="form-group">
+
+                    <label>
+                        Date of Birth
+                    </label>
+
+                    <input
+                        type="date"
+                        id="dateOfBirth">
+
+                </div>
+
+
+                <!-- GENDER -->
+
+                <div class="form-group">
+
+                    <label>
+                        Gender
+                    </label>
+
+                    <select id="gender">
+
+                        <option value="">
+                            Select Gender
+                        </option>
+
+                        <option value="Male">
+                            Male
+                        </option>
+
+                        <option value="Female">
+                            Female
+                        </option>
+
+                        <option value="Other">
+                            Other
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- BLOOD GROUP -->
+
+                <div class="form-group">
+
+                    <label>
+                        Blood Group
+                    </label>
+
+                    <select id="bloodGroup">
+
+                        <option value="">
+                            Select Blood Group
+                        </option>
+
+                        <option value="A+">
+                            A+
+                        </option>
+
+                        <option value="A-">
+                            A-
+                        </option>
+
+                        <option value="B+">
+                            B+
+                        </option>
+
+                        <option value="B-">
+                            B-
+                        </option>
+
+                        <option value="AB+">
+                            AB+
+                        </option>
+
+                        <option value="AB-">
+                            AB-
+                        </option>
+
+                        <option value="O+">
+                            O+
+                        </option>
+
+                        <option value="O-">
+                            O-
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- MARITAL STATUS -->
+
+                <div class="form-group">
+
+                    <label>
+                        Marital Status
+                    </label>
+
+                    <select id="maritalStatus">
+
+                        <option value="">
+                            Select Status
+                        </option>
+
+                        <option value="Single">
+                            Single
+                        </option>
+
+                        <option value="Married">
+                            Married
+                        </option>
+
+                        <option value="Other">
+                            Other
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- PERSONAL MOBILE -->
+
+                <div class="form-group">
+
+                    <label>
+                        Personal Mobile Number
+                    </label>
+
+                    <input
+                        type="tel"
+                        id="personalMobile"
+                        placeholder="Enter personal mobile number">
+
+                </div>
+
+
+                <!-- PERSONAL MAIL -->
+
+                <div class="form-group">
+
+                    <label>
+                        Personal Mail ID
+                    </label>
+
+                    <input
+                        type="email"
+                        id="personalEmail"
+                        placeholder="Enter personal mail ID">
+
+                </div>
+
+
+                <!-- ALTERNATE MOBILE -->
+
+                <div class="form-group">
+
+                    <label>
+                        Alternate Mobile Number
+                    </label>
+
+                    <input
+                        type="tel"
+                        id="alternateMobile"
+                        placeholder="Enter alternate mobile number">
+
+                </div>
+
+
+                <!-- NATIONALITY -->
+
+                <div class="form-group">
+
+                    <label>
+                        Nationality
+                    </label>
+
+                    <input
+                        type="text"
+                        id="nationality"
+                        placeholder="Enter nationality">
+
+                </div>
+
+
+                <!-- ADDRESS -->
+
+                <div class="form-group full">
+
+                    <label>
+                        Permanent Address
+                    </label>
+
+                    <textarea
+                        id="permanentAddress"
+                        placeholder="Enter permanent address"></textarea>
+
+                </div>
+
+
+                <!-- DISTRICT -->
+
+                <div class="form-group">
+
+                    <label>
+                        District
+                    </label>
+
+                    <input
+                        type="text"
+                        id="district"
+                        placeholder="Enter district">
+
+                </div>
+
+
+                <!-- STATE -->
+
+                <div class="form-group">
+
+                    <label>
+                        State
+                    </label>
+
+                    <input
+                        type="text"
+                        id="state"
+                        placeholder="Enter state">
+
+                </div>
+
+
+                <!-- PINCODE -->
+
+                <div class="form-group">
+
+                    <label>
+                        Pincode
+                    </label>
+
+                    <input
+                        type="text"
+                        id="pincode"
+                        placeholder="Enter pincode">
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+
+
+        <!-- =================================================
+             PROFESSIONAL DETAILS
+        ================================================== -->
+
+        <div
+            class="card"
+            id="professionalCard"
+            style="display:none;">
+
+            <h2>
+                Professional Details
+            </h2>
+
+
+            <div class="form-grid">
+
+
+                <!-- QUALIFICATION -->
+
+                <div class="form-group">
+
+                    <label>
+                        Highest Qualification
+                    </label>
+
+                    <input
+                        type="text"
+                        id="qualification"
+                        placeholder="Example: M.Com, MCA, Ph.D">
+
+                </div>
+
+
+                <!-- SPECIALIZATION -->
+
+                <div class="form-group">
+
+                    <label>
+                        Specialization
+                    </label>
+
+                    <input
+                        type="text"
+                        id="specialization"
+                        placeholder="Enter specialization">
+
+                </div>
+
+
+                <!-- JOINING DATE -->
+
+                <div class="form-group">
+
+                    <label>
+                        Date of Joining
+                    </label>
+
+                    <input
+                        type="date"
+                        id="dateOfJoining">
+
+                </div>
+
+
+                <!-- EXPERIENCE -->
+
+                <div class="form-group">
+
+                    <label>
+                        Total Experience
+                    </label>
+
+                    <input
+                        type="text"
+                        id="experience"
+                        placeholder="Example: 8 Years">
+
+                </div>
+
+
+                <!-- EMPLOYMENT TYPE -->
+
+                <div class="form-group">
+
+                    <label>
+                        Employment Type
+                    </label>
+
+                    <select id="employmentType">
+
+                        <option value="">
+                            Select Employment Type
+                        </option>
+
+                        <option value="Permanent">
+                            Permanent
+                        </option>
+
+                        <option value="Temporary">
+                            Temporary
+                        </option>
+
+                        <option value="Contract">
+                            Contract
+                        </option>
+
+                        <option value="Guest">
+                            Guest
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- OFFICIAL MAIL -->
+
+                <div class="form-group">
+
+                    <label>
+                        Official Mail ID
+                    </label>
+
+                    <input
+                        type="email"
+                        id="officialEmail"
+                        placeholder="Enter official mail ID">
+
+                </div>
+
+
+                <!-- REMARKS -->
+
+                <div class="form-group full">
+
+                    <label>
+                        Additional Professional Information
+                    </label>
+
+                    <textarea
+                        id="professionalRemarks"
+                        placeholder="Enter additional professional information"></textarea>
+
+                </div>
+
+
+            </div>
+
+
+            <!-- BUTTONS -->
+
+            <div class="buttons">
+
+
+                <button
+                    type="button"
+                    class="btn-primary"
+                    id="saveBtn">
+
+                    Save / Update Details
+
+                </button>
+
+
+                <button
+                    type="button"
+                    class="btn-danger"
+                    id="clearBtn">
+
+                    Clear
+
+                </button>
+
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+
+    <!-- =====================================================
+         FIREBASE JAVASCRIPT
+    ====================================================== -->
+
+    <script type="module">
+
+
+        // =====================================================
+        // FIREBASE IMPORTS
+        // =====================================================
+
+        import {
+            initializeApp
+        }
+        from
+        "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+
+        import {
+            getFirestore,
+            collection,
+            getDocs,
+            doc,
+            getDoc,
+            setDoc,
+            serverTimestamp
+        }
+        from
+        "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+
+
+        // =====================================================
+        // FIREBASE CONFIG
+        // =====================================================
+
+        const firebaseConfig = {
+ apiKey: "AIzaSyAIv3091VM-gkmdwEAn7OhXWd9Cm2zh2bo",
+  authDomain: "maasc-2026.firebaseapp.com",
+  projectId: "maasc-2026",
+  storageBucket: "maasc-2026.appspot.com",
+  messagingSenderId: "585813001586",
+  appId: "1:585813001586:web:664e0e90ff0725d2e849eb"
+
+        };
+
+
+
+        // =====================================================
+        // INITIALIZE FIREBASE
+        // =====================================================
+
+        const app =
+            initializeApp(
+                firebaseConfig
+            );
+
+
+        const db =
+            getFirestore(app);
+
+
+
+        // =====================================================
+        // COLLECTION NAMES
+        // =====================================================
+
+        const STAFF_COLLECTION =
+            "staff";
+
+
+        const PERSONAL_COLLECTION =
+            "staffPersonalDetails";
+
+
+
+        // =====================================================
+        // VARIABLES
+        // =====================================================
+
+        let allStaff = [];
+
+        let selectedStaff = null;
+
+
+
+        // =====================================================
+        // ELEMENTS
+        // =====================================================
+
+        const staffSearch =
+            document.getElementById(
+                "staffSearch"
+            );
+
+
+        const suggestions =
+            document.getElementById(
+                "suggestions"
+            );
+
+
+        const statusBox =
+            document.getElementById(
+                "status"
+            );
+
+
+        const staffPreview =
+            document.getElementById(
+                "staffPreview"
+            );
+
+
+        const detailsCard =
+            document.getElementById(
+                "detailsCard"
+            );
+
+
+        const personalCard =
+            document.getElementById(
+                "personalCard"
+            );
+
+
+        const professionalCard =
+            document.getElementById(
+                "professionalCard"
+            );
+
+
+
+        // =====================================================
+        // STATUS MESSAGE
+        // =====================================================
+
+        function showStatus(
+            message,
+            type
+        ) {
+
+            statusBox.textContent =
+                message;
+
+            statusBox.className =
+                "status " + type;
+
+            statusBox.style.display =
+                "block";
+
+        }
+
+
+
+        function hideStatus() {
+
+            statusBox.textContent =
+                "";
+
+            statusBox.className =
+                "status";
+
+            statusBox.style.display =
+                "none";
+
+        }
+
+
+
+        // =====================================================
+        // LOAD EXISTING STAFF
+        // =====================================================
+
+        async function loadStaff() {
+
+            try {
+
+                showStatus(
+                    "Loading staff...",
+                    "info"
+                );
+
+
+                const snapshot =
+                    await getDocs(
+                        collection(
+                            db,
+                            STAFF_COLLECTION
+                        )
+                    );
+
+
+                allStaff = [];
+
+
+                snapshot.forEach(
+                    (staffDoc) => {
+
+                        const data =
+                            staffDoc.data();
+
+
+                        allStaff.push({
+
+                            documentId:
+                                staffDoc.id,
+
+                            ...data
+
+                        });
+
+                    }
+                );
+
+
+                allStaff.sort(
+                    (a, b) => {
+
+                        const nameA =
+                            String(
+                                a.name ||
+                                a.staffName ||
+                                ""
+                            )
+                            .toLowerCase();
+
+
+                        const nameB =
+                            String(
+                                b.name ||
+                                b.staffName ||
+                                ""
+                            )
+                            .toLowerCase();
+
+
+                        return nameA.localeCompare(
+                            nameB
+                        );
+
+                    }
+                );
+
+
+                showStatus(
+                    allStaff.length +
+                    " staff loaded.",
+                    "success"
+                );
+
+
+                showSuggestions(
+                    allStaff
+                );
+
+
+            }
+            catch (error) {
+
+                console.error(
+                    "STAFF LOAD ERROR:",
+                    error
+                );
+
+
+                showStatus(
+                    "Unable to load staff: " +
+                    error.message,
+                    "error"
+                );
+
+            }
+
+        }
+
+
+
+        // =====================================================
+        // STAFF SEARCH
+        // =====================================================
+
+        staffSearch.addEventListener(
+            "input",
+            function () {
+
+                const value =
+                    this.value
+                        .trim()
+                        .toLowerCase();
+
+
+                if (!value) {
+
+                    showSuggestions(
+                        allStaff
+                    );
+
+                    return;
+
+                }
+
+
+                const filtered =
+                    allStaff.filter(
+                        staff => {
+
+                            const name =
+                                String(
+                                    staff.name ||
+                                    staff.staffName ||
+                                    ""
+                                )
+                                .toLowerCase();
+
+
+                            const id =
+                                String(
+                                    staff.staffId ||
+                                    staff.id ||
+                                    staff.documentId ||
+                                    ""
+                                )
+                                .toLowerCase();
+
+
+                            return (
+                                name.includes(value) ||
+                                id.includes(value)
+                            );
+
+                        }
+                    );
+
+
+                showSuggestions(
+                    filtered
+                );
+
+            }
+        );
+
+
+
+        // =====================================================
+        // SHOW STAFF SUGGESTIONS
+        // =====================================================
+
+        function showSuggestions(
+            list
+        ) {
+
+            suggestions.innerHTML =
+                "";
+
+
+            if (!list.length) {
+
+                suggestions.style.display =
+                    "none";
+
+                return;
+
+            }
+
+
+            list.forEach(
+                staff => {
+
+
+                    const item =
+                        document.createElement(
+                            "div"
+                        );
+
+
+                    item.className =
+                        "suggestion-item";
+
+
+                    const name =
+                        staff.name ||
+                        staff.staffName ||
+                        "Unnamed Staff";
+
+
+                    const staffId =
+                        staff.staffId ||
+                        staff.id ||
+                        staff.documentId ||
+                        "";
+
+
+                    const department =
+                        staff.department ||
+                        staff.dept ||
+                        "";
+
+
+                    item.innerHTML = `
+
+                        <div class="suggestion-name">
+
+                            ${escapeHtml(name)}
+
+                        </div>
+
+                        <div class="suggestion-info">
+
+                            ${escapeHtml(staffId)}
+
+                            ${
+                                department
+                                ?
+                                " • " +
+                                escapeHtml(
+                                    department
+                                )
+                                :
+                                ""
+                            }
+
+                        </div>
+
+                    `;
+
+
+                    item.addEventListener(
+                        "click",
+                        function () {
+
+                            selectStaff(
+                                staff
+                            );
+
+                        }
+                    );
+
+
+                    suggestions.appendChild(
+                        item
+                    );
+
+
+                }
+            );
+
+
+            suggestions.style.display =
+                "block";
+
+        }
+
+
+
+        // =====================================================
+        // SELECT STAFF
+        // =====================================================
+
+        async function selectStaff(
+            staff
+        ) {
+
+            try {
+
+                selectedStaff =
+                    staff;
+
+
+                suggestions.style.display =
+                    "none";
+
+
+                const staffId =
+                    staff.staffId ||
+                    staff.id ||
+                    staff.documentId;
+
+
+                const name =
+                    staff.name ||
+                    staff.staffName ||
+                    "";
+
+
+                const department =
+                    staff.department ||
+                    staff.dept ||
+                    "";
+
+
+                const designation =
+                    staff.designation ||
+                    staff.role ||
+                    "";
+
+
+                staffSearch.value =
+                    name;
+
+
+                document.getElementById(
+                    "staffId"
+                ).value =
+                    staffId;
+
+
+                document.getElementById(
+                    "staffName"
+                ).value =
+                    name;
+
+
+                document.getElementById(
+                    "department"
+                ).value =
+                    department;
+
+
+                /*
+                    DESIGNATION IS EDITABLE
+                */
+
+                document.getElementById(
+                    "designation"
+                ).value =
+                    designation;
+
+
+                document.getElementById(
+                    "previewStaffId"
+                ).textContent =
+                    staffId;
+
+
+                document.getElementById(
+                    "previewStaffName"
+                ).textContent =
+                    name;
+
+
+                document.getElementById(
+                    "previewDepartment"
+                ).textContent =
+                    department || "-";
+
+
+                document.getElementById(
+                    "previewDesignation"
+                ).textContent =
+                    designation || "-";
+
+
+                staffPreview.style.display =
+                    "block";
+
+
+                detailsCard.style.display =
+                    "block";
+
+
+                personalCard.style.display =
+                    "block";
+
+
+                professionalCard.style.display =
+                    "block";
+
+
+                clearPersonalFields();
+
+
+                /*
+                    PUT STAFF DESIGNATION BACK
+                    AFTER CLEARING PERSONAL FIELDS
+                */
+
+                document.getElementById(
+                    "designation"
+                ).value =
+                    designation;
+
+
+                await loadPersonalDetails(
+                    staffId
+                );
+
+
+            }
+            catch (error) {
+
+                console.error(
+                    "SELECT STAFF ERROR:",
+                    error
+                );
+
+
+                showStatus(
+                    "Error loading staff: " +
+                    error.message,
+                    "error"
+                );
+
+            }
+
+        }
+
+
+
+        // =====================================================
+        // LOAD SAVED DETAILS
+        // =====================================================
+
+        async function loadPersonalDetails(
+            staffId
+        ) {
+
+            try {
+
+                showStatus(
+                    "Loading saved details...",
+                    "info"
+                );
+
+
+                const detailsRef =
+                    doc(
+                        db,
+                        PERSONAL_COLLECTION,
+                        staffId
+                    );
+
+
+                const detailsSnap =
+                    await getDoc(
+                        detailsRef
+                    );
+
+
+                if (
+                    !detailsSnap.exists()
+                ) {
+
+                    showStatus(
+                        "No saved personal details found. Enter the details and save.",
+                        "info"
+                    );
+
+                    return;
+
+                }
+
+
+                const data =
+                    detailsSnap.data();
+
+
+                // =================================================
+                // BASIC
+                // =================================================
+
+                setField(
+                    "designation",
+                    data.designation
+                );
+
+
+                // =================================================
+                // PERSONAL
+                // =================================================
+
+                setField(
+                    "dateOfBirth",
+                    data.dateOfBirth
+                );
+
+
+                setField(
+                    "gender",
+                    data.gender
+                );
+
+
+                setField(
+                    "bloodGroup",
+                    data.bloodGroup
+                );
+
+
+                setField(
+                    "maritalStatus",
+                    data.maritalStatus
+                );
+
+
+                setField(
+                    "personalMobile",
+                    data.personalMobile
+                );
+
+
+                setField(
+                    "personalEmail",
+                    data.personalEmail
+                );
+
+
+                setField(
+                    "alternateMobile",
+                    data.alternateMobile
+                );
+
+
+                setField(
+                    "nationality",
+                    data.nationality
+                );
+
+
+                setField(
+                    "permanentAddress",
+                    data.permanentAddress
+                );
+
+
+                setField(
+                    "district",
+                    data.district
+                );
+
+
+                setField(
+                    "state",
+                    data.state
+                );
+
+
+                setField(
+                    "pincode",
+                    data.pincode
+                );
+
+
+                // =================================================
+                // PROFESSIONAL
+                // =================================================
+
+                setField(
+                    "qualification",
+                    data.qualification
+                );
+
+
+                setField(
+                    "specialization",
+                    data.specialization
+                );
+
+
+                setField(
+                    "dateOfJoining",
+                    data.dateOfJoining
+                );
+
+
+                setField(
+                    "experience",
+                    data.experience
+                );
+
+
+                setField(
+                    "employmentType",
+                    data.employmentType
+                );
+
+
+                setField(
+                    "officialEmail",
+                    data.officialEmail
+                );
+
+
+                setField(
+                    "professionalRemarks",
+                    data.professionalRemarks
+                );
+
+
+                showStatus(
+                    "Saved staff details loaded.",
+                    "success"
+                );
+
+
+            }
+            catch (error) {
+
+                console.error(
+                    "DETAIL LOAD ERROR:",
+                    error
+                );
+
+
+                showStatus(
+                    "Unable to load saved details: " +
+                    error.message,
+                    "error"
+                );
+
+            }
+
+        }
+
+
+
+        // =====================================================
+        // SAVE / UPDATE
+        // =====================================================
+
+        document.getElementById(
+            "saveBtn"
+        )
+        .addEventListener(
+            "click",
+            saveDetails
+        );
+
+
+
+        async function saveDetails() {
+
+            if (!selectedStaff) {
+
+                showStatus(
+                    "Please select a staff member first.",
+                    "error"
+                );
+
+                return;
+
+            }
+
+
+            const staffId =
+                getField(
+                    "staffId"
+                );
+
+
+            if (!staffId) {
+
+                showStatus(
+                    "Staff ID is missing.",
+                    "error"
+                );
+
+                return;
+
+            }
+
+
+            const saveButton =
+                document.getElementById(
+                    "saveBtn"
+                );
+
+
+            try {
+
+                saveButton.disabled =
+                    true;
+
+
+                saveButton.textContent =
+                    "Saving...";
+
+
+                const details = {
+
+                    staffId:
+
+                        staffId,
+
+
+                    staffName:
+
+                        getField(
+                            "staffName"
+                        ),
+
+
+                    department:
+
+                        getField(
+                            "department"
+                        ),
+
+
+                    /*
+                        EDITABLE DESIGNATION
+                    */
+
+                    designation:
+
+                        getField(
+                            "designation"
+                        ),
+
+
+                    // =============================================
+                    // PERSONAL
+                    // =============================================
+
+                    dateOfBirth:
+
+                        getField(
+                            "dateOfBirth"
+                        ),
+
+
+                    gender:
+
+                        getField(
+                            "gender"
+                        ),
+
+
+                    bloodGroup:
+
+                        getField(
+                            "bloodGroup"
+                        ),
+
+
+                    maritalStatus:
+
+                        getField(
+                            "maritalStatus"
+                        ),
+
+
+                    personalMobile:
+
+                        getField(
+                            "personalMobile"
+                        ),
+
+
+                    /*
+                        PERSONAL MAIL ID
+                    */
+
+                    personalEmail:
+
+                        getField(
+                            "personalEmail"
+                        ),
+
+
+                    alternateMobile:
+
+                        getField(
+                            "alternateMobile"
+                        ),
+
+
+                    nationality:
+
+                        getField(
+                            "nationality"
+                        ),
+
+
+                    permanentAddress:
+
+                        getField(
+                            "permanentAddress"
+                        ),
+
+
+                    district:
+
+                        getField(
+                            "district"
+                        ),
+
+
+                    state:
+
+                        getField(
+                            "state"
+                        ),
+
+
+                    pincode:
+
+                        getField(
+                            "pincode"
+                        ),
+
+
+                    // =============================================
+                    // PROFESSIONAL
+                    // =============================================
+
+                    qualification:
+
+                        getField(
+                            "qualification"
+                        ),
+
+
+                    specialization:
+
+                        getField(
+                            "specialization"
+                        ),
+
+
+                    dateOfJoining:
+
+                        getField(
+                            "dateOfJoining"
+                        ),
+
+
+                    experience:
+
+                        getField(
+                            "experience"
+                        ),
+
+
+                    employmentType:
+
+                        getField(
+                            "employmentType"
+                        ),
+
+
+                    /*
+                        OFFICIAL MAIL ID
+                    */
+
+                    officialEmail:
+
+                        getField(
+                            "officialEmail"
+                        ),
+
+
+                    professionalRemarks:
+
+                        getField(
+                            "professionalRemarks"
+                        ),
+
+
+                    updatedAt:
+
+                        serverTimestamp()
+
+                };
+
+
+                /*
+                    SAVE USING STAFF ID AS DOCUMENT ID
+                */
+
+                await setDoc(
+
+                    doc(
+                        db,
+                        PERSONAL_COLLECTION,
+                        staffId
+                    ),
+
+                    details,
+
+                    {
+                        merge: true
+                    }
+
+                );
+
+
+                /*
+                    UPDATE PREVIEW
+                */
+
+                document.getElementById(
+                    "previewDesignation"
+                ).textContent =
+                    details.designation || "-";
+
+
+                showStatus(
+                    "Staff personal details saved successfully.",
+                    "success"
+                );
+
+
+            }
+            catch (error) {
+
+                console.error(
+                    "SAVE ERROR:",
+                    error
+                );
+
+
+                showStatus(
+                    "Unable to save details: " +
+                    error.message,
+                    "error"
+                );
+
+            }
+            finally {
+
+                saveButton.disabled =
+                    false;
+
+
+                saveButton.textContent =
+                    "Save / Update Details";
+
+            }
+
+        }
+
+
+
+        // =====================================================
+        // CLEAR PERSONAL / PROFESSIONAL FIELDS
+        // =====================================================
+
+        document.getElementById(
+            "clearBtn"
+        )
+        .addEventListener(
+            "click",
+            function () {
+
+                clearPersonalFields();
+
+
+                showStatus(
+                    "Entered details cleared.",
+                    "info"
+                );
+
+            }
+        );
+
+
+
+        function clearPersonalFields() {
+
+            const ids = [
+
+                "dateOfBirth",
+
+                "gender",
+
+                "bloodGroup",
+
+                "maritalStatus",
+
+                "personalMobile",
+
+                "personalEmail",
+
+                "alternateMobile",
+
+                "nationality",
+
+                "permanentAddress",
+
+                "district",
+
+                "state",
+
+                "pincode",
+
+                "qualification",
+
+                "specialization",
+
+                "dateOfJoining",
+
+                "experience",
+
+                "employmentType",
+
+                "officialEmail",
+
+                "professionalRemarks"
+
+            ];
+
+
+            ids.forEach(
+                id => {
+
+                    const element =
+                        document.getElementById(
+                            id
+                        );
+
+
+                    if (element) {
+
+                        element.value =
+                            "";
+
+                    }
+
+                }
+            );
+
+        }
+
+
+
+        // =====================================================
+        // GET FIELD
+        // =====================================================
+
+        function getField(
+            id
+        ) {
+
+            const element =
+                document.getElementById(
+                    id
+                );
+
+
+            if (!element) {
+
+                return "";
+
+            }
+
+
+            return element.value.trim();
+
+        }
+
+
+
+        // =====================================================
+        // SET FIELD
+        // =====================================================
+
+        function setField(
+            id,
+            value
+        ) {
+
+            const element =
+                document.getElementById(
+                    id
+                );
+
+
+            if (!element) {
+
+                return;
+
+            }
+
+
+            element.value =
+                value || "";
+
+        }
+
+
+
+        // =====================================================
+        // ESCAPE HTML
+        // =====================================================
+
+        function escapeHtml(
+            value
+        ) {
+
+            return String(
+                value || ""
+            )
+            .replace(
+                /&/g,
+                "&amp;"
+            )
+            .replace(
+                /</g,
+                "&lt;"
+            )
+            .replace(
+                />/g,
+                "&gt;"
+            )
+            .replace(
+                /"/g,
+                "&quot;"
+            )
+            .replace(
+                /'/g,
+                "&#039;"
+            );
+
+        }
+
+
+
+        // =====================================================
+        // LOAD STAFF BUTTON
+        // =====================================================
+
+        document.getElementById(
+            "loadStaffBtn"
+        )
+        .addEventListener(
+            "click",
+            loadStaff
+        );
+
+
+
+        // =====================================================
+        // CLOSE SUGGESTIONS
+        // =====================================================
+
+        document.addEventListener(
+            "click",
+            function (event) {
+
+                if (
+                    !event.target.closest(
+                        ".search-wrapper"
+                    )
+                ) {
+
+                    suggestions.style.display =
+                        "none";
+
+                }
+
+            }
+        );
+
+
+
+        // =====================================================
+        // INITIAL LOAD
+        // =====================================================
+
+        loadStaff();
+
+
+    </script>
+
+
+</body>
+
+</html>
+```
