@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -22,11 +23,17 @@ body {
     background: linear-gradient(135deg, #1d4ed8, #2563eb);
     color: white;
     padding: 22px;
+    box-shadow: 0 3px 10px rgba(0,0,0,.12);
 }
 
 .header h1 {
     font-size: 25px;
     margin-bottom: 5px;
+}
+
+.header p {
+    font-size: 14px;
+    opacity: .9;
 }
 
 .container {
@@ -88,6 +95,7 @@ body {
     font-size: 13px;
     font-weight: 600;
     margin-bottom: 7px;
+    color: #374151;
 }
 
 input,
@@ -104,14 +112,11 @@ select {
 input:focus,
 select:focus {
     border-color: #2563eb;
+    box-shadow: 0 0 0 2px rgba(37,99,235,.10);
 }
 
 input[readonly] {
     background: #f1f5f9;
-}
-
-.full-width {
-    grid-column: 1 / -1;
 }
 
 .button-row {
@@ -161,12 +166,14 @@ button:disabled {
     display: block;
     background: #dcfce7;
     color: #166534;
+    border: 1px solid #86efac;
 }
 
 .message.error {
     display: block;
     background: #fee2e2;
     color: #991b1b;
+    border: 1px solid #fca5a5;
 }
 
 .table-wrapper {
@@ -253,10 +260,6 @@ tr:hover td {
         grid-template-columns: 1fr;
     }
 
-    .full-width {
-        grid-column: auto;
-    }
-
     .button-row {
         flex-direction: column;
     }
@@ -311,14 +314,16 @@ tr:hover td {
 
         <div class="form-grid">
 
-            <div class="form-group full-width">
+            <div class="form-group">
 
                 <label for="staffSelector">
                     Select Your Name
                 </label>
 
                 <select id="staffSelector">
-                    <option value="">Loading staff...</option>
+                    <option value="">
+                        Loading staff...
+                    </option>
                 </select>
 
             </div>
@@ -328,7 +333,7 @@ tr:hover td {
     </div>
 
 
-    <!-- ASSIGNMENT -->
+    <!-- ASSIGNMENT FORM -->
     <div class="card">
 
         <h2>Create Substitute Assignment</h2>
@@ -392,80 +397,31 @@ tr:hover td {
                             Select Hour
                         </option>
 
-                        <option value="1">
-                            Hour 1
-                        </option>
-
-                        <option value="2">
-                            Hour 2
-                        </option>
-
-                        <option value="3">
-                            Hour 3
-                        </option>
-
-                        <option value="4">
-                            Hour 4
-                        </option>
-
-                        <option value="5">
-                            Hour 5
-                        </option>
+                        <option value="1">Hour 1</option>
+                        <option value="2">Hour 2</option>
+                        <option value="3">Hour 3</option>
+                        <option value="4">Hour 4</option>
+                        <option value="5">Hour 5</option>
 
                     </select>
 
                 </div>
 
 
-                <!-- YEAR -->
+                <!-- CLASS -->
                 <div class="form-group">
 
-                    <label for="year">
-                        Year
+                    <label for="className">
+                        Class
                     </label>
 
-                    <select id="year" required>
-
-                        <option value="">
-                            Select Year
-                        </option>
-
-                        <option value="I">
-                            I Year
-                        </option>
-
-                        <option value="II">
-                            II Year
-                        </option>
-
-                        <option value="III">
-                            III Year
-                        </option>
-
-                    </select>
-
-                </div>
-
-
-                <!-- SECTION -->
-                <div class="form-group">
-
-                    <label for="section">
-                        Section
-                    </label>
-
-                    <select id="section" required>
-
-                        <option value="">
-                            Select Section
-                        </option>
-
-                        <option value="A">A</option>
-                        <option value="B">B</option>
-                        <option value="C">C</option>
-                        <option value="D">D</option>
-
-                    </select>
+                    <input
+                        type="text"
+                        id="className"
+                        placeholder="Enter class"
+                        autocomplete="off"
+                        required
+                    >
 
                 </div>
 
@@ -481,6 +437,7 @@ tr:hover td {
                         type="text"
                         id="department"
                         readonly
+                        placeholder="Automatically detected"
                     >
 
                 </div>
@@ -575,9 +532,8 @@ tr:hover td {
                         <th>Date</th>
                         <th>Session</th>
                         <th>Hour</th>
+                        <th>Class</th>
                         <th>Department</th>
-                        <th>Year</th>
-                        <th>Section</th>
                         <th>Absent Staff</th>
                         <th>Substitute Staff</th>
                         <th>Assigned By</th>
@@ -589,7 +545,7 @@ tr:hover td {
 
                     <tr>
                         <td
-                            colspan="10"
+                            colspan="9"
                             class="loading"
                         >
                             Loading assignments...
@@ -607,7 +563,7 @@ tr:hover td {
 </div>
 
 
-<!-- LOADING -->
+<!-- LOADING OVERLAY -->
 <div
     class="overlay"
     id="loadingOverlay"
@@ -644,7 +600,7 @@ import {
 
 
 // ============================================================
-// FIREBASE
+// FIREBASE CONFIG
 // ============================================================
 
 const firebaseConfig = {
@@ -663,23 +619,27 @@ const firebaseConfig = {
 
 };
 
-const app = initializeApp(firebaseConfig);
 
-const db = getFirestore(app);
+const app =
+    initializeApp(firebaseConfig);
+
+const db =
+    getFirestore(app);
 
 
 // ============================================================
 // COLLECTIONS
 // ============================================================
 
-const STAFF_COLLECTION = "staff";
+const STAFF_COLLECTION =
+    "staff";
 
 const ASSIGNMENT_COLLECTION =
     "substituteAssignments";
 
 
 // ============================================================
-// VARIABLES
+// GLOBAL VARIABLES
 // ============================================================
 
 let allStaff = [];
@@ -692,61 +652,94 @@ let selectedStaff = null;
 // ============================================================
 
 const staffSelector =
-    document.getElementById("staffSelector");
+    document.getElementById(
+        "staffSelector"
+    );
 
 const loggedStaffName =
-    document.getElementById("loggedStaffName");
+    document.getElementById(
+        "loggedStaffName"
+    );
 
 const loggedStaffDepartment =
-    document.getElementById("loggedStaffDepartment");
+    document.getElementById(
+        "loggedStaffDepartment"
+    );
 
 const staffCount =
-    document.getElementById("staffCount");
+    document.getElementById(
+        "staffCount"
+    );
 
 const departmentInput =
-    document.getElementById("department");
+    document.getElementById(
+        "department"
+    );
 
 const absentStaffSelect =
-    document.getElementById("absentStaff");
+    document.getElementById(
+        "absentStaff"
+    );
 
 const substituteStaffSelect =
-    document.getElementById("substituteStaff");
+    document.getElementById(
+        "substituteStaff"
+    );
 
 const assignmentDate =
-    document.getElementById("assignmentDate");
+    document.getElementById(
+        "assignmentDate"
+    );
 
 const sessionSelect =
-    document.getElementById("session");
+    document.getElementById(
+        "session"
+    );
 
 const hourSelect =
-    document.getElementById("hour");
+    document.getElementById(
+        "hour"
+    );
 
-const yearSelect =
-    document.getElementById("year");
-
-const sectionSelect =
-    document.getElementById("section");
+const classNameInput =
+    document.getElementById(
+        "className"
+    );
 
 const assignmentForm =
-    document.getElementById("assignmentForm");
+    document.getElementById(
+        "assignmentForm"
+    );
 
 const saveBtn =
-    document.getElementById("saveBtn");
+    document.getElementById(
+        "saveBtn"
+    );
 
 const clearBtn =
-    document.getElementById("clearBtn");
+    document.getElementById(
+        "clearBtn"
+    );
 
 const messageBox =
-    document.getElementById("message");
+    document.getElementById(
+        "message"
+    );
 
 const assignmentTableBody =
-    document.getElementById("assignmentTableBody");
+    document.getElementById(
+        "assignmentTableBody"
+    );
 
 const loadingOverlay =
-    document.getElementById("loadingOverlay");
+    document.getElementById(
+        "loadingOverlay"
+    );
 
 const loadingText =
-    document.getElementById("loadingText");
+    document.getElementById(
+        "loadingText"
+    );
 
 
 // ============================================================
@@ -763,6 +756,7 @@ function showLoading(text) {
 
 }
 
+
 function hideLoading() {
 
     loadingOverlay.style.display =
@@ -775,9 +769,13 @@ function hideLoading() {
 // MESSAGE
 // ============================================================
 
-function showMessage(text, type) {
+function showMessage(
+    text,
+    type
+) {
 
-    messageBox.textContent = text;
+    messageBox.textContent =
+        text;
 
     messageBox.className =
         "message " + type;
@@ -798,7 +796,8 @@ function showMessage(text, type) {
 
 function setToday() {
 
-    const now = new Date();
+    const now =
+        new Date();
 
     const year =
         now.getFullYear();
@@ -827,7 +826,10 @@ async function loadStaff() {
 
     try {
 
-        showLoading("Loading staff...");
+        showLoading(
+            "Loading staff..."
+        );
+
 
         const snapshot =
             await getDocs(
@@ -837,41 +839,49 @@ async function loadStaff() {
                 )
             );
 
+
         allStaff = [];
 
-        snapshot.forEach(docSnap => {
 
-            const data =
-                docSnap.data();
+        snapshot.forEach(
+            docSnap => {
 
-            const name =
-                String(
-                    data.name || ""
-                ).trim();
+                const data =
+                    docSnap.data();
 
-            const department =
-                String(
-                    data.department || ""
-                ).trim();
+                const name =
+                    String(
+                        data.name || ""
+                    ).trim();
 
-            if (
-                name &&
-                department
-            ) {
+                const department =
+                    String(
+                        data.department || ""
+                    ).trim();
 
-                allStaff.push({
 
-                    id: docSnap.id,
-
-                    name,
-
+                if (
+                    name &&
                     department
+                ) {
 
-                });
+                    allStaff.push({
+
+                        id:
+                            docSnap.id,
+
+                        name:
+                            name,
+
+                        department:
+                            department
+
+                    });
+
+                }
 
             }
-
-        });
+        );
 
 
         allStaff.sort(
@@ -880,7 +890,8 @@ async function loadStaff() {
                     b.name,
                     undefined,
                     {
-                        sensitivity: "base"
+                        sensitivity:
+                            "base"
                     }
                 )
         );
@@ -892,30 +903,34 @@ async function loadStaff() {
             </option>`;
 
 
-        allStaff.forEach(staff => {
+        allStaff.forEach(
+            staff => {
 
-            const option =
-                document.createElement(
-                    "option"
+                const option =
+                    document.createElement(
+                        "option"
+                    );
+
+                option.value =
+                    staff.id;
+
+                option.textContent =
+                    `${staff.name} — ${staff.department}`;
+
+                staffSelector.appendChild(
+                    option
                 );
 
-            option.value =
-                staff.id;
-
-            option.textContent =
-                `${staff.name} — ${staff.department}`;
-
-            staffSelector.appendChild(
-                option
-            );
-
-        });
+            }
+        );
 
 
         staffCount.textContent =
             allStaff.length;
 
+
         hideLoading();
+
 
     } catch (error) {
 
@@ -924,12 +939,15 @@ async function loadStaff() {
             error
         );
 
+
         hideLoading();
+
 
         staffSelector.innerHTML =
             `<option value="">
                 Unable to load staff
             </option>`;
+
 
         showMessage(
             "Unable to load staff. Check Firestore rules and collection name.",
@@ -942,7 +960,7 @@ async function loadStaff() {
 
 
 // ============================================================
-// SELECT STAFF
+// STAFF SELECTION
 // ============================================================
 
 staffSelector.addEventListener(
@@ -952,9 +970,11 @@ staffSelector.addEventListener(
         const id =
             staffSelector.value;
 
+
         if (!id) {
 
-            selectedStaff = null;
+            selectedStaff =
+                null;
 
             loggedStaffName.textContent =
                 "Not selected";
@@ -962,7 +982,8 @@ staffSelector.addEventListener(
             loggedStaffDepartment.textContent =
                 "Not selected";
 
-            departmentInput.value = "";
+            departmentInput.value =
+                "";
 
             absentStaffSelect.innerHTML =
                 `<option value="">
@@ -1016,7 +1037,7 @@ staffSelector.addEventListener(
 
 
 // ============================================================
-// LOAD SAME DEPARTMENT STAFF
+// LOAD DEPARTMENT STAFF
 // ============================================================
 
 function loadDepartmentStaff() {
@@ -1024,6 +1045,7 @@ function loadDepartmentStaff() {
     if (!selectedStaff) {
         return;
     }
+
 
     const department =
         selectedStaff.department
@@ -1049,24 +1071,26 @@ function loadDepartmentStaff() {
         </option>`;
 
 
-    departmentStaff.forEach(staff => {
+    departmentStaff.forEach(
+        staff => {
 
-        const option =
-            document.createElement(
-                "option"
+            const option =
+                document.createElement(
+                    "option"
+                );
+
+            option.value =
+                staff.id;
+
+            option.textContent =
+                staff.name;
+
+            absentStaffSelect.appendChild(
+                option
             );
 
-        option.value =
-            staff.id;
-
-        option.textContent =
-            staff.name;
-
-        absentStaffSelect.appendChild(
-            option
-        );
-
-    });
+        }
+    );
 
 
     // SUBSTITUTE STAFF
@@ -1077,31 +1101,34 @@ function loadDepartmentStaff() {
         </option>`;
 
 
-    departmentStaff.forEach(staff => {
+    departmentStaff.forEach(
+        staff => {
 
-        if (
-            staff.id ===
-            selectedStaff.id
-        ) {
-            return;
-        }
+            if (
+                staff.id ===
+                selectedStaff.id
+            ) {
+                return;
+            }
 
-        const option =
-            document.createElement(
-                "option"
+
+            const option =
+                document.createElement(
+                    "option"
+                );
+
+            option.value =
+                staff.id;
+
+            option.textContent =
+                staff.name;
+
+            substituteStaffSelect.appendChild(
+                option
             );
 
-        option.value =
-            staff.id;
-
-        option.textContent =
-            staff.name;
-
-        substituteStaffSelect.appendChild(
-            option
-        );
-
-    });
+        }
+    );
 
 
     absentStaffSelect.disabled =
@@ -1129,8 +1156,10 @@ function updateSubstituteStaff() {
         return;
     }
 
+
     const absentId =
         absentStaffSelect.value;
+
 
     const department =
         selectedStaff.department
@@ -1154,52 +1183,48 @@ function updateSubstituteStaff() {
         </option>`;
 
 
-    departmentStaff.forEach(staff => {
+    departmentStaff.forEach(
+        staff => {
 
-        // Do not allow absent staff
-        // as substitute.
-
-        if (
-            staff.id === absentId
-        ) {
-            return;
-        }
-
-        // Do not allow logged-in
-        // staff to assign themselves.
-
-        if (
-            staff.id ===
-            selectedStaff.id
-        ) {
-            return;
-        }
+            if (
+                staff.id === absentId
+            ) {
+                return;
+            }
 
 
-        const option =
-            document.createElement(
-                "option"
+            if (
+                staff.id ===
+                selectedStaff.id
+            ) {
+                return;
+            }
+
+
+            const option =
+                document.createElement(
+                    "option"
+                );
+
+            option.value =
+                staff.id;
+
+            option.textContent =
+                staff.name;
+
+            substituteStaffSelect.appendChild(
+                option
             );
 
-        option.value =
-            staff.id;
-
-        option.textContent =
-            staff.name;
-
-        substituteStaffSelect.appendChild(
-            option
-        );
-
-    });
+        }
+    );
 
 }
 
 
 // ============================================================
-// CHECK SUBSTITUTE CONFLICT
+// CONFLICT CHECK
 //
-// Conflict:
 // Date + Session + Hour + Substitute Staff
 // ============================================================
 
@@ -1273,6 +1298,7 @@ assignmentForm.addEventListener(
             );
 
             return;
+
         }
 
 
@@ -1285,11 +1311,8 @@ assignmentForm.addEventListener(
         const hour =
             hourSelect.value;
 
-        const year =
-            yearSelect.value;
-
-        const section =
-            sectionSelect.value;
+        const className =
+            classNameInput.value.trim();
 
         const absentId =
             absentStaffSelect.value;
@@ -1302,8 +1325,7 @@ assignmentForm.addEventListener(
             !date ||
             !session ||
             !hour ||
-            !year ||
-            !section ||
+            !className ||
             !absentId ||
             !substituteId
         ) {
@@ -1323,6 +1345,7 @@ assignmentForm.addEventListener(
                 staff =>
                     staff.id === absentId
             );
+
 
         const substituteStaff =
             allStaff.find(
@@ -1415,7 +1438,8 @@ assignmentForm.addEventListener(
 
         try {
 
-            saveBtn.disabled = true;
+            saveBtn.disabled =
+                true;
 
             showLoading(
                 "Checking assignment..."
@@ -1423,7 +1447,7 @@ assignmentForm.addEventListener(
 
 
             // ------------------------------------------------
-            // CONFLICT CHECK
+            // CONFLICT
             // ------------------------------------------------
 
             const conflict =
@@ -1439,7 +1463,8 @@ assignmentForm.addEventListener(
 
                 hideLoading();
 
-                saveBtn.disabled = false;
+                saveBtn.disabled =
+                    false;
 
                 showMessage(
                     `${substituteStaff.name} is already assigned on ${date}, ${session}, Hour ${hour}.`,
@@ -1452,20 +1477,22 @@ assignmentForm.addEventListener(
 
 
             // ------------------------------------------------
-            // SAVE
+            // FIRESTORE DATA
             // ------------------------------------------------
 
             const assignment = {
 
-                date,
+                date:
+                    date,
 
-                session,
+                session:
+                    session,
 
-                hour,
+                hour:
+                    hour,
 
-                year,
-
-                section,
+                className:
+                    className,
 
                 department:
                     selectedStaff.department,
@@ -1508,7 +1535,8 @@ assignmentForm.addEventListener(
 
             hideLoading();
 
-            saveBtn.disabled = false;
+            saveBtn.disabled =
+                false;
 
 
             showMessage(
@@ -1529,9 +1557,12 @@ assignmentForm.addEventListener(
                 error
             );
 
+
             hideLoading();
 
-            saveBtn.disabled = false;
+            saveBtn.disabled =
+                false;
+
 
             showMessage(
                 "Failed to save assignment: " +
@@ -1546,7 +1577,7 @@ assignmentForm.addEventListener(
 
 
 // ============================================================
-// CLEAR
+// CLEAR FORM
 // ============================================================
 
 clearBtn.addEventListener(
@@ -1559,15 +1590,17 @@ function clearForm() {
 
     setToday();
 
-    sessionSelect.value = "";
+    sessionSelect.value =
+        "";
 
-    hourSelect.value = "";
+    hourSelect.value =
+        "";
 
-    yearSelect.value = "";
+    classNameInput.value =
+        "";
 
-    sectionSelect.value = "";
-
-    absentStaffSelect.value = "";
+    absentStaffSelect.value =
+        "";
 
     substituteStaffSelect.innerHTML =
         `<option value="">
@@ -1585,7 +1618,10 @@ async function loadAssignments() {
 
     assignmentTableBody.innerHTML =
         `<tr>
-            <td colspan="10" class="loading">
+            <td
+                colspan="9"
+                class="loading"
+            >
                 Loading assignments...
             </td>
         </tr>`;
@@ -1634,27 +1670,32 @@ async function loadAssignments() {
         const assignments = [];
 
 
-        snapshot.forEach(docSnap => {
+        snapshot.forEach(
+            docSnap => {
 
-            assignments.push({
+                assignments.push({
 
-                id: docSnap.id,
+                    id:
+                        docSnap.id,
 
-                ...docSnap.data()
+                    ...docSnap.data()
 
-            });
+                });
 
-        });
+            }
+        );
 
 
         assignments.sort(
             (a, b) => {
 
                 const aTime =
-                    a.createdAt?.seconds || 0;
+                    a.createdAt?.seconds ||
+                    0;
 
                 const bTime =
-                    b.createdAt?.seconds || 0;
+                    b.createdAt?.seconds ||
+                    0;
 
                 return bTime - aTime;
 
@@ -1674,10 +1715,11 @@ async function loadAssignments() {
             error
         );
 
+
         assignmentTableBody.innerHTML =
             `<tr>
                 <td
-                    colspan="10"
+                    colspan="9"
                     class="empty"
                 >
                     Unable to load assignments.
@@ -1690,7 +1732,7 @@ async function loadAssignments() {
 
 
 // ============================================================
-// RENDER
+// RENDER ASSIGNMENTS
 // ============================================================
 
 function renderAssignments(
@@ -1702,7 +1744,7 @@ function renderAssignments(
         assignmentTableBody.innerHTML =
             `<tr>
                 <td
-                    colspan="10"
+                    colspan="9"
                     class="empty"
                 >
                     No substitute assignments found.
@@ -1714,7 +1756,8 @@ function renderAssignments(
     }
 
 
-    assignmentTableBody.innerHTML = "";
+    assignmentTableBody.innerHTML =
+        "";
 
 
     assignments.forEach(
@@ -1756,19 +1799,13 @@ function renderAssignments(
 
                 <td>
                     ${escapeHtml(
+                        assignment.className || "-"
+                    )}
+                </td>
+
+                <td>
+                    ${escapeHtml(
                         assignment.department || "-"
-                    )}
-                </td>
-
-                <td>
-                    ${escapeHtml(
-                        assignment.year || "-"
-                    )}
-                </td>
-
-                <td>
-                    ${escapeHtml(
-                        assignment.section || "-"
                     )}
                 </td>
 
