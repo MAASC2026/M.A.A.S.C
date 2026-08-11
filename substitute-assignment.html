@@ -1,9 +1,10 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Substitute Assignment Portal</title>
 
 <style>
@@ -37,7 +38,7 @@ body {
 }
 
 .container {
-    max-width: 1200px;
+    max-width: 1250px;
     margin: 25px auto;
     padding: 0 18px;
 }
@@ -149,6 +150,21 @@ button {
     color: #334155;
 }
 
+.btn-view {
+    display: inline-block;
+    text-decoration: none;
+    background: #0f766e;
+    color: white;
+    border-radius: 7px;
+    padding: 11px 20px;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.btn-view:hover {
+    background: #115e59;
+}
+
 button:disabled {
     opacity: .6;
     cursor: not-allowed;
@@ -176,6 +192,13 @@ button:disabled {
     border: 1px solid #fca5a5;
 }
 
+.message.info {
+    display: block;
+    background: #dbeafe;
+    color: #1e40af;
+    border: 1px solid #93c5fd;
+}
+
 .table-wrapper {
     overflow-x: auto;
 }
@@ -183,7 +206,7 @@ button:disabled {
 table {
     width: 100%;
     border-collapse: collapse;
-    min-width: 1050px;
+    min-width: 1100px;
 }
 
 th {
@@ -221,6 +244,12 @@ tr:hover td {
     color: #64748b;
 }
 
+.portal-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 20px;
+}
+
 .overlay {
     position: fixed;
     inset: 0;
@@ -236,6 +265,7 @@ tr:hover td {
     padding: 25px 35px;
     border-radius: 12px;
     text-align: center;
+    min-width: 240px;
 }
 
 .spinner {
@@ -248,6 +278,11 @@ tr:hover td {
     margin: 0 auto 12px;
 }
 
+#loadingText {
+    font-size: 14px;
+    color: #334155;
+}
+
 @keyframes spin {
     to {
         transform: rotate(360deg);
@@ -255,6 +290,7 @@ tr:hover td {
 }
 
 @media(max-width:800px) {
+
     .staff-info,
     .form-grid {
         grid-template-columns: 1fr;
@@ -264,8 +300,14 @@ tr:hover td {
         flex-direction: column;
     }
 
-    button {
+    button,
+    .btn-view {
         width: 100%;
+        text-align: center;
+    }
+
+    .portal-actions {
+        justify-content: stretch;
     }
 }
 </style>
@@ -516,8 +558,84 @@ tr:hover td {
     </div>
 
 
+    <!-- VIEW BUTTON -->
+    <div class="portal-actions">
+
+        <a
+            href="substitute-assignment-view.html"
+            class="btn-view"
+        >
+            CHECK ASSIGNED SUBSTITUTE
+        </a>
+
+    </div>
+
+
     <!-- ASSIGNMENT HISTORY -->
-    <a href="substitute-assignment-view.html"><button>CHECK ASSIGNED SUBSTITUTE </button> </a>
+    <div class="card">
+
+        <h2>Recent Substitute Assignments</h2>
+
+        <div class="table-wrapper">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+                        <th>S.No</th>
+                        <th>Date</th>
+                        <th>Session</th>
+                        <th>Hour</th>
+                        <th>Class</th>
+                        <th>Department</th>
+                        <th>Absent Staff</th>
+                        <th>Substitute Staff</th>
+                        <th>Assigned By</th>
+                    </tr>
+
+                </thead>
+
+                <tbody id="assignmentTableBody">
+
+                    <tr>
+                        <td
+                            colspan="9"
+                            class="loading"
+                        >
+                            Loading assignments...
+                        </td>
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- LOADING OVERLAY -->
+<div
+    class="overlay"
+    id="loadingOverlay"
+>
+
+    <div class="loader-box">
+
+        <div class="spinner"></div>
+
+        <div id="loadingText">
+            Please wait...
+        </div>
+
+    </div>
+
+</div>
+
 
 <script type="module">
 
@@ -536,9 +654,9 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 
-// ============================================================
-// FIREBASE CONFIG
-// ============================================================
+/* ============================================================
+   FIREBASE CONFIG
+============================================================ */
 
 const firebaseConfig = {
 
@@ -557,184 +675,217 @@ const firebaseConfig = {
 };
 
 
-const app =
-    initializeApp(firebaseConfig);
+const app = initializeApp(firebaseConfig);
 
-const db =
-    getFirestore(app);
+const db = getFirestore(app);
 
 
-// ============================================================
-// COLLECTIONS
-// ============================================================
+/* ============================================================
+   COLLECTIONS
+============================================================ */
 
-const STAFF_COLLECTION =
-    "staff";
+const STAFF_COLLECTION = "staff";
 
-const ASSIGNMENT_COLLECTION =
-    "substituteAssignments";
+const ASSIGNMENT_COLLECTION = "substituteAssignments";
 
 
-// ============================================================
-// GLOBAL VARIABLES
-// ============================================================
+/* ============================================================
+   GLOBAL VARIABLES
+============================================================ */
 
 let allStaff = [];
 
 let selectedStaff = null;
 
+let loggedStaffId = null;
 
-// ============================================================
-// ELEMENTS
-// ============================================================
+
+/* ============================================================
+   ELEMENTS
+============================================================ */
 
 const staffSelector =
-    document.getElementById(
-        "staffSelector"
-    );
+    document.getElementById("staffSelector");
 
 const loggedStaffName =
-    document.getElementById(
-        "loggedStaffName"
-    );
+    document.getElementById("loggedStaffName");
 
 const loggedStaffDepartment =
-    document.getElementById(
-        "loggedStaffDepartment"
-    );
+    document.getElementById("loggedStaffDepartment");
 
 const staffCount =
-    document.getElementById(
-        "staffCount"
-    );
+    document.getElementById("staffCount");
 
 const departmentInput =
-    document.getElementById(
-        "department"
-    );
+    document.getElementById("department");
 
 const absentStaffSelect =
-    document.getElementById(
-        "absentStaff"
-    );
+    document.getElementById("absentStaff");
 
 const substituteStaffSelect =
-    document.getElementById(
-        "substituteStaff"
-    );
+    document.getElementById("substituteStaff");
 
 const assignmentDate =
-    document.getElementById(
-        "assignmentDate"
-    );
+    document.getElementById("assignmentDate");
 
 const sessionSelect =
-    document.getElementById(
-        "session"
-    );
+    document.getElementById("session");
 
 const hourSelect =
-    document.getElementById(
-        "hour"
-    );
+    document.getElementById("hour");
 
 const classNameInput =
-    document.getElementById(
-        "className"
-    );
+    document.getElementById("className");
 
 const assignmentForm =
-    document.getElementById(
-        "assignmentForm"
-    );
+    document.getElementById("assignmentForm");
 
 const saveBtn =
-    document.getElementById(
-        "saveBtn"
-    );
+    document.getElementById("saveBtn");
 
 const clearBtn =
-    document.getElementById(
-        "clearBtn"
-    );
+    document.getElementById("clearBtn");
 
 const messageBox =
-    document.getElementById(
-        "message"
-    );
+    document.getElementById("message");
 
 const assignmentTableBody =
-    document.getElementById(
-        "assignmentTableBody"
-    );
+    document.getElementById("assignmentTableBody");
 
 const loadingOverlay =
-    document.getElementById(
-        "loadingOverlay"
-    );
+    document.getElementById("loadingOverlay");
 
 const loadingText =
-    document.getElementById(
-        "loadingText"
-    );
+    document.getElementById("loadingText");
 
 
-// ============================================================
-// LOADING
-// ============================================================
+/* ============================================================
+   SAFE TEXT
+============================================================ */
 
-function showLoading(text) {
+function safeText(value, fallback = "") {
 
-    loadingText.textContent =
-        text || "Please wait...";
+    if (
+        value === undefined ||
+        value === null
+    ) {
+        return fallback;
+    }
 
-    loadingOverlay.style.display =
-        "flex";
+    return String(value).trim();
+
+}
+
+
+/* ============================================================
+   NORMALIZE STAFF
+============================================================ */
+
+function normalizeStaff(docSnap) {
+
+    const data = docSnap.data() || {};
+
+    const id =
+        safeText(
+            data.staffId ||
+            data.id ||
+            data.staffID ||
+            data.employeeId ||
+            data.employeeID ||
+            docSnap.id
+        );
+
+    const name =
+        safeText(
+            data.name ||
+            data.staffName ||
+            data.fullName ||
+            data.full_name ||
+            data.displayName
+        );
+
+    const department =
+        safeText(
+            data.department ||
+            data.dept ||
+            data.Department ||
+            data.departmentName
+        );
+
+    return {
+
+        id: id,
+
+        name: name || id || "Unknown Staff",
+
+        department: department || "Unknown Department",
+
+        raw: data
+
+    };
+
+}
+
+
+/* ============================================================
+   LOADING
+============================================================ */
+
+function showLoading(text = "Please wait...") {
+
+    if (loadingText) {
+        loadingText.textContent = text;
+    }
+
+    if (loadingOverlay) {
+        loadingOverlay.style.display = "flex";
+    }
+
+    document.body.style.cursor = "wait";
 
 }
 
 
 function hideLoading() {
 
-    loadingOverlay.style.display =
-        "none";
+    if (loadingOverlay) {
+        loadingOverlay.style.display = "none";
+    }
+
+    document.body.style.cursor = "default";
 
 }
 
 
-// ============================================================
-// MESSAGE
-// ============================================================
+/* ============================================================
+   MESSAGE
+============================================================ */
 
-function showMessage(
-    text,
-    type
-) {
+function showMessage(text, type = "info") {
 
-    messageBox.textContent =
-        text;
+    messageBox.textContent = text;
 
     messageBox.className =
         "message " + type;
 
     setTimeout(() => {
 
-        messageBox.className =
-            "message";
+        messageBox.className = "message";
+
+        messageBox.textContent = "";
 
     }, 5000);
 
 }
 
 
-// ============================================================
-// TODAY
-// ============================================================
+/* ============================================================
+   TODAY
+============================================================ */
 
 function setToday() {
 
-    const now =
-        new Date();
+    const now = new Date();
 
     const year =
         now.getFullYear();
@@ -755,52 +906,383 @@ function setToday() {
 }
 
 
-// ============================================================
-// LOAD STAFF
-// ============================================================
-function showLoading(text = "Please wait...") {
+/* ============================================================
+   GET LOGGED STAFF ID
+   Supports existing login/session storage formats.
+============================================================ */
 
-    const overlay = document.getElementById("loadingOverlay");
-    const loadingText = document.getElementById("loadingText");
+function getLoggedStaffId() {
 
-    if (loadingText) {
-        loadingText.textContent = text;
+    const possibleKeys = [
+
+        "staffId",
+        "staffID",
+        "loggedStaffId",
+        "loggedStaffID",
+        "currentStaffId",
+        "currentStaffID",
+        "userStaffId",
+        "userStaffID",
+        "employeeId",
+        "employeeID"
+
+    ];
+
+
+    const storages = [
+
+        sessionStorage,
+        localStorage
+
+    ];
+
+
+    for (const storage of storages) {
+
+        for (const key of possibleKeys) {
+
+            const value =
+                storage.getItem(key);
+
+            if (
+                value &&
+                value.trim()
+            ) {
+
+                return value.trim();
+
+            }
+
+        }
+
     }
 
-    if (overlay) {
-        overlay.style.display = "flex";
+
+    const objectKeys = [
+
+        "staffSession",
+        "staff",
+        "loggedStaff",
+        "currentStaff",
+        "user",
+        "currentUser"
+
+    ];
+
+
+    for (const storage of storages) {
+
+        for (const key of objectKeys) {
+
+            const value =
+                storage.getItem(key);
+
+            if (!value) {
+                continue;
+            }
+
+            try {
+
+                const obj =
+                    JSON.parse(value);
+
+                const id =
+                    obj?.staffId ||
+                    obj?.staffID ||
+                    obj?.id ||
+                    obj?.employeeId ||
+                    obj?.employeeID;
+
+                if (
+                    id &&
+                    String(id).trim()
+                ) {
+
+                    return String(id).trim();
+
+                }
+
+            } catch (error) {
+
+                /* Not JSON */
+
+            }
+
+        }
+
     }
 
-    document.body.style.cursor = "wait";
+
+    return null;
+
 }
 
 
-function hideLoading() {
+/* ============================================================
+   LOAD STAFF
+============================================================ */
 
-    const overlay = document.getElementById("loadingOverlay");
+async function loadStaff() {
 
-    if (overlay) {
-        overlay.style.display = "none";
+    showLoading("Loading staff...");
+
+    staffSelector.innerHTML =
+        `<option value="">
+            Loading staff...
+        </option>`;
+
+    try {
+
+        const snapshot =
+            await getDocs(
+                collection(
+                    db,
+                    STAFF_COLLECTION
+                )
+            );
+
+
+        allStaff = [];
+
+
+        snapshot.forEach(docSnap => {
+
+            const staff =
+                normalizeStaff(docSnap);
+
+            if (
+                staff.id &&
+                staff.name
+            ) {
+
+                allStaff.push(staff);
+
+            }
+
+        });
+
+
+        /* Remove duplicate staff IDs */
+
+        const uniqueStaff =
+            new Map();
+
+        allStaff.forEach(staff => {
+
+            if (
+                !uniqueStaff.has(staff.id)
+            ) {
+
+                uniqueStaff.set(
+                    staff.id,
+                    staff
+                );
+
+            }
+
+        });
+
+
+        allStaff =
+            Array.from(
+                uniqueStaff.values()
+            );
+
+
+        /* Safe sorting */
+
+        allStaff.sort((a, b) => {
+
+            const nameA =
+                safeText(a.name).toLowerCase();
+
+            const nameB =
+                safeText(b.name).toLowerCase();
+
+            return nameA.localeCompare(nameB);
+
+        });
+
+
+        staffSelector.innerHTML =
+            `<option value="">
+                Select your name
+            </option>`;
+
+
+        allStaff.forEach(staff => {
+
+            const option =
+                document.createElement("option");
+
+            option.value =
+                staff.id;
+
+            option.textContent =
+                `${staff.name} (${staff.id})`;
+
+            staffSelector.appendChild(option);
+
+        });
+
+
+        staffCount.textContent =
+            allStaff.length;
+
+
+        /* ====================================================
+           IDENTIFY CURRENT LOGGED-IN STAFF
+        ==================================================== */
+
+        loggedStaffId =
+            getLoggedStaffId();
+
+
+        if (loggedStaffId) {
+
+            const loggedStaff =
+                allStaff.find(
+                    staff =>
+                        String(staff.id).trim() ===
+                        String(loggedStaffId).trim()
+                );
+
+
+            if (loggedStaff) {
+
+                selectedStaff =
+                    loggedStaff;
+
+                staffSelector.value =
+                    loggedStaff.id;
+
+                updateStaffInformation();
+
+                loadDepartmentStaff();
+
+                await loadAssignments();
+
+            } else {
+
+                console.warn(
+                    "Logged staff ID was not found in Firestore:",
+                    loggedStaffId
+                );
+
+                loggedStaffName.textContent =
+                    "Select your name";
+
+                loggedStaffDepartment.textContent =
+                    "Select your name";
+
+                departmentInput.value =
+                    "";
+
+            }
+
+        } else {
+
+            loggedStaffName.textContent =
+                "Select your name";
+
+            loggedStaffDepartment.textContent =
+                "Select your name";
+
+            departmentInput.value =
+                "";
+
+        }
+
+
+    } catch (error) {
+
+        console.error(
+            "STAFF LOAD ERROR:",
+            error
+        );
+
+
+        staffSelector.innerHTML =
+            `<option value="">
+                Unable to load staff
+            </option>`;
+
+
+        loggedStaffName.textContent =
+            "Unable to load";
+
+        loggedStaffDepartment.textContent =
+            "Unable to load";
+
+
+        showMessage(
+            "Unable to load staff: " +
+            error.message,
+            "error"
+        );
+
+    } finally {
+
+        hideLoading();
+
     }
 
-    document.body.style.cursor = "default";
 }
-// ============================================================
-// STAFF SELECTION
-// ============================================================
+
+
+/* ============================================================
+   UPDATE STAFF INFORMATION
+============================================================ */
+
+function updateStaffInformation() {
+
+    if (!selectedStaff) {
+
+        loggedStaffName.textContent =
+            "Not selected";
+
+        loggedStaffDepartment.textContent =
+            "Not selected";
+
+        departmentInput.value =
+            "";
+
+        return;
+
+    }
+
+
+    loggedStaffName.textContent =
+        selectedStaff.name;
+
+
+    loggedStaffDepartment.textContent =
+        selectedStaff.department;
+
+
+    departmentInput.value =
+        selectedStaff.department;
+
+}
+
+
+/* ============================================================
+   STAFF SELECTION
+============================================================ */
 
 staffSelector.addEventListener(
     "change",
-    function() {
+    async function() {
 
         const id =
-            staffSelector.value;
+            safeText(
+                staffSelector.value
+            );
 
 
         if (!id) {
 
-            selectedStaff =
-                null;
+            selectedStaff = null;
 
             loggedStaffName.textContent =
                 "Not selected";
@@ -808,24 +1290,9 @@ staffSelector.addEventListener(
             loggedStaffDepartment.textContent =
                 "Not selected";
 
-            departmentInput.value =
-                "";
+            departmentInput.value = "";
 
-            absentStaffSelect.innerHTML =
-                `<option value="">
-                    Select your name first
-                </option>`;
-
-            substituteStaffSelect.innerHTML =
-                `<option value="">
-                    Select your name first
-                </option>`;
-
-            absentStaffSelect.disabled =
-                true;
-
-            substituteStaffSelect.disabled =
-                true;
+            resetStaffDropdowns();
 
             return;
 
@@ -835,61 +1302,101 @@ staffSelector.addEventListener(
         selectedStaff =
             allStaff.find(
                 staff =>
-                    staff.id === id
+                    String(staff.id) === id
             );
 
 
         if (!selectedStaff) {
+
+            showMessage(
+                "Selected staff member was not found.",
+                "error"
+            );
+
             return;
+
         }
 
 
-        loggedStaffName.textContent =
-            selectedStaff.name;
+        loggedStaffId =
+            selectedStaff.id;
 
-        loggedStaffDepartment.textContent =
-            selectedStaff.department;
 
-        departmentInput.value =
-            selectedStaff.department;
-
+        updateStaffInformation();
 
         loadDepartmentStaff();
 
-        loadAssignments();
+        await loadAssignments();
 
     }
 );
 
 
-// ============================================================
-// LOAD DEPARTMENT STAFF
-// ============================================================
+/* ============================================================
+   RESET STAFF DROPDOWNS
+============================================================ */
+
+function resetStaffDropdowns() {
+
+    absentStaffSelect.innerHTML =
+        `<option value="">
+            Select your name first
+        </option>`;
+
+    substituteStaffSelect.innerHTML =
+        `<option value="">
+            Select your name first
+        </option>`;
+
+    absentStaffSelect.disabled = true;
+
+    substituteStaffSelect.disabled = true;
+
+}
+
+
+/* ============================================================
+   LOAD DEPARTMENT STAFF
+============================================================ */
 
 function loadDepartmentStaff() {
 
     if (!selectedStaff) {
+
+        resetStaffDropdowns();
+
         return;
+
     }
 
 
     const department =
-        selectedStaff.department
-            .trim()
-            .toLowerCase();
+        safeText(
+            selectedStaff.department
+        ).toLowerCase();
 
 
     const departmentStaff =
-        allStaff.filter(
-            staff =>
-                staff.department
-                    .trim()
-                    .toLowerCase()
-                === department
-        );
+        allStaff.filter(staff => {
+
+            const staffDepartment =
+                safeText(
+                    staff.department
+                ).toLowerCase();
+
+            return (
+                staffDepartment ===
+                department
+            );
+
+        });
 
 
-    // ABSENT STAFF
+    staffCount.textContent =
+        departmentStaff.length;
+
+
+    /* ABSENT STAFF */
 
     absentStaffSelect.innerHTML =
         `<option value="">
@@ -897,29 +1404,23 @@ function loadDepartmentStaff() {
         </option>`;
 
 
-    departmentStaff.forEach(
-        staff => {
+    departmentStaff.forEach(staff => {
 
-            const option =
-                document.createElement(
-                    "option"
-                );
+        const option =
+            document.createElement("option");
 
-            option.value =
-                staff.id;
+        option.value =
+            staff.id;
 
-            option.textContent =
-                staff.name;
+        option.textContent =
+            `${staff.name} (${staff.id})`;
 
-            absentStaffSelect.appendChild(
-                option
-            );
+        absentStaffSelect.appendChild(option);
 
-        }
-    );
+    });
 
 
-    // SUBSTITUTE STAFF
+    /* SUBSTITUTE STAFF */
 
     substituteStaffSelect.innerHTML =
         `<option value="">
@@ -927,34 +1428,35 @@ function loadDepartmentStaff() {
         </option>`;
 
 
-    departmentStaff.forEach(
-        staff => {
+    departmentStaff.forEach(staff => {
 
-            if (
-                staff.id ===
-                selectedStaff.id
-            ) {
-                return;
-            }
+        /*
+         * The person creating the assignment
+         * should not appear as substitute.
+         */
 
+        if (
+            staff.id ===
+            selectedStaff.id
+        ) {
 
-            const option =
-                document.createElement(
-                    "option"
-                );
-
-            option.value =
-                staff.id;
-
-            option.textContent =
-                staff.name;
-
-            substituteStaffSelect.appendChild(
-                option
-            );
+            return;
 
         }
-    );
+
+
+        const option =
+            document.createElement("option");
+
+        option.value =
+            staff.id;
+
+        option.textContent =
+            `${staff.name} (${staff.id})`;
+
+        substituteStaffSelect.appendChild(option);
+
+    });
 
 
     absentStaffSelect.disabled =
@@ -966,9 +1468,9 @@ function loadDepartmentStaff() {
 }
 
 
-// ============================================================
-// ABSENT STAFF CHANGE
-// ============================================================
+/* ============================================================
+   ABSENT STAFF CHANGE
+============================================================ */
 
 absentStaffSelect.addEventListener(
     "change",
@@ -988,19 +1490,22 @@ function updateSubstituteStaff() {
 
 
     const department =
-        selectedStaff.department
-            .trim()
-            .toLowerCase();
+        safeText(
+            selectedStaff.department
+        ).toLowerCase();
 
 
     const departmentStaff =
-        allStaff.filter(
-            staff =>
-                staff.department
-                    .trim()
-                    .toLowerCase()
-                === department
-        );
+        allStaff.filter(staff => {
+
+            return (
+                safeText(
+                    staff.department
+                ).toLowerCase() ===
+                department
+            );
+
+        });
 
 
     substituteStaffSelect.innerHTML =
@@ -1009,50 +1514,55 @@ function updateSubstituteStaff() {
         </option>`;
 
 
-    departmentStaff.forEach(
-        staff => {
+    departmentStaff.forEach(staff => {
 
-            if (
-                staff.id === absentId
-            ) {
-                return;
-            }
+        /* Do not select absent staff */
 
+        if (
+            staff.id === absentId
+        ) {
 
-            if (
-                staff.id ===
-                selectedStaff.id
-            ) {
-                return;
-            }
-
-
-            const option =
-                document.createElement(
-                    "option"
-                );
-
-            option.value =
-                staff.id;
-
-            option.textContent =
-                staff.name;
-
-            substituteStaffSelect.appendChild(
-                option
-            );
+            return;
 
         }
-    );
+
+
+        /* Do not select logged-in staff */
+
+        if (
+            staff.id === selectedStaff.id
+        ) {
+
+            return;
+
+        }
+
+
+        const option =
+            document.createElement("option");
+
+        option.value =
+            staff.id;
+
+        option.textContent =
+            `${staff.name} (${staff.id})`;
+
+        substituteStaffSelect.appendChild(option);
+
+    });
 
 }
 
 
-// ============================================================
-// CONFLICT CHECK
-//
-// Date + Session + Hour + Substitute Staff
-// ============================================================
+/* ============================================================
+   CONFLICT CHECK
+===============================================================
+   This intentionally queries only by DATE.
+
+   This avoids Firestore composite-index problems.
+
+   Session/hour/substitute are filtered in JavaScript.
+=============================================================== */
 
 async function checkConflict(
     date,
@@ -1063,36 +1573,15 @@ async function checkConflict(
 
     const q =
         query(
-
             collection(
                 db,
                 ASSIGNMENT_COLLECTION
             ),
-
             where(
                 "date",
                 "==",
                 date
-            ),
-
-            where(
-                "session",
-                "==",
-                session
-            ),
-
-            where(
-                "hour",
-                "==",
-                hour
-            ),
-
-            where(
-                "substituteStaffId",
-                "==",
-                substituteId
             )
-
         );
 
 
@@ -1100,14 +1589,57 @@ async function checkConflict(
         await getDocs(q);
 
 
-    return !snapshot.empty;
+    let conflict = false;
+
+
+    snapshot.forEach(docSnap => {
+
+        const data =
+            docSnap.data() || {};
+
+
+        const sameSession =
+            safeText(
+                data.session
+            ) ===
+            safeText(session);
+
+
+        const sameHour =
+            String(
+                data.hour ?? ""
+            ) ===
+            String(hour);
+
+
+        const sameSubstitute =
+            safeText(
+                data.substituteStaffId
+            ) ===
+            safeText(substituteId);
+
+
+        if (
+            sameSession &&
+            sameHour &&
+            sameSubstitute
+        ) {
+
+            conflict = true;
+
+        }
+
+    });
+
+
+    return conflict;
 
 }
 
 
-// ============================================================
-// SAVE ASSIGNMENT
-// ============================================================
+/* ============================================================
+   SAVE ASSIGNMENT
+============================================================ */
 
 assignmentForm.addEventListener(
     "submit",
@@ -1129,22 +1661,34 @@ assignmentForm.addEventListener(
 
 
         const date =
-            assignmentDate.value;
+            safeText(
+                assignmentDate.value
+            );
 
         const session =
-            sessionSelect.value;
+            safeText(
+                sessionSelect.value
+            );
 
         const hour =
-            hourSelect.value;
+            safeText(
+                hourSelect.value
+            );
 
         const className =
-            classNameInput.value.trim();
+            safeText(
+                classNameInput.value
+            );
 
         const absentId =
-            absentStaffSelect.value;
+            safeText(
+                absentStaffSelect.value
+            );
 
         const substituteId =
-            substituteStaffSelect.value;
+            safeText(
+                substituteStaffSelect.value
+            );
 
 
         if (
@@ -1195,26 +1739,26 @@ assignmentForm.addEventListener(
         }
 
 
-        // ----------------------------------------------------
-        // DEPARTMENT SECURITY
-        // ----------------------------------------------------
+        /* ====================================================
+           DEPARTMENT SECURITY
+        ==================================================== */
 
         const loggedDepartment =
-            selectedStaff.department
-                .trim()
-                .toLowerCase();
+            safeText(
+                selectedStaff.department
+            ).toLowerCase();
 
 
         const absentDepartment =
-            absentStaff.department
-                .trim()
-                .toLowerCase();
+            safeText(
+                absentStaff.department
+            ).toLowerCase();
 
 
         const substituteDepartment =
-            substituteStaff.department
-                .trim()
-                .toLowerCase();
+            safeText(
+                substituteStaff.department
+            ).toLowerCase();
 
 
         if (
@@ -1264,17 +1808,16 @@ assignmentForm.addEventListener(
 
         try {
 
-            saveBtn.disabled =
-                true;
+            saveBtn.disabled = true;
 
             showLoading(
                 "Checking assignment..."
             );
 
 
-            // ------------------------------------------------
-            // CONFLICT
-            // ------------------------------------------------
+            /* =================================================
+               CHECK CONFLICT
+            ================================================= */
 
             const conflict =
                 await checkConflict(
@@ -1289,8 +1832,7 @@ assignmentForm.addEventListener(
 
                 hideLoading();
 
-                saveBtn.disabled =
-                    false;
+                saveBtn.disabled = false;
 
                 showMessage(
                     `${substituteStaff.name} is already assigned on ${date}, ${session}, Hour ${hour}.`,
@@ -1302,23 +1844,19 @@ assignmentForm.addEventListener(
             }
 
 
-            // ------------------------------------------------
-            // FIRESTORE DATA
-            // ------------------------------------------------
+            /* =================================================
+               FIRESTORE DATA
+            ================================================= */
 
             const assignment = {
 
-                date:
-                    date,
+                date: date,
 
-                session:
-                    session,
+                session: session,
 
-                hour:
-                    hour,
+                hour: hour,
 
-                className:
-                    className,
+                className: className,
 
                 department:
                     selectedStaff.department,
@@ -1361,8 +1899,7 @@ assignmentForm.addEventListener(
 
             hideLoading();
 
-            saveBtn.disabled =
-                false;
+            saveBtn.disabled = false;
 
 
             showMessage(
@@ -1372,6 +1909,7 @@ assignmentForm.addEventListener(
 
 
             clearForm();
+
 
             await loadAssignments();
 
@@ -1386,8 +1924,7 @@ assignmentForm.addEventListener(
 
             hideLoading();
 
-            saveBtn.disabled =
-                false;
+            saveBtn.disabled = false;
 
 
             showMessage(
@@ -1402,9 +1939,9 @@ assignmentForm.addEventListener(
 );
 
 
-// ============================================================
-// CLEAR FORM
-// ============================================================
+/* ============================================================
+   CLEAR FORM
+============================================================ */
 
 clearBtn.addEventListener(
     "click",
@@ -1416,17 +1953,13 @@ function clearForm() {
 
     setToday();
 
-    sessionSelect.value =
-        "";
+    sessionSelect.value = "";
 
-    hourSelect.value =
-        "";
+    hourSelect.value = "";
 
-    classNameInput.value =
-        "";
+    classNameInput.value = "";
 
-    absentStaffSelect.value =
-        "";
+    absentStaffSelect.value = "";
 
     substituteStaffSelect.innerHTML =
         `<option value="">
@@ -1436,11 +1969,16 @@ function clearForm() {
 }
 
 
-// ============================================================
-// LOAD ASSIGNMENTS
-// ============================================================
+/* ============================================================
+   LOAD ASSIGNMENTS
+============================================================ */
 
 async function loadAssignments() {
+
+    if (!assignmentTableBody) {
+        return;
+    }
+
 
     assignmentTableBody.innerHTML =
         `<tr>
@@ -1460,20 +1998,22 @@ async function loadAssignments() {
 
         if (selectedStaff) {
 
+            /*
+             * Only ONE where condition is used.
+             * This prevents composite-index errors.
+             */
+
             const q =
                 query(
-
                     collection(
                         db,
                         ASSIGNMENT_COLLECTION
                     ),
-
                     where(
                         "department",
                         "==",
                         selectedStaff.department
                     )
-
                 );
 
 
@@ -1496,34 +2036,67 @@ async function loadAssignments() {
         const assignments = [];
 
 
-        snapshot.forEach(
-            docSnap => {
+        snapshot.forEach(docSnap => {
 
-                assignments.push({
+            const data =
+                docSnap.data() || {};
 
-                    id:
-                        docSnap.id,
 
-                    ...docSnap.data()
+            assignments.push({
 
-                });
+                id:
+                    docSnap.id,
 
-            }
-        );
+                ...data
 
+            });
+
+        });
+
+
+        /* ====================================================
+           SORT SAFELY
+        ==================================================== */
 
         assignments.sort(
             (a, b) => {
 
-                const aTime =
+                const aSeconds =
                     a.createdAt?.seconds ||
                     0;
 
-                const bTime =
+                const bSeconds =
                     b.createdAt?.seconds ||
                     0;
 
-                return bTime - aTime;
+
+                if (
+                    bSeconds !==
+                    aSeconds
+                ) {
+
+                    return (
+                        bSeconds -
+                        aSeconds
+                    );
+
+                }
+
+
+                const aDate =
+                    safeText(
+                        a.date
+                    );
+
+                const bDate =
+                    safeText(
+                        b.date
+                    );
+
+
+                return bDate.localeCompare(
+                    aDate
+                );
 
             }
         );
@@ -1552,20 +2125,30 @@ async function loadAssignments() {
                 </td>
             </tr>`;
 
+
+        showMessage(
+            "Unable to load assignments: " +
+            error.message,
+            "error"
+        );
+
     }
 
 }
 
 
-// ============================================================
-// RENDER ASSIGNMENTS
-// ============================================================
+/* ============================================================
+   RENDER ASSIGNMENTS
+============================================================ */
 
 function renderAssignments(
     assignments
 ) {
 
-    if (!assignments.length) {
+    if (
+        !assignments ||
+        !assignments.length
+    ) {
 
         assignmentTableBody.innerHTML =
             `<tr>
@@ -1582,8 +2165,7 @@ function renderAssignments(
     }
 
 
-    assignmentTableBody.innerHTML =
-        "";
+    assignmentTableBody.innerHTML = "";
 
 
     assignments.forEach(
@@ -1668,13 +2250,13 @@ function renderAssignments(
 }
 
 
-// ============================================================
-// ESCAPE HTML
-// ============================================================
+/* ============================================================
+   ESCAPE HTML
+============================================================ */
 
 function escapeHtml(value) {
 
-    return String(value)
+    return String(value ?? "")
 
         .replace(
             /&/g,
@@ -1704,20 +2286,48 @@ function escapeHtml(value) {
 }
 
 
-// ============================================================
-// START
-// ============================================================
+/* ============================================================
+   START PORTAL
+============================================================ */
 
-setToday();
+async function startPortal() {
 
-loadStaff();
+    try {
 
-loadAssignments();
+        setToday();
+
+        resetStaffDropdowns();
+
+        await loadStaff();
+
+        /*
+         * Only load assignments after staff has
+         * been successfully resolved.
+         */
+
+        if (selectedStaff) {
+
+            await loadAssignments();
+
+        }
+
+    } catch (error) {
+
+        console.error(
+            "PORTAL START ERROR:",
+            error
+        );
+
+        hideLoading();
+
+    }
+
+}
 
 
-// ============================================================
-// DEBUG
-// ============================================================
+/* ============================================================
+   DEBUG
+============================================================ */
 
 window.substitutePortal = {
 
@@ -1731,12 +2341,21 @@ window.substitutePortal = {
         () => allStaff,
 
     getSelectedStaff:
-        () => selectedStaff
+        () => selectedStaff,
+
+    getLoggedStaffId:
+        () => loggedStaffId
 
 };
+
+
+/* ============================================================
+   START
+============================================================ */
+
+startPortal();
 
 </script>
 
 </body>
 </html>
-```
