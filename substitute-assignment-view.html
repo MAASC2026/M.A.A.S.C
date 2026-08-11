@@ -1,0 +1,262 @@
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+import {
+    getFirestore,
+    collection,
+    getDocs,
+    query,
+    where,
+    addDoc,
+    serverTimestamp
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+//=====================================
+// FIREBASE CONFIG
+//=====================================
+
+const firebaseConfig = {
+
+   apiKey: "AIzaSyAIv3091VM-gkmdwEAn7OhXWd9Cm2zh2bo",
+  authDomain: "maasc-2026.firebaseapp.com",
+  projectId: "maasc-2026",
+  storageBucket: "maasc-2026.appspot.com",
+  messagingSenderId: "585813001586",
+  appId: "1:585813001586:web:664e0e90ff0725d2e849eb"
+
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+//=====================================
+// ELEMENTS
+//=====================================
+
+const dateInput = document.getElementById("date");
+const session = document.getElementById("session");
+const absentStaff = document.getElementById("absentStaff");
+const substituteStaff = document.getElementById("substituteStaff");
+
+const classBody = document.getElementById("classBody");
+
+const reason = document.getElementById("reason");
+
+const assignBtn = document.getElementById("assignBtn");
+
+const status = document.getElementById("status");
+
+//=====================================
+// SET TODAY
+//=====================================
+
+dateInput.value = new Date().toISOString().split("T")[0];
+
+//=====================================
+// GLOBAL VARIABLES
+//=====================================
+
+let staffList = [];
+let classList = [];
+
+//=====================================
+// LOAD STAFF
+//=====================================
+
+async function loadStaff(){
+
+    absentStaff.innerHTML =
+        `<option value="">Select Staff</option>`;
+
+    substituteStaff.innerHTML =
+        `<option value="">Select Staff</option>`;
+
+    const snapshot = await getDocs(collection(db,"staff"));
+
+    staffList = [];
+
+    snapshot.forEach(doc=>{
+
+        const data = doc.data();
+
+        staffList.push(data);
+
+    });
+
+    staffList.sort((a,b)=>
+        a.staffName.localeCompare(b.staffName)
+    );
+
+    staffList.forEach(staff=>{
+
+        absentStaff.innerHTML += `
+
+        <option value="${staff.staffId}">
+
+            ${staff.staffName}
+
+        </option>
+
+        `;
+
+        substituteStaff.innerHTML += `
+
+        <option value="${staff.staffId}">
+
+            ${staff.staffName}
+
+        </option>
+
+        `;
+
+    });
+
+}
+
+//=====================================
+// EVENTS
+//=====================================
+
+dateInput.addEventListener("change",loadTimetable);
+
+session.addEventListener("change",loadTimetable);
+
+absentStaff.addEventListener("change",loadTimetable);
+
+assignBtn.addEventListener("click",saveSubstitute);
+
+//=====================================
+// PLACEHOLDER FUNCTIONS
+//=====================================
+
+async function loadTimetable(){
+
+    // NEXT PART
+
+loadStaff();
+async function loadTimetable(){
+
+    classBody.innerHTML=`
+        <tr>
+            <td colspan="6">Loading...</td>
+        </tr>
+    `;
+
+    classList=[];
+
+    const staffId=absentStaff.value;
+    const currentSession=session.value;
+
+    if(
+        !dateInput.value ||
+        !staffId ||
+        !currentSession
+    ){
+
+        classBody.innerHTML=`
+            <tr>
+                <td colspan="6">
+                    Select Date, Session and Staff
+                </td>
+            </tr>
+        `;
+
+        return;
+
+    }
+
+    //----------------------------------------------------
+    // GET STAFF TIMETABLE
+    //----------------------------------------------------
+
+    const q=query(
+
+        collection(db,"staffTimetable"),
+
+        where("staffId","==",staffId),
+
+        where("session","==",currentSession)
+
+    );
+
+    const snapshot=await getDocs(q);
+
+    if(snapshot.empty){
+
+        classBody.innerHTML=`
+            <tr>
+                <td colspan="6">
+                    No Classes Assigned
+                </td>
+            </tr>
+        `;
+
+        return;
+
+    }
+
+    snapshot.forEach(doc=>{
+
+        const data=doc.data();
+
+        classList.push({
+
+            id:doc.id,
+
+            ...data
+
+        });
+
+    });
+
+    //----------------------------------------------------
+    // SORT BY HOUR
+    //----------------------------------------------------
+
+    classList.sort((a,b)=>{
+
+        return Number(a.hour)-Number(b.hour);
+
+    });
+
+    //----------------------------------------------------
+    // DISPLAY TABLE
+    //----------------------------------------------------
+
+    classBody.innerHTML="";
+
+    classList.forEach((cls,index)=>{
+
+        classBody.innerHTML+=`
+
+        <tr>
+
+            <td>
+
+                <input
+                    type="checkbox"
+                    class="classCheck"
+                    value="${index}"
+                >
+
+            </td>
+
+            <td>${cls.hour}</td>
+
+            <td>${cls.department}</td>
+
+            <td>${cls.year}</td>
+
+            <td>${cls.section}</td>
+
+            <td>${cls.subject}</td>
+
+        </tr>
+
+        `;
+
+    });
+
+}
+}
+
+//=====================================
