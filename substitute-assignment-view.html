@@ -1,262 +1,2180 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+```html
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
+
+<title>Substitute View</title>
+
+
+<style>
+
+/* =========================================================
+   RESET
+========================================================= */
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+
+/* =========================================================
+   BODY
+========================================================= */
+
+body {
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+    background:
+        #f4f7fb;
+
+    color:
+        #1f2937;
+
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.header {
+
+    background:
+        linear-gradient(
+            135deg,
+            #1d4ed8,
+            #2563eb
+        );
+
+    color:
+        white;
+
+    padding:
+        22px;
+
+    box-shadow:
+        0 3px 10px
+        rgba(0,0,0,.12);
+
+}
+
+
+.header h1 {
+
+    font-size:
+        25px;
+
+    margin-bottom:
+        5px;
+
+}
+
+
+.header p {
+
+    font-size:
+        14px;
+
+    opacity:
+        .9;
+
+}
+
+
+/* =========================================================
+   CONTAINER
+========================================================= */
+
+.container {
+
+    max-width:
+        1300px;
+
+    margin:
+        25px auto;
+
+    padding:
+        0 18px;
+
+}
+
+
+/* =========================================================
+   CARD
+========================================================= */
+
+.card {
+
+    background:
+        white;
+
+    border-radius:
+        12px;
+
+    padding:
+        22px;
+
+    margin-bottom:
+        20px;
+
+    box-shadow:
+        0 3px 15px
+        rgba(0,0,0,.07);
+
+}
+
+
+.card h2 {
+
+    color:
+        #1e3a8a;
+
+    margin-bottom:
+        18px;
+
+    font-size:
+        19px;
+
+}
+
+
+/* =========================================================
+   FILTER GRID
+========================================================= */
+
+.filter-grid {
+
+    display:
+        grid;
+
+    grid-template-columns:
+        repeat(2, 1fr);
+
+    gap:
+        18px;
+
+}
+
+
+.form-group {
+
+    display:
+        flex;
+
+    flex-direction:
+        column;
+
+}
+
+
+.form-group label {
+
+    font-size:
+        13px;
+
+    font-weight:
+        600;
+
+    margin-bottom:
+        7px;
+
+    color:
+        #374151;
+
+}
+
+
+input,
+select {
+
+    width:
+        100%;
+
+    padding:
+        11px 12px;
+
+    border:
+        1px solid #cbd5e1;
+
+    border-radius:
+        7px;
+
+    background:
+        white;
+
+    font-size:
+        14px;
+
+    outline:
+        none;
+
+}
+
+
+input:focus,
+select:focus {
+
+    border-color:
+        #2563eb;
+
+    box-shadow:
+        0 0 0 2px
+        rgba(37,99,235,.10);
+
+}
+
+
+/* =========================================================
+   BUTTONS
+========================================================= */
+
+.button-row {
+
+    display:
+        flex;
+
+    justify-content:
+        flex-end;
+
+    gap:
+        10px;
+
+    margin-top:
+        20px;
+
+}
+
+
+button {
+
+    border:
+        none;
+
+    border-radius:
+        7px;
+
+    padding:
+        11px 20px;
+
+    font-size:
+        14px;
+
+    font-weight:
+        600;
+
+    cursor:
+        pointer;
+
+}
+
+
+.btn-primary {
+
+    background:
+        #2563eb;
+
+    color:
+        white;
+
+}
+
+
+.btn-primary:hover {
+
+    background:
+        #1d4ed8;
+
+}
+
+
+.btn-secondary {
+
+    background:
+        #e2e8f0;
+
+    color:
+        #334155;
+
+}
+
+
+button:disabled {
+
+    opacity:
+        .6;
+
+    cursor:
+        not-allowed;
+
+}
+
+
+/* =========================================================
+   SUMMARY
+========================================================= */
+
+.summary-grid {
+
+    display:
+        grid;
+
+    grid-template-columns:
+        repeat(4, 1fr);
+
+    gap:
+        15px;
+
+}
+
+
+.summary-box {
+
+    background:
+        #f8fafc;
+
+    border:
+        1px solid #e2e8f0;
+
+    border-radius:
+        9px;
+
+    padding:
+        16px;
+
+}
+
+
+.summary-box span {
+
+    display:
+        block;
+
+    font-size:
+        12px;
+
+    color:
+        #64748b;
+
+    margin-bottom:
+        6px;
+
+}
+
+
+.summary-box strong {
+
+    font-size:
+        22px;
+
+    color:
+        #1e3a8a;
+
+}
+
+
+/* =========================================================
+   TABLE
+========================================================= */
+
+.table-wrapper {
+
+    overflow-x:
+        auto;
+
+}
+
+
+table {
+
+    width:
+        100%;
+
+    border-collapse:
+        collapse;
+
+    min-width:
+        1100px;
+
+}
+
+
+th {
+
+    background:
+        #1e3a8a;
+
+    color:
+        white;
+
+    padding:
+        13px;
+
+    text-align:
+        left;
+
+    font-size:
+        13px;
+
+    white-space:
+        nowrap;
+
+}
+
+
+td {
+
+    padding:
+        12px;
+
+    border-bottom:
+        1px solid #e5e7eb;
+
+    font-size:
+        13px;
+
+}
+
+
+tr:hover td {
+
+    background:
+        #f8fafc;
+
+}
+
+
+/* =========================================================
+   BADGES
+========================================================= */
+
+.badge {
+
+    display:
+        inline-block;
+
+    padding:
+        5px 9px;
+
+    border-radius:
+        20px;
+
+    font-size:
+        12px;
+
+    font-weight:
+        600;
+
+}
+
+
+.fn-badge {
+
+    background:
+        #dcfce7;
+
+    color:
+        #166534;
+
+}
+
+
+.an-badge {
+
+    background:
+        #fef3c7;
+
+    color:
+        #92400e;
+
+}
+
+
+.hour-badge {
+
+    background:
+        #ede9fe;
+
+    color:
+        #6d28d9;
+
+}
+
+
+.substitute-name {
+
+    font-weight:
+        700;
+
+    color:
+        #166534;
+
+}
+
+
+.absent-name {
+
+    color:
+        #b91c1c;
+
+}
+
+
+.class-name {
+
+    font-weight:
+        700;
+
+    color:
+        #1e3a8a;
+
+}
+
+
+/* =========================================================
+   EMPTY / LOADING
+========================================================= */
+
+.empty,
+.loading {
+
+    text-align:
+        center;
+
+    padding:
+        30px;
+
+    color:
+        #64748b;
+
+}
+
+
+/* =========================================================
+   MESSAGE
+========================================================= */
+
+.message {
+
+    display:
+        none;
+
+    padding:
+        12px 15px;
+
+    border-radius:
+        7px;
+
+    margin-top:
+        15px;
+
+    font-size:
+        14px;
+
+}
+
+
+.message.error {
+
+    display:
+        block;
+
+    background:
+        #fee2e2;
+
+    color:
+        #991b1b;
+
+    border:
+        1px solid #fca5a5;
+
+}
+
+
+.message.success {
+
+    display:
+        block;
+
+    background:
+        #dcfce7;
+
+    color:
+        #166534;
+
+    border:
+        1px solid #86efac;
+
+}
+
+
+/* =========================================================
+   LOADING OVERLAY
+========================================================= */
+
+.overlay {
+
+    position:
+        fixed;
+
+    inset:
+        0;
+
+    background:
+        rgba(15,23,42,.55);
+
+    display:
+        none;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    z-index:
+        9999;
+
+}
+
+
+.loader-box {
+
+    background:
+        white;
+
+    padding:
+        25px 35px;
+
+    border-radius:
+        12px;
+
+    text-align:
+        center;
+
+}
+
+
+.spinner {
+
+    width:
+        35px;
+
+    height:
+        35px;
+
+    border:
+        4px solid #dbeafe;
+
+    border-top-color:
+        #2563eb;
+
+    border-radius:
+        50%;
+
+    animation:
+        spin .8s linear infinite;
+
+    margin:
+        0 auto 12px;
+
+}
+
+
+@keyframes spin {
+
+    to {
+
+        transform:
+            rotate(360deg);
+
+    }
+
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media(max-width:800px) {
+
+    .filter-grid {
+
+        grid-template-columns:
+            1fr;
+
+    }
+
+
+    .summary-grid {
+
+        grid-template-columns:
+            repeat(2, 1fr);
+
+    }
+
+
+    .button-row {
+
+        flex-direction:
+            column;
+
+    }
+
+
+    button {
+
+        width:
+            100%;
+
+    }
+
+}
+
+
+@media(max-width:500px) {
+
+    .summary-grid {
+
+        grid-template-columns:
+            1fr;
+
+    }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<!-- =======================================================
+     HEADER
+======================================================== -->
+
+<div class="header">
+
+    <h1>
+        Substitute View
+    </h1>
+
+    <p>
+        View substitute assignments by date
+    </p>
+
+</div>
+
+
+<div class="container">
+
+
+<!-- =======================================================
+     FILTER CARD
+======================================================== -->
+
+<div class="card">
+
+    <h2>
+        Search Substitute Assignments
+    </h2>
+
+
+    <div class="filter-grid">
+
+
+        <!-- DATE -->
+
+        <div class="form-group">
+
+            <label for="viewDate">
+                Select Date
+            </label>
+
+            <input
+                type="date"
+                id="viewDate"
+            >
+
+        </div>
+
+
+        <!-- DEPARTMENT -->
+
+        <div class="form-group">
+
+            <label for="departmentFilter">
+                Department
+            </label>
+
+            <select id="departmentFilter">
+
+                <option value="">
+                    All Departments
+                </option>
+
+            </select>
+
+        </div>
+
+
+    </div>
+
+
+    <div class="button-row">
+
+        <button
+            type="button"
+            class="btn-secondary"
+            id="clearBtn"
+        >
+            Clear
+        </button>
+
+
+        <button
+            type="button"
+            class="btn-primary"
+            id="loadBtn"
+        >
+            Load Substitutions
+        </button>
+
+    </div>
+
+
+    <div
+        id="message"
+        class="message"
+    ></div>
+
+</div>
+
+
+<!-- =======================================================
+     SUMMARY
+======================================================== -->
+
+<div class="card">
+
+    <h2>
+        Daily Summary
+    </h2>
+
+
+    <div class="summary-grid">
+
+
+        <div class="summary-box">
+
+            <span>
+                Total Substitutions
+            </span>
+
+            <strong id="totalAssignments">
+                0
+            </strong>
+
+        </div>
+
+
+        <div class="summary-box">
+
+            <span>
+                FN Assignments
+            </span>
+
+            <strong id="fnAssignments">
+                0
+            </strong>
+
+        </div>
+
+
+        <div class="summary-box">
+
+            <span>
+                AN Assignments
+            </span>
+
+            <strong id="anAssignments">
+                0
+            </strong>
+
+        </div>
+
+
+        <div class="summary-box">
+
+            <span>
+                Classes Covered
+            </span>
+
+            <strong id="classesCovered">
+                0
+            </strong>
+
+        </div>
+
+
+    </div>
+
+</div>
+
+
+<!-- =======================================================
+     ASSIGNMENT TABLE
+======================================================== -->
+
+<div class="card">
+
+    <h2 id="tableTitle">
+        Select a date to view substitutions
+    </h2>
+
+
+    <div class="table-wrapper">
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>
+                        S.No
+                    </th>
+
+                    <th>
+                        Date
+                    </th>
+
+                    <th>
+                        Session
+                    </th>
+
+                    <th>
+                        Hour
+                    </th>
+
+                    <th>
+                        Class
+                    </th>
+
+                    <th>
+                        Department
+                    </th>
+
+                    <th>
+                        Absent Staff
+                    </th>
+
+                    <th>
+                        Substitute Staff
+                    </th>
+
+                    <th>
+                        Assigned By
+                    </th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody id="assignmentTableBody">
+
+                <tr>
+
+                    <td
+                        colspan="9"
+                        class="empty"
+                    >
+
+                        Select a date and click
+                        "Load Substitutions".
+
+                    </td>
+
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+
+</div>
+
+
+<!-- =======================================================
+     LOADING
+======================================================== -->
+
+<div
+    class="overlay"
+    id="loadingOverlay"
+>
+
+    <div class="loader-box">
+
+        <div class="spinner"></div>
+
+        <div id="loadingText">
+            Loading...
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =======================================================
+     FIREBASE JAVASCRIPT
+======================================================== -->
+
+<script type="module">
+
+
+/* =========================================================
+   FIREBASE IMPORTS
+========================================================= */
+
+import {
+    initializeApp
+}
+from
+"https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
 
 import {
     getFirestore,
     collection,
-    getDocs,
-    query,
-    where,
-    addDoc,
-    serverTimestamp
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    getDocs
+}
+from
+"https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-//=====================================
-// FIREBASE CONFIG
-//=====================================
+
+/* =========================================================
+   FIREBASE CONFIG
+========================================================= */
 
 const firebaseConfig = {
 
-   apiKey: "AIzaSyAIv3091VM-gkmdwEAn7OhXWd9Cm2zh2bo",
-  authDomain: "maasc-2026.firebaseapp.com",
-  projectId: "maasc-2026",
-  storageBucket: "maasc-2026.appspot.com",
-  messagingSenderId: "585813001586",
-  appId: "1:585813001586:web:664e0e90ff0725d2e849eb"
+    apiKey:
+        "AIzaSyAIv3091VM-gkmdwEAn7OhXWd9Cm2zh2bo",
+
+    authDomain:
+        "maasc-2026.firebaseapp.com",
+
+    projectId:
+        "maasc-2026",
+
+    storageBucket:
+        "maasc-2026.appspot.com",
+
+    messagingSenderId:
+        "585813001586",
+
+    appId:
+        "1:585813001586:web:664e0e90ff0725d2e849eb"
 
 };
 
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
 
-//=====================================
-// ELEMENTS
-//=====================================
-
-const dateInput = document.getElementById("date");
-const session = document.getElementById("session");
-const absentStaff = document.getElementById("absentStaff");
-const substituteStaff = document.getElementById("substituteStaff");
-
-const classBody = document.getElementById("classBody");
-
-const reason = document.getElementById("reason");
-
-const assignBtn = document.getElementById("assignBtn");
-
-const status = document.getElementById("status");
-
-//=====================================
-// SET TODAY
-//=====================================
-
-dateInput.value = new Date().toISOString().split("T")[0];
-
-//=====================================
-// GLOBAL VARIABLES
-//=====================================
-
-let staffList = [];
-let classList = [];
-
-//=====================================
-// LOAD STAFF
-//=====================================
-
-async function loadStaff(){
-
-    absentStaff.innerHTML =
-        `<option value="">Select Staff</option>`;
-
-    substituteStaff.innerHTML =
-        `<option value="">Select Staff</option>`;
-
-    const snapshot = await getDocs(collection(db,"staff"));
-
-    staffList = [];
-
-    snapshot.forEach(doc=>{
-
-        const data = doc.data();
-
-        staffList.push(data);
-
-    });
-
-    staffList.sort((a,b)=>
-        a.staffName.localeCompare(b.staffName)
+const app =
+    initializeApp(
+        firebaseConfig
     );
 
-    staffList.forEach(staff=>{
 
-        absentStaff.innerHTML += `
+const db =
+    getFirestore(app);
 
-        <option value="${staff.staffId}">
 
-            ${staff.staffName}
+/* =========================================================
+   FIRESTORE COLLECTION
+========================================================= */
 
-        </option>
+const ASSIGNMENT_COLLECTION =
+    "substituteAssignments";
 
-        `;
 
-        substituteStaff.innerHTML += `
+/* =========================================================
+   ELEMENTS
+========================================================= */
 
-        <option value="${staff.staffId}">
+const viewDate =
+    document.getElementById(
+        "viewDate"
+    );
 
-            ${staff.staffName}
 
-        </option>
+const departmentFilter =
+    document.getElementById(
+        "departmentFilter"
+    );
 
-        `;
 
-    });
+const loadBtn =
+    document.getElementById(
+        "loadBtn"
+    );
+
+
+const clearBtn =
+    document.getElementById(
+        "clearBtn"
+    );
+
+
+const messageBox =
+    document.getElementById(
+        "message"
+    );
+
+
+const assignmentTableBody =
+    document.getElementById(
+        "assignmentTableBody"
+    );
+
+
+const tableTitle =
+    document.getElementById(
+        "tableTitle"
+    );
+
+
+const totalAssignments =
+    document.getElementById(
+        "totalAssignments"
+    );
+
+
+const fnAssignments =
+    document.getElementById(
+        "fnAssignments"
+    );
+
+
+const anAssignments =
+    document.getElementById(
+        "anAssignments"
+    );
+
+
+const classesCovered =
+    document.getElementById(
+        "classesCovered"
+    );
+
+
+const loadingOverlay =
+    document.getElementById(
+        "loadingOverlay"
+    );
+
+
+const loadingText =
+    document.getElementById(
+        "loadingText"
+    );
+
+
+/* =========================================================
+   SHOW LOADING
+========================================================= */
+
+function showLoading(text) {
+
+    loadingText.textContent =
+        text || "Loading...";
+
+    loadingOverlay.style.display =
+        "flex";
 
 }
 
-//=====================================
-// EVENTS
-//=====================================
 
-dateInput.addEventListener("change",loadTimetable);
+/* =========================================================
+   HIDE LOADING
+========================================================= */
 
-session.addEventListener("change",loadTimetable);
+function hideLoading() {
 
-absentStaff.addEventListener("change",loadTimetable);
+    loadingOverlay.style.display =
+        "none";
 
-assignBtn.addEventListener("click",saveSubstitute);
+}
 
-//=====================================
-// PLACEHOLDER FUNCTIONS
-//=====================================
 
-async function loadTimetable(){
+/* =========================================================
+   MESSAGE
+========================================================= */
 
-    // NEXT PART
+function showMessage(
+    text,
+    type
+) {
 
-loadStaff();
-async function loadTimetable(){
+    messageBox.textContent =
+        text;
 
-    classBody.innerHTML=`
-        <tr>
-            <td colspan="6">Loading...</td>
-        </tr>
-    `;
+    messageBox.className =
+        "message " + type;
 
-    classList=[];
 
-    const staffId=absentStaff.value;
-    const currentSession=session.value;
+    setTimeout(
+        () => {
 
-    if(
-        !dateInput.value ||
-        !staffId ||
-        !currentSession
-    ){
+            messageBox.className =
+                "message";
 
-        classBody.innerHTML=`
-            <tr>
-                <td colspan="6">
-                    Select Date, Session and Staff
-                </td>
-            </tr>
-        `;
-
-        return;
-
-    }
-
-    //----------------------------------------------------
-    // GET STAFF TIMETABLE
-    //----------------------------------------------------
-
-    const q=query(
-
-        collection(db,"staffTimetable"),
-
-        where("staffId","==",staffId),
-
-        where("session","==",currentSession)
-
+        },
+        5000
     );
 
-    const snapshot=await getDocs(q);
+}
 
-    if(snapshot.empty){
 
-        classBody.innerHTML=`
-            <tr>
-                <td colspan="6">
-                    No Classes Assigned
-                </td>
-            </tr>
-        `;
+/* =========================================================
+   TODAY
+========================================================= */
+
+function getToday() {
+
+    const now =
+        new Date();
+
+
+    const year =
+        now.getFullYear();
+
+
+    const month =
+        String(
+            now.getMonth() + 1
+        ).padStart(
+            2,
+            "0"
+        );
+
+
+    const day =
+        String(
+            now.getDate()
+        ).padStart(
+            2,
+            "0"
+        );
+
+
+    return (
+        year +
+        "-" +
+        month +
+        "-" +
+        day
+    );
+
+}
+
+
+/* =========================================================
+   LOAD DEPARTMENTS
+========================================================= */
+
+async function loadDepartments() {
+
+    try {
+
+        const snapshot =
+            await getDocs(
+                collection(
+                    db,
+                    ASSIGNMENT_COLLECTION
+                )
+            );
+
+
+        const departmentSet =
+            new Set();
+
+
+        snapshot.forEach(
+            docSnap => {
+
+                const data =
+                    docSnap.data();
+
+
+                const department =
+                    String(
+                        data.department || ""
+                    ).trim();
+
+
+                if (department) {
+
+                    departmentSet.add(
+                        department
+                    );
+
+                }
+
+            }
+        );
+
+
+        const departments =
+            Array.from(
+                departmentSet
+            ).sort(
+                (a, b) =>
+                    a.localeCompare(
+                        b,
+                        undefined,
+                        {
+                            sensitivity:
+                                "base"
+                        }
+                    )
+            );
+
+
+        departmentFilter.innerHTML =
+            `<option value="">
+                All Departments
+            </option>`;
+
+
+        departments.forEach(
+            department => {
+
+                const option =
+                    document.createElement(
+                        "option"
+                    );
+
+
+                option.value =
+                    department;
+
+
+                option.textContent =
+                    department;
+
+
+                departmentFilter.appendChild(
+                    option
+                );
+
+            }
+        );
+
+
+    }
+    catch (error) {
+
+        console.error(
+            "DEPARTMENT LOAD ERROR:",
+            error
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   LOAD SUBSTITUTIONS
+========================================================= */
+
+async function loadSubstitutions() {
+
+    const selectedDate =
+        viewDate.value;
+
+
+    if (!selectedDate) {
+
+        showMessage(
+            "Please select a date.",
+            "error"
+        );
 
         return;
 
     }
 
-    snapshot.forEach(doc=>{
 
-        const data=doc.data();
+    try {
 
-        classList.push({
+        showLoading(
+            "Loading substitutions..."
+        );
 
-            id:doc.id,
 
-            ...data
+        /*
+         * IMPORTANT:
+         *
+         * We load the collection without a
+         * Firestore compound query.
+         *
+         * This avoids requiring a Firestore
+         * composite index.
+         */
 
-        });
+        const snapshot =
+            await getDocs(
+                collection(
+                    db,
+                    ASSIGNMENT_COLLECTION
+                )
+            );
 
-    });
 
-    //----------------------------------------------------
-    // SORT BY HOUR
-    //----------------------------------------------------
+        let assignments = [];
 
-    classList.sort((a,b)=>{
 
-        return Number(a.hour)-Number(b.hour);
+        snapshot.forEach(
+            docSnap => {
 
-    });
+                const data =
+                    docSnap.data();
 
-    //----------------------------------------------------
-    // DISPLAY TABLE
-    //----------------------------------------------------
 
-    classBody.innerHTML="";
+                /*
+                 * DATE FILTER
+                 */
 
-    classList.forEach((cls,index)=>{
+                if (
+                    String(
+                        data.date || ""
+                    ) !==
+                    selectedDate
+                ) {
 
-        classBody.innerHTML+=`
+                    return;
 
-        <tr>
+                }
 
-            <td>
 
-                <input
-                    type="checkbox"
-                    class="classCheck"
-                    value="${index}"
+                /*
+                 * DEPARTMENT FILTER
+                 */
+
+                const selectedDepartment =
+                    departmentFilter.value
+                        .trim()
+                        .toLowerCase();
+
+
+                if (
+                    selectedDepartment
+                ) {
+
+                    const assignmentDepartment =
+                        String(
+                            data.department || ""
+                        )
+                        .trim()
+                        .toLowerCase();
+
+
+                    if (
+                        assignmentDepartment !==
+                        selectedDepartment
+                    ) {
+
+                        return;
+
+                    }
+
+                }
+
+
+                assignments.push({
+
+                    id:
+                        docSnap.id,
+
+                    ...data
+
+                });
+
+            }
+        );
+
+
+        /*
+         * SORT:
+         *
+         * FN first
+         * AN second
+         *
+         * Then Hour 1 to 5
+         */
+
+        assignments.sort(
+            (a, b) => {
+
+
+                const sessionOrder = {
+
+                    FN: 1,
+
+                    AN: 2
+
+                };
+
+
+                const sessionA =
+                    sessionOrder[
+                        String(
+                            a.session ||
+                            ""
+                        ).toUpperCase()
+                    ] || 99;
+
+
+                const sessionB =
+                    sessionOrder[
+                        String(
+                            b.session ||
+                            ""
+                        ).toUpperCase()
+                    ] || 99;
+
+
+                if (
+                    sessionA !==
+                    sessionB
+                ) {
+
+                    return (
+                        sessionA -
+                        sessionB
+                    );
+
+                }
+
+
+                const hourA =
+                    Number(
+                        a.hour
+                    ) || 99;
+
+
+                const hourB =
+                    Number(
+                        b.hour
+                    ) || 99;
+
+
+                return (
+                    hourA -
+                    hourB
+                );
+
+            }
+        );
+
+
+        renderAssignments(
+            assignments
+        );
+
+
+        updateSummary(
+            assignments
+        );
+
+
+        tableTitle.textContent =
+            "Substitute Assignments - " +
+            formatDate(
+                selectedDate
+            );
+
+
+        hideLoading();
+
+
+    }
+    catch (error) {
+
+        console.error(
+            "SUBSTITUTE LOAD ERROR:",
+            error
+        );
+
+
+        hideLoading();
+
+
+        assignmentTableBody.innerHTML =
+
+            `<tr>
+
+                <td
+                    colspan="9"
+                    class="empty"
                 >
 
-            </td>
+                    Unable to load
+                    substitute assignments.
 
-            <td>${cls.hour}</td>
+                </td>
 
-            <td>${cls.department}</td>
+            </tr>`;
 
-            <td>${cls.year}</td>
 
-            <td>${cls.section}</td>
+        showMessage(
+            "Unable to load substitutions: " +
+            error.message,
+            "error"
+        );
 
-            <td>${cls.subject}</td>
-
-        </tr>
-
-        `;
-
-    });
+    }
 
 }
+
+
+/* =========================================================
+   RENDER ASSIGNMENTS
+========================================================= */
+
+function renderAssignments(
+    assignments
+) {
+
+
+    if (
+        assignments.length === 0
+    ) {
+
+        assignmentTableBody.innerHTML =
+
+            `<tr>
+
+                <td
+                    colspan="9"
+                    class="empty"
+                >
+
+                    No substitute assignments
+                    found for this date.
+
+                </td>
+
+            </tr>`;
+
+        return;
+
+    }
+
+
+    assignmentTableBody.innerHTML =
+        "";
+
+
+    assignments.forEach(
+        (assignment, index) => {
+
+
+            const row =
+                document.createElement(
+                    "tr"
+                );
+
+
+            /*
+             * SESSION BADGE
+             */
+
+            const session =
+                String(
+                    assignment.session ||
+                    ""
+                ).toUpperCase();
+
+
+            let sessionBadge =
+                "badge";
+
+
+            if (
+                session === "FN"
+            ) {
+
+                sessionBadge +=
+                    " fn-badge";
+
+            }
+            else if (
+                session === "AN"
+            ) {
+
+                sessionBadge +=
+                    " an-badge";
+
+            }
+
+
+            row.innerHTML = `
+
+                <td>
+                    ${index + 1}
+                </td>
+
+
+                <td>
+                    ${escapeHtml(
+                        assignment.date ||
+                        "-"
+                    )}
+                </td>
+
+
+                <td>
+
+                    <span
+                        class="${sessionBadge}"
+                    >
+
+                        ${escapeHtml(
+                            session ||
+                            "-"
+                        )}
+
+                    </span>
+
+                </td>
+
+
+                <td>
+
+                    <span
+                        class="badge hour-badge"
+                    >
+
+                        Hour
+                        ${escapeHtml(
+                            assignment.hour ||
+                            "-"
+                        )}
+
+                    </span>
+
+                </td>
+
+
+                <td>
+
+                    <span
+                        class="class-name"
+                    >
+
+                        ${escapeHtml(
+                            assignment.className ||
+                            assignment.class ||
+                            "-"
+                        )}
+
+                    </span>
+
+                </td>
+
+
+                <td>
+
+                    ${escapeHtml(
+                        assignment.department ||
+                        "-"
+                    )}
+
+                </td>
+
+
+                <td>
+
+                    <span
+                        class="absent-name"
+                    >
+
+                        ${escapeHtml(
+                            assignment.absentStaffName ||
+                            assignment.absentStaff ||
+                            "-"
+                        )}
+
+                    </span>
+
+                </td>
+
+
+                <td>
+
+                    <span
+                        class="substitute-name"
+                    >
+
+                        ${escapeHtml(
+                            assignment.substituteStaffName ||
+                            assignment.substituteStaff ||
+                            "-"
+                        )}
+
+                    </span>
+
+                </td>
+
+
+                <td>
+
+                    ${escapeHtml(
+                        assignment.assignedByName ||
+                        assignment.assignedBy ||
+                        "-"
+                    )}
+
+                </td>
+
+            `;
+
+
+            assignmentTableBody.appendChild(
+                row
+            );
+
+        }
+    );
+
 }
 
-//=====================================
+
+/* =========================================================
+   SUMMARY
+========================================================= */
+
+function updateSummary(
+    assignments
+) {
+
+
+    totalAssignments.textContent =
+        assignments.length;
+
+
+    const fnCount =
+        assignments.filter(
+            assignment =>
+                String(
+                    assignment.session ||
+                    ""
+                ).toUpperCase()
+                ===
+                "FN"
+        ).length;
+
+
+    const anCount =
+        assignments.filter(
+            assignment =>
+                String(
+                    assignment.session ||
+                    ""
+                ).toUpperCase()
+                ===
+                "AN"
+        ).length;
+
+
+    /*
+     * UNIQUE CLASSES
+     */
+
+    const classSet =
+        new Set();
+
+
+    assignments.forEach(
+        assignment => {
+
+            const className =
+                String(
+                    assignment.className ||
+                    assignment.class ||
+                    ""
+                )
+                .trim()
+                .toLowerCase();
+
+
+            if (className) {
+
+                classSet.add(
+                    className
+                );
+
+            }
+
+        }
+    );
+
+
+    fnAssignments.textContent =
+        fnCount;
+
+
+    anAssignments.textContent =
+        anCount;
+
+
+    classesCovered.textContent =
+        classSet.size;
+
+}
+
+
+/* =========================================================
+   DATE FORMAT
+========================================================= */
+
+function formatDate(
+    dateString
+) {
+
+    const parts =
+        dateString.split("-");
+
+
+    if (
+        parts.length !== 3
+    ) {
+
+        return dateString;
+
+    }
+
+
+    return (
+        parts[2] +
+        "-" +
+        parts[1] +
+        "-" +
+        parts[0]
+    );
+
+}
+
+
+/* =========================================================
+   ESCAPE HTML
+========================================================= */
+
+function escapeHtml(
+    value
+) {
+
+    return String(value)
+
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+
+        .replace(
+            /</g,
+            "&lt;"
+        )
+
+        .replace(
+            />/g,
+            "&gt;"
+        )
+
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+
+        .replace(
+            /'/g,
+            "&#039;"
+        );
+
+}
+
+
+/* =========================================================
+   LOAD BUTTON
+========================================================= */
+
+loadBtn.addEventListener(
+    "click",
+    loadSubstitutions
+);
+
+
+/* =========================================================
+   DATE CHANGE
+========================================================= */
+
+viewDate.addEventListener(
+    "change",
+    function() {
+
+        if (
+            viewDate.value
+        ) {
+
+            loadSubstitutions();
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   DEPARTMENT CHANGE
+========================================================= */
+
+departmentFilter.addEventListener(
+    "change",
+    function() {
+
+        if (
+            viewDate.value
+        ) {
+
+            loadSubstitutions();
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   CLEAR
+========================================================= */
+
+clearBtn.addEventListener(
+    "click",
+    function() {
+
+
+        viewDate.value =
+            "";
+
+
+        departmentFilter.value =
+            "";
+
+
+        tableTitle.textContent =
+            "Select a date to view substitutions";
+
+
+        assignmentTableBody.innerHTML =
+
+            `<tr>
+
+                <td
+                    colspan="9"
+                    class="empty"
+                >
+
+                    Select a date and click
+                    "Load Substitutions".
+
+                </td>
+
+            </tr>`;
+
+
+        totalAssignments.textContent =
+            "0";
+
+
+        fnAssignments.textContent =
+            "0";
+
+
+        anAssignments.textContent =
+            "0";
+
+
+        classesCovered.textContent =
+            "0";
+
+    }
+);
+
+
+/* =========================================================
+   INITIALIZATION
+========================================================= */
+
+async function initialize() {
+
+    /*
+     * Load departments from the
+     * substituteAssignments collection.
+     */
+
+    await loadDepartments();
+
+}
+
+
+/* =========================================================
+   START
+========================================================= */
+
+initialize();
+
+
+/* =========================================================
+   DEBUG FUNCTIONS
+========================================================= */
+
+window.substituteView = {
+
+    load:
+        loadSubstitutions,
+
+    loadDepartments:
+        loadDepartments
+
+};
+
+</script>
+
+
+</body>
+
+</html>
+```
