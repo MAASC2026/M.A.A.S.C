@@ -1,0 +1,1052 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>My Personal Details</title>
+
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+
+        body {
+            background: #f4f6f9;
+            color: #222;
+        }
+
+
+        /* ================================
+           HEADER
+        ================================= */
+
+        .header {
+            background: #500454;
+            color: white;
+            padding: 20px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+
+        .header-left h1 {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+
+
+        .header-left p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+
+        .staff-info {
+            text-align: right;
+        }
+
+
+        .staff-info strong {
+            display: block;
+            font-size: 16px;
+        }
+
+
+        .staff-info span {
+            font-size: 13px;
+            opacity: 0.9;
+        }
+
+
+        /* ================================
+           CONTAINER
+        ================================= */
+
+        .container {
+            width: 95%;
+            max-width: 1100px;
+            margin: 25px auto;
+        }
+
+
+        /* ================================
+           CARD
+        ================================= */
+
+        .card {
+            background: white;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            box-shadow:
+                0 3px 12px rgba(0,0,0,0.08);
+        }
+
+
+        .card h2 {
+            color: #500454;
+            font-size: 20px;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #eeeeee;
+        }
+
+
+        /* ================================
+           PERSONAL GRID
+        ================================= */
+
+        .details-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 18px;
+        }
+
+
+        .detail-box {
+            border: 1px solid #e2e8f0;
+            border-radius: 7px;
+            padding: 14px;
+            background: #fafafa;
+        }
+
+
+        .detail-box.full {
+            grid-column: 1 / -1;
+        }
+
+
+        .detail-label {
+            color: #64748b;
+            font-size: 12px;
+            font-weight: bold;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+        }
+
+
+        .detail-value {
+            color: #1e293b;
+            font-size: 15px;
+            min-height: 20px;
+            word-break: break-word;
+        }
+
+
+        /* ================================
+           LOADING
+        ================================= */
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #500454;
+            font-size: 16px;
+        }
+
+
+        .spinner {
+            width: 35px;
+            height: 35px;
+            border: 4px solid #ddd;
+            border-top: 4px solid #500454;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+
+        @keyframes spin {
+
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+
+        }
+
+
+        /* ================================
+           MESSAGE
+        ================================= */
+
+        .message {
+            display: none;
+            padding: 18px;
+            border-radius: 7px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+
+        .message.error {
+            display: block;
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+
+        .message.info {
+            display: block;
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+
+        /* ================================
+           BUTTON
+        ================================= */
+
+        .button-area {
+            margin-top: 20px;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+
+        .logout-btn {
+            background: #dc2626;
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+
+        .logout-btn:hover {
+            background: #b91c1c;
+        }
+
+
+        /* ================================
+           MOBILE
+        ================================= */
+
+        @media (max-width: 700px) {
+
+            .header {
+                padding: 18px;
+            }
+
+
+            .staff-info {
+                text-align: left;
+            }
+
+
+            .container {
+                width: 92%;
+            }
+
+
+            .details-grid {
+                grid-template-columns: 1fr;
+            }
+
+
+            .detail-box.full {
+                grid-column: auto;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- =================================
+         HEADER
+    ================================== -->
+
+    <div class="header">
+
+
+        <div class="header-left">
+
+            <h1>
+                My Personal Details
+            </h1>
+
+            <p>
+                Staff Portal
+            </p>
+
+        </div>
+
+
+        <div class="staff-info">
+
+            <strong id="staffName">
+                Loading...
+            </strong>
+
+            <span id="staffId">
+                Loading...
+            </span>
+
+        </div>
+
+
+    </div>
+
+
+
+    <!-- =================================
+         MAIN
+    ================================== -->
+
+    <div class="container">
+
+
+        <div
+            id="message"
+            class="message">
+        </div>
+
+
+        <!-- =================================
+             LOADING
+        ================================== -->
+
+        <div
+            id="loading"
+            class="card loading">
+
+            <div class="spinner"></div>
+
+            Loading your personal details...
+
+        </div>
+
+
+
+        <!-- =================================
+             PERSONAL DETAILS
+        ================================== -->
+
+        <div
+            id="personalCard"
+            class="card"
+            style="display:none;">
+
+            <h2>
+                Personal Details
+            </h2>
+
+
+            <div class="details-grid">
+
+
+                <!-- STAFF NAME -->
+
+                <div class="detail-box">
+
+                    <div class="detail-label">
+                        Staff Name
+                    </div>
+
+                    <div
+                        class="detail-value"
+                        id="viewStaffName">
+                        -
+                    </div>
+
+                </div>
+
+
+                <!-- STAFF ID -->
+
+                <div class="detail-box">
+
+                    <div class="detail-label">
+                        Staff ID
+                    </div>
+
+                    <div
+                        class="detail-value"
+                        id="viewStaffId">
+                        -
+                    </div>
+
+                </div>
+
+
+                <!-- DATE OF BIRTH -->
+
+                <div class="detail-box">
+
+                    <div class="detail-label">
+                        Date of Birth
+                    </div>
+
+                    <div
+                        class="detail-value"
+                        id="dateOfBirth">
+                        -
+                    </div>
+
+                </div>
+
+
+                <!-- GENDER -->
+
+                <div class="detail-box">
+
+                    <div class="detail-label">
+                        Gender
+                    </div>
+
+                    <div
+                        class="detail-value"
+                        id="gender">
+                        -
+                    </div>
+
+                </div>
+
+
+                <!-- BLOOD GROUP -->
+
+                <div class="detail-box">
+
+                    <div class="detail-label">
+                        Blood Group
+                    </div>
+
+                    <div
+                        class="detail-value"
+                        id="bloodGroup">
+                        -
+                    </div>
+
+                </div>
+
+
+                <!-- MARITAL STATUS -->
+
+                <div class="detail-box">
+
+                    <div class="detail-label">
+                        Marital Status
+                    </div>
+
+                    <div
+                        class="detail-value"
+                        id="maritalStatus">
+                        -
+                    </div>
+
+                </div>
+
+
+                <!-- PERSONAL MOBILE -->
+
+                <div class="detail-box">
+
+                    <div class="detail-label">
+                        Personal Mobile Number
+                    </div>
+
+                    <div
+                        class="detail-value"
+                        id="personalMobile">
+                        -
+                    </div>
+
+                </div>
+
+
+                <!-- PERSONAL MAIL -->
+
+                <div class="detail-box">
+
+                    <div class="detail-label">
+                        Personal Mail ID
+                    </div>
+
+                    <div
+                        class="detail-value"
+                        id="personalEmail">
+                        -
+                    </div>
+
+                </div>
+
+
+                <!-- ALTERNATE MOBILE -->
+
+                <div class="detail-box">
+
+                    <div class="detail-label">
+                        Alternate Mobile Number
+                    </div>
+
+                    <div
+                        class="detail-value"
+                        id="alternateMobile">
+                        -
+                    </div>
+
+                </div>
+
+
+                <!-- NATIONALITY -->
+
+                <div class="detail-box">
+
+                    <div class="detail-label">
+                        Nationality
+                    </div>
+
+                    <div
+                        class="detail-value"
+                        id="nationality">
+                        -
+                    </div>
+
+                </div>
+
+
+                <!-- DISTRICT -->
+
+                <div class="detail-box">
+
+                    <div class="detail-label">
+                        District
+                    </div>
+
+                    <div
+                        class="detail-value"
+                        id="district">
+                        -
+                    </div>
+
+                </div>
+
+
+                <!-- STATE -->
+
+                <div class="detail-box">
+
+                    <div class="detail-label">
+                        State
+                    </div>
+
+                    <div
+                        class="detail-value"
+                        id="state">
+                        -
+                    </div>
+
+                </div>
+
+
+                <!-- PINCODE -->
+
+                <div class="detail-box">
+
+                    <div class="detail-label">
+                        Pincode
+                    </div>
+
+                    <div
+                        class="detail-value"
+                        id="pincode">
+                        -
+                    </div>
+
+                </div>
+
+
+                <!-- ADDRESS -->
+
+                <div class="detail-box full">
+
+                    <div class="detail-label">
+                        Permanent Address
+                    </div>
+
+                    <div
+                        class="detail-value"
+                        id="permanentAddress">
+                        -
+                    </div>
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+
+
+        <!-- =================================
+             NO DETAILS
+        ================================== -->
+
+        <div
+            id="noDetailsCard"
+            class="card"
+            style="display:none;">
+
+            <h2>
+                Personal Details
+            </h2>
+
+            <div class="message info"
+                 style="display:block;">
+
+                Your personal details have not
+                been entered by the administrator yet.
+
+            </div>
+
+        </div>
+
+
+
+        <!-- =================================
+             LOGOUT
+        ================================== -->
+
+        <div class="button-area">
+
+            <button
+                class="logout-btn"
+                id="logoutBtn">
+
+                Logout
+
+            </button>
+
+        </div>
+
+
+    </div>
+
+
+
+    <!-- =================================
+         FIREBASE
+    ================================== -->
+
+    <script type="module">
+
+
+        // =====================================================
+        // FIREBASE
+        // =====================================================
+
+        import {
+            db
+        } from "./firebase-config.js";
+
+
+        import {
+            doc,
+            getDoc
+        }
+        from
+        "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+
+
+        // =====================================================
+        // ELEMENTS
+        // =====================================================
+
+        const loading =
+            document.getElementById(
+                "loading"
+            );
+
+
+        const personalCard =
+            document.getElementById(
+                "personalCard"
+            );
+
+
+        const noDetailsCard =
+            document.getElementById(
+                "noDetailsCard"
+            );
+
+
+        const message =
+            document.getElementById(
+                "message"
+            );
+
+
+
+        // =====================================================
+        // SESSION CHECK
+        // =====================================================
+
+        const role =
+            sessionStorage.getItem(
+                "role"
+            );
+
+
+        const staffId =
+            sessionStorage.getItem(
+                "staffId"
+            );
+
+
+        const staffName =
+            sessionStorage.getItem(
+                "staffName"
+            );
+
+
+        const department =
+            sessionStorage.getItem(
+                "department"
+            );
+
+
+
+        // =====================================================
+        // MAKE SURE STAFF IS LOGGED IN
+        // =====================================================
+
+        if (
+            role !== "staff" ||
+            !staffId
+        ) {
+
+            window.location.href =
+                "staff-login.html";
+
+        }
+
+
+
+        // =====================================================
+        // DISPLAY LOGIN INFORMATION
+        // =====================================================
+
+        document.getElementById(
+            "staffName"
+        ).textContent =
+            staffName || "Staff";
+
+
+        document.getElementById(
+            "staffId"
+        ).textContent =
+            staffId;
+
+
+
+        // =====================================================
+        // LOAD PERSONAL DETAILS
+        // =====================================================
+
+        async function loadPersonalDetails() {
+
+            try {
+
+
+                /*
+                 * IMPORTANT:
+                 *
+                 * The same Staff ID that was stored
+                 * during login is used here.
+                 *
+                 * Example:
+                 *
+                 * SHT038
+                 *
+                 * Firestore:
+                 *
+                 * staffPersonalDetails
+                 *      └── SHT038
+                 *
+                 */
+
+                const personalRef =
+                    doc(
+                        db,
+                        "staffPersonalDetails",
+                        staffId
+                    );
+
+
+                const personalSnap =
+                    await getDoc(
+                        personalRef
+                    );
+
+
+                loading.style.display =
+                    "none";
+
+
+                if (
+                    !personalSnap.exists()
+                ) {
+
+                    noDetailsCard.style.display =
+                        "block";
+
+                    return;
+
+                }
+
+
+                const data =
+                    personalSnap.data();
+
+
+
+                // =================================================
+                // DISPLAY PERSONAL DETAILS
+                // =================================================
+
+                setValue(
+                    "viewStaffName",
+                    data.staffName ||
+                    staffName ||
+                    "-"
+                );
+
+
+                setValue(
+                    "viewStaffId",
+                    data.staffId ||
+                    staffId ||
+                    "-"
+                );
+
+
+                setValue(
+                    "dateOfBirth",
+                    data.dateOfBirth
+                );
+
+
+                setValue(
+                    "gender",
+                    data.gender
+                );
+
+
+                setValue(
+                    "bloodGroup",
+                    data.bloodGroup
+                );
+
+
+                setValue(
+                    "maritalStatus",
+                    data.maritalStatus
+                );
+
+
+                setValue(
+                    "personalMobile",
+                    data.personalMobile
+                );
+
+
+                setValue(
+                    "personalEmail",
+                    data.personalEmail
+                );
+
+
+                setValue(
+                    "alternateMobile",
+                    data.alternateMobile
+                );
+
+
+                setValue(
+                    "nationality",
+                    data.nationality
+                );
+
+
+                setValue(
+                    "permanentAddress",
+                    data.permanentAddress
+                );
+
+
+                setValue(
+                    "district",
+                    data.district
+                );
+
+
+                setValue(
+                    "state",
+                    data.state
+                );
+
+
+                setValue(
+                    "pincode",
+                    data.pincode
+                );
+
+
+                personalCard.style.display =
+                    "block";
+
+
+            }
+            catch (error) {
+
+                console.error(
+                    "PERSONAL DETAILS ERROR:",
+                    error
+                );
+
+
+                loading.style.display =
+                    "none";
+
+
+                message.textContent =
+                    "Unable to load your personal details: " +
+                    error.message;
+
+
+                message.className =
+                    "message error";
+
+
+                message.style.display =
+                    "block";
+
+            }
+
+        }
+
+
+
+        // =====================================================
+        // SET VALUE
+        // =====================================================
+
+        function setValue(
+            id,
+            value
+        ) {
+
+            const element =
+                document.getElementById(
+                    id
+                );
+
+
+            if (!element) {
+
+                return;
+
+            }
+
+
+            if (
+                value === undefined ||
+                value === null ||
+                value === ""
+            ) {
+
+                element.textContent =
+                    "-";
+
+            }
+            else {
+
+                element.textContent =
+                    value;
+
+            }
+
+        }
+
+
+
+        // =====================================================
+        // LOGOUT
+        // =====================================================
+
+        document.getElementById(
+            "logoutBtn"
+        )
+        .addEventListener(
+            "click",
+            function () {
+
+                sessionStorage.removeItem(
+                    "role"
+                );
+
+                sessionStorage.removeItem(
+                    "staffId"
+                );
+
+                sessionStorage.removeItem(
+                    "staffName"
+                );
+
+                sessionStorage.removeItem(
+                    "department"
+                );
+
+
+                window.location.href =
+                    "staff-login.html";
+
+            }
+        );
+
+
+
+        // =====================================================
+        // START
+        // =====================================================
+
+        loadPersonalDetails();
+
+
+    </script>
+
+
+</body>
+
+</html>
+```
