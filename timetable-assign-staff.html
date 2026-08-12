@@ -1,0 +1,3058 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Staff Timetable Assignment</title>
+
+<style>
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+    background: #f4f7fb;
+    color: #1f2937;
+}
+
+/* HEADER */
+
+.header {
+    background: #1e3a8a;
+    color: white;
+    padding: 22px 30px;
+}
+
+.header h1 {
+    font-size: 25px;
+    margin-bottom: 6px;
+}
+
+.header p {
+    font-size: 14px;
+    opacity: .9;
+}
+
+/* CONTAINER */
+
+.container {
+    max-width: 1500px;
+    margin: 25px auto;
+    padding: 0 18px;
+}
+
+/* CARD */
+
+.card {
+    background: white;
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 22px;
+    box-shadow: 0 3px 14px rgba(0,0,0,.08);
+}
+
+.card-title {
+    color: #1e3a8a;
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 18px;
+}
+
+/* FORM */
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 17px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    font-size: 13px;
+    font-weight: bold;
+    margin-bottom: 7px;
+}
+
+select,
+input {
+    width: 100%;
+    padding: 11px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 7px;
+    background: white;
+    outline: none;
+    font-size: 14px;
+}
+
+select:focus,
+input:focus {
+    border-color: #2563eb;
+}
+
+input[readonly] {
+    background: #f3f4f6;
+}
+
+/* BUTTON */
+
+.button-row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 20px;
+}
+
+button {
+    border: none;
+    border-radius: 7px;
+    padding: 11px 18px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+button:disabled {
+    opacity: .6;
+    cursor: not-allowed;
+}
+
+.btn-primary {
+    background: #2563eb;
+    color: white;
+}
+
+.btn-success {
+    background: #059669;
+    color: white;
+}
+
+.btn-danger {
+    background: #dc2626;
+    color: white;
+}
+
+.btn-secondary {
+    background: #6b7280;
+    color: white;
+}
+
+.btn-small {
+    padding: 7px 11px;
+    font-size: 12px;
+}
+
+/* MESSAGE */
+
+.message {
+    display: none;
+    margin-top: 16px;
+    padding: 12px;
+    border-radius: 7px;
+    font-size: 14px;
+}
+
+.message.success {
+    display: block;
+    background: #dcfce7;
+    color: #166534;
+}
+
+.message.error {
+    display: block;
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.message.info {
+    display: block;
+    background: #dbeafe;
+    color: #1e40af;
+}
+
+/* STAFF INFO */
+
+.staff-info {
+    display: none;
+    background: #eff6ff;
+    border-left: 5px solid #2563eb;
+    padding: 16px;
+    border-radius: 8px;
+    margin-top: 20px;
+}
+
+.staff-info strong {
+    color: #1e3a8a;
+}
+
+.staff-info-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+}
+
+/* SUBJECTS */
+
+.subjects-container {
+    display: none;
+}
+
+.subject-card {
+    background: #f8fafc;
+    border: 1px solid #dbe3ef;
+    border-radius: 10px;
+    padding: 16px;
+    margin-bottom: 13px;
+}
+
+.subject-card:hover {
+    border-color: #2563eb;
+}
+
+.subject-card.selected {
+    background: #eff6ff;
+    border: 2px solid #2563eb;
+}
+
+.subject-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 15px;
+}
+
+.subject-name {
+    color: #1e3a8a;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.subject-code {
+    background: #dbeafe;
+    color: #1e40af;
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-size: 11px;
+    font-weight: bold;
+}
+
+.subject-details {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 18px;
+    margin-top: 12px;
+    font-size: 13px;
+    color: #4b5563;
+}
+
+.subject-details span strong {
+    color: #111827;
+}
+
+/* ASSIGN FORM */
+
+.assignment-form {
+    display: none;
+    margin-top: 20px;
+    padding: 20px;
+    background: #f8fafc;
+    border: 1px solid #dbe3ef;
+    border-radius: 10px;
+}
+
+.selected-subject {
+    background: #eff6ff;
+    border-left: 5px solid #2563eb;
+    padding: 14px;
+    border-radius: 7px;
+    margin-bottom: 20px;
+}
+
+.selected-subject-title {
+    font-size: 16px;
+    font-weight: bold;
+    color: #1e3a8a;
+    margin-bottom: 6px;
+}
+
+.selected-subject-info {
+    font-size: 13px;
+    color: #4b5563;
+}
+
+/* SESSION */
+
+.session-info {
+    margin-top: 7px;
+    font-size: 12px;
+    color: #6b7280;
+}
+
+/* TABLE */
+
+.table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 1300px;
+}
+
+th {
+    background: #1e3a8a;
+    color: white;
+    padding: 12px;
+    font-size: 13px;
+    text-align: left;
+}
+
+td {
+    padding: 11px 12px;
+    border-bottom: 1px solid #e5e7eb;
+    font-size: 13px;
+}
+
+tr:hover td {
+    background: #f8fafc;
+}
+
+.badge {
+    display: inline-block;
+    padding: 5px 9px;
+    border-radius: 15px;
+    font-size: 11px;
+    font-weight: bold;
+}
+
+.badge-fn {
+    background: #dbeafe;
+    color: #1e40af;
+}
+
+.badge-an {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.empty {
+    text-align: center;
+    padding: 35px;
+    color: #6b7280;
+}
+
+.loading {
+    text-align: center;
+    padding: 35px;
+    color: #6b7280;
+}
+
+/* TIMETABLE */
+
+.timetable-container {
+    display: none;
+}
+
+.timetable-wrapper {
+    overflow-x: auto;
+}
+
+.timetable {
+    width: 100%;
+    min-width: 1250px;
+    border-collapse: collapse;
+}
+
+.timetable th {
+    text-align: center;
+    vertical-align: middle;
+}
+
+.timetable td {
+    vertical-align: top;
+    min-width: 155px;
+    height: 115px;
+}
+
+.day-cell {
+    background: #eef2ff;
+    font-weight: bold;
+    color: #1e3a8a;
+    text-align: center;
+    min-width: 100px !important;
+}
+
+.period-entry {
+    background: #eff6ff;
+    border-left: 4px solid #2563eb;
+    border-radius: 7px;
+    padding: 8px;
+}
+
+.period-entry.an {
+    background: #fffbeb;
+    border-left-color: #d97706;
+}
+
+.period-subject {
+    font-weight: bold;
+    font-size: 12px;
+    color: #1e3a8a;
+}
+
+.period-class {
+    margin-top: 4px;
+    font-size: 11px;
+}
+
+.period-room {
+    margin-top: 3px;
+    font-size: 11px;
+    color: #6b7280;
+}
+
+.period-delete {
+    margin-top: 7px;
+}
+
+/* STATS */
+
+.stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 18px;
+}
+
+.stat {
+    padding: 10px 15px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.stat-blue {
+    background: #dbeafe;
+    color: #1e40af;
+}
+
+.stat-green {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.stat-orange {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+/* RESPONSIVE */
+
+@media(max-width:1100px) {
+
+    .form-grid {
+        grid-template-columns: repeat(2,1fr);
+    }
+
+    .staff-info-grid {
+        grid-template-columns: repeat(2,1fr);
+    }
+
+}
+
+@media(max-width:650px) {
+
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .staff-info-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .header {
+        padding: 18px;
+    }
+
+    .card {
+        padding: 17px;
+    }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<div class="header">
+
+    <h1>
+        Staff Timetable Assignment Portal
+    </h1>
+
+    <p>
+        Assign FN and AN periods to staff subjects
+    </p>
+
+</div>
+
+
+<div class="container">
+
+
+<!-- =====================================================
+     STAFF SELECTION
+===================================================== -->
+
+<div class="card">
+
+    <div class="card-title">
+        Select Staff
+    </div>
+
+
+    <div class="form-grid">
+
+        <div class="form-group">
+
+            <label>
+                Staff *
+            </label>
+
+            <select id="staffSelect">
+
+                <option value="">
+                    Select Staff
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label>
+                Staff ID
+            </label>
+
+            <input
+                type="text"
+                id="staffId"
+                readonly
+                placeholder="Staff ID"
+            >
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label>
+                Total Assigned Subjects
+            </label>
+
+            <input
+                type="text"
+                id="subjectCount"
+                readonly
+                value="0"
+            >
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label>
+                Timetable Entries
+            </label>
+
+            <input
+                type="text"
+                id="entryCount"
+                readonly
+                value="0"
+            >
+
+        </div>
+
+    </div>
+
+
+    <div
+        id="staffInfo"
+        class="staff-info"
+    >
+
+        <div class="staff-info-grid">
+
+            <div>
+
+                <strong>Staff ID</strong>
+
+                <br>
+
+                <span id="infoStaffId">
+                    -
+                </span>
+
+            </div>
+
+
+            <div>
+
+                <strong>Staff Name</strong>
+
+                <br>
+
+                <span id="infoStaffName">
+                    -
+                </span>
+
+            </div>
+
+
+            <div>
+
+                <strong>Department</strong>
+
+                <br>
+
+                <span id="infoDepartment">
+                    -
+                </span>
+
+            </div>
+
+
+            <div>
+
+                <strong>Subjects</strong>
+
+                <br>
+
+                <span id="infoSubjectCount">
+                    0
+                </span>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div
+        id="message"
+        class="message"
+    ></div>
+
+</div>
+
+
+
+<!-- =====================================================
+     ASSIGNED SUBJECTS
+===================================================== -->
+
+<div
+    class="card subjects-container"
+    id="subjectsCard"
+>
+
+    <div class="card-title">
+
+        Subjects Assigned To This Staff
+
+    </div>
+
+
+    <div
+        id="subjectsList"
+    >
+
+    </div>
+
+
+    <!-- =================================================
+         TIMETABLE ASSIGNMENT
+    ================================================= -->
+
+    <div
+        id="assignmentForm"
+        class="assignment-form"
+    >
+
+        <div
+            id="selectedSubject"
+            class="selected-subject"
+        ></div>
+
+
+        <div class="form-grid">
+
+
+            <!-- DAY -->
+
+            <div class="form-group">
+
+                <label>
+                    Day *
+                </label>
+
+                <select id="daySelect">
+
+                    <option value="">
+                        Select Day
+                    </option>
+
+                    <option value="Monday">
+                        DAY 01
+                    </option>
+
+                    <option value="Tuesday">
+                        DAY 02
+                    </option>
+
+                    <option value="Wednesday">
+                        DAY 03
+                    </option>
+
+                    <option value="Thursday">
+                       DAY 04
+                    </option>
+
+                    <option value="Friday">
+                       DAY 05
+                    </option>
+
+                    <option value="Saturday">
+                        DAY 06
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- SESSION -->
+
+            <div class="form-group">
+
+                <label>
+                    Session *
+                </label>
+
+                <select id="sessionSelect">
+
+                    <option value="">
+                        Select Session
+                    </option>
+
+                    <option value="FN">
+                        FN
+                    </option>
+
+                    <option value="AN">
+                        AN
+                    </option>
+
+                </select>
+
+                <div
+                    class="session-info"
+                    id="sessionInfo"
+                >
+                    FN = Hour 1 to 5 | AN = Hour 1 to 5
+                </div>
+
+            </div>
+
+
+            <!-- HOUR -->
+
+            <div class="form-group">
+
+                <label>
+                    Hour *
+                </label>
+
+                <select
+                    id="hourSelect"
+                    disabled
+                >
+
+                    <option value="">
+                        Select Session First
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- ROOM -->
+
+            <div class="form-group">
+
+                <label>
+                    Room No.
+                </label>
+
+                <input
+                    type="text"
+                    id="roomNo"
+                    readonly
+                >
+
+            </div>
+
+        </div>
+
+
+        <div class="button-row">
+
+            <button
+                class="btn-success"
+                id="saveBtn"
+                onclick="saveTimetable()"
+            >
+                Save Timetable
+            </button>
+
+
+            <button
+                class="btn-secondary"
+                onclick="cancelAssignment()"
+            >
+                Cancel
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<!-- =====================================================
+     STAFF TIMETABLE
+===================================================== -->
+
+<div
+    class="card timetable-container"
+    id="timetableCard"
+>
+
+    <div class="card-title">
+        Staff Timetable
+    </div>
+
+
+    <div class="stats">
+
+        <div class="stat stat-blue">
+
+            Total Entries:
+
+            <span id="totalEntries">
+                0
+            </span>
+
+        </div>
+
+
+        <div class="stat stat-green">
+
+            FN Entries:
+
+            <span id="fnEntries">
+                0
+            </span>
+
+        </div>
+
+
+        <div class="stat stat-orange">
+
+            AN Entries:
+
+            <span id="anEntries">
+                0
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <div class="timetable-wrapper">
+
+        <table class="timetable">
+
+            <thead>
+
+                <tr>
+
+                    <th>
+                        Day
+                    </th>
+
+                    <th>
+                        FN - Hour 1
+                    </th>
+
+                    <th>
+                        FN - Hour 2
+                    </th>
+
+                    <th>
+                        FN - Hour 3
+                    </th>
+
+                    <th>
+                        FN - Hour 4
+                    </th>
+
+                    <th>
+                        FN - Hour 5
+                    </th>
+
+                    <th>
+                        AN - Hour 1
+                    </th>
+
+                    <th>
+                        AN - Hour 2
+                    </th>
+
+                    <th>
+                        AN - Hour 3
+                    </th>
+
+                    <th>
+                        AN - Hour 4
+                    </th>
+
+                    <th>
+                        AN - Hour 5
+                    </th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody
+                id="timetableBody"
+            >
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+
+
+<!-- =====================================================
+     ALL ASSIGNMENTS
+===================================================== -->
+
+<div class="card">
+
+    <div class="card-title">
+        Timetable Assignment Records
+    </div>
+
+
+    <div class="table-wrapper">
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>S.No</th>
+
+                    <th>Staff ID</th>
+
+                    <th>Staff Name</th>
+
+                    <th>Department</th>
+
+                    <th>Class</th>
+
+                    <th>Section</th>
+
+                    <th>Day</th>
+
+                    <th>Session</th>
+
+                    <th>Hour</th>
+
+                    <th>Subject Code</th>
+
+                    <th>Subject</th>
+
+                    <th>Room</th>
+
+                    <th>Action</th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody
+                id="recordsBody"
+            >
+
+                <tr>
+
+                    <td
+                        colspan="13"
+                        class="loading"
+                    >
+                        Loading...
+                    </td>
+
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+
+</div>
+
+
+
+<script type="module">
+
+
+/* =====================================================
+   FIREBASE
+===================================================== */
+
+import {
+    initializeApp
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+
+import {
+    getFirestore,
+    collection,
+    getDocs,
+    addDoc,
+    deleteDoc,
+    doc,
+    query,
+    where,
+    serverTimestamp
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+
+const firebaseConfig = {
+
+    apiKey:
+        "AIzaSyAIv3091VM-gkmdwEAn7OhXWd9Cm2zh2bo",
+
+    authDomain:
+        "maasc-2026.firebaseapp.com",
+
+    projectId:
+        "maasc-2026",
+
+    storageBucket:
+        "maasc-2026.appspot.com",
+
+    messagingSenderId:
+        "585813001586",
+
+    appId:
+        "1:585813001586:web:664e0e90ff0725d2e849eb"
+
+};
+
+
+const app =
+    initializeApp(firebaseConfig);
+
+
+const db =
+    getFirestore(app);
+
+
+
+/* =====================================================
+   GLOBAL VARIABLES
+===================================================== */
+
+let subjectAssignments = [];
+
+let timetableEntries = [];
+
+let selectedStaff = null;
+
+let selectedSubject = null;
+
+
+
+/* =====================================================
+   DOM
+===================================================== */
+
+const staffSelect =
+    document.getElementById(
+        "staffSelect"
+    );
+
+
+const subjectsCard =
+    document.getElementById(
+        "subjectsCard"
+    );
+
+
+const subjectsList =
+    document.getElementById(
+        "subjectsList"
+    );
+
+
+const assignmentForm =
+    document.getElementById(
+        "assignmentForm"
+    );
+
+
+const sessionSelect =
+    document.getElementById(
+        "sessionSelect"
+    );
+
+
+const hourSelect =
+    document.getElementById(
+        "hourSelect"
+    );
+
+
+
+/* =====================================================
+   ESCAPE HTML
+===================================================== */
+
+function escapeHtml(value) {
+
+    return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+
+}
+
+
+
+/* =====================================================
+   MESSAGE
+===================================================== */
+
+function showMessage(
+    text,
+    type = "info"
+) {
+
+    const message =
+        document.getElementById(
+            "message"
+        );
+
+    message.textContent =
+        text;
+
+    message.className =
+        "message " + type;
+
+    setTimeout(() => {
+
+        message.className =
+            "message";
+
+    }, 5000);
+
+}
+
+
+
+/* =====================================================
+   LOAD SUBJECT ASSIGNMENTS
+===================================================== */
+
+async function loadSubjectAssignments() {
+
+    try {
+
+        const snapshot =
+            await getDocs(
+                collection(
+                    db,
+                    "subjectAssignments"
+                )
+            );
+
+
+        subjectAssignments = [];
+
+
+        snapshot.forEach(
+            item => {
+
+                subjectAssignments.push({
+
+                    id:
+                        item.id,
+
+                    ...item.data()
+
+                });
+
+            }
+        );
+
+
+        console.log(
+            "SUBJECT ASSIGNMENTS:",
+            subjectAssignments
+        );
+
+
+        buildStaffDropdown();
+
+    }
+
+    catch(error) {
+
+        console.error(
+            "SUBJECT ASSIGNMENT ERROR:",
+            error
+        );
+
+
+        showMessage(
+            "Unable to load subject assignments: " +
+            error.message,
+            "error"
+        );
+
+    }
+
+}
+
+
+
+/* =====================================================
+   BUILD STAFF DROPDOWN
+===================================================== */
+
+function buildStaffDropdown() {
+
+    const staffMap =
+        new Map();
+
+
+    subjectAssignments.forEach(
+        assignment => {
+
+            const staffId =
+                assignment.staffId;
+
+
+            if (!staffId) {
+                return;
+            }
+
+
+            if (!staffMap.has(staffId)) {
+
+                staffMap.set(
+                    staffId,
+                    {
+
+                        staffId:
+                            staffId,
+
+                        staffName:
+                            assignment.staffName || "",
+
+                        department:
+                            assignment.department || ""
+
+                    }
+                );
+
+            }
+
+        }
+    );
+
+
+    staffSelect.innerHTML = `
+
+        <option value="">
+            Select Staff
+        </option>
+
+    `;
+
+
+    const staffArray =
+        Array.from(
+            staffMap.values()
+        );
+
+
+    staffArray.sort(
+        (a,b) =>
+            String(
+                a.staffName || ""
+            ).localeCompare(
+                String(
+                    b.staffName || ""
+                )
+            )
+    );
+
+
+    staffArray.forEach(
+        staff => {
+
+            const option =
+                document.createElement(
+                    "option"
+                );
+
+
+            option.value =
+                staff.staffId;
+
+
+            option.textContent =
+
+                `${staff.staffId} - ${staff.staffName}`;
+
+
+            staffSelect.appendChild(
+                option
+            );
+
+        }
+    );
+
+}
+
+
+
+/* =====================================================
+   STAFF SELECT
+===================================================== */
+
+staffSelect.addEventListener(
+    "change",
+    async function() {
+
+        const staffId =
+            this.value;
+
+
+        selectedStaff =
+            null;
+
+
+        selectedSubject =
+            null;
+
+
+        assignmentForm.style.display =
+            "none";
+
+
+        if (!staffId) {
+
+            subjectsCard.style.display =
+                "none";
+
+            document.getElementById(
+                "timetableCard"
+            ).style.display =
+                "none";
+
+            return;
+
+        }
+
+
+        const assignments =
+            subjectAssignments.filter(
+                item =>
+                    item.staffId ===
+                    staffId
+            );
+
+
+        if (!assignments.length) {
+
+            subjectsCard.style.display =
+                "block";
+
+
+            subjectsList.innerHTML = `
+
+                <div class="empty">
+
+                    No subjects assigned
+                    to this staff.
+
+                </div>
+
+            `;
+
+            return;
+
+        }
+
+
+        selectedStaff = {
+
+            staffId:
+                staffId,
+
+            staffName:
+                assignments[0].staffName || "",
+
+            department:
+                assignments[0].department || ""
+
+        };
+
+
+        document.getElementById(
+            "staffId"
+        ).value =
+            staffId;
+
+
+        document.getElementById(
+            "subjectCount"
+        ).value =
+            assignments.length;
+
+
+        document.getElementById(
+            "infoStaffId"
+        ).textContent =
+            staffId;
+
+
+        document.getElementById(
+            "infoStaffName"
+        ).textContent =
+            selectedStaff.staffName;
+
+
+        document.getElementById(
+            "infoDepartment"
+        ).textContent =
+            selectedStaff.department;
+
+
+        document.getElementById(
+            "infoSubjectCount"
+        ).textContent =
+            assignments.length;
+
+
+        document.getElementById(
+            "staffInfo"
+        ).style.display =
+            "block";
+
+
+        subjectsCard.style.display =
+            "block";
+
+
+        renderSubjects(
+            assignments
+        );
+
+
+        await loadStaffTimetable(
+            staffId
+        );
+
+    }
+);
+
+
+
+/* =====================================================
+   RENDER SUBJECTS
+===================================================== */
+
+function renderSubjects(
+    assignments
+) {
+
+    subjectsList.innerHTML = "";
+
+
+    assignments.forEach(
+        assignment => {
+
+            const card =
+                document.createElement(
+                    "div"
+                );
+
+
+            card.className =
+                "subject-card";
+
+
+            card.dataset.id =
+                assignment.id;
+
+
+            card.innerHTML = `
+
+                <div class="subject-top">
+
+                    <div>
+
+                        <div class="subject-name">
+
+                            ${escapeHtml(
+                                assignment.subjectName
+                            )}
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="subject-code">
+
+                        ${escapeHtml(
+                            assignment.subjectCode
+                        )}
+
+                    </div>
+
+                </div>
+
+
+                <div class="subject-details">
+
+                    <span>
+
+                        Department:
+
+                        <strong>
+
+                            ${escapeHtml(
+                                assignment.department
+                            )}
+
+                        </strong>
+
+                    </span>
+
+
+                    <span>
+
+                        Class:
+
+                        <strong>
+
+                            ${escapeHtml(
+                                assignment.classYear
+                            )}
+
+                        </strong>
+
+                    </span>
+
+
+                    <span>
+
+                        Section:
+
+                        <strong>
+
+                            ${escapeHtml(
+                                assignment.section
+                            )}
+
+                        </strong>
+
+                    </span>
+
+
+                    <span>
+
+                        Room:
+
+                        <strong>
+
+                            ${escapeHtml(
+                                assignment.roomNo
+                            )}
+
+                        </strong>
+
+                    </span>
+
+
+                    <span>
+
+                        Staff:
+
+                        <strong>
+
+                            ${escapeHtml(
+                                assignment.staffName
+                            )}
+
+                        </strong>
+
+                    </span>
+
+                </div>
+
+
+                <div class="button-row">
+
+                    <button
+                        class="btn-primary btn-small"
+                        onclick="selectSubject('${assignment.id}')"
+                    >
+
+                        Assign Timetable
+
+                    </button>
+
+                </div>
+
+            `;
+
+
+            subjectsList.appendChild(
+                card
+            );
+
+        }
+    );
+
+}
+
+
+
+/* =====================================================
+   SELECT SUBJECT
+===================================================== */
+
+window.selectSubject =
+function(id) {
+
+    selectedSubject =
+        subjectAssignments.find(
+            item =>
+                item.id === id
+        );
+
+
+    if (!selectedSubject) {
+
+        showMessage(
+            "Subject not found.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    document.querySelectorAll(
+        ".subject-card"
+    ).forEach(
+        card => {
+
+            card.classList.remove(
+                "selected"
+            );
+
+        }
+    );
+
+
+    const selectedCard =
+        document.querySelector(
+            `[data-id="${id}"]`
+        );
+
+
+    if (selectedCard) {
+
+        selectedCard.classList.add(
+            "selected"
+        );
+
+    }
+
+
+    document.getElementById(
+        "selectedSubject"
+    ).innerHTML = `
+
+        <div class="selected-subject-title">
+
+            ${escapeHtml(
+                selectedSubject.subjectCode
+            )}
+
+            -
+
+            ${escapeHtml(
+                selectedSubject.subjectName
+            )}
+
+        </div>
+
+
+        <div class="selected-subject-info">
+
+            Department:
+            <strong>
+                ${escapeHtml(
+                    selectedSubject.department
+                )}
+            </strong>
+
+            &nbsp; | &nbsp;
+
+            Class:
+            <strong>
+                ${escapeHtml(
+                    selectedSubject.classYear
+                )}
+            </strong>
+
+            &nbsp; | &nbsp;
+
+            Section:
+            <strong>
+                ${escapeHtml(
+                    selectedSubject.section
+                )}
+            </strong>
+
+            &nbsp; | &nbsp;
+
+            Room:
+            <strong>
+                ${escapeHtml(
+                    selectedSubject.roomNo
+                )}
+            </strong>
+
+        </div>
+
+    `;
+
+
+    document.getElementById(
+        "roomNo"
+    ).value =
+        selectedSubject.roomNo || "";
+
+
+    document.getElementById(
+        "daySelect"
+    ).value = "";
+
+
+    sessionSelect.value = "";
+
+
+    hourSelect.innerHTML = `
+
+        <option value="">
+            Select Session First
+        </option>
+
+    `;
+
+
+    hourSelect.disabled =
+        true;
+
+
+    assignmentForm.style.display =
+        "block";
+
+
+    assignmentForm.scrollIntoView({
+
+        behavior: "smooth",
+
+        block: "center"
+
+    });
+
+};
+
+
+
+/* =====================================================
+   SESSION CHANGE
+===================================================== */
+
+sessionSelect.addEventListener(
+    "change",
+    function() {
+
+        const session =
+            this.value;
+
+
+        hourSelect.innerHTML = "";
+
+
+        if (!session) {
+
+            hourSelect.disabled =
+                true;
+
+
+            hourSelect.innerHTML = `
+
+                <option value="">
+                    Select Session First
+                </option>
+
+            `;
+
+            return;
+
+        }
+
+
+        hourSelect.disabled =
+            false;
+
+
+        hourSelect.innerHTML = `
+
+            <option value="">
+                Select Hour
+            </option>
+
+        `;
+
+
+        for (
+            let hour = 1;
+            hour <= 5;
+            hour++
+        ) {
+
+            const option =
+                document.createElement(
+                    "option"
+                );
+
+
+            option.value =
+                hour;
+
+
+            option.textContent =
+
+                `${session} - Hour ${hour}`;
+
+
+            hourSelect.appendChild(
+                option
+            );
+
+        }
+
+    }
+);
+
+
+
+/* =====================================================
+   CANCEL
+===================================================== */
+
+window.cancelAssignment =
+function() {
+
+    selectedSubject =
+        null;
+
+
+    assignmentForm.style.display =
+        "none";
+
+
+    document.querySelectorAll(
+        ".subject-card"
+    ).forEach(
+        card => {
+
+            card.classList.remove(
+                "selected"
+            );
+
+        }
+    );
+
+};
+
+
+
+/* =====================================================
+   SAVE TIMETABLE
+===================================================== */
+
+window.saveTimetable =
+async function() {
+
+    if (!selectedStaff) {
+
+        showMessage(
+            "Please select staff.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    if (!selectedSubject) {
+
+        showMessage(
+            "Please select a subject.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    const day =
+        document.getElementById(
+            "daySelect"
+        ).value;
+
+
+    const session =
+        sessionSelect.value;
+
+
+    const hour =
+        hourSelect.value;
+
+
+    if (
+        !day ||
+        !session ||
+        !hour
+    ) {
+
+        showMessage(
+            "Please select Day, Session and Hour.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    const button =
+        document.getElementById(
+            "saveBtn"
+        );
+
+
+    button.disabled =
+        true;
+
+
+    button.textContent =
+        "Saving...";
+
+
+    try {
+
+
+        /* =============================================
+           STAFF CONFLICT
+        ============================================= */
+
+        const staffQuery =
+            query(
+
+                collection(
+                    db,
+                    "timetableAssignments"
+                ),
+
+                where(
+                    "staffId",
+                    "==",
+                    selectedStaff.staffId
+                ),
+
+                where(
+                    "day",
+                    "==",
+                    day
+                ),
+
+                where(
+                    "session",
+                    "==",
+                    session
+                ),
+
+                where(
+                    "hour",
+                    "==",
+                    Number(hour)
+                )
+
+            );
+
+
+        const staffSnapshot =
+            await getDocs(
+                staffQuery
+            );
+
+
+        if (
+            !staffSnapshot.empty
+        ) {
+
+            throw new Error(
+
+                `${selectedStaff.staffName} already has a timetable entry on ${day}, ${session}, Hour ${hour}.`
+
+            );
+
+        }
+
+
+
+        /* =============================================
+           CLASS CONFLICT
+
+           Same department + class + section
+           cannot have two subjects in same period.
+        ============================================= */
+
+        const classQuery =
+            query(
+
+                collection(
+                    db,
+                    "timetableAssignments"
+                ),
+
+                where(
+                    "department",
+                    "==",
+                    selectedSubject.department
+                ),
+
+                where(
+                    "classYear",
+                    "==",
+                    selectedSubject.classYear
+                ),
+
+                where(
+                    "section",
+                    "==",
+                    selectedSubject.section
+                ),
+
+                where(
+                    "day",
+                    "==",
+                    day
+                ),
+
+                where(
+                    "session",
+                    "==",
+                    session
+                ),
+
+                where(
+                    "hour",
+                    "==",
+                    Number(hour)
+                )
+
+            );
+
+
+        const classSnapshot =
+            await getDocs(
+                classQuery
+            );
+
+
+        if (
+            !classSnapshot.empty
+        ) {
+
+            throw new Error(
+
+                `${selectedSubject.department} - ${selectedSubject.classYear} - Section ${selectedSubject.section} already has a subject on ${day}, ${session}, Hour ${hour}.`
+
+            );
+
+        }
+
+
+
+        /* =============================================
+           SAVE
+        ============================================= */
+
+        await addDoc(
+
+            collection(
+                db,
+                "timetableAssignments"
+            ),
+
+            {
+
+                staffId:
+                    selectedStaff.staffId,
+
+                staffName:
+                    selectedStaff.staffName,
+
+                subjectAssignmentId:
+                    selectedSubject.id,
+
+                subjectId:
+                    selectedSubject.subjectId || "",
+
+                subjectCode:
+                    selectedSubject.subjectCode || "",
+
+                subjectName:
+                    selectedSubject.subjectName || "",
+
+                department:
+                    selectedSubject.department || "",
+
+                classYear:
+                    selectedSubject.classYear || "",
+
+                section:
+                    selectedSubject.section || "",
+
+                roomNo:
+                    selectedSubject.roomNo || "",
+
+                day:
+                    day,
+
+                session:
+                    session,
+
+                hour:
+                    Number(hour),
+
+                createdAt:
+                    serverTimestamp()
+
+            }
+
+        );
+
+
+        showMessage(
+            `Timetable saved: ${day} - ${session} Hour ${hour}`,
+            "success"
+        );
+
+
+        document.getElementById(
+            "daySelect"
+        ).value = "";
+
+
+        sessionSelect.value = "";
+
+
+        hourSelect.innerHTML = `
+
+            <option value="">
+                Select Session First
+            </option>
+
+        `;
+
+
+        hourSelect.disabled =
+            true;
+
+
+        await loadStaffTimetable(
+            selectedStaff.staffId
+        );
+
+
+        await loadAllRecords();
+
+    }
+
+    catch(error) {
+
+        console.error(
+            "SAVE TIMETABLE ERROR:",
+            error
+        );
+
+
+        showMessage(
+            error.message,
+            "error"
+        );
+
+    }
+
+    finally {
+
+        button.disabled =
+            false;
+
+
+        button.textContent =
+            "Save Timetable";
+
+    }
+
+};
+
+
+
+/* =====================================================
+   LOAD STAFF TIMETABLE
+===================================================== */
+
+async function loadStaffTimetable(
+    staffId
+) {
+
+    try {
+
+        const snapshot =
+            await getDocs(
+
+                collection(
+                    db,
+                    "timetableAssignments"
+                )
+
+            );
+
+
+        timetableEntries = [];
+
+
+        snapshot.forEach(
+            item => {
+
+                const data =
+                    item.data();
+
+
+                if (
+                    data.staffId ===
+                    staffId
+                ) {
+
+                    timetableEntries.push({
+
+                        id:
+                            item.id,
+
+                        ...data
+
+                    });
+
+                }
+
+            }
+        );
+
+
+        document.getElementById(
+            "entryCount"
+        ).value =
+            timetableEntries.length;
+
+
+        document.getElementById(
+            "timetableCard"
+        ).style.display =
+            "block";
+
+
+        renderStaffTimetable();
+
+
+    }
+
+    catch(error) {
+
+        console.error(
+            "LOAD STAFF TIMETABLE ERROR:",
+            error
+        );
+
+
+        showMessage(
+            "Unable to load staff timetable: " +
+            error.message,
+            "error"
+        );
+
+    }
+
+}
+
+
+
+/* =====================================================
+   RENDER STAFF TIMETABLE
+===================================================== */
+
+function renderStaffTimetable() {
+
+    const tbody =
+        document.getElementById(
+            "timetableBody"
+        );
+
+
+    const days = [
+
+        "DAY 01",
+
+        "DAY 02",
+
+        "DAY 03",
+
+        "DAY 04",
+
+        "DAY 05",
+
+        "DAY 06"
+
+    ];
+
+
+    tbody.innerHTML = "";
+
+
+    let fnCount = 0;
+
+    let anCount = 0;
+
+
+    timetableEntries.forEach(
+        entry => {
+
+            if (
+                entry.session === "FN"
+            ) {
+
+                fnCount++;
+
+            }
+
+
+            if (
+                entry.session === "AN"
+            ) {
+
+                anCount++;
+
+            }
+
+        }
+    );
+
+
+    document.getElementById(
+        "totalEntries"
+    ).textContent =
+        timetableEntries.length;
+
+
+    document.getElementById(
+        "fnEntries"
+    ).textContent =
+        fnCount;
+
+
+    document.getElementById(
+        "anEntries"
+    ).textContent =
+        anCount;
+
+
+    days.forEach(
+        day => {
+
+            const row =
+                document.createElement(
+                    "tr"
+                );
+
+
+            const dayCell =
+                document.createElement(
+                    "td"
+                );
+
+
+            dayCell.className =
+                "day-cell";
+
+
+            dayCell.textContent =
+                day;
+
+
+            row.appendChild(
+                dayCell
+            );
+
+
+            /* =========================================
+               FN 1-5
+            ========================================= */
+
+            for (
+                let hour = 1;
+                hour <= 5;
+                hour++
+            ) {
+
+                row.appendChild(
+                    createPeriodCell(
+                        day,
+                        "FN",
+                        hour
+                    )
+                );
+
+            }
+
+
+            /* =========================================
+               AN 1-5
+            ========================================= */
+
+            for (
+                let hour = 1;
+                hour <= 5;
+                hour++
+            ) {
+
+                row.appendChild(
+                    createPeriodCell(
+                        day,
+                        "AN",
+                        hour
+                    )
+                );
+
+            }
+
+
+            tbody.appendChild(
+                row
+            );
+
+        }
+    );
+
+}
+
+
+
+/* =====================================================
+   CREATE PERIOD CELL
+===================================================== */
+
+function createPeriodCell(
+    day,
+    session,
+    hour
+) {
+
+    const cell =
+        document.createElement(
+            "td"
+        );
+
+
+    const entry =
+        timetableEntries.find(
+            item =>
+
+                item.day === day &&
+
+                item.session === session &&
+
+                Number(
+                    item.hour
+                ) === hour
+
+        );
+
+
+    if (!entry) {
+
+        cell.innerHTML = `
+
+            <span
+                style="
+                    color:#9ca3af;
+                    font-size:12px;
+                "
+            >
+                Free
+            </span>
+
+        `;
+
+        return cell;
+
+    }
+
+
+    const className =
+        session === "AN"
+            ? "period-entry an"
+            : "period-entry";
+
+
+    cell.innerHTML = `
+
+        <div class="${className}">
+
+            <div class="period-subject">
+
+                ${escapeHtml(
+                    entry.subjectCode
+                )}
+
+                <br>
+
+                ${escapeHtml(
+                    entry.subjectName
+                )}
+
+            </div>
+
+
+            <div class="period-class">
+
+                ${escapeHtml(
+                    entry.department
+                )}
+
+                <br>
+
+                ${escapeHtml(
+                    entry.classYear
+                )}
+                -
+                Section
+                ${escapeHtml(
+                    entry.section
+                )}
+
+            </div>
+
+
+            <div class="period-room">
+
+                Room:
+                ${escapeHtml(
+                    entry.roomNo
+                )}
+
+            </div>
+
+
+            <div class="period-delete">
+
+                <button
+                    class="btn-danger btn-small"
+                    onclick="deleteTimetable('${entry.id}')"
+                >
+
+                    Delete
+
+                </button>
+
+            </div>
+
+        </div>
+
+    `;
+
+
+    return cell;
+
+}
+
+
+
+/* =====================================================
+   DELETE
+===================================================== */
+
+window.deleteTimetable =
+async function(id) {
+
+    if (
+        !confirm(
+            "Delete this timetable assignment?"
+        )
+    ) {
+
+        return;
+
+    }
+
+
+    try {
+
+        await deleteDoc(
+
+            doc(
+                db,
+                "timetableAssignments",
+                id
+            )
+
+        );
+
+
+        showMessage(
+            "Timetable assignment deleted successfully.",
+            "success"
+        );
+
+
+        if (selectedStaff) {
+
+            await loadStaffTimetable(
+                selectedStaff.staffId
+            );
+
+        }
+
+
+        await loadAllRecords();
+
+    }
+
+    catch(error) {
+
+        console.error(
+            "DELETE ERROR:",
+            error
+        );
+
+
+        showMessage(
+            "Unable to delete timetable entry: " +
+            error.message,
+            "error"
+        );
+
+    }
+
+};
+
+
+
+/* =====================================================
+   LOAD ALL RECORDS
+===================================================== */
+
+async function loadAllRecords() {
+
+    const tbody =
+        document.getElementById(
+            "recordsBody"
+        );
+
+
+    try {
+
+        const snapshot =
+            await getDocs(
+
+                collection(
+                    db,
+                    "timetableAssignments"
+                )
+
+            );
+
+
+        const records = [];
+
+
+        snapshot.forEach(
+            item => {
+
+                records.push({
+
+                    id:
+                        item.id,
+
+                    ...item.data()
+
+                });
+
+            }
+        );
+
+
+        records.sort(
+            (a,b) => {
+
+                const staffCompare =
+
+                    String(
+                        a.staffName || ""
+                    ).localeCompare(
+                        String(
+                            b.staffName || ""
+                        )
+                    );
+
+
+                if (
+                    staffCompare !== 0
+                ) {
+
+                    return staffCompare;
+
+                }
+
+
+                const dayOrder = {
+
+                    Monday: 1,
+
+                    Tuesday: 2,
+
+                    Wednesday: 3,
+
+                    Thursday: 4,
+
+                    Friday: 5,
+
+                    Saturday: 6
+
+                };
+
+
+                const dayCompare =
+
+                    (dayOrder[a.day] || 99) -
+                    (dayOrder[b.day] || 99);
+
+
+                if (
+                    dayCompare !== 0
+                ) {
+
+                    return dayCompare;
+
+                }
+
+
+                if (
+                    a.session !==
+                    b.session
+                ) {
+
+                    return a.session === "FN"
+                        ? -1
+                        : 1;
+
+                }
+
+
+                return Number(
+                    a.hour || 0
+                ) -
+                Number(
+                    b.hour || 0
+                );
+
+            }
+        );
+
+
+        if (!records.length) {
+
+            tbody.innerHTML = `
+
+                <tr>
+
+                    <td
+                        colspan="13"
+                        class="empty"
+                    >
+
+                        No timetable assignments found.
+
+                    </td>
+
+                </tr>
+
+            `;
+
+            return;
+
+        }
+
+
+        tbody.innerHTML =
+
+            records.map(
+                (entry,index) => `
+
+                    <tr>
+
+                        <td>
+                            ${index + 1}
+                        </td>
+
+                        <td>
+                            ${escapeHtml(
+                                entry.staffId
+                            )}
+                        </td>
+
+                        <td>
+                            ${escapeHtml(
+                                entry.staffName
+                            )}
+                        </td>
+
+                        <td>
+                            ${escapeHtml(
+                                entry.department
+                            )}
+                        </td>
+
+                        <td>
+                            ${escapeHtml(
+                                entry.classYear
+                            )}
+                        </td>
+
+                        <td>
+                            ${escapeHtml(
+                                entry.section
+                            )}
+                        </td>
+
+                        <td>
+                            ${escapeHtml(
+                                entry.day
+                            )}
+                        </td>
+
+                        <td>
+
+                            <span
+                                class="
+                                badge
+                                ${
+                                    entry.session ===
+                                    "FN"
+                                    ? "badge-fn"
+                                    : "badge-an"
+                                }
+                                "
+                            >
+
+                                ${escapeHtml(
+                                    entry.session
+                                )}
+
+                            </span>
+
+                        </td>
+
+                        <td>
+                            Hour
+                            ${escapeHtml(
+                                entry.hour
+                            )}
+                        </td>
+
+                        <td>
+                            ${escapeHtml(
+                                entry.subjectCode
+                            )}
+                        </td>
+
+                        <td>
+                            ${escapeHtml(
+                                entry.subjectName
+                            )}
+                        </td>
+
+                        <td>
+                            ${escapeHtml(
+                                entry.roomNo
+                            )}
+                        </td>
+
+                        <td>
+
+                            <button
+                                class="btn-danger btn-small"
+                                onclick="deleteTimetable('${entry.id}')"
+                            >
+
+                                Delete
+
+                            </button>
+
+                        </td>
+
+                    </tr>
+
+                `
+            ).join("");
+
+    }
+
+    catch(error) {
+
+        console.error(
+            "LOAD RECORDS ERROR:",
+            error
+        );
+
+
+        tbody.innerHTML = `
+
+            <tr>
+
+                <td
+                    colspan="13"
+                    class="empty"
+                >
+
+                    Error loading records.
+
+                    <br>
+
+                    ${escapeHtml(
+                        error.message
+                    )}
+
+                </td>
+
+            </tr>
+
+        `;
+
+    }
+
+}
+
+
+
+/* =====================================================
+   INITIAL LOAD
+===================================================== */
+
+async function initializePage() {
+
+    await loadSubjectAssignments();
+
+    await loadAllRecords();
+
+}
+
+
+initializePage();
+
+
+</script>
+
+</body>
+
+</html>

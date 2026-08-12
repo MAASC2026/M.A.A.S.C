@@ -1,0 +1,1975 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Subject Assignment to Staff</title>
+
+<style>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+    background: #f3f6fb;
+    color: #1f2937;
+}
+
+.header {
+    background: #1e3a8a;
+    color: #fff;
+    padding: 22px 30px;
+}
+
+.header h1 {
+    font-size: 25px;
+    margin-bottom: 5px;
+}
+
+.header p {
+    font-size: 14px;
+    opacity: .85;
+}
+
+.container {
+    max-width: 1450px;
+    margin: 25px auto;
+    padding: 0 18px;
+}
+
+.card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 25px;
+    margin-bottom: 22px;
+    box-shadow: 0 3px 14px rgba(0,0,0,.08);
+}
+
+.card-title {
+    color: #1e3a8a;
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 7px;
+}
+
+input,
+select {
+    width: 100%;
+    padding: 11px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 7px;
+    background: #fff;
+    outline: none;
+    font-size: 14px;
+}
+
+input:focus,
+select:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 2px rgba(37,99,235,.12);
+}
+
+input[readonly] {
+    background: #f3f4f6;
+}
+
+.button-row {
+    display: flex;
+    gap: 10px;
+    margin-top: 22px;
+    flex-wrap: wrap;
+}
+
+button {
+    border: none;
+    border-radius: 7px;
+    padding: 11px 18px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+button:disabled {
+    opacity: .6;
+    cursor: not-allowed;
+}
+
+.btn-primary {
+    background: #2563eb;
+    color: #fff;
+}
+
+.btn-primary:hover {
+    background: #1d4ed8;
+}
+
+.btn-success {
+    background: #059669;
+    color: #fff;
+}
+
+.btn-danger {
+    background: #dc2626;
+    color: #fff;
+}
+
+.btn-warning {
+    background: #d97706;
+    color: #fff;
+}
+
+.btn-secondary {
+    background: #6b7280;
+    color: #fff;
+}
+
+.btn-small {
+    padding: 7px 11px;
+    font-size: 12px;
+}
+
+.message {
+    margin-top: 15px;
+    padding: 12px;
+    border-radius: 7px;
+    display: none;
+    font-size: 14px;
+}
+
+.message.success {
+    display: block;
+    background: #dcfce7;
+    color: #166534;
+}
+
+.message.error {
+    display: block;
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.message.info {
+    display: block;
+    background: #dbeafe;
+    color: #1e40af;
+}
+
+.staff-info {
+    display: none;
+    margin-top: 15px;
+    padding: 15px;
+    border-radius: 8px;
+    background: #eff6ff;
+    border-left: 4px solid #2563eb;
+}
+
+.staff-info strong {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.assignment-builder {
+    margin-top: 25px;
+}
+
+.assignment-row {
+    display: grid;
+    grid-template-columns:
+        2fr
+        1.5fr
+        1fr
+        1fr
+        1fr
+        90px;
+
+    gap: 10px;
+
+    padding: 15px;
+
+    background: #f8fafc;
+
+    border: 1px solid #e5e7eb;
+
+    border-radius: 9px;
+
+    margin-bottom: 12px;
+}
+
+.assignment-row label {
+    display: block;
+    font-size: 11px;
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #4b5563;
+}
+
+.row-field {
+    min-width: 0;
+}
+
+.subject-details {
+    background: #eef2ff;
+    border-radius: 7px;
+    padding: 9px;
+    font-size: 12px;
+    margin-top: 5px;
+}
+
+.remove-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.stats {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+    margin-bottom: 18px;
+}
+
+.stat {
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.stat.total {
+    background: #eff6ff;
+    color: #1e40af;
+}
+
+.stat.active {
+    background: #ecfdf5;
+    color: #047857;
+}
+
+.table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 1200px;
+}
+
+th {
+    background: #1e3a8a;
+    color: #fff;
+    padding: 12px;
+    text-align: left;
+    font-size: 13px;
+}
+
+td {
+    padding: 11px 12px;
+    border-bottom: 1px solid #e5e7eb;
+    font-size: 13px;
+}
+
+tr:hover td {
+    background: #f8fafc;
+}
+
+.badge {
+    display: inline-block;
+    padding: 5px 9px;
+    border-radius: 15px;
+    font-size: 11px;
+    font-weight: bold;
+    background: #dbeafe;
+    color: #1e40af;
+}
+
+.empty {
+    text-align: center;
+    padding: 30px;
+    color: #6b7280;
+}
+
+.loading {
+    text-align: center;
+    padding: 30px;
+    color: #6b7280;
+}
+
+.filter-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 18px;
+}
+
+@media(max-width:1100px) {
+    .form-grid {
+        grid-template-columns: repeat(2,1fr);
+    }
+
+    .assignment-row {
+        grid-template-columns: repeat(3,1fr);
+    }
+}
+
+@media(max-width:700px) {
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .assignment-row {
+        grid-template-columns: 1fr;
+    }
+
+    .filter-grid {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">
+    <h1>Subject Assignment to Staff</h1>
+    <p>Assign multiple subjects to teaching staff</p>
+</div>
+
+<div class="container">
+
+<!-- STAFF -->
+<div class="card">
+
+    <div class="card-title">
+        Select Staff
+    </div>
+
+    <div class="form-grid">
+
+        <div class="form-group">
+            <label>Staff</label>
+
+            <select id="staffSelect">
+                <option value="">
+                    Loading staff...
+                </option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Staff ID</label>
+
+            <input
+                type="text"
+                id="staffId"
+                readonly
+                placeholder="Staff ID"
+            >
+        </div>
+
+        <div class="form-group">
+            <label>Staff Department</label>
+
+            <input
+                type="text"
+                id="staffDepartment"
+                readonly
+                placeholder="Department"
+            >
+        </div>
+
+    </div>
+
+    <div id="staffInfo" class="staff-info">
+
+        <strong id="selectedStaffName">
+            -
+        </strong>
+
+        <span id="selectedStaffDetails">
+            -
+        </span>
+
+    </div>
+
+</div>
+
+
+<!-- ASSIGN SUBJECT -->
+<div class="card">
+
+    <div class="card-title">
+        Assign Subjects
+    </div>
+
+    <div id="assignmentRows"></div>
+
+    <div class="button-row">
+
+        <button
+            class="btn-success"
+            onclick="addAssignmentRow()"
+        >
+            + Add Subject
+        </button>
+
+        <button
+            class="btn-primary"
+            id="saveAllBtn"
+            onclick="saveAllAssignments()"
+        >
+            Save All Assignments
+        </button>
+
+        <button
+            class="btn-secondary"
+            onclick="clearAssignmentRows()"
+        >
+            Clear
+        </button>
+
+    </div>
+
+    <div id="message" class="message"></div>
+
+</div>
+
+
+<!-- EXISTING ASSIGNMENTS -->
+<div class="card">
+
+    <div class="card-title">
+        Existing Subject Assignments
+    </div>
+
+    <div class="stats">
+
+        <div class="stat total">
+            Total Assignments:
+            <span id="totalAssignments">0</span>
+        </div>
+
+        <div class="stat active">
+            Selected Staff:
+            <span id="currentStaffDisplay">None</span>
+        </div>
+
+    </div>
+
+    <div class="filter-grid">
+
+        <input
+            type="text"
+            id="searchAssignment"
+            placeholder="Search subject, staff, department..."
+            oninput="filterAssignments()"
+        >
+
+        <select
+            id="filterDepartment"
+            onchange="filterAssignments()"
+        >
+            <option value="">
+                All Departments
+            </option>
+        </select>
+
+        <select
+            id="filterYear"
+            onchange="filterAssignments()"
+        >
+            <option value="">
+                All Classes
+            </option>
+
+            <option value="I">
+                I Year
+            </option>
+
+            <option value="II">
+                II Year
+            </option>
+
+            <option value="III">
+                III Year
+            </option>
+        </select>
+
+    </div>
+
+    <div class="table-wrapper">
+
+        <table>
+
+            <thead>
+
+                <tr>
+                    <th>S.No</th>
+                    <th>Staff ID</th>
+                    <th>Staff Name</th>
+                    <th>Subject Code</th>
+                    <th>Subject</th>
+                    <th>Department</th>
+                    <th>Class</th>
+                    <th>Section</th>
+                    <th>Room No.</th>
+                    <th>Action</th>
+                </tr>
+
+            </thead>
+
+            <tbody id="assignmentTableBody">
+
+                <tr>
+                    <td colspan="10" class="loading">
+                        Loading assignments...
+                    </td>
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+</div>
+
+
+<script type="module">
+
+import {
+    initializeApp
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+import {
+    getFirestore,
+    collection,
+    getDocs,
+    addDoc,
+    deleteDoc,
+    doc,
+    serverTimestamp,
+    query,
+    where
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+
+/* =====================================================
+   FIREBASE
+===================================================== */
+
+const firebaseConfig = {
+
+    apiKey:
+        "AIzaSyAIv3091VM-gkmdwEAn7OhXWd9Cm2zh2bo",
+
+    authDomain:
+        "maasc-2026.firebaseapp.com",
+
+    projectId:
+        "maasc-2026",
+
+    storageBucket:
+        "maasc-2026.appspot.com",
+
+    messagingSenderId:
+        "585813001586",
+
+    appId:
+        "1:585813001586:web:664e0e90ff0725d2e849eb"
+
+};
+
+const app =
+    initializeApp(firebaseConfig);
+
+const db =
+    getFirestore(app);
+
+
+/* =====================================================
+   DATA
+===================================================== */
+
+let staffList = [];
+
+let subjects = [];
+
+let assignments = [];
+
+let rowCounter = 0;
+
+
+/* =====================================================
+   DOM
+===================================================== */
+
+const staffSelect =
+    document.getElementById("staffSelect");
+
+const staffIdInput =
+    document.getElementById("staffId");
+
+const staffDepartmentInput =
+    document.getElementById("staffDepartment");
+
+const assignmentRows =
+    document.getElementById("assignmentRows");
+
+const message =
+    document.getElementById("message");
+
+
+/* =====================================================
+   MESSAGE
+===================================================== */
+
+function showMessage(text, type = "info") {
+
+    message.textContent = text;
+
+    message.className =
+        "message " + type;
+
+    setTimeout(() => {
+        message.className = "message";
+    }, 5000);
+}
+
+
+/* =====================================================
+   ESCAPE
+===================================================== */
+
+function escapeHtml(value) {
+
+    return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
+
+
+/* =====================================================
+   LOAD STAFF
+===================================================== */
+
+async function loadStaff() {
+
+    try {
+
+        staffSelect.innerHTML = `
+            <option value="">
+                Loading staff...
+            </option>
+        `;
+
+        const snapshot =
+            await getDocs(
+                collection(db, "staff")
+            );
+
+        staffList = [];
+
+        snapshot.forEach(documentSnapshot => {
+
+            const data =
+                documentSnapshot.data();
+
+            const staffId =
+                data.staffId ||
+                data.staffID ||
+                data.id ||
+                documentSnapshot.id;
+
+            const name =
+                data.name ||
+                data.staffName ||
+                data.fullName ||
+                data.displayName ||
+                "Unnamed Staff";
+
+            const department =
+                data.department ||
+                data.dept ||
+                "";
+
+            staffList.push({
+
+                documentId:
+                    documentSnapshot.id,
+
+                staffId:
+                    String(staffId),
+
+                name:
+                    String(name),
+
+                department:
+                    String(department)
+
+            });
+
+        });
+
+        staffList.sort((a,b) =>
+            a.staffId.localeCompare(b.staffId)
+        );
+
+        staffSelect.innerHTML = `
+            <option value="">
+                Select Staff
+            </option>
+        `;
+
+        staffList.forEach(staff => {
+
+            const option =
+                document.createElement("option");
+
+            option.value =
+                staff.staffId;
+
+            option.textContent =
+                `${staff.staffId} - ${staff.name}`;
+
+            staffSelect.appendChild(option);
+
+        });
+
+    }
+
+    catch(error) {
+
+        console.error(
+            "STAFF LOAD ERROR:",
+            error
+        );
+
+        staffSelect.innerHTML = `
+            <option value="">
+                Failed to load staff
+            </option>
+        `;
+
+        showMessage(
+            "Unable to load staff: " +
+            error.message,
+            "error"
+        );
+    }
+}
+
+
+/* =====================================================
+   STAFF CHANGE
+===================================================== */
+
+staffSelect.addEventListener(
+    "change",
+    async function() {
+
+        const selectedId =
+            this.value;
+
+        if (!selectedId) {
+
+            staffIdInput.value = "";
+
+            staffDepartmentInput.value = "";
+
+            document.getElementById(
+                "staffInfo"
+            ).style.display = "none";
+
+            document.getElementById(
+                "currentStaffDisplay"
+            ).textContent = "None";
+
+            clearAssignmentRows();
+
+            return;
+        }
+
+        const staff =
+            staffList.find(
+                s => s.staffId === selectedId
+            );
+
+        if (!staff) return;
+
+        staffIdInput.value =
+            staff.staffId;
+
+        staffDepartmentInput.value =
+            staff.department;
+
+        document.getElementById(
+            "selectedStaffName"
+        ).textContent =
+            `${staff.staffId} - ${staff.name}`;
+
+        document.getElementById(
+            "selectedStaffDetails"
+        ).textContent =
+            staff.department ||
+            "Department not specified";
+
+        document.getElementById(
+            "staffInfo"
+        ).style.display =
+            "block";
+
+        document.getElementById(
+            "currentStaffDisplay"
+        ).textContent =
+            staff.staffId;
+
+        clearAssignmentRows();
+
+        addAssignmentRow();
+
+        await loadAssignments();
+
+    }
+);
+
+
+/* =====================================================
+   LOAD SUBJECTS
+===================================================== */
+
+async function loadSubjects() {
+
+    try {
+
+        const snapshot =
+            await getDocs(
+                collection(db, "subjects")
+            );
+
+        subjects = [];
+
+        snapshot.forEach(documentSnapshot => {
+
+            const data =
+                documentSnapshot.data();
+
+            if (
+                data.status &&
+                data.status !== "Active"
+            ) {
+                return;
+            }
+
+            subjects.push({
+
+                id:
+                    documentSnapshot.id,
+
+                subjectCode:
+                    data.subjectCode || "",
+
+                subjectName:
+                    data.subjectName || "",
+
+                department:
+                    data.department || "",
+
+                classYear:
+                    data.classYear || "",
+
+                subjectType:
+                    data.subjectType || "",
+
+                credits:
+                    data.credits ?? 0
+
+            });
+
+        });
+
+        subjects.sort((a,b) =>
+            a.subjectCode.localeCompare(
+                b.subjectCode
+            )
+        );
+
+        populateDepartmentFilter();
+
+    }
+
+    catch(error) {
+
+        console.error(
+            "SUBJECT LOAD ERROR:",
+            error
+        );
+
+        showMessage(
+            "Unable to load subjects: " +
+            error.message,
+            "error"
+        );
+    }
+}
+
+
+/* =====================================================
+   DEPARTMENT FILTER
+===================================================== */
+
+function populateDepartmentFilter() {
+
+    const select =
+        document.getElementById(
+            "filterDepartment"
+        );
+
+    const departments =
+        [
+            ...new Set(
+                subjects
+                    .map(s => s.department)
+                    .filter(Boolean)
+            )
+        ].sort();
+
+    select.innerHTML = `
+        <option value="">
+            All Departments
+        </option>
+    `;
+
+    departments.forEach(department => {
+
+        const option =
+            document.createElement("option");
+
+        option.value = department;
+
+        option.textContent = department;
+
+        select.appendChild(option);
+
+    });
+}
+
+
+/* =====================================================
+   ADD ROW
+===================================================== */
+
+window.addAssignmentRow =
+function() {
+
+    rowCounter++;
+
+    const row =
+        document.createElement("div");
+
+    row.className =
+        "assignment-row";
+
+    row.dataset.rowId =
+        rowCounter;
+
+    row.innerHTML = `
+
+        <div class="row-field">
+
+            <label>Subject *</label>
+
+            <select class="row-subject">
+
+                <option value="">
+                    Select Subject
+                </option>
+
+                ${subjects.map(subject => `
+
+                    <option value="${escapeHtml(subject.id)}">
+
+                        ${escapeHtml(subject.subjectCode)}
+                        -
+                        ${escapeHtml(subject.subjectName)}
+
+                    </option>
+
+                `).join("")}
+
+            </select>
+
+            <div class="subject-details">
+                Select a subject
+            </div>
+
+        </div>
+
+
+        <div class="row-field">
+
+            <label>Department *</label>
+
+            <input
+                type="text"
+                class="row-department"
+                readonly
+            >
+
+        </div>
+
+
+        <div class="row-field">
+
+            <label>Class / Year *</label>
+
+            <input
+                type="text"
+                class="row-year"
+                readonly
+            >
+
+        </div>
+
+
+        <div class="row-field">
+
+            <label>Section *</label>
+
+            <select class="row-section">
+
+                <option value="">
+                    Select Section
+                </option>
+
+                <option value="A">A</option>
+                <option value="B">B</option>
+                <option value="C">C</option>
+                <option value="D">D</option>
+                <option value="E">E</option>
+
+            </select>
+
+        </div>
+
+
+        <div class="row-field">
+
+            <label>Room No. *</label>
+
+            <input
+                type="text"
+                class="row-room"
+                placeholder="Example: 204"
+            >
+
+        </div>
+
+
+        <div class="remove-row">
+
+            <button
+                type="button"
+                class="btn-danger btn-small"
+                onclick="removeAssignmentRow(${rowCounter})"
+            >
+                Remove
+            </button>
+
+        </div>
+
+    `;
+
+    assignmentRows.appendChild(row);
+
+    const subjectSelect =
+        row.querySelector(".row-subject");
+
+    subjectSelect.addEventListener(
+        "change",
+        function() {
+
+            updateSubjectDetails(
+                row,
+                this.value
+            );
+
+        }
+    );
+};
+
+
+/* =====================================================
+   SUBJECT DETAILS
+===================================================== */
+
+function updateSubjectDetails(
+    row,
+    subjectId
+) {
+
+    const subject =
+        subjects.find(
+            s => s.id === subjectId
+        );
+
+    const departmentInput =
+        row.querySelector(".row-department");
+
+    const yearInput =
+        row.querySelector(".row-year");
+
+    const details =
+        row.querySelector(".subject-details");
+
+    if (!subject) {
+
+        departmentInput.value = "";
+
+        yearInput.value = "";
+
+        details.textContent =
+            "Select a subject";
+
+        return;
+    }
+
+    departmentInput.value =
+        subject.department;
+
+    yearInput.value =
+        subject.classYear;
+
+    details.innerHTML = `
+
+        <strong>
+            ${escapeHtml(subject.subjectName)}
+        </strong>
+
+        <br>
+
+        Type:
+        ${escapeHtml(subject.subjectType)}
+
+        &nbsp; | &nbsp;
+
+        Credits:
+        ${escapeHtml(subject.credits)}
+
+    `;
+}
+
+
+/* =====================================================
+   REMOVE ROW
+===================================================== */
+
+window.removeAssignmentRow =
+function(rowId) {
+
+    const row =
+        assignmentRows.querySelector(
+            `[data-row-id="${rowId}"]`
+        );
+
+    if (row) {
+        row.remove();
+    }
+
+    if (
+        assignmentRows.children.length === 0
+    ) {
+        addAssignmentRow();
+    }
+};
+
+
+/* =====================================================
+   CLEAR ROWS
+===================================================== */
+
+window.clearAssignmentRows =
+function() {
+
+    assignmentRows.innerHTML = "";
+
+    addAssignmentRow();
+};
+
+
+/* =====================================================
+   SAVE ALL
+===================================================== */
+
+window.saveAllAssignments =
+async function() {
+
+    const selectedStaffId =
+        staffSelect.value;
+
+    if (!selectedStaffId) {
+
+        showMessage(
+            "Please select a staff member.",
+            "error"
+        );
+
+        return;
+    }
+
+    const staff =
+        staffList.find(
+            s => s.staffId === selectedStaffId
+        );
+
+    if (!staff) {
+
+        showMessage(
+            "Selected staff could not be found.",
+            "error"
+        );
+
+        return;
+    }
+
+    const rows =
+        Array.from(
+            assignmentRows.children
+        );
+
+    if (!rows.length) {
+
+        showMessage(
+            "Please add at least one subject.",
+            "error"
+        );
+
+        return;
+    }
+
+    const saveButton =
+        document.getElementById("saveAllBtn");
+
+    saveButton.disabled = true;
+
+    saveButton.textContent =
+        "Saving...";
+
+    try {
+
+        const newAssignments = [];
+
+        for (const row of rows) {
+
+            const subjectId =
+                row.querySelector(
+                    ".row-subject"
+                ).value;
+
+            const section =
+                row.querySelector(
+                    ".row-section"
+                ).value;
+
+            const room =
+                row.querySelector(
+                    ".row-room"
+                ).value.trim();
+
+            if (!subjectId) {
+                throw new Error(
+                    "Please select a subject in every row."
+                );
+            }
+
+            if (!section) {
+                throw new Error(
+                    "Please select section in every row."
+                );
+            }
+
+            if (!room) {
+                throw new Error(
+                    "Please enter room number in every row."
+                );
+            }
+
+            const subject =
+                subjects.find(
+                    s => s.id === subjectId
+                );
+
+            if (!subject) {
+                throw new Error(
+                    "Selected subject could not be found."
+                );
+            }
+
+
+            /* ==========================================
+               DUPLICATE IN CURRENT SCREEN
+               SAME STAFF + SUBJECT + DEPARTMENT +
+               CLASS + SECTION
+            ========================================== */
+
+            const duplicateCurrent =
+                newAssignments.some(item =>
+
+                    item.staffId === staff.staffId &&
+
+                    item.subjectId === subject.id &&
+
+                    item.department ===
+                    subject.department &&
+
+                    item.classYear ===
+                    subject.classYear &&
+
+                    item.section === section
+
+                );
+
+
+            if (duplicateCurrent) {
+
+                throw new Error(
+
+                    `"${subject.subjectName}" is already added for ${staff.name}, ${subject.classYear} Section ${section}.`
+
+                );
+
+            }
+
+
+            /* ==========================================
+               CHECK FIRESTORE
+
+               IMPORTANT:
+               SAME SUBJECT CAN BE ASSIGNED TO
+               MULTIPLE STAFF.
+
+               We check staff + subject + department +
+               class + section.
+            ========================================== */
+
+            const duplicateQuery =
+                query(
+
+                    collection(
+                        db,
+                        "subjectAssignments"
+                    ),
+
+                    where(
+                        "staffId",
+                        "==",
+                        staff.staffId
+                    ),
+
+                    where(
+                        "subjectId",
+                        "==",
+                        subject.id
+                    ),
+
+                    where(
+                        "department",
+                        "==",
+                        subject.department
+                    ),
+
+                    where(
+                        "classYear",
+                        "==",
+                        subject.classYear
+                    ),
+
+                    where(
+                        "section",
+                        "==",
+                        section
+                    )
+
+                );
+
+
+            const duplicateSnapshot =
+                await getDocs(
+                    duplicateQuery
+                );
+
+
+            if (
+                !duplicateSnapshot.empty
+            ) {
+
+                throw new Error(
+
+                    `"${subject.subjectName}" is already assigned to ${staff.name} for ${subject.department} - ${subject.classYear} - Section ${section}.`
+
+                );
+
+            }
+
+
+            /* ==========================================
+               CREATE ASSIGNMENT OBJECT
+            ========================================== */
+
+            newAssignments.push({
+
+                staffId:
+                    staff.staffId,
+
+                staffName:
+                    staff.name,
+
+                staffDepartment:
+                    staff.department,
+
+                subjectId:
+                    subject.id,
+
+                subjectCode:
+                    subject.subjectCode,
+
+                subjectName:
+                    subject.subjectName,
+
+                department:
+                    subject.department,
+
+                classYear:
+                    subject.classYear,
+
+                subjectType:
+                    subject.subjectType,
+
+                credits:
+                    subject.credits,
+
+                section:
+                    section,
+
+                roomNo:
+                    room,
+
+                createdAt:
+                    serverTimestamp()
+
+            });
+
+        }
+
+
+        /* ==========================================
+           SAVE ALL
+        ========================================== */
+
+        for (
+            const assignment
+            of newAssignments
+        ) {
+
+            await addDoc(
+                collection(
+                    db,
+                    "subjectAssignments"
+                ),
+                assignment
+            );
+
+        }
+
+
+        showMessage(
+
+            `${newAssignments.length} subject assignment(s) saved successfully.`,
+
+            "success"
+
+        );
+
+
+        clearAssignmentRows();
+
+        await loadAssignments();
+
+    }
+
+    catch(error) {
+
+        console.error(
+            "SAVE ASSIGNMENT ERROR:",
+            error
+        );
+
+        showMessage(
+            error.message,
+            "error"
+        );
+
+    }
+
+    finally {
+
+        saveButton.disabled = false;
+
+        saveButton.textContent =
+            "Save All Assignments";
+
+    }
+};
+
+
+/* =====================================================
+   LOAD ASSIGNMENTS
+===================================================== */
+
+async function loadAssignments() {
+
+    const tbody =
+        document.getElementById(
+            "assignmentTableBody"
+        );
+
+    tbody.innerHTML = `
+
+        <tr>
+
+            <td
+                colspan="10"
+                class="loading"
+            >
+                Loading assignments...
+            </td>
+
+        </tr>
+
+    `;
+
+    try {
+
+        const snapshot =
+            await getDocs(
+                collection(
+                    db,
+                    "subjectAssignments"
+                )
+            );
+
+        assignments = [];
+
+        snapshot.forEach(
+            documentSnapshot => {
+
+                assignments.push({
+
+                    id:
+                        documentSnapshot.id,
+
+                    ...documentSnapshot.data()
+
+                });
+
+            }
+        );
+
+
+        assignments.sort(
+            (a,b) => {
+
+                const staffA =
+                    String(
+                        a.staffId || ""
+                    );
+
+                const staffB =
+                    String(
+                        b.staffId || ""
+                    );
+
+                return staffA.localeCompare(
+                    staffB
+                );
+
+            }
+        );
+
+
+        document.getElementById(
+            "totalAssignments"
+        ).textContent =
+            assignments.length;
+
+
+        filterAssignments();
+
+    }
+
+    catch(error) {
+
+        console.error(
+            "LOAD ASSIGNMENTS ERROR:",
+            error
+        );
+
+        tbody.innerHTML = `
+
+            <tr>
+
+                <td
+                    colspan="10"
+                    class="empty"
+                >
+
+                    Failed to load assignments.
+
+                    <br>
+
+                    ${escapeHtml(
+                        error.message
+                    )}
+
+                </td>
+
+            </tr>
+
+        `;
+    }
+}
+
+
+/* =====================================================
+   FILTER
+===================================================== */
+
+window.filterAssignments =
+function() {
+
+    const search =
+        document.getElementById(
+            "searchAssignment"
+        )
+        .value
+        .trim()
+        .toLowerCase();
+
+    const department =
+        document.getElementById(
+            "filterDepartment"
+        ).value;
+
+    const year =
+        document.getElementById(
+            "filterYear"
+        ).value;
+
+
+    const filtered =
+        assignments.filter(
+            assignment => {
+
+                const searchable = [
+
+                    assignment.staffId,
+
+                    assignment.staffName,
+
+                    assignment.subjectCode,
+
+                    assignment.subjectName,
+
+                    assignment.department,
+
+                    assignment.section,
+
+                    assignment.roomNo
+
+                ]
+                .join(" ")
+                .toLowerCase();
+
+
+                return (
+
+                    (!search ||
+                    searchable.includes(search))
+
+                    &&
+
+                    (!department ||
+                    assignment.department ===
+                    department)
+
+                    &&
+
+                    (!year ||
+                    assignment.classYear ===
+                    year)
+
+                );
+
+            }
+        );
+
+
+    renderAssignments(
+        filtered
+    );
+};
+
+
+/* =====================================================
+   RENDER
+===================================================== */
+
+function renderAssignments(data) {
+
+    const tbody =
+        document.getElementById(
+            "assignmentTableBody"
+        );
+
+    if (!data.length) {
+
+        tbody.innerHTML = `
+
+            <tr>
+
+                <td
+                    colspan="10"
+                    class="empty"
+                >
+                    No subject assignments found.
+                </td>
+
+            </tr>
+
+        `;
+
+        return;
+    }
+
+
+    tbody.innerHTML =
+        data.map(
+            (assignment,index) => `
+
+                <tr>
+
+                    <td>
+                        ${index + 1}
+                    </td>
+
+                    <td>
+                        <strong>
+                            ${escapeHtml(
+                                assignment.staffId
+                            )}
+                        </strong>
+                    </td>
+
+                    <td>
+                        ${escapeHtml(
+                            assignment.staffName
+                        )}
+                    </td>
+
+                    <td>
+
+                        <span class="badge">
+
+                            ${escapeHtml(
+                                assignment.subjectCode
+                            )}
+
+                        </span>
+
+                    </td>
+
+                    <td>
+                        ${escapeHtml(
+                            assignment.subjectName
+                        )}
+                    </td>
+
+                    <td>
+                        ${escapeHtml(
+                            assignment.department
+                        )}
+                    </td>
+
+                    <td>
+                        ${escapeHtml(
+                            assignment.classYear
+                        )}
+                    </td>
+
+                    <td>
+                        ${escapeHtml(
+                            assignment.section
+                        )}
+                    </td>
+
+                    <td>
+                        ${escapeHtml(
+                            assignment.roomNo
+                        )}
+                    </td>
+
+                    <td>
+
+                        <button
+                            class="btn-danger btn-small"
+                            onclick="deleteAssignment('${assignment.id}')"
+                        >
+                            Delete
+                        </button>
+
+                    </td>
+
+                </tr>
+
+            `
+        ).join("");
+}
+
+
+/* =====================================================
+   DELETE
+===================================================== */
+
+window.deleteAssignment =
+async function(id) {
+
+    const assignment =
+        assignments.find(
+            a => a.id === id
+        );
+
+    if (!assignment) {
+
+        showMessage(
+            "Assignment not found.",
+            "error"
+        );
+
+        return;
+    }
+
+
+    const confirmed =
+        confirm(
+
+            `Delete "${assignment.subjectName}" from ${assignment.staffName}?`
+
+        );
+
+
+    if (!confirmed) return;
+
+
+    try {
+
+        await deleteDoc(
+            doc(
+                db,
+                "subjectAssignments",
+                id
+            )
+        );
+
+
+        showMessage(
+            "Subject assignment deleted successfully.",
+            "success"
+        );
+
+
+        await loadAssignments();
+
+    }
+
+    catch(error) {
+
+        console.error(
+            "DELETE ASSIGNMENT ERROR:",
+            error
+        );
+
+        showMessage(
+            "Unable to delete assignment: " +
+            error.message,
+            "error"
+        );
+    }
+};
+
+
+/* =====================================================
+   INITIALIZE
+===================================================== */
+
+async function initializePage() {
+
+    try {
+
+        await Promise.all([
+
+            loadStaff(),
+
+            loadSubjects()
+
+        ]);
+
+        addAssignmentRow();
+
+        await loadAssignments();
+
+    }
+
+    catch(error) {
+
+        console.error(
+            "INITIALIZATION ERROR:",
+            error
+        );
+
+    }
+}
+
+
+initializePage();
+
+</script>
+
+</body>
+</html>

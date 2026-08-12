@@ -1,0 +1,1502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Subject Creation Portal</title>
+
+<style>
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family: Arial, Helvetica, sans-serif;
+    }
+
+    body {
+        background: #f4f6f9;
+        color: #1f2937;
+    }
+
+    .header {
+        background: #1e3a8a;
+        color: white;
+        padding: 22px 30px;
+    }
+
+    .header h1 {
+        font-size: 25px;
+        margin-bottom: 5px;
+    }
+
+    .header p {
+        opacity: .85;
+        font-size: 14px;
+    }
+
+    .container {
+        max-width: 1400px;
+        margin: 25px auto;
+        padding: 0 18px;
+    }
+
+    .card {
+        background: white;
+        border-radius: 12px;
+        padding: 25px;
+        margin-bottom: 22px;
+        box-shadow: 0 3px 12px rgba(0,0,0,.08);
+    }
+
+    .card-title {
+        font-size: 20px;
+        font-weight: bold;
+        margin-bottom: 20px;
+        color: #1e3a8a;
+    }
+
+    .form-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 18px;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .form-group label {
+        font-size: 14px;
+        font-weight: bold;
+        margin-bottom: 7px;
+    }
+
+    input,
+    select {
+        width: 100%;
+        padding: 11px 12px;
+        border: 1px solid #d1d5db;
+        border-radius: 7px;
+        font-size: 14px;
+        outline: none;
+        background: white;
+    }
+
+    input:focus,
+    select:focus {
+        border-color: #2563eb;
+        box-shadow: 0 0 0 2px rgba(37,99,235,.12);
+    }
+
+    .button-row {
+        margin-top: 22px;
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    button {
+        border: none;
+        border-radius: 7px;
+        padding: 11px 18px;
+        font-size: 14px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    .btn-primary {
+        background: #2563eb;
+        color: white;
+    }
+
+    .btn-primary:hover {
+        background: #1d4ed8;
+    }
+
+    .btn-secondary {
+        background: #6b7280;
+        color: white;
+    }
+
+    .btn-danger {
+        background: #dc2626;
+        color: white;
+    }
+
+    .btn-warning {
+        background: #d97706;
+        color: white;
+    }
+
+    .btn-success {
+        background: #059669;
+        color: white;
+    }
+
+    .btn-small {
+        padding: 7px 11px;
+        font-size: 12px;
+        margin: 2px;
+    }
+
+    .message {
+        margin-top: 15px;
+        padding: 12px;
+        border-radius: 7px;
+        display: none;
+        font-size: 14px;
+    }
+
+    .message.success {
+        display: block;
+        background: #dcfce7;
+        color: #166534;
+    }
+
+    .message.error {
+        display: block;
+        background: #fee2e2;
+        color: #991b1b;
+    }
+
+    .message.info {
+        display: block;
+        background: #dbeafe;
+        color: #1e40af;
+    }
+
+    .filters {
+        display: grid;
+        grid-template-columns: 2fr 1fr 1fr;
+        gap: 12px;
+        margin-bottom: 18px;
+    }
+
+    .table-wrapper {
+        width: 100%;
+        overflow-x: auto;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 1000px;
+    }
+
+    th {
+        background: #1e3a8a;
+        color: white;
+        padding: 12px;
+        text-align: left;
+        font-size: 13px;
+    }
+
+    td {
+        padding: 11px 12px;
+        border-bottom: 1px solid #e5e7eb;
+        font-size: 13px;
+    }
+
+    tr:hover td {
+        background: #f8fafc;
+    }
+
+    .status {
+        display: inline-block;
+        padding: 5px 9px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: bold;
+    }
+
+    .status.active {
+        background: #dcfce7;
+        color: #166534;
+    }
+
+    .status.inactive {
+        background: #fee2e2;
+        color: #991b1b;
+    }
+
+    .empty {
+        text-align: center;
+        padding: 30px;
+        color: #6b7280;
+    }
+
+    .loading {
+        text-align: center;
+        padding: 25px;
+        color: #6b7280;
+    }
+
+    .count-box {
+        display: flex;
+        gap: 15px;
+        margin-bottom: 18px;
+        flex-wrap: wrap;
+    }
+
+    .count {
+        background: #eff6ff;
+        color: #1e40af;
+        padding: 10px 16px;
+        border-radius: 8px;
+        font-weight: bold;
+        font-size: 14px;
+    }
+
+    .count.active-count {
+        background: #ecfdf5;
+        color: #047857;
+    }
+
+    .count.inactive-count {
+        background: #fef2f2;
+        color: #b91c1c;
+    }
+
+    .editing {
+        border: 2px solid #f59e0b;
+    }
+
+    @media(max-width: 900px) {
+        .form-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .filters {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media(max-width: 600px) {
+        .form-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .header {
+            padding: 18px;
+        }
+
+        .card {
+            padding: 18px;
+        }
+    }
+</style>
+</head>
+
+<body>
+
+<div class="header">
+    <h1>Subject Creation Portal</h1>
+    <p>Create and manage subjects for the college ERP</p>
+</div>
+
+<div class="container">
+
+    <!-- SUBJECT FORM -->
+    <div class="card" id="subjectFormCard">
+
+        <div class="card-title" id="formTitle">
+            Create New Subject
+        </div>
+
+        <div class="form-grid">
+
+            <div class="form-group">
+                <label for="subjectCode">
+                    Subject Code *
+                </label>
+
+                <input
+                    type="text"
+                    id="subjectCode"
+                    placeholder="Example: FA101"
+                    autocomplete="off"
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="subjectName">
+                    Subject Name *
+                </label>
+
+                <input
+                    type="text"
+                    id="subjectName"
+                    placeholder="Example: Financial Accounting"
+                    autocomplete="off"
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="department">
+                    Department *
+                </label>
+
+                <select id="department">
+                    <option value="">Select Department</option>
+<option value="B.Com General">B.Com General</option>
+<option value="B.Com BM">B.Com BM</option>
+<option value="B.Com MM">B.Com MM</option>
+<option value="B.Com CS">B.Com CS</option>
+<option value="B.Com A&F">B.Com A&F</option>
+<option value="B.Com ISM">B.Com ISM</option>
+<option value="B.Com CA">B.Com CA</option>
+<option value="B.Com BUS.AD">B.Com BUS.AD</option>
+
+<option value="B.A DEFENCE">B.A DEFENCE</option>
+<option value="B.A PUB.AD">B.A PUB.AD</option>
+<option value="B.A TAMIL">B.A TAMIL</option>
+<option value="B.A TOURISM">B.A TOURISM</option>
+
+<option value="B.Sc CS">B.Sc CS</option>
+<option value="B.Sc CS WITH AI">B.Sc CS WITH AI</option>
+<option value="B.Sc CRIMINOLOGY">B.Sc CRIMINOLOGY</option>
+<option value="B.Sc SA">B.Sc SA</option>
+<option value="B.Sc PHYS WITH CA">B.Sc PHYS WITH CA</option>
+<option value="B.Sc MATHS WITH CA">B.Sc MATHS WITH CA</option>
+<option value="B.Sc ELECTRONICS WITH AI">B.Sc ELECTRONICS WITH AI</option>
+<option value="B.Sc VISCOM">B.Sc VISCOM</option>
+<option value="B.Sc ELECTRONIC MEDIA">B.Sc ELECTRONIC MEDIA</option>
+<option value="B.Sc IDD">B.Sc IDD</option>
+<option value="B.Sc PHYSICS">B.Sc PHYSICS</option>
+
+<option value="BCA COMPUTER APPLICATION">BCA COMPUTER APPLICATION</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="classYear">
+                    Class / Year *
+                </label>
+
+                <select id="classYear">
+                    <option value="">Select Class / Year</option>
+                    <option value="I">I Year</option>
+                    <option value="II">II Year</option>
+                    <option value="III">III Year</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="subjectType">
+                    Subject Type *
+                </label>
+
+                <select id="subjectType">
+                    <option value="">Select Type</option>
+                    <option value="Theory">Theory</option>
+                    <option value="Practical">Practical</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="credits">
+                    Credits
+                </label>
+
+                <input
+                    type="number"
+                    id="credits"
+                    min="0"
+                    max="20"
+                    placeholder="Example: 4"
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="status">
+                    Status *
+                </label>
+
+                <select id="status">
+                    <option value="Active">Active</option>
+                    <option value="Inactive">Inactive</option>
+                </select>
+            </div>
+
+        </div>
+
+        <div class="button-row">
+
+            <button
+                class="btn-primary"
+                id="saveBtn"
+                onclick="saveSubject()"
+            >
+                Save Subject
+            </button>
+
+            <button
+                class="btn-secondary"
+                id="cancelBtn"
+                onclick="cancelEdit()"
+                style="display:none;"
+            >
+                Cancel Edit
+            </button>
+
+            <button
+                class="btn-secondary"
+                onclick="clearForm()"
+            >
+                Clear
+            </button>
+
+        </div>
+
+        <div id="message" class="message"></div>
+
+    </div>
+
+
+    <!-- SUBJECT LIST -->
+    <div class="card">
+
+        <div class="card-title">
+            Subject List
+        </div>
+
+        <div class="count-box">
+
+            <div class="count">
+                Total: <span id="totalCount">0</span>
+            </div>
+
+            <div class="count active-count">
+                Active: <span id="activeCount">0</span>
+            </div>
+
+            <div class="count inactive-count">
+                Inactive: <span id="inactiveCount">0</span>
+            </div>
+
+        </div>
+
+
+        <div class="filters">
+
+            <input
+                type="text"
+                id="searchInput"
+                placeholder="Search subject code or name..."
+                oninput="applyFilters()"
+            >
+
+            <select
+                id="filterDepartment"
+                onchange="applyFilters()"
+            >
+                <option value="">All Departments</option>
+
+                <option value="B.Com General">B.Com General</option>
+<option value="B.Com BM">B.Com BM</option>
+<option value="B.Com MM">B.Com MM</option>
+<option value="B.Com CS">B.Com CS</option>
+<option value="B.Com A&F">B.Com A&F</option>
+<option value="B.Com ISM">B.Com ISM</option>
+<option value="B.Com CA">B.Com CA</option>
+<option value="B.Com BUS.AD">B.Com BUS.AD</option>
+
+<option value="B.A DEFENCE">B.A DEFENCE</option>
+<option value="B.A PUB.AD">B.A PUB.AD</option>
+<option value="B.A TAMIL">B.A TAMIL</option>
+<option value="B.A TOURISM">B.A TOURISM</option>
+
+<option value="B.Sc CS">B.Sc CS</option>
+<option value="B.Sc CS WITH AI">B.Sc CS WITH AI</option>
+<option value="B.Sc CRIMINOLOGY">B.Sc CRIMINOLOGY</option>
+<option value="B.Sc SA">B.Sc SA</option>
+<option value="B.Sc PHYS WITH CA">B.Sc PHYS WITH CA</option>
+<option value="B.Sc MATHS WITH CA">B.Sc MATHS WITH CA</option>
+<option value="B.Sc ELECTRONICS WITH AI">B.Sc ELECTRONICS WITH AI</option>
+<option value="B.Sc VISCOM">B.Sc VISCOM</option>
+<option value="B.Sc ELECTRONIC MEDIA">B.Sc ELECTRONIC MEDIA</option>
+<option value="B.Sc IDD">B.Sc IDD</option>
+<option value="B.Sc PHYSICS">B.Sc PHYSICS</option>
+
+<option value="BCA COMPUTER APPLICATION">BCA COMPUTER APPLICATION</option>
+            </select>
+
+            <select
+                id="filterYear"
+                onchange="applyFilters()"
+            >
+                <option value="">All Years</option>
+                <option value="I">I Year</option>
+                <option value="II">II Year</option>
+                <option value="III">III Year</option>
+            </select>
+
+        </div>
+
+
+        <div class="table-wrapper">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+                        <th>S.No</th>
+                        <th>Subject Code</th>
+                        <th>Subject Name</th>
+                        <th>Department</th>
+                        <th>Class</th>
+                        <th>Type</th>
+                        <th>Credits</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+
+                </thead>
+
+                <tbody id="subjectTableBody">
+
+                    <tr>
+                        <td colspan="9" class="loading">
+                            Loading subjects...
+                        </td>
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script type="module">
+
+import {
+    initializeApp
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+import {
+    getFirestore,
+    collection,
+    addDoc,
+    getDocs,
+    doc,
+    updateDoc,
+    deleteDoc,
+    query,
+    orderBy,
+    serverTimestamp
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+
+/* =========================================================
+   FIREBASE CONFIG
+   ========================================================= */
+
+const firebaseConfig = {
+
+      apiKey: "AIzaSyAIv3091VM-gkmdwEAn7OhXWd9Cm2zh2bo",
+  authDomain: "maasc-2026.firebaseapp.com",
+  projectId: "maasc-2026",
+  storageBucket: "maasc-2026.appspot.com",
+  messagingSenderId: "585813001586",
+  appId: "1:585813001586:web:664e0e90ff0725d2e849eb"
+
+};
+
+
+/* =========================================================
+   FIREBASE INITIALIZATION
+   ========================================================= */
+
+const app = initializeApp(firebaseConfig);
+
+const db = getFirestore(app);
+
+
+/* =========================================================
+   GLOBAL VARIABLES
+   ========================================================= */
+
+let subjects = [];
+
+let editingSubjectId = null;
+
+
+/* =========================================================
+   DOM REFERENCES
+   ========================================================= */
+
+const subjectCode =
+    document.getElementById("subjectCode");
+
+const subjectName =
+    document.getElementById("subjectName");
+
+const department =
+    document.getElementById("department");
+
+const classYear =
+    document.getElementById("classYear");
+
+const subjectType =
+    document.getElementById("subjectType");
+
+const credits =
+    document.getElementById("credits");
+
+const status =
+    document.getElementById("status");
+
+const message =
+    document.getElementById("message");
+
+const saveBtn =
+    document.getElementById("saveBtn");
+
+const cancelBtn =
+    document.getElementById("cancelBtn");
+
+const subjectFormCard =
+    document.getElementById("subjectFormCard");
+
+
+/* =========================================================
+   MESSAGE
+   ========================================================= */
+
+function showMessage(text, type = "info") {
+
+    message.textContent = text;
+
+    message.className =
+        "message " + type;
+
+    setTimeout(() => {
+
+        message.className = "message";
+
+    }, 4000);
+}
+
+
+/* =========================================================
+   CLEAR FORM
+   ========================================================= */
+
+window.clearForm = function() {
+
+    subjectCode.value = "";
+    subjectName.value = "";
+    department.value = "";
+    classYear.value = "";
+    subjectType.value = "";
+    credits.value = "";
+    status.value = "Active";
+
+    editingSubjectId = null;
+
+    saveBtn.textContent =
+        "Save Subject";
+
+    cancelBtn.style.display =
+        "none";
+
+    subjectFormCard.classList.remove(
+        "editing"
+    );
+};
+
+
+/* =========================================================
+   CANCEL EDIT
+   ========================================================= */
+
+window.cancelEdit = function() {
+
+    clearForm();
+
+};
+
+
+/* =========================================================
+   SAVE SUBJECT
+   ========================================================= */
+
+window.saveSubject = async function() {
+
+    try {
+
+        const code =
+            subjectCode.value.trim().toUpperCase();
+
+        const name =
+            subjectName.value.trim();
+
+        const dep =
+            department.value;
+
+        const year =
+            classYear.value;
+
+        const type =
+            subjectType.value;
+
+        const creditValue =
+            credits.value.trim();
+
+        const statusValue =
+            status.value;
+
+
+        /* -----------------------------
+           VALIDATION
+        ----------------------------- */
+
+        if (!code) {
+
+            showMessage(
+                "Please enter subject code.",
+                "error"
+            );
+
+            subjectCode.focus();
+
+            return;
+        }
+
+
+        if (!name) {
+
+            showMessage(
+                "Please enter subject name.",
+                "error"
+            );
+
+            subjectName.focus();
+
+            return;
+        }
+
+
+        if (!dep) {
+
+            showMessage(
+                "Please select department.",
+                "error"
+            );
+
+            department.focus();
+
+            return;
+        }
+
+
+        if (!year) {
+
+            showMessage(
+                "Please select class / year.",
+                "error"
+            );
+
+            classYear.focus();
+
+            return;
+        }
+
+
+        if (!type) {
+
+            showMessage(
+                "Please select subject type.",
+                "error"
+            );
+
+            subjectType.focus();
+
+            return;
+        }
+
+
+        /* -----------------------------
+           DUPLICATE CHECK
+        ----------------------------- */
+
+        const duplicate =
+            subjects.find(subject => {
+
+                const existingCode =
+                    String(
+                        subject.subjectCode || ""
+                    )
+                    .trim()
+                    .toUpperCase();
+
+                if (
+                    editingSubjectId &&
+                    subject.id === editingSubjectId
+                ) {
+                    return false;
+                }
+
+                return existingCode === code;
+
+            });
+
+
+        if (duplicate) {
+
+            showMessage(
+                "Subject code already exists.",
+                "error"
+            );
+
+            return;
+        }
+
+
+        /* -----------------------------
+           DUPLICATE NAME + DEPARTMENT
+        ----------------------------- */
+
+        const duplicateName =
+            subjects.find(subject => {
+
+                if (
+                    editingSubjectId &&
+                    subject.id === editingSubjectId
+                ) {
+                    return false;
+                }
+
+                const existingName =
+                    String(
+                        subject.subjectName || ""
+                    )
+                    .trim()
+                    .toLowerCase();
+
+                return (
+                    existingName === name.toLowerCase() &&
+                    subject.department === dep &&
+                    subject.classYear === year
+                );
+
+            });
+
+
+        if (duplicateName) {
+
+            showMessage(
+                "This subject already exists for the selected department and class.",
+                "error"
+            );
+
+            return;
+        }
+
+
+        saveBtn.disabled = true;
+
+        saveBtn.textContent =
+            editingSubjectId
+            ? "Updating..."
+            : "Saving...";
+
+
+        const subjectData = {
+
+            subjectCode: code,
+
+            subjectName: name,
+
+            department: dep,
+
+            classYear: year,
+
+            subjectType: type,
+
+            credits:
+                creditValue
+                ? Number(creditValue)
+                : 0,
+
+            status: statusValue,
+
+            updatedAt: serverTimestamp()
+
+        };
+
+
+        /* =================================================
+           UPDATE
+        ================================================= */
+
+        if (editingSubjectId) {
+
+            const subjectRef =
+                doc(
+                    db,
+                    "subjects",
+                    editingSubjectId
+                );
+
+            await updateDoc(
+                subjectRef,
+                subjectData
+            );
+
+            showMessage(
+                "Subject updated successfully.",
+                "success"
+            );
+
+        }
+
+        /* =================================================
+           CREATE
+        ================================================= */
+
+        else {
+
+            subjectData.createdAt =
+                serverTimestamp();
+
+            await addDoc(
+                collection(db, "subjects"),
+                subjectData
+            );
+
+            showMessage(
+                "Subject created successfully.",
+                "success"
+            );
+
+        }
+
+
+        clearForm();
+
+        await loadSubjects();
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "SAVE SUBJECT ERROR:",
+            error
+        );
+
+        showMessage(
+            "Unable to save subject: " +
+            error.message,
+            "error"
+        );
+
+    }
+
+    finally {
+
+        saveBtn.disabled = false;
+
+        if (!editingSubjectId) {
+
+            saveBtn.textContent =
+                "Save Subject";
+
+        }
+
+    }
+
+};
+
+
+/* =========================================================
+   LOAD SUBJECTS
+   ========================================================= */
+
+async function loadSubjects() {
+
+    const tbody =
+        document.getElementById(
+            "subjectTableBody"
+        );
+
+    tbody.innerHTML = `
+        <tr>
+            <td colspan="9" class="loading">
+                Loading subjects...
+            </td>
+        </tr>
+    `;
+
+    try {
+
+        const subjectsRef =
+            collection(db, "subjects");
+
+        const snapshot =
+            await getDocs(subjectsRef);
+
+        subjects = [];
+
+        snapshot.forEach(docSnap => {
+
+            subjects.push({
+
+                id: docSnap.id,
+
+                ...docSnap.data()
+
+            });
+
+        });
+
+
+        subjects.sort((a, b) => {
+
+            const codeA =
+                String(
+                    a.subjectCode || ""
+                );
+
+            const codeB =
+                String(
+                    b.subjectCode || ""
+                );
+
+            return codeA.localeCompare(
+                codeB
+            );
+
+        });
+
+
+        updateCounts();
+
+        applyFilters();
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "LOAD SUBJECT ERROR:",
+            error
+        );
+
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="9" class="empty">
+                    Failed to load subjects.
+                    <br>
+                    ${escapeHtml(error.message)}
+                </td>
+            </tr>
+        `;
+
+    }
+
+}
+
+
+/* =========================================================
+   UPDATE COUNTS
+   ========================================================= */
+
+function updateCounts() {
+
+    const total =
+        subjects.length;
+
+    const active =
+        subjects.filter(
+            s => s.status === "Active"
+        ).length;
+
+    const inactive =
+        subjects.filter(
+            s => s.status === "Inactive"
+        ).length;
+
+
+    document.getElementById(
+        "totalCount"
+    ).textContent = total;
+
+    document.getElementById(
+        "activeCount"
+    ).textContent = active;
+
+    document.getElementById(
+        "inactiveCount"
+    ).textContent = inactive;
+
+}
+
+
+/* =========================================================
+   FILTER
+   ========================================================= */
+
+window.applyFilters = function() {
+
+    const search =
+        document.getElementById(
+            "searchInput"
+        )
+        .value
+        .trim()
+        .toLowerCase();
+
+    const filterDep =
+        document.getElementById(
+            "filterDepartment"
+        ).value;
+
+    const filterYear =
+        document.getElementById(
+            "filterYear"
+        ).value;
+
+
+    const filtered =
+        subjects.filter(subject => {
+
+            const code =
+                String(
+                    subject.subjectCode || ""
+                )
+                .toLowerCase();
+
+            const name =
+                String(
+                    subject.subjectName || ""
+                )
+                .toLowerCase();
+
+            const matchesSearch =
+                !search ||
+                code.includes(search) ||
+                name.includes(search);
+
+            const matchesDep =
+                !filterDep ||
+                subject.department === filterDep;
+
+            const matchesYear =
+                !filterYear ||
+                subject.classYear === filterYear;
+
+            return (
+                matchesSearch &&
+                matchesDep &&
+                matchesYear
+            );
+
+        });
+
+
+    renderSubjects(filtered);
+
+};
+
+
+/* =========================================================
+   RENDER TABLE
+   ========================================================= */
+
+function renderSubjects(data) {
+
+    const tbody =
+        document.getElementById(
+            "subjectTableBody"
+        );
+
+
+    if (!data.length) {
+
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="9" class="empty">
+                    No subjects found.
+                </td>
+            </tr>
+        `;
+
+        return;
+    }
+
+
+    tbody.innerHTML =
+        data.map((subject, index) => {
+
+            const subjectStatus =
+                subject.status === "Active"
+                ? "active"
+                : "inactive";
+
+
+            return `
+
+                <tr>
+
+                    <td>
+                        ${index + 1}
+                    </td>
+
+                    <td>
+                        <strong>
+                            ${escapeHtml(
+                                subject.subjectCode || "-"
+                            )}
+                        </strong>
+                    </td>
+
+                    <td>
+                        ${escapeHtml(
+                            subject.subjectName || "-"
+                        )}
+                    </td>
+
+                    <td>
+                        ${escapeHtml(
+                            subject.department || "-"
+                        )}
+                    </td>
+
+                    <td>
+                        ${escapeHtml(
+                            subject.classYear || "-"
+                        )}
+                    </td>
+
+                    <td>
+                        ${escapeHtml(
+                            subject.subjectType || "-"
+                        )}
+                    </td>
+
+                    <td>
+                        ${subject.credits ?? 0}
+                    </td>
+
+                    <td>
+
+                        <span
+                            class="status ${subjectStatus}"
+                        >
+                            ${escapeHtml(
+                                subject.status || "-"
+                            )}
+                        </span>
+
+                    </td>
+
+                    <td>
+
+                        <button
+                            class="btn-warning btn-small"
+                            onclick="editSubject('${subject.id}')"
+                        >
+                            Edit
+                        </button>
+
+                        <button
+                            class="btn-danger btn-small"
+                            onclick="deleteSubject('${subject.id}')"
+                        >
+                            Delete
+                        </button>
+
+                    </td>
+
+                </tr>
+
+            `;
+
+        }).join("");
+
+}
+
+
+/* =========================================================
+   EDIT SUBJECT
+   ========================================================= */
+
+window.editSubject = function(id) {
+
+    const subject =
+        subjects.find(
+            s => s.id === id
+        );
+
+
+    if (!subject) {
+
+        showMessage(
+            "Subject not found.",
+            "error"
+        );
+
+        return;
+    }
+
+
+    editingSubjectId = id;
+
+
+    subjectCode.value =
+        subject.subjectCode || "";
+
+    subjectName.value =
+        subject.subjectName || "";
+
+    department.value =
+        subject.department || "";
+
+    classYear.value =
+        subject.classYear || "";
+
+    subjectType.value =
+        subject.subjectType || "";
+
+    credits.value =
+        subject.credits ?? "";
+
+    status.value =
+        subject.status || "Active";
+
+
+    saveBtn.textContent =
+        "Update Subject";
+
+    cancelBtn.style.display =
+        "inline-block";
+
+    subjectFormCard.classList.add(
+        "editing"
+    );
+
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+
+};
+
+
+/* =========================================================
+   DELETE SUBJECT
+   ========================================================= */
+
+window.deleteSubject = async function(id) {
+
+    const subject =
+        subjects.find(
+            s => s.id === id
+        );
+
+
+    if (!subject) {
+
+        showMessage(
+            "Subject not found.",
+            "error"
+        );
+
+        return;
+    }
+
+
+    const confirmed =
+        confirm(
+            `Delete subject "${subject.subjectName}" (${subject.subjectCode})?`
+        );
+
+
+    if (!confirmed) {
+        return;
+    }
+
+
+    try {
+
+        await deleteDoc(
+            doc(
+                db,
+                "subjects",
+                id
+            )
+        );
+
+
+        showMessage(
+            "Subject deleted successfully.",
+            "success"
+        );
+
+
+        if (editingSubjectId === id) {
+
+            clearForm();
+
+        }
+
+
+        await loadSubjects();
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "DELETE SUBJECT ERROR:",
+            error
+        );
+
+        showMessage(
+            "Unable to delete subject: " +
+            error.message,
+            "error"
+        );
+
+    }
+
+};
+
+
+/* =========================================================
+   ESCAPE HTML
+   ========================================================= */
+
+function escapeHtml(value) {
+
+    return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+
+}
+
+
+/* =========================================================
+   INITIAL LOAD
+   ========================================================= */
+
+loadSubjects();
+
+</script>
+
+</body>
+</html>
