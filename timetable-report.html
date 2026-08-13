@@ -20,7 +20,7 @@ body {
 
 .header {
     background: #1e3a8a;
-    color: white;
+    color: #fff;
     padding: 22px 30px;
 }
 
@@ -41,7 +41,7 @@ body {
 }
 
 .card {
-    background: white;
+    background: #fff;
     border-radius: 12px;
     padding: 24px;
     margin-bottom: 22px;
@@ -78,7 +78,7 @@ input {
     padding: 11px 12px;
     border: 1px solid #d1d5db;
     border-radius: 7px;
-    background: white;
+    background: #fff;
     outline: none;
     font-size: 14px;
 }
@@ -233,7 +233,7 @@ button:hover {
 .timetable {
     width: 100%;
     border-collapse: collapse;
-    min-width: 1000px;
+    min-width: 1100px;
 }
 
 .timetable th {
@@ -271,7 +271,7 @@ button:hover {
 }
 
 .period {
-    border-radius: 7px;
+    border-radius: 9px;
     padding: 9px;
     height: 100%;
 }
@@ -293,17 +293,17 @@ button:hover {
 
 .substitute-badge {
     display: inline-block;
-    margin-bottom: 6px;
-    padding: 4px 8px;
-    border-radius: 12px;
+    margin-bottom: 7px;
+    padding: 4px 9px;
+    border-radius: 14px;
     background: #16a34a;
-    color: white;
+    color: #fff;
     font-size: 10px;
     font-weight: bold;
 }
 
 .substitute-original {
-    margin-top: 6px;
+    margin-top: 7px;
     font-size: 10px;
     color: #166534;
     font-weight: bold;
@@ -313,21 +313,21 @@ button:hover {
     font-size: 11px;
     font-weight: bold;
     color: #1e40af;
-    margin-bottom: 4px;
+    margin-bottom: 5px;
 }
 
 .subject-name {
     font-size: 12px;
     font-weight: bold;
     color: #111827;
-    line-height: 1.3;
+    line-height: 1.35;
 }
 
 .class-info {
     margin-top: 7px;
     font-size: 11px;
     color: #374151;
-    line-height: 1.5;
+    line-height: 1.55;
 }
 
 .room {
@@ -344,7 +344,7 @@ button:hover {
 .records-table table {
     width: 100%;
     border-collapse: collapse;
-    min-width: 1200px;
+    min-width: 1250px;
 }
 
 .records-table th {
@@ -379,15 +379,14 @@ button:hover {
     color: #92400e;
 }
 
+.badge-substitute {
+    background: #dcfce7;
+    color: #166534;
+}
+
 .empty {
     text-align: center;
     padding: 40px !important;
-    color: #6b7280;
-}
-
-.loading {
-    text-align: center;
-    padding: 25px;
     color: #6b7280;
 }
 
@@ -426,7 +425,8 @@ button:hover {
         border-bottom: 2px solid black;
     }
 
-    .selection-card {
+    .selection-card,
+    .button-row {
         display: none !important;
     }
 
@@ -434,10 +434,6 @@ button:hover {
         display: block !important;
         box-shadow: none;
         padding: 0;
-    }
-
-    .button-row {
-        display: none !important;
     }
 
     .staff-info {
@@ -460,7 +456,7 @@ button:hover {
 
 <div class="header">
     <h1>Staff Timetable Report</h1>
-    <p>Select Staff and Session to view timetable</p>
+    <p>View regular timetable and approved substitute assignments</p>
 </div>
 
 <div class="container">
@@ -498,7 +494,6 @@ button:hover {
                     type="text"
                     id="staffId"
                     readonly
-                    placeholder="Auto loaded"
                 >
             </div>
 
@@ -509,7 +504,6 @@ button:hover {
                     type="text"
                     id="department"
                     readonly
-                    placeholder="Auto loaded"
                 >
             </div>
 
@@ -548,7 +542,7 @@ button:hover {
                 </div>
 
                 <div class="info-item">
-                    <div class="info-label">Report Status</div>
+                    <div class="info-label">Status</div>
                     <div id="infoStatus" class="info-value"></div>
                 </div>
 
@@ -564,6 +558,7 @@ button:hover {
         <div class="report-header">
 
             <div>
+
                 <div class="report-title">
                     Staff Timetable
                 </div>
@@ -572,17 +567,20 @@ button:hover {
                     class="report-subtitle"
                     id="reportSubtitle">
                 </div>
+
             </div>
 
             <div class="button-row">
 
                 <button
+                    type="button"
                     class="btn-primary"
                     id="printBtn">
                     Print Timetable
                 </button>
 
                 <button
+                    type="button"
                     class="btn-secondary"
                     id="clearBtn">
                     Clear
@@ -651,6 +649,7 @@ button:hover {
                             <th>Section</th>
                             <th>Room</th>
                             <th>Type</th>
+                            <th>Original Staff</th>
                         </tr>
                     </thead>
 
@@ -680,9 +679,9 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 
-/* =====================================================
-   FIREBASE CONFIG
-===================================================== */
+/* =========================================================
+   FIREBASE
+========================================================= */
 
 const firebaseConfig = {
     apiKey: "AIzaSyAIv3091VM-gkmdwEAn7OhXWd9Cm2zh2bo",
@@ -694,22 +693,26 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
+
 const db = getFirestore(app);
 
 
-/* =====================================================
+/* =========================================================
    VARIABLES
-===================================================== */
+========================================================= */
 
 let timetableData = [];
+
 let substituteData = [];
+
 let staffList = [];
+
 let selectedStaff = null;
 
 
-/* =====================================================
+/* =========================================================
    DOM
-===================================================== */
+========================================================= */
 
 const staffSelect =
     document.getElementById("staffSelect");
@@ -718,9 +721,26 @@ const sessionSelect =
     document.getElementById("sessionSelect");
 
 
-/* =====================================================
-   ESCAPE HTML
-===================================================== */
+/* =========================================================
+   HELPER
+========================================================= */
+
+function firstValue(...values) {
+
+    for (const value of values) {
+
+        if (
+            value !== undefined &&
+            value !== null &&
+            String(value).trim() !== ""
+        ) {
+            return value;
+        }
+    }
+
+    return "";
+}
+
 
 function escapeHtml(value) {
 
@@ -733,126 +753,178 @@ function escapeHtml(value) {
 }
 
 
-/* =====================================================
-   NORMALIZE DAY
-   DAY 01 - DAY 06
-===================================================== */
+/* =========================================================
+   DAY
+========================================================= */
 
 function normalizeDay(value) {
 
-    let day = String(value ?? "")
-        .trim()
-        .toUpperCase();
+    let day =
+        String(value ?? "")
+            .trim()
+            .toUpperCase();
 
     if (!day) {
         return "";
     }
 
-    const match = day.match(/DAY\s*0?([1-6])/);
+
+    const match =
+        day.match(/DAY\s*0?([1-6])/);
 
     if (match) {
-        return `DAY ${String(Number(match[1])).padStart(2, "0")}`;
+
+        return `DAY ${String(
+            Number(match[1])
+        ).padStart(2, "0")}`;
     }
 
+
     if (/^[1-6]$/.test(day)) {
+
         return `DAY ${day.padStart(2, "0")}`;
     }
 
+
     const oldDays = {
+
         MONDAY: "DAY 01",
         TUESDAY: "DAY 02",
         WEDNESDAY: "DAY 03",
         THURSDAY: "DAY 04",
         FRIDAY: "DAY 05",
         SATURDAY: "DAY 06"
+
     };
+
 
     return oldDays[day] || day;
 }
 
 
-/* =====================================================
-   NORMALIZE SESSION
-===================================================== */
+/* =========================================================
+   SESSION
+========================================================= */
 
 function normalizeSession(value) {
 
-    return String(value ?? "")
-        .trim()
-        .toUpperCase();
+    let session =
+        String(value ?? "")
+            .trim()
+            .toUpperCase();
+
+    if (
+        session === "FORENOON" ||
+        session === "MORNING"
+    ) {
+        return "FN";
+    }
+
+    if (
+        session === "AFTERNOON" ||
+        session === "EVENING"
+    ) {
+        return "AN";
+    }
+
+    return session;
 }
 
 
-/* =====================================================
-   GET STAFF ID
-===================================================== */
+/* =========================================================
+   STAFF ID
+========================================================= */
 
 function getStaffId(data) {
 
     return String(
-        data.staffId ??
-        data.staffID ??
-        data.staff ??
-        data.staff_id ??
-        ""
+        firstValue(
+            data.staffId,
+            data.staffID,
+            data.staff_id,
+            data.staff,
+            data.teacherId,
+            data.teacherID
+        )
     ).trim();
 }
 
 
-/* =====================================================
-   GET STAFF NAME
-===================================================== */
+/* =========================================================
+   STAFF NAME
+========================================================= */
 
 function getStaffName(data) {
 
     return String(
-        data.staffName ??
-        data.name ??
-        data.staff_name ??
-        ""
+        firstValue(
+            data.staffName,
+            data.name,
+            data.staff_name,
+            data.teacherName,
+            data.teacher
+        )
     ).trim();
 }
 
 
-/* =====================================================
-   GET DEPARTMENT
-===================================================== */
+/* =========================================================
+   DEPARTMENT
+========================================================= */
 
 function getDepartment(data) {
 
     return String(
-        data.department ??
-        data.dept ??
-        data.departmentName ??
-        ""
+        firstValue(
+            data.department,
+            data.dept,
+            data.departmentName,
+            data.deptName
+        )
     ).trim();
 }
 
 
-/* =====================================================
-   GET HOUR
-===================================================== */
+/* =========================================================
+   HOUR
+========================================================= */
 
 function getHour(data) {
 
-    const value =
-        data.hour ??
-        data.period ??
-        data.hourNo ??
-        data.periodNo ??
-        0;
+    const raw =
+        firstValue(
+            data.hour,
+            data.period,
+            data.hourNo,
+            data.periodNo,
+            data.hourNumber
+        );
 
-    const number = Number(value);
+    if (typeof raw === "number") {
+        return raw;
+    }
 
-    return Number.isFinite(number) ? number : 0;
+
+    const match =
+        String(raw ?? "")
+            .match(/\d+/);
+
+    if (!match) {
+        return 0;
+    }
+
+    return Number(match[0]);
 }
 
 
-/* =====================================================
+/* =========================================================
    MESSAGE
-===================================================== */
+========================================================= */
 
-function showMessage(text, type = "info") {
+function showMessage(
+    text,
+    type = "info"
+) {
 
     const message =
         document.getElementById("message");
@@ -862,20 +934,105 @@ function showMessage(text, type = "info") {
     message.className =
         "message " + type;
 
+
     if (type !== "error") {
 
         setTimeout(() => {
 
-            message.className = "message";
+            message.className =
+                "message";
 
         }, 4000);
     }
 }
 
 
-/* =====================================================
-   LOAD TIMETABLE DATA
-===================================================== */
+/* =========================================================
+   CREATE NORMALIZED TIMETABLE RECORD
+========================================================= */
+
+function normalizeTimetableRecord(
+    id,
+    data
+) {
+
+    return {
+
+        id,
+
+        ...data,
+
+        normalizedDay:
+            normalizeDay(
+                firstValue(
+                    data.day,
+                    data.dayName,
+                    data.dayNo,
+                    data.dayNumber
+                )
+            ),
+
+        normalizedSession:
+            normalizeSession(
+                firstValue(
+                    data.session,
+                    data.shift
+                )
+            ),
+
+        normalizedHour:
+            getHour(data),
+
+        normalizedStaffId:
+            getStaffId(data),
+
+        normalizedStaffName:
+            getStaffName(data),
+
+        normalizedDepartment:
+            getDepartment(data),
+
+        subjectCode:
+            firstValue(
+                data.subjectCode,
+                data.subjectId,
+                data.code
+            ),
+
+        subjectName:
+            firstValue(
+                data.subjectName,
+                data.subject,
+                data.subjectTitle
+            ),
+
+        classYear:
+            firstValue(
+                data.classYear,
+                data.class,
+                data.year,
+                data.className
+            ),
+
+        section:
+            firstValue(
+                data.section,
+                data.sec
+            ),
+
+        roomNo:
+            firstValue(
+                data.roomNo,
+                data.room,
+                data.roomNumber
+            )
+    };
+}
+
+
+/* =========================================================
+   LOAD ALL TIMETABLE DATA
+========================================================= */
 
 async function loadTimetableData() {
 
@@ -886,74 +1043,49 @@ async function loadTimetableData() {
             "info"
         );
 
-        const snapshot = await getDocs(
-            collection(
-                db,
-                "timetableAssignments"
-            )
-        );
 
         timetableData = [];
 
-        const staffMap = new Map();
+        const staffMap =
+            new Map();
 
 
-        /* ==========================================
-           REGULAR TIMETABLE
-        ========================================== */
+        const snapshot =
+            await getDocs(
+                collection(
+                    db,
+                    "timetableAssignments"
+                )
+            );
+
 
         snapshot.forEach(doc => {
 
-            const data = doc.data() || {};
-
-            const record = {
-
-                id: doc.id,
-
-                ...data,
-
-                normalizedDay:
-                    normalizeDay(
-                        data.day ??
-                        data.dayName ??
-                        data.dayNo
-                    ),
-
-                normalizedSession:
-                    normalizeSession(
-                        data.session
-                    ),
-
-                normalizedHour:
-                    getHour(data),
-
-                normalizedStaffId:
-                    getStaffId(data),
-
-                normalizedStaffName:
-                    getStaffName(data),
-
-                normalizedDepartment:
-                    getDepartment(data)
-            };
+            const data =
+                doc.data() || {};
 
 
-            timetableData.push(record);
+            const record =
+                normalizeTimetableRecord(
+                    doc.id,
+                    data
+                );
+
+
+            if (
+                !record.normalizedStaffId
+            ) {
+                return;
+            }
+
+
+            timetableData.push(
+                record
+            );
 
 
             const staffId =
                 record.normalizedStaffId;
-
-            const staffName =
-                record.normalizedStaffName;
-
-            const department =
-                record.normalizedDepartment;
-
-
-            if (!staffId) {
-                return;
-            }
 
 
             if (!staffMap.has(staffId)) {
@@ -962,41 +1094,50 @@ async function loadTimetableData() {
                     staffId,
                     {
                         staffId,
-                        staffName,
-                        department
+                        staffName:
+                            record.normalizedStaffName,
+                        department:
+                            record.normalizedDepartment
                     }
                 );
 
             } else {
 
-                const existing =
-                    staffMap.get(staffId);
+                const staff =
+                    staffMap.get(
+                        staffId
+                    );
+
 
                 if (
-                    !existing.staffName &&
-                    staffName
+                    !staff.staffName &&
+                    record.normalizedStaffName
                 ) {
-                    existing.staffName =
-                        staffName;
+
+                    staff.staffName =
+                        record.normalizedStaffName;
                 }
 
+
                 if (
-                    !existing.department &&
-                    department
+                    !staff.department &&
+                    record.normalizedDepartment
                 ) {
-                    existing.department =
-                        department;
+
+                    staff.department =
+                        record.normalizedDepartment;
                 }
             }
 
         });
 
 
-        /* ==========================================
-           LOAD APPROVED SUBSTITUTE ASSIGNMENTS
-        ========================================== */
+        /* =================================================
+           LOAD SUBSTITUTE REQUESTS
+        ================================================= */
 
         substituteData = [];
+
 
         const substituteSnapshot =
             await getDocs(
@@ -1015,28 +1156,37 @@ async function loadTimetableData() {
 
             const status =
                 String(
-                    data.status ??
-                    data.approvalStatus ??
-                    ""
+                    firstValue(
+                        data.status,
+                        data.approvalStatus,
+                        data.requestStatus
+                    )
                 )
                 .trim()
                 .toUpperCase();
 
 
-            /* ONLY APPROVED SUBSTITUTE */
-            if (status !== "APPROVED") {
+            /*
+             * ONLY APPROVED RECORDS
+             */
+
+            if (
+                status !== "APPROVED"
+            ) {
                 return;
             }
 
 
             const substituteStaffId =
                 String(
-                    data.substituteStaffId ??
-                    data.substituteStaffID ??
-                    data.substituteId ??
-                    data.allottedStaffId ??
-                    data.allotedStaffId ??
-                    ""
+                    firstValue(
+                        data.substituteStaffId,
+                        data.substituteStaffID,
+                        data.substituteId,
+                        data.allottedStaffId,
+                        data.allotedStaffId,
+                        data.assignedStaffId
+                    )
                 ).trim();
 
 
@@ -1047,11 +1197,13 @@ async function loadTimetableData() {
 
             const substituteStaffName =
                 String(
-                    data.substituteStaffName ??
-                    data.substituteName ??
-                    data.allottedStaffName ??
-                    data.allotedStaffName ??
-                    ""
+                    firstValue(
+                        data.substituteStaffName,
+                        data.substituteName,
+                        data.allottedStaffName,
+                        data.allotedStaffName,
+                        data.assignedStaffName
+                    )
                 ).trim();
 
 
@@ -1065,16 +1217,22 @@ async function loadTimetableData() {
 
                 normalizedDay:
                     normalizeDay(
-                        data.day ??
-                        data.dayName ??
-                        data.dayNo ??
-                        data.assignmentDay
+                        firstValue(
+                            data.day,
+                            data.dayName,
+                            data.dayNo,
+                            data.assignmentDay,
+                            data.requestDay
+                        )
                     ),
 
                 normalizedSession:
                     normalizeSession(
-                        data.session ??
-                        data.substituteSession
+                        firstValue(
+                            data.session,
+                            data.substituteSession,
+                            data.assignmentSession
+                        )
                     ),
 
                 normalizedHour:
@@ -1088,27 +1246,69 @@ async function loadTimetableData() {
 
                 normalizedDepartment:
                     String(
-                        data.substituteDepartment ??
-                        data.department ??
-                        data.dept ??
-                        ""
+                        firstValue(
+                            data.substituteDepartment,
+                            data.department,
+                            data.dept
+                        )
                     ).trim(),
 
                 originalStaffId:
                     String(
-                        data.requestingStaffId ??
-                        data.requestedByStaffId ??
-                        data.originalStaffId ??
-                        ""
+                        firstValue(
+                            data.requestingStaffId,
+                            data.requestedByStaffId,
+                            data.originalStaffId,
+                            data.staffId,
+                            data.staffID
+                        )
                     ).trim(),
 
                 originalStaffName:
                     String(
-                        data.requestingStaffName ??
-                        data.requestedByStaffName ??
-                        data.originalStaffName ??
-                        ""
-                    ).trim()
+                        firstValue(
+                            data.requestingStaffName,
+                            data.requestedByStaffName,
+                            data.originalStaffName,
+                            data.staffName,
+                            data.name
+                        )
+                    ).trim(),
+
+                subjectCode:
+                    firstValue(
+                        data.subjectCode,
+                        data.subjectId,
+                        data.code
+                    ),
+
+                subjectName:
+                    firstValue(
+                        data.subjectName,
+                        data.subject,
+                        data.subjectTitle
+                    ),
+
+                classYear:
+                    firstValue(
+                        data.classYear,
+                        data.class,
+                        data.year,
+                        data.className
+                    ),
+
+                section:
+                    firstValue(
+                        data.section,
+                        data.sec
+                    ),
+
+                roomNo:
+                    firstValue(
+                        data.roomNo,
+                        data.room,
+                        data.roomNumber
+                    )
             };
 
 
@@ -1118,36 +1318,47 @@ async function loadTimetableData() {
                 record.normalizedHour > 0
             ) {
 
-                substituteData.push(record);
+                substituteData.push(
+                    record
+                );
 
 
-                if (!staffMap.has(substituteStaffId)) {
+                if (
+                    !staffMap.has(
+                        substituteStaffId
+                    )
+                ) {
 
                     staffMap.set(
                         substituteStaffId,
                         {
-                            staffId: substituteStaffId,
-                            staffName: substituteStaffName,
+                            staffId:
+                                substituteStaffId,
+
+                            staffName:
+                                substituteStaffName,
+
                             department:
                                 record.normalizedDepartment
                         }
                     );
 
                 }
+
             }
 
         });
 
 
-        console.log(
-            "APPROVED SUBSTITUTE RECORDS:",
-            substituteData
-        );
+        /*
+         * VERY IMPORTANT:
+         *
+         * Copy original timetable details
+         * into every approved substitute.
+         */
 
+        enrichSubstituteRecords();
 
-        /* ==========================================
-           CREATE STAFF LIST
-        ========================================== */
 
         staffList =
             Array.from(
@@ -1155,39 +1366,82 @@ async function loadTimetableData() {
             );
 
 
-        staffList.sort((a, b) => {
+        /*
+         * Make sure substitute staff are
+         * also included.
+         */
 
-            const nameA =
-                String(
-                    a.staffName ||
-                    a.staffId ||
-                    ""
+        substituteData.forEach(
+            substitute => {
+
+                if (
+                    !substitute.normalizedStaffId
+                ) {
+                    return;
+                }
+
+
+                const exists =
+                    staffList.some(
+                        staff =>
+                            staff.staffId ===
+                            substitute.normalizedStaffId
+                    );
+
+
+                if (!exists) {
+
+                    staffList.push({
+
+                        staffId:
+                            substitute.normalizedStaffId,
+
+                        staffName:
+                            substitute.normalizedStaffName,
+
+                        department:
+                            substitute.normalizedDepartment
+                    });
+                }
+            }
+        );
+
+
+        staffList.sort(
+            (a, b) => {
+
+                const nameA =
+                    String(
+                        a.staffName ||
+                        a.staffId ||
+                        ""
+                    );
+
+                const nameB =
+                    String(
+                        b.staffName ||
+                        b.staffId ||
+                        ""
+                    );
+
+                return nameA.localeCompare(
+                    nameB
                 );
-
-            const nameB =
-                String(
-                    b.staffName ||
-                    b.staffId ||
-                    ""
-                );
-
-            return nameA.localeCompare(
-                nameB
-            );
-        });
+            }
+        );
 
 
         populateStaffDropdown();
 
 
-        document.getElementById(
-            "message"
-        ).className = "message";
-
+        console.log(
+            "REGULAR TIMETABLE:",
+            timetableData
+        );
 
         console.log(
-            "TIMETABLE RECORDS:",
-            timetableData
+            "APPROVED SUBSTITUTE DATA:",
+            substituteData
         );
 
         console.log(
@@ -1202,16 +1456,23 @@ async function loadTimetableData() {
                 "No timetable assignments found.",
                 "error"
             );
+
+        } else {
+
+            document.getElementById(
+                "message"
+            ).className =
+                "message";
         }
 
-    }
 
-    catch(error) {
+    } catch (error) {
 
         console.error(
             "TIMETABLE LOAD ERROR:",
             error
         );
+
 
         showMessage(
             "Unable to load timetable: " +
@@ -1222,48 +1483,297 @@ async function loadTimetableData() {
 }
 
 
-/* =====================================================
+/* =========================================================
+   ENRICH SUBSTITUTE RECORDS
+========================================================= */
+
+function enrichSubstituteRecords() {
+
+    substituteData =
+        substituteData.map(
+            substitute => {
+
+                /*
+                 * First try exact matching with
+                 * original staff ID if available.
+                 */
+
+                let originalEntry =
+                    null;
+
+
+                if (
+                    substitute.originalStaffId
+                ) {
+
+                    originalEntry =
+                        timetableData.find(
+                            item =>
+
+                                item.normalizedStaffId ===
+                                    substitute.originalStaffId &&
+
+                                item.normalizedDay ===
+                                    substitute.normalizedDay &&
+
+                                item.normalizedSession ===
+                                    substitute.normalizedSession &&
+
+                                item.normalizedHour ===
+                                    substitute.normalizedHour
+                        );
+                }
+
+
+                /*
+                 * If original staff ID was not
+                 * stored, match DAY + SESSION + HOUR.
+                 */
+
+                if (!originalEntry) {
+
+                    originalEntry =
+                        timetableData.find(
+                            item =>
+
+                                item.normalizedDay ===
+                                    substitute.normalizedDay &&
+
+                                item.normalizedSession ===
+                                    substitute.normalizedSession &&
+
+                                item.normalizedHour ===
+                                    substitute.normalizedHour
+                        );
+                }
+
+
+                /*
+                 * If original timetable exists,
+                 * use its academic information.
+                 */
+
+                if (originalEntry) {
+
+                    return {
+
+                        /*
+                         * Start with original record
+                         */
+
+                        ...originalEntry,
+
+                        /*
+                         * Then overwrite with
+                         * substitute information
+                         */
+
+                        ...substitute,
+
+                        isSubstitute: true,
+
+
+                        /*
+                         * KEEP ORIGINAL SUBJECT
+                         */
+
+                        subjectCode:
+                            firstValue(
+                                originalEntry.subjectCode,
+                                originalEntry.subjectId,
+                                originalEntry.code,
+                                substitute.subjectCode,
+                                substitute.subjectId,
+                                substitute.code
+                            ),
+
+
+                        subjectName:
+                            firstValue(
+                                originalEntry.subjectName,
+                                originalEntry.subject,
+                                originalEntry.subjectTitle,
+                                substitute.subjectName,
+                                substitute.subject,
+                                substitute.subjectTitle
+                            ),
+
+
+                        /*
+                         * KEEP ORIGINAL DEPARTMENT
+                         */
+
+                        department:
+                            firstValue(
+                                originalEntry.department,
+                                originalEntry.dept,
+                                originalEntry.departmentName,
+                                originalEntry.normalizedDepartment,
+                                substitute.department,
+                                substitute.dept,
+                                substitute.normalizedDepartment
+                            ),
+
+
+                        /*
+                         * KEEP ORIGINAL CLASS
+                         */
+
+                        classYear:
+                            firstValue(
+                                originalEntry.classYear,
+                                originalEntry.class,
+                                originalEntry.year,
+                                originalEntry.className,
+                                substitute.classYear,
+                                substitute.class,
+                                substitute.year
+                            ),
+
+
+                        /*
+                         * KEEP ORIGINAL SECTION
+                         */
+
+                        section:
+                            firstValue(
+                                originalEntry.section,
+                                originalEntry.sec,
+                                substitute.section,
+                                substitute.sec
+                            ),
+
+
+                        /*
+                         * KEEP ORIGINAL ROOM
+                         */
+
+                        roomNo:
+                            firstValue(
+                                originalEntry.roomNo,
+                                originalEntry.room,
+                                originalEntry.roomNumber,
+                                substitute.roomNo,
+                                substitute.room,
+                                substitute.roomNumber
+                            ),
+
+
+                        /*
+                         * SUBSTITUTE STAFF
+                         */
+
+                        normalizedStaffId:
+                            substitute.normalizedStaffId,
+
+                        normalizedStaffName:
+                            substitute.normalizedStaffName,
+
+
+                        /*
+                         * ORIGINAL STAFF
+                         */
+
+                        originalStaffId:
+                            firstValue(
+                                substitute.originalStaffId,
+                                originalEntry.normalizedStaffId
+                            ),
+
+                        originalStaffName:
+                            firstValue(
+                                substitute.originalStaffName,
+                                originalEntry.normalizedStaffName
+                            ),
+
+
+                        /*
+                         * KEEP DAY / SESSION / HOUR
+                         */
+
+                        normalizedDay:
+                            originalEntry.normalizedDay,
+
+                        normalizedSession:
+                            originalEntry.normalizedSession,
+
+                        normalizedHour:
+                            originalEntry.normalizedHour
+                    };
+                }
+
+
+                /*
+                 * No original record found.
+                 * Keep substitute information.
+                 */
+
+                return {
+                    ...substitute,
+                    isSubstitute: true
+                };
+            }
+        );
+
+
+    console.log(
+        "ENRICHED SUBSTITUTE DATA:",
+        substituteData
+    );
+}
+
+
+/* =========================================================
    STAFF DROPDOWN
-===================================================== */
+========================================================= */
 
 function populateStaffDropdown() {
 
     staffSelect.innerHTML = "";
 
-    const firstOption =
+
+    const defaultOption =
         document.createElement("option");
 
-    firstOption.value = "";
-    firstOption.textContent =
+    defaultOption.value = "";
+
+    defaultOption.textContent =
         "Select Staff";
 
+
     staffSelect.appendChild(
-        firstOption
+        defaultOption
     );
 
 
-    staffList.forEach(staff => {
+    staffList.forEach(
+        staff => {
 
-        const option =
-            document.createElement("option");
+            const option =
+                document.createElement(
+                    "option"
+                );
 
-        option.value =
-            staff.staffId;
 
-        option.textContent =
-            `${staff.staffName || "Unnamed Staff"} (${staff.staffId})`;
+            option.value =
+                staff.staffId;
 
-        staffSelect.appendChild(
-            option
-        );
 
-    });
+            option.textContent =
+                `${staff.staffName || "Unnamed Staff"} (${staff.staffId})`;
+
+
+            staffSelect.appendChild(
+                option
+            );
+        }
+    );
 }
 
 
-/* =====================================================
-   STAFF SELECTION
-===================================================== */
+/* =========================================================
+   STAFF CHANGE
+========================================================= */
 
 staffSelect.addEventListener(
     "change",
@@ -1272,9 +1782,11 @@ staffSelect.addEventListener(
         const staffId =
             this.value;
 
+
         if (!staffId) {
 
             clearReport();
+
             return;
         }
 
@@ -1282,13 +1794,15 @@ staffSelect.addEventListener(
         selectedStaff =
             staffList.find(
                 staff =>
-                    staff.staffId === staffId
+                    staff.staffId ===
+                    staffId
             );
 
 
         if (!selectedStaff) {
 
             clearReport();
+
             return;
         }
 
@@ -1300,9 +1814,9 @@ staffSelect.addEventListener(
 );
 
 
-/* =====================================================
-   SESSION SELECTION
-===================================================== */
+/* =========================================================
+   SESSION CHANGE
+========================================================= */
 
 sessionSelect.addEventListener(
     "change",
@@ -1312,6 +1826,7 @@ sessionSelect.addEventListener(
             return;
         }
 
+
         loadSelectedStaffReport(
             selectedStaff.staffId
         );
@@ -1319,11 +1834,13 @@ sessionSelect.addEventListener(
 );
 
 
-/* =====================================================
-   LOAD SELECTED STAFF REPORT
-===================================================== */
+/* =========================================================
+   LOAD STAFF REPORT
+========================================================= */
 
-function loadSelectedStaffReport(staffId) {
+function loadSelectedStaffReport(
+    staffId
+) {
 
     const selectedSession =
         normalizeSession(
@@ -1331,11 +1848,11 @@ function loadSelectedStaffReport(staffId) {
         );
 
 
-    /* ==========================================
-       REGULAR TIMETABLE FOR STAFF
-    ========================================== */
+    /*
+     * REGULAR ENTRIES
+     */
 
-    let entries =
+    let regularEntries =
         timetableData.filter(
             item =>
                 item.normalizedStaffId ===
@@ -1343,11 +1860,11 @@ function loadSelectedStaffReport(staffId) {
         );
 
 
-    /* ==========================================
-       APPROVED SUBSTITUTE RECORDS FOR STAFF
-    ========================================== */
+    /*
+     * APPROVED SUBSTITUTE ENTRIES
+     */
 
-    const approvedSubstitutes =
+    let approvedSubstitutes =
         substituteData.filter(
             item =>
                 item.normalizedStaffId ===
@@ -1355,40 +1872,24 @@ function loadSelectedStaffReport(staffId) {
         );
 
 
-    /* ==========================================
-       REMOVE ORIGINAL PERIOD IF APPROVED
-       SUBSTITUTE IS ASSIGNED
-    ========================================== */
+    /*
+     * SESSION FILTER
+     */
 
-    entries = [
+    if (
+        selectedSession !== "ALL"
+    ) {
 
-        ...entries.filter(
-            regular =>
-                !approvedSubstitutes.some(
-                    sub =>
-                        sub.normalizedDay ===
-                            regular.normalizedDay &&
-
-                        sub.normalizedSession ===
-                            regular.normalizedSession &&
-
-                        sub.normalizedHour ===
-                            regular.normalizedHour
-                )
-        ),
-
-        ...approvedSubstitutes
-    ];
+        regularEntries =
+            regularEntries.filter(
+                item =>
+                    item.normalizedSession ===
+                    selectedSession
+            );
 
 
-    /* ==========================================
-       SESSION FILTER
-    ========================================== */
-
-    if (selectedSession !== "ALL") {
-
-        entries =
-            entries.filter(
+        approvedSubstitutes =
+            approvedSubstitutes.filter(
                 item =>
                     item.normalizedSession ===
                     selectedSession
@@ -1396,9 +1897,47 @@ function loadSelectedStaffReport(staffId) {
     }
 
 
-    /* ==========================================
-       STAFF DETAILS
-    ========================================== */
+    /*
+     * REMOVE ORIGINAL PERIODS
+     * THAT HAVE APPROVED SUBSTITUTE.
+     *
+     * This is important because the
+     * original staff should not see
+     * the period as their own after
+     * substitution.
+     */
+
+    const finalEntries =
+        regularEntries.filter(
+            regular =>
+
+                !approvedSubstitutes.some(
+                    substitute =>
+
+                        substitute.normalizedDay ===
+                            regular.normalizedDay &&
+
+                        substitute.normalizedSession ===
+                            regular.normalizedSession &&
+
+                        substitute.normalizedHour ===
+                            regular.normalizedHour
+                )
+        );
+
+
+    /*
+     * Add approved substitutes.
+     */
+
+    finalEntries.push(
+        ...approvedSubstitutes
+    );
+
+
+    /*
+     * STAFF DETAILS
+     */
 
     document.getElementById(
         "staffId"
@@ -1415,7 +1954,7 @@ function loadSelectedStaffReport(staffId) {
     document.getElementById(
         "totalPeriods"
     ).value =
-        entries.length;
+        finalEntries.length;
 
 
     document.getElementById(
@@ -1439,30 +1978,37 @@ function loadSelectedStaffReport(staffId) {
     document.getElementById(
         "infoStatus"
     ).textContent =
-        entries.length > 0
+        finalEntries.length
             ? "Timetable Available"
             : "No Timetable Assigned";
 
 
     document.getElementById(
         "staffInfo"
-    ).style.display = "block";
+    ).style.display =
+        "block";
 
 
     document.getElementById(
         "reportCard"
-    ).style.display = "block";
+    ).style.display =
+        "block";
 
 
     let sessionText =
         "All Sessions";
 
 
-    if (selectedSession === "FN") {
+    if (
+        selectedSession === "FN"
+    ) {
         sessionText = "FN";
     }
 
-    if (selectedSession === "AN") {
+
+    if (
+        selectedSession === "AN"
+    ) {
         sessionText = "AN";
     }
 
@@ -1473,49 +2019,51 @@ function loadSelectedStaffReport(staffId) {
         `${selectedStaff.staffName || ""} (${selectedStaff.staffId}) — ${sessionText}`;
 
 
-    renderStats(entries);
+    renderStats(
+        finalEntries
+    );
+
 
     renderTimetable(
-        entries,
+        finalEntries,
         selectedSession
     );
 
-    renderDetailedRecords(entries);
 
-
-    document.getElementById(
-        "reportCard"
-    ).scrollIntoView({
-        behavior: "smooth",
-        block: "start"
-    });
+    renderDetailedRecords(
+        finalEntries
+    );
 }
 
 
-/* =====================================================
+/* =========================================================
    STATS
-===================================================== */
+========================================================= */
 
 function renderStats(entries) {
 
-    let fnCount = 0;
-    let anCount = 0;
+    let fn = 0;
+
+    let an = 0;
 
 
-    entries.forEach(entry => {
+    entries.forEach(
+        entry => {
 
-        const session =
-            entry.normalizedSession;
+            const session =
+                entry.normalizedSession;
 
 
-        if (session === "FN") {
-            fnCount++;
+            if (session === "FN") {
+                fn++;
+            }
+
+
+            if (session === "AN") {
+                an++;
+            }
         }
-
-        if (session === "AN") {
-            anCount++;
-        }
-    });
+    );
 
 
     document.getElementById(
@@ -1527,37 +2075,35 @@ function renderStats(entries) {
     document.getElementById(
         "statFN"
     ).textContent =
-        fnCount;
+        fn;
 
 
     document.getElementById(
         "statAN"
     ).textContent =
-        anCount;
+        an;
 }
 
 
-/* =====================================================
-   CREATE TIMETABLE HEADER
-===================================================== */
+/* =========================================================
+   TIMETABLE HEADER
+========================================================= */
 
-function renderTimetableHeader(session) {
+function renderTimetableHeader(
+    session
+) {
 
     const thead =
         document.getElementById(
             "timetableHead"
         );
 
+
     thead.innerHTML = "";
 
 
-    const row =
-        document.createElement("tr");
-
-
-    let html = `
-        <th>Day</th>
-    `;
+    let html =
+        "<tr><th>Day</th>";
 
 
     if (
@@ -1602,15 +2148,17 @@ function renderTimetableHeader(session) {
     }
 
 
-    row.innerHTML = html;
+    html += "</tr>";
 
-    thead.appendChild(row);
+
+    thead.innerHTML =
+        html;
 }
 
 
-/* =====================================================
+/* =========================================================
    RENDER TIMETABLE
-===================================================== */
+========================================================= */
 
 function renderTimetable(
     entries,
@@ -1622,132 +2170,139 @@ function renderTimetable(
             "timetableBody"
         );
 
+
     tbody.innerHTML = "";
 
 
-    renderTimetableHeader(session);
+    renderTimetableHeader(
+        session
+    );
 
 
     const days = [
+
         "DAY 01",
         "DAY 02",
         "DAY 03",
         "DAY 04",
         "DAY 05",
         "DAY 06"
+
     ];
 
 
     if (!entries.length) {
 
-        const totalColumns =
+        const columns =
             session === "ALL"
                 ? 11
                 : 6;
 
 
         tbody.innerHTML = `
+
             <tr>
+
                 <td
-                    colspan="${totalColumns}"
+                    colspan="${columns}"
                     class="empty"
                 >
-                    No ${
-                        session === "ALL"
-                            ? ""
-                            : session + " "
-                    }
-                    timetable assigned
-                    for this staff.
+                    No timetable assigned
                 </td>
+
             </tr>
+
         `;
 
         return;
     }
 
 
-    days.forEach(day => {
+    days.forEach(
+        day => {
 
-        const row =
-            document.createElement("tr");
-
-
-        const dayCell =
-            document.createElement("td");
-
-        dayCell.className =
-            "day-cell";
-
-        dayCell.textContent =
-            day;
-
-        row.appendChild(dayCell);
+            const row =
+                document.createElement(
+                    "tr"
+                );
 
 
-        /* ======================================
-           FN
-        ====================================== */
+            const dayCell =
+                document.createElement(
+                    "td"
+                );
 
-        if (
-            session === "ALL" ||
-            session === "FN"
-        ) {
 
-            for (
-                let hour = 1;
-                hour <= 5;
-                hour++
+            dayCell.className =
+                "day-cell";
+
+
+            dayCell.textContent =
+                day;
+
+
+            row.appendChild(
+                dayCell
+            );
+
+
+            if (
+                session === "ALL" ||
+                session === "FN"
             ) {
 
-                row.appendChild(
-                    createPeriodCell(
-                        entries,
-                        day,
-                        "FN",
-                        hour
-                    )
-                );
+                for (
+                    let hour = 1;
+                    hour <= 5;
+                    hour++
+                ) {
+
+                    row.appendChild(
+                        createPeriodCell(
+                            entries,
+                            day,
+                            "FN",
+                            hour
+                        )
+                    );
+                }
             }
-        }
 
 
-        /* ======================================
-           AN
-        ====================================== */
-
-        if (
-            session === "ALL" ||
-            session === "AN"
-        ) {
-
-            for (
-                let hour = 1;
-                hour <= 5;
-                hour++
+            if (
+                session === "ALL" ||
+                session === "AN"
             ) {
 
-                row.appendChild(
-                    createPeriodCell(
-                        entries,
-                        day,
-                        "AN",
-                        hour
-                    )
-                );
+                for (
+                    let hour = 1;
+                    hour <= 5;
+                    hour++
+                ) {
+
+                    row.appendChild(
+                        createPeriodCell(
+                            entries,
+                            day,
+                            "AN",
+                            hour
+                        )
+                    );
+                }
             }
+
+
+            tbody.appendChild(
+                row
+            );
         }
-
-
-        tbody.appendChild(row);
-
-    });
+    );
 }
 
 
-/* =====================================================
-   CREATE PERIOD CELL
-===================================================== */
+/* =========================================================
+   PERIOD CELL
+========================================================= */
 
 function createPeriodCell(
     entries,
@@ -1757,41 +2312,46 @@ function createPeriodCell(
 ) {
 
     const cell =
-        document.createElement("td");
+        document.createElement(
+            "td"
+        );
 
 
-    const matchingEntries =
-        entries.filter(item =>
+    const matching =
+        entries.filter(
+            item =>
 
-            item.normalizedDay ===
-                normalizeDay(day) &&
+                item.normalizedDay ===
+                    normalizeDay(day) &&
 
-            item.normalizedSession ===
-                normalizeSession(session) &&
+                item.normalizedSession ===
+                    normalizeSession(session) &&
 
-            item.normalizedHour ===
-                Number(hour)
+                item.normalizedHour ===
+                    Number(hour)
         );
 
 
     /*
-       If both a regular and substitute record
-       somehow exist, show substitute first.
-    */
+     * SUBSTITUTE HAS PRIORITY.
+     */
 
     const entry =
-        matchingEntries.find(
-            item => item.isSubstitute
+        matching.find(
+            item =>
+                item.isSubstitute
         ) ||
-        matchingEntries[0];
+        matching[0];
 
 
     if (!entry) {
 
         cell.innerHTML = `
+
             <div class="period-empty">
                 Free
             </div>
+
         `;
 
         return cell;
@@ -1809,92 +2369,118 @@ function createPeriodCell(
 
 
     const subjectCode =
-        entry.subjectCode ||
-        entry.subjectId ||
-        entry.code ||
-        "";
+        firstValue(
+            entry.subjectCode,
+            entry.subjectId,
+            entry.code
+        );
 
 
     const subjectName =
-        entry.subjectName ||
-        entry.subject ||
-        "";
+        firstValue(
+            entry.subjectName,
+            entry.subject,
+            entry.subjectTitle
+        );
 
 
     const department =
-        entry.department ||
-        entry.dept ||
-        "";
+        firstValue(
+            entry.department,
+            entry.dept,
+            entry.departmentName,
+            entry.normalizedDepartment
+        );
 
 
     const classYear =
-        entry.classYear ||
-        entry.class ||
-        entry.year ||
-        "";
+        firstValue(
+            entry.classYear,
+            entry.class,
+            entry.year,
+            entry.className
+        );
 
 
     const section =
-        entry.section ||
-        entry.sec ||
-        "";
+        firstValue(
+            entry.section,
+            entry.sec
+        );
 
 
-    const roomNo =
-        entry.roomNo ||
-        entry.room ||
-        "";
-
-
-    const substituteBadge =
-        entry.isSubstitute
-            ? `
-                <div class="substitute-badge">
-                    APPROVED SUBSTITUTE
-                </div>
-            `
-            : "";
+    const room =
+        firstValue(
+            entry.roomNo,
+            entry.room,
+            entry.roomNumber
+        );
 
 
     const originalStaff =
-        entry.originalStaffName ||
-        entry.requestingStaffName ||
-        entry.originalStaffId ||
-        "";
+        firstValue(
+            entry.originalStaffName,
+            entry.originalStaffId
+        );
 
 
     cell.innerHTML = `
 
         <div class="period ${periodClass}">
 
-            ${substituteBadge}
+            ${
+                entry.isSubstitute
+                    ? `
+                        <div class="substitute-badge">
+                            APPROVED SUBSTITUTE
+                        </div>
+                    `
+                    : ""
+            }
 
-            <div class="subject-code">
-                ${escapeHtml(subjectCode)}
-            </div>
+            ${
+                subjectCode
+                    ? `
+                        <div class="subject-code">
+                            ${escapeHtml(subjectCode)}
+                        </div>
+                    `
+                    : ""
+            }
 
             <div class="subject-name">
-                ${escapeHtml(subjectName)}
+                ${escapeHtml(
+                    subjectName ||
+                    "SUBSTITUTE ASSIGNMENT"
+                )}
             </div>
 
             <div class="class-info">
 
                 <strong>Department:</strong>
-                ${escapeHtml(department)}
+                ${escapeHtml(
+                    department || "-"
+                )}
                 <br>
 
                 <strong>Class:</strong>
-                ${escapeHtml(classYear)}
+                ${escapeHtml(
+                    classYear || "-"
+                )}
                 <br>
 
                 <strong>Section:</strong>
-                ${escapeHtml(section)}
+                ${escapeHtml(
+                    section || "-"
+                )}
 
             </div>
 
             <div class="room">
                 Room:
-                ${escapeHtml(roomNo)}
+                ${escapeHtml(
+                    room || "-"
+                )}
             </div>
 
             ${
@@ -1903,13 +2489,16 @@ function createPeriodCell(
                     ? `
                         <div class="substitute-original">
                             Original Staff:
-                            ${escapeHtml(originalStaff)}
+                            ${escapeHtml(
+                                originalStaff
+                            )}
                         </div>
                     `
                     : ""
             }
 
         </div>
+
     `;
 
 
@@ -1917,11 +2506,13 @@ function createPeriodCell(
 }
 
 
-/* =====================================================
-   DETAILED RECORDS
-===================================================== */
+/* =========================================================
+   DETAILED TABLE
+========================================================= */
 
-function renderDetailedRecords(entries) {
+function renderDetailedRecords(
+    entries
+) {
 
     const tbody =
         document.getElementById(
@@ -1950,55 +2541,40 @@ function renderDetailedRecords(entries) {
 
                 const dayA =
                     dayOrder[
-                        normalizeDay(
-                            a.day ??
-                            a.dayName ??
-                            a.dayNo
-                        )
+                        a.normalizedDay
                     ] || 99;
 
 
                 const dayB =
                     dayOrder[
-                        normalizeDay(
-                            b.day ??
-                            b.dayName ??
-                            b.dayNo
-                        )
+                        b.normalizedDay
                     ] || 99;
 
 
-                if (dayA !== dayB) {
+                if (
+                    dayA !== dayB
+                ) {
                     return dayA - dayB;
                 }
 
 
-                const sessionA =
-                    normalizeSession(
-                        a.session
-                    );
-
-
-                const sessionB =
-                    normalizeSession(
-                        b.session
-                    );
-
-
                 if (
-                    sessionA !==
-                    sessionB
+                    a.normalizedSession !==
+                    b.normalizedSession
                 ) {
 
-                    return sessionA === "FN"
+                    return (
+                        a.normalizedSession ===
+                        "FN"
+                    )
                         ? -1
                         : 1;
                 }
 
 
                 return (
-                    getHour(a) -
-                    getHour(b)
+                    a.normalizedHour -
+                    b.normalizedHour
                 );
             }
         );
@@ -2007,15 +2583,18 @@ function renderDetailedRecords(entries) {
     if (!sorted.length) {
 
         tbody.innerHTML = `
+
             <tr>
+
                 <td
-                    colspan="11"
+                    colspan="12"
                     class="empty"
                 >
                     No timetable assigned
-                    for this staff.
                 </td>
+
             </tr>
+
         `;
 
         return;
@@ -2025,60 +2604,66 @@ function renderDetailedRecords(entries) {
     sorted.forEach(
         (entry, index) => {
 
-            const tr =
-                document.createElement("tr");
-
-
-            const session =
-                normalizeSession(
-                    entry.session
-                );
-
-
-            const day =
-                normalizeDay(
-                    entry.day ??
-                    entry.dayName ??
-                    entry.dayNo
-                );
-
-
             const subjectCode =
-                entry.subjectCode ||
-                entry.subjectId ||
-                entry.code ||
-                "";
+                firstValue(
+                    entry.subjectCode,
+                    entry.subjectId,
+                    entry.code
+                );
 
 
             const subjectName =
-                entry.subjectName ||
-                entry.subject ||
-                "";
+                firstValue(
+                    entry.subjectName,
+                    entry.subject,
+                    entry.subjectTitle
+                );
 
 
             const department =
-                entry.department ||
-                entry.dept ||
-                "";
+                firstValue(
+                    entry.department,
+                    entry.dept,
+                    entry.departmentName,
+                    entry.normalizedDepartment
+                );
 
 
             const classYear =
-                entry.classYear ||
-                entry.class ||
-                entry.year ||
-                "";
+                firstValue(
+                    entry.classYear,
+                    entry.class,
+                    entry.year,
+                    entry.className
+                );
 
 
             const section =
-                entry.section ||
-                entry.sec ||
-                "";
+                firstValue(
+                    entry.section,
+                    entry.sec
+                );
 
 
-            const roomNo =
-                entry.roomNo ||
-                entry.room ||
-                "";
+            const room =
+                firstValue(
+                    entry.roomNo,
+                    entry.room,
+                    entry.roomNumber
+                );
+
+
+            const originalStaff =
+                firstValue(
+                    entry.originalStaffName,
+                    entry.originalStaffId
+                );
+
+
+            const tr =
+                document.createElement(
+                    "tr"
+                );
 
 
             tr.innerHTML = `
@@ -2088,19 +2673,23 @@ function renderDetailedRecords(entries) {
                 </td>
 
                 <td>
-                    ${escapeHtml(day)}
+                    ${escapeHtml(
+                        entry.normalizedDay
+                    )}
                 </td>
 
                 <td>
 
-                    <span
-                        class="badge ${
-                            session === "FN"
-                                ? "badge-fn"
-                                : "badge-an"
-                        }"
-                    >
-                        ${escapeHtml(session)}
+                    <span class="badge ${
+                        entry.normalizedSession === "FN"
+                            ? "badge-fn"
+                            : "badge-an"
+                    }">
+
+                        ${escapeHtml(
+                            entry.normalizedSession
+                        )}
+
                     </span>
 
                 </td>
@@ -2108,66 +2697,95 @@ function renderDetailedRecords(entries) {
                 <td>
                     Hour
                     ${escapeHtml(
-                        getHour(entry)
+                        entry.normalizedHour
                     )}
                 </td>
 
                 <td>
-                    ${escapeHtml(subjectCode)}
+                    ${escapeHtml(
+                        subjectCode || "-"
+                    )}
                 </td>
 
                 <td>
-                    ${escapeHtml(subjectName)}
+                    ${escapeHtml(
+                        subjectName || "-"
+                    )}
                 </td>
 
                 <td>
-                    ${escapeHtml(department)}
+                    ${escapeHtml(
+                        department || "-"
+                    )}
                 </td>
 
                 <td>
-                    ${escapeHtml(classYear)}
+                    ${escapeHtml(
+                        classYear || "-"
+                    )}
                 </td>
 
                 <td>
-                    ${escapeHtml(section)}
+                    ${escapeHtml(
+                        section || "-"
+                    )}
                 </td>
 
                 <td>
-                    ${escapeHtml(roomNo)}
+                    ${escapeHtml(
+                        room || "-"
+                    )}
+                </td>
+
+                <td>
+
+                    ${
+                        entry.isSubstitute
+                            ? `
+                                <span class="badge badge-substitute">
+                                    SUBSTITUTE
+                                </span>
+                            `
+                            : "REGULAR"
+                    }
+
                 </td>
 
                 <td>
                     ${
                         entry.isSubstitute
-                            ? `
-                                <span class="substitute-badge">
-                                    SUBSTITUTE
-                                </span>
-                            `
-                            : "REGULAR"
+                            ? escapeHtml(
+                                originalStaff || "-"
+                            )
+                            : "-"
                     }
                 </td>
 
             `;
 
 
-            tbody.appendChild(tr);
+            tbody.appendChild(
+                tr
+            );
         }
     );
 }
 
 
-/* =====================================================
-   CLEAR REPORT
-===================================================== */
+/* =========================================================
+   CLEAR
+========================================================= */
 
 function clearReport() {
 
     selectedStaff = null;
 
+
     staffSelect.value = "";
 
-    sessionSelect.value = "ALL";
+
+    sessionSelect.value =
+        "ALL";
 
 
     document.getElementById(
@@ -2187,64 +2805,74 @@ function clearReport() {
 
     document.getElementById(
         "staffInfo"
-    ).style.display = "none";
+    ).style.display =
+        "none";
 
 
     document.getElementById(
         "reportCard"
-    ).style.display = "none";
+    ).style.display =
+        "none";
 
 
     document.getElementById(
         "timetableHead"
-    ).innerHTML = "";
+    ).innerHTML =
+        "";
 
 
     document.getElementById(
         "timetableBody"
-    ).innerHTML = "";
+    ).innerHTML =
+        "";
 
 
     document.getElementById(
         "detailsBody"
-    ).innerHTML = "";
+    ).innerHTML =
+        "";
 
 
     document.getElementById(
         "statTotal"
-    ).textContent = "0";
+    ).textContent =
+        "0";
 
 
     document.getElementById(
         "statFN"
-    ).textContent = "0";
+    ).textContent =
+        "0";
 
 
     document.getElementById(
         "statAN"
-    ).textContent = "0";
+    ).textContent =
+        "0";
 
 
     document.getElementById(
         "reportSubtitle"
-    ).textContent = "";
+    ).textContent =
+        "";
 
 
     document.getElementById(
         "message"
-    ).className = "message";
+    ).className =
+        "message";
 }
 
 
-/* =====================================================
+/* =========================================================
    PRINT
-===================================================== */
+========================================================= */
 
 document.getElementById(
     "printBtn"
 ).addEventListener(
     "click",
-    function() {
+    () => {
 
         window.print();
 
@@ -2252,15 +2880,15 @@ document.getElementById(
 );
 
 
-/* =====================================================
+/* =========================================================
    CLEAR BUTTON
-===================================================== */
+========================================================= */
 
 document.getElementById(
     "clearBtn"
 ).addEventListener(
     "click",
-    function() {
+    () => {
 
         clearReport();
 
@@ -2268,9 +2896,9 @@ document.getElementById(
 );
 
 
-/* =====================================================
+/* =========================================================
    START
-===================================================== */
+========================================================= */
 
 loadTimetableData();
 
