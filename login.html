@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -262,18 +261,45 @@ alert("Login Successful");
 /* ==========================
    REDIRECT BASED ON STAFF ID
 ========================== */
+const id = String(data.staffId || "").toUpperCase();
+const serviceRole = String(data.serviceRole || "").trim().toUpperCase();
+const workerActive = data.workerActive === true;
 
-const id = data.staffId.toUpperCase();
+console.log("STAFF ID:", id);
+console.log("SERVICE ROLE:", serviceRole);
+console.log("WORKER ACTIVE:",workerActive);
 
-if (id.startsWith("SHT")) {
+if (id.startsWith("SHT001")) {
 
     // Lab Staff Dashboard
+    window.location.href = "it-head.html";
+
+}
+
+else if (id.startsWith("HR") && serviceRole === "DEPARTMENT_HEAD") {
+
+    // HR Department Head Dashboard
+    window.location.href = "hr-head-dashboard.html";
+
+}
+else if (id.startsWith("HR")) {
+
+    // HR Staff Dashboard
+    window.location.href = "hr-dashboard.html";
+
+}
+else if (id.startsWith("SHT") && workerActive === true) {
+
+    // HR Department Head Dashboard
+    window.location.href = "it-worker.html";
+
+}
+else if (id.startsWith("SHT")) {
+
+    // HR Department Head Dashboard
     window.location.href = "lab-dashboard.html";
 
 }
-else if(id.startsWith("HR")){
-    window.location.href="hr-dashboard.html";
-} 
 else {
 
     // All other staff
@@ -298,4 +324,3 @@ alert(error.message);
 
 </body>
 </html>
-<!--  -->
