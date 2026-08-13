@@ -4,335 +4,545 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Leave Entry</title>
+<title>Leave Approval</title>
 
 <style>
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-    font-family: Arial, Helvetica, sans-serif;
+
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+    font-family:Arial,Helvetica,sans-serif;
 }
 
-body {
-    background: #f4f7fb;
-    color: #1f2937;
+body{
+    background:#f4f7fb;
+    color:#1f2937;
 }
 
-.header {
-    background: #1e3a8a;
-    color: white;
-    padding: 22px 30px;
+/* HEADER */
+
+.header{
+    background:#1e3a8a;
+    color:white;
+    padding:22px 30px;
 }
 
-.header h1 {
-    font-size: 25px;
-    margin-bottom: 5px;
+.header h1{
+    font-size:25px;
+    margin-bottom:5px;
 }
 
-.header p {
-    font-size: 14px;
-    opacity: .9;
+.header p{
+    font-size:14px;
+    opacity:.9;
 }
 
-.container {
-    max-width: 1000px;
-    margin: 30px auto;
-    padding: 0 18px;
+
+/* CONTAINER */
+
+.container{
+    max-width:1250px;
+    margin:30px auto;
+    padding:0 18px;
 }
 
-.card {
-    background: white;
-    border-radius: 14px;
-    padding: 25px;
-    box-shadow: 0 4px 18px rgba(0,0,0,.08);
-    margin-bottom: 22px;
+
+/* MESSAGE */
+
+.message{
+    display:none;
+    padding:14px 17px;
+    border-radius:9px;
+    margin-bottom:20px;
+    font-size:14px;
+    line-height:1.5;
 }
 
-.card-title {
-    font-size: 21px;
-    font-weight: bold;
-    color: #1e3a8a;
-    margin-bottom: 20px;
+.message.success{
+    display:block;
+    background:#dcfce7;
+    color:#166534;
+    border:1px solid #86efac;
 }
 
-.staff-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 15px;
-    margin-bottom: 18px;
+.message.error{
+    display:block;
+    background:#fee2e2;
+    color:#991b1b;
+    border:1px solid #fca5a5;
 }
 
-.form-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 18px;
+.message.info{
+    display:block;
+    background:#dbeafe;
+    color:#1e40af;
+    border:1px solid #93c5fd;
 }
 
-.form-group {
-    display: flex;
-    flex-direction: column;
+
+/* CARD */
+
+.card{
+    background:white;
+    border-radius:14px;
+    padding:24px;
+    box-shadow:0 4px 18px rgba(0,0,0,.08);
+    margin-bottom:22px;
 }
 
-.form-group.full {
-    grid-column: 1 / -1;
+.card-title{
+    font-size:21px;
+    font-weight:bold;
+    color:#1e3a8a;
+    margin-bottom:20px;
 }
 
-label {
-    font-size: 13px;
-    font-weight: bold;
-    margin-bottom: 7px;
-    color: #374151;
+
+/* HEAD DETAILS */
+
+.head-grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:15px;
 }
 
-input,
-select,
-textarea {
-    width: 100%;
-    padding: 12px;
-    border: 1px solid #d1d5db;
-    border-radius: 8px;
-    outline: none;
-    font-size: 14px;
-    background: white;
+.detail-box{
+    background:#f8fafc;
+    border:1px solid #e5e7eb;
+    border-radius:9px;
+    padding:13px;
 }
 
-input:focus,
-select:focus,
-textarea:focus {
-    border-color: #2563eb;
+.detail-label{
+    font-size:11px;
+    color:#6b7280;
+    font-weight:bold;
+    text-transform:uppercase;
+    margin-bottom:5px;
 }
 
-input[readonly] {
-    background: #f3f4f6;
+.detail-value{
+    font-size:15px;
+    font-weight:bold;
+    color:#111827;
 }
 
-textarea {
-    resize: vertical;
-    min-height: 120px;
+
+/* LOADING */
+
+.loading{
+    text-align:center;
+    padding:35px;
+    color:#6b7280;
 }
 
-.staff-loading {
-    padding: 25px;
-    text-align: center;
-    color: #6b7280;
+.spinner{
+    width:30px;
+    height:30px;
+    border:4px solid #dbeafe;
+    border-top-color:#2563eb;
+    border-radius:50%;
+    animation:spin 1s linear infinite;
+    margin:0 auto 12px;
 }
 
-.workflow {
-    margin-top: 22px;
-    background: #eff6ff;
-    border-left: 5px solid #2563eb;
-    padding: 17px;
-    border-radius: 8px;
-}
-
-.workflow-title {
-    font-size: 14px;
-    font-weight: bold;
-    color: #1e3a8a;
-    margin-bottom: 10px;
-}
-
-.workflow-text {
-    font-size: 13px;
-    line-height: 1.7;
-    color: #374151;
-}
-
-.workflow-step {
-    display: inline-block;
-    background: white;
-    border: 1px solid #bfdbfe;
-    border-radius: 6px;
-    padding: 7px 10px;
-    margin: 3px;
-    font-weight: bold;
-    color: #1e40af;
-}
-
-.arrow {
-    color: #2563eb;
-    font-weight: bold;
-}
-
-.days-box {
-    margin-top: 18px;
-    background: #f0fdf4;
-    border-left: 5px solid #16a34a;
-    padding: 15px;
-    border-radius: 8px;
-}
-
-.days-label {
-    font-size: 12px;
-    color: #166534;
-    font-weight: bold;
-}
-
-.days-value {
-    font-size: 24px;
-    font-weight: bold;
-    color: #166534;
-    margin-top: 4px;
-}
-
-.button-row {
-    display: flex;
-    gap: 12px;
-    margin-top: 22px;
-}
-
-button {
-    border: none;
-    border-radius: 8px;
-    padding: 12px 22px;
-    font-size: 14px;
-    font-weight: bold;
-    cursor: pointer;
-}
-
-.btn-primary {
-    background: #2563eb;
-    color: white;
-}
-
-.btn-primary:hover {
-    background: #1d4ed8;
-}
-
-.btn-secondary {
-    background: #6b7280;
-    color: white;
-}
-
-button:disabled {
-    opacity: .6;
-    cursor: not-allowed;
-}
-
-.message {
-    display: none;
-    padding: 13px;
-    border-radius: 8px;
-    margin-bottom: 20px;
-    font-size: 14px;
-    line-height: 1.5;
-}
-
-.message.success {
-    display: block;
-    background: #dcfce7;
-    color: #166534;
-    border: 1px solid #86efac;
-}
-
-.message.error {
-    display: block;
-    background: #fee2e2;
-    color: #991b1b;
-    border: 1px solid #fca5a5;
-}
-
-.message.info {
-    display: block;
-    background: #dbeafe;
-    color: #1e40af;
-    border: 1px solid #93c5fd;
-}
-
-@media(max-width:700px) {
-
-    .staff-grid,
-    .form-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .form-group.full {
-        grid-column: auto;
-    }
-
-    .card {
-        padding: 18px;
-    }
-
-    .button-row {
-        flex-direction: column;
-    }
-
-    button {
-        width: 100%;
+@keyframes spin{
+    to{
+        transform:rotate(360deg);
     }
 }
+
+
+/* REQUEST GRID */
+
+.requests{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:20px;
+}
+
+
+/* REQUEST CARD */
+
+.request-card{
+    background:white;
+    border:1px solid #e5e7eb;
+    border-radius:13px;
+    overflow:hidden;
+    box-shadow:0 3px 12px rgba(0,0,0,.06);
+}
+
+.request-header{
+    background:#f8fafc;
+    padding:16px;
+    border-bottom:1px solid #e5e7eb;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:10px;
+}
+
+.request-staff{
+    font-size:17px;
+    font-weight:bold;
+    color:#111827;
+}
+
+.request-id{
+    font-size:11px;
+    color:#6b7280;
+    margin-top:4px;
+}
+
+.status{
+    background:#fef3c7;
+    color:#92400e;
+    border:1px solid #fcd34d;
+    border-radius:20px;
+    padding:6px 10px;
+    font-size:11px;
+    font-weight:bold;
+    white-space:nowrap;
+}
+
+.request-body{
+    padding:17px;
+}
+
+.info-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:13px;
+}
+
+.info-item{
+    border-bottom:1px solid #f1f5f9;
+    padding-bottom:9px;
+}
+
+.info-label{
+    font-size:11px;
+    color:#6b7280;
+    font-weight:bold;
+    margin-bottom:4px;
+    text-transform:uppercase;
+}
+
+.info-value{
+    font-size:14px;
+    color:#111827;
+    word-break:break-word;
+}
+
+.reason-box{
+    margin-top:15px;
+    background:#f8fafc;
+    border-radius:8px;
+    padding:13px;
+}
+
+.reason-label{
+    font-size:11px;
+    font-weight:bold;
+    color:#6b7280;
+    margin-bottom:6px;
+    text-transform:uppercase;
+}
+
+.reason-text{
+    font-size:14px;
+    line-height:1.5;
+    color:#374151;
+}
+
+
+/* ACTION */
+
+.action-area{
+    padding:16px;
+    background:#fafafa;
+    border-top:1px solid #e5e7eb;
+}
+
+.remarks-label{
+    font-size:12px;
+    font-weight:bold;
+    color:#374151;
+    margin-bottom:7px;
+    display:block;
+}
+
+.remarks{
+    width:100%;
+    min-height:75px;
+    resize:vertical;
+    padding:10px;
+    border:1px solid #d1d5db;
+    border-radius:8px;
+    outline:none;
+    font-size:13px;
+}
+
+.remarks:focus{
+    border-color:#2563eb;
+}
+
+.action-buttons{
+    display:flex;
+    gap:10px;
+    margin-top:12px;
+}
+
+button{
+    border:none;
+    border-radius:8px;
+    padding:11px 18px;
+    font-size:13px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+button:disabled{
+    opacity:.55;
+    cursor:not-allowed;
+}
+
+.btn-approve{
+    background:#16a34a;
+    color:white;
+}
+
+.btn-approve:hover{
+    background:#15803d;
+}
+
+.btn-reject{
+    background:#dc2626;
+    color:white;
+}
+
+.btn-reject:hover{
+    background:#b91c1c;
+}
+
+.btn-refresh{
+    background:#2563eb;
+    color:white;
+}
+
+.btn-refresh:hover{
+    background:#1d4ed8;
+}
+
+
+/* TOP ACTION */
+
+.top-actions{
+    display:flex;
+    justify-content:flex-end;
+    margin-bottom:18px;
+}
+
+
+/* EMPTY */
+
+.empty{
+    background:white;
+    border-radius:12px;
+    padding:50px 20px;
+    text-align:center;
+    border:1px solid #e5e7eb;
+}
+
+.empty-icon{
+    font-size:42px;
+    margin-bottom:12px;
+}
+
+.empty-title{
+    font-size:18px;
+    font-weight:bold;
+    color:#374151;
+    margin-bottom:6px;
+}
+
+.empty-text{
+    font-size:13px;
+    color:#6b7280;
+}
+
+
+/* MOBILE */
+
+@media(max-width:950px){
+
+    .head-grid{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+    .requests{
+        grid-template-columns:1fr;
+    }
+}
+
+@media(max-width:600px){
+
+    .header{
+        padding:18px;
+    }
+
+    .container{
+        padding:0 12px;
+        margin-top:20px;
+    }
+
+    .card{
+        padding:17px;
+    }
+
+    .head-grid{
+        grid-template-columns:1fr;
+    }
+
+    .info-grid{
+        grid-template-columns:1fr;
+    }
+
+    .request-header{
+        flex-direction:column;
+        align-items:flex-start;
+    }
+
+    .action-buttons{
+        flex-direction:column;
+    }
+
+    .action-buttons button{
+        width:100%;
+    }
+}
+
 </style>
 </head>
 
+
 <body>
 
+
+<!-- HEADER -->
+
 <div class="header">
-    <h1>Staff Leave Entry</h1>
-    <p>Apply for leave through the appropriate approval workflow</p>
+
+    <h1>
+        Leave Approval
+    </h1>
+
+    <p>
+        Department Head Leave Approval
+    </p>
+
 </div>
+
 
 <div class="container">
 
-    <div id="message" class="message"></div>
 
-    <!-- STAFF DETAILS -->
+    <!-- MESSAGE -->
+
+    <div
+        id="message"
+        class="message"
+    ></div>
+
+
+    <!-- HEAD DETAILS -->
+
     <div class="card">
 
         <div class="card-title">
-            Staff Details
+            Logged-in Head
         </div>
 
-        <div id="staffLoading" class="staff-loading">
-            Loading logged-in staff...
+
+        <div
+            id="headLoading"
+            class="loading"
+        >
+
+            <div class="spinner"></div>
+
+            Loading Head details...
+
         </div>
 
-        <div id="staffDetails" style="display:none;">
 
-            <div class="staff-grid">
+        <div
+            id="headDetails"
+            style="display:none;"
+        >
 
-                <div class="form-group">
-                    <label>Staff ID</label>
+            <div class="head-grid">
 
-                    <input
-                        type="text"
-                        id="staffId"
-                        readonly
+
+                <div class="detail-box">
+
+                    <div class="detail-label">
+                        Staff ID
+                    </div>
+
+                    <div
+                        id="headId"
+                        class="detail-value"
                     >
+                    </div>
+
                 </div>
 
-                <div class="form-group">
-                    <label>Staff Name</label>
 
-                    <input
-                        type="text"
-                        id="staffName"
-                        readonly
+                <div class="detail-box">
+
+                    <div class="detail-label">
+                        Staff Name
+                    </div>
+
+                    <div
+                        id="headName"
+                        class="detail-value"
                     >
+                    </div>
+
                 </div>
 
-                <div class="form-group">
-                    <label>Department</label>
 
-                    <input
-                        type="text"
-                        id="department"
-                        readonly
+                <div class="detail-box">
+
+                    <div class="detail-label">
+                        Department
+                    </div>
+
+                    <div
+                        id="headDepartment"
+                        class="detail-value"
                     >
+                    </div>
+
                 </div>
 
-            </div>
 
-            <div class="form-group">
+                <div class="detail-box">
 
-                <label>Service Role</label>
+                    <div class="detail-label">
+                        Role
+                    </div>
 
-                <input
-                    type="text"
-                    id="serviceRole"
-                    readonly
-                >
+                    <div
+                        id="headRole"
+                        class="detail-value"
+                    >
+                    </div>
+
+                </div>
 
             </div>
 
@@ -341,222 +551,126 @@ button:disabled {
     </div>
 
 
-    <!-- LEAVE ENTRY -->
-    <div
-        class="card"
-        id="leaveCard"
-        style="display:none;"
-    >
 
-        <div class="card-title">
-            Apply Leave
-        </div>
+    <!-- REQUESTS -->
 
-        <div class="form-grid">
+    <div class="card">
 
-            <div class="form-group">
+        <div
+            style="
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            gap:15px;
+            margin-bottom:20px;
+            "
+        >
 
-                <label>Leave Type *</label>
-
-                <select id="leaveType">
-
-                    <option value="">
-                        Select Leave Type
-                    </option>
-
-                    <option value="CASUAL LEAVE">
-                        Casual Leave
-                    </option>
-
-                    <option value="MEDICAL LEAVE">
-                        Medical Leave
-                    </option>
-
-                    <option value="EARNED LEAVE">
-                        Earned Leave
-                    </option>
-
-                    <option value="ON DUTY">
-                        On Duty
-                    </option>
-
-                    <option value="LOSS OF PAY">
-                        Loss of Pay
-                    </option>
-
-                    <option value="OTHER">
-                        Other
-                    </option>
-
-                </select>
-
+            <div class="card-title" style="margin:0;">
+                Pending Leave Requests
             </div>
 
-
-            <div class="form-group">
-
-                <label>
-                    Contact Number During Leave
-                </label>
-
-                <input
-                    type="tel"
-                    id="contactNumber"
-                    placeholder="Enter contact number"
-                >
-
-            </div>
-
-
-            <div class="form-group">
-
-                <label>
-                    From Date *
-                </label>
-
-                <input
-                    type="date"
-                    id="fromDate"
-                >
-
-            </div>
-
-
-            <div class="form-group">
-
-                <label>
-                    To Date *
-                </label>
-
-                <input
-                    type="date"
-                    id="toDate"
-                >
-
-            </div>
-
-
-            <div class="form-group full">
-
-                <label>
-                    Reason for Leave *
-                </label>
-
-                <textarea
-                    id="reason"
-                    placeholder="Enter reason for leave..."
-                ></textarea>
-
-            </div>
-
-        </div>
-
-
-        <div class="days-box">
-
-            <div class="days-label">
-                TOTAL LEAVE DAYS
-            </div>
-
-            <div
-                class="days-value"
-                id="totalDays"
-            >
-                0
-            </div>
-
-        </div>
-
-
-        <div class="workflow">
-
-            <div class="workflow-title">
-                Approval Workflow
-            </div>
-
-            <div
-                id="workflowDisplay"
-                class="workflow-text"
-            ></div>
-
-        </div>
-
-
-        <div class="button-row">
 
             <button
-                type="button"
-                class="btn-primary"
-                id="submitBtn"
+                id="refreshBtn"
+                class="btn-refresh"
             >
-                Submit Leave Request
-            </button>
-
-            <button
-                type="button"
-                class="btn-secondary"
-                id="clearBtn"
-            >
-                Clear
+                Refresh
             </button>
 
         </div>
+
+
+        <div
+            id="requestsLoading"
+            class="loading"
+            style="display:none;"
+        >
+
+            <div class="spinner"></div>
+
+            Loading leave requests...
+
+        </div>
+
+
+        <div
+            id="requestsContainer"
+        ></div>
 
     </div>
+
 
 </div>
 
 
+
 <script type="module">
+
+
+/* =========================================================
+   FIREBASE IMPORTS
+========================================================= */
 
 import {
     initializeApp
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
+
 import {
     getFirestore,
     collection,
-    addDoc,
     getDocs,
     query,
     where,
+    doc,
+    updateDoc,
     serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-import {
-    getAuth,
-    onAuthStateChanged
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-
 
 /* =========================================================
-   FIREBASE
+   FIREBASE CONFIG
 ========================================================= */
 
 const firebaseConfig = {
-    apiKey: "YOUR_API_KEY",
-    authDomain: "maasc-2026.firebaseapp.com",
-    projectId: "maasc-2026",
-    storageBucket: "maasc-2026.appspot.com",
-    messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-    appId: "YOUR_APP_ID"
+
+    apiKey:
+        "YOUR_API_KEY",
+
+    authDomain:
+        "maasc-2026.firebaseapp.com",
+
+    projectId:
+        "maasc-2026",
+
+    storageBucket:
+        "maasc-2026.appspot.com",
+
+    messagingSenderId:
+        "YOUR_MESSAGING_SENDER_ID",
+
+    appId:
+        "YOUR_APP_ID"
 };
 
+
 const app =
-    initializeApp(firebaseConfig);
+    initializeApp(
+        firebaseConfig
+    );
+
 
 const db =
     getFirestore(app);
 
-const auth =
-    getAuth(app);
 
 
 /* =========================================================
    VARIABLES
 ========================================================= */
 
-let currentStaff = null;
+let currentHead = null;
 
 
 /* =========================================================
@@ -564,67 +678,82 @@ let currentStaff = null;
 ========================================================= */
 
 const message =
-    document.getElementById("message");
+    document.getElementById(
+        "message"
+    );
 
-const staffLoading =
-    document.getElementById("staffLoading");
 
-const staffDetails =
-    document.getElementById("staffDetails");
+const headLoading =
+    document.getElementById(
+        "headLoading"
+    );
 
-const leaveCard =
-    document.getElementById("leaveCard");
 
-const staffIdInput =
-    document.getElementById("staffId");
+const headDetails =
+    document.getElementById(
+        "headDetails"
+    );
 
-const staffNameInput =
-    document.getElementById("staffName");
 
-const departmentInput =
-    document.getElementById("department");
+const headId =
+    document.getElementById(
+        "headId"
+    );
 
-const serviceRoleInput =
-    document.getElementById("serviceRole");
 
-const leaveType =
-    document.getElementById("leaveType");
+const headName =
+    document.getElementById(
+        "headName"
+    );
 
-const contactNumber =
-    document.getElementById("contactNumber");
 
-const fromDate =
-    document.getElementById("fromDate");
+const headDepartment =
+    document.getElementById(
+        "headDepartment"
+    );
 
-const toDate =
-    document.getElementById("toDate");
 
-const reason =
-    document.getElementById("reason");
+const headRole =
+    document.getElementById(
+        "headRole"
+    );
 
-const totalDays =
-    document.getElementById("totalDays");
 
-const workflowDisplay =
-    document.getElementById("workflowDisplay");
+const requestsLoading =
+    document.getElementById(
+        "requestsLoading"
+    );
 
-const submitBtn =
-    document.getElementById("submitBtn");
+
+const requestsContainer =
+    document.getElementById(
+        "requestsContainer"
+    );
+
+
+const refreshBtn =
+    document.getElementById(
+        "refreshBtn"
+    );
+
 
 
 /* =========================================================
-   HELPER
+   HELPERS
 ========================================================= */
 
-function firstValue(...values) {
+function firstValue(...values){
 
-    for (const value of values) {
+    for(
+        const value of values
+    ){
 
-        if (
+        if(
             value !== undefined &&
             value !== null &&
             String(value).trim() !== ""
-        ) {
+        ){
+
             return value;
         }
     }
@@ -633,44 +762,92 @@ function firstValue(...values) {
 }
 
 
-function normalizeRole(role) {
 
-    return String(role || "")
-        .trim()
-        .toUpperCase()
-        .replace(/[\s-]+/g, "_");
+function normalizeRole(role){
+
+    return String(
+        role || ""
+    )
+    .trim()
+    .toUpperCase()
+    .replace(
+        /[\s-]+/g,
+        "_"
+    );
 }
+
+
+
+function normalizeText(value){
+
+    return String(
+        value || ""
+    )
+    .trim()
+    .toUpperCase();
+}
+
+
+
+function escapeHTML(value){
+
+    return String(
+        value ?? ""
+    )
+    .replace(
+        /&/g,
+        "&amp;"
+    )
+    .replace(
+        /</g,
+        "&lt;"
+    )
+    .replace(
+        />/g,
+        "&gt;"
+    )
+    .replace(
+        /"/g,
+        "&quot;"
+    )
+    .replace(
+        /'/g,
+        "&#039;"
+    );
+}
+
 
 
 function showMessage(
     text,
     type
-) {
+){
 
-    message.textContent = text;
+    message.textContent =
+        text;
 
     message.className =
         "message " + type;
 }
 
 
+
 /* =========================================================
-   GET STAFF ID ONLY
+   GET LOGGED-IN STAFF ID
 ========================================================= */
 
 /*
  * IMPORTANT:
  *
- * We DO NOT read the stored name.
+ * We only use stored data to obtain
+ * STAFF ID.
  *
- * We ONLY extract Staff ID.
- *
- * Then Firestore is queried using that ID.
+ * We DO NOT use stored staff name.
  */
 
-function getLoggedInStaffId() {
+function getLoggedInStaffId(){
 
-    const possibleKeys = [
+    const keys = [
 
         "currentStaff",
         "loggedInStaff",
@@ -684,25 +861,28 @@ function getLoggedInStaffId() {
     ];
 
 
-    /*
-     * Check sessionStorage first.
-     */
+    /* SESSION STORAGE */
 
-    for (
-        const key of possibleKeys
-    ) {
+    for(
+        const key of keys
+    ){
 
-        try {
+        try{
 
             const raw =
-                sessionStorage.getItem(key);
+                sessionStorage.getItem(
+                    key
+                );
 
-            if (!raw) {
+
+            if(!raw){
                 continue;
             }
 
+
             const data =
                 JSON.parse(raw);
+
 
             const id =
                 firstValue(
@@ -711,45 +891,52 @@ function getLoggedInStaffId() {
                     data.staff_id
                 );
 
-            if (id) {
+
+            if(id){
 
                 console.log(
-                    "STAFF ID FROM SESSION STORAGE:",
+                    "HEAD STAFF ID FROM SESSION:",
                     id
                 );
 
-                return String(id).trim();
+                return String(
+                    id
+                ).trim();
             }
 
-        } catch (error) {
+        }
+        catch(error){
 
             console.warn(
-                "Session storage read error:",
+                "Session storage error:",
                 error
             );
         }
     }
 
 
-    /*
-     * Check localStorage.
-     */
+    /* LOCAL STORAGE */
 
-    for (
-        const key of possibleKeys
-    ) {
+    for(
+        const key of keys
+    ){
 
-        try {
+        try{
 
             const raw =
-                localStorage.getItem(key);
+                localStorage.getItem(
+                    key
+                );
 
-            if (!raw) {
+
+            if(!raw){
                 continue;
             }
 
+
             const data =
                 JSON.parse(raw);
+
 
             const id =
                 firstValue(
@@ -758,54 +945,64 @@ function getLoggedInStaffId() {
                     data.staff_id
                 );
 
-            if (id) {
+
+            if(id){
 
                 console.log(
-                    "STAFF ID FROM LOCAL STORAGE:",
+                    "HEAD STAFF ID FROM LOCAL:",
                     id
                 );
 
-                return String(id).trim();
+                return String(
+                    id
+                ).trim();
             }
 
-        } catch (error) {
+        }
+        catch(error){
 
             console.warn(
-                "Local storage read error:",
+                "Local storage error:",
                 error
             );
         }
     }
 
 
-    /*
-     * Check direct storage values.
-     */
+    /* DIRECT VALUES */
 
     const directKeys = [
+
         "staffId",
         "staffID",
         "staff_id"
+
     ];
 
 
-    for (
+    for(
         const key of directKeys
-    ) {
+    ){
 
         const sessionValue =
-            sessionStorage.getItem(key);
+            sessionStorage.getItem(
+                key
+            );
 
-        if (sessionValue) {
+
+        if(sessionValue){
 
             return sessionValue.trim();
         }
 
 
         const localValue =
-            localStorage.getItem(key);
+            localStorage.getItem(
+                key
+            );
 
-        if (localValue) {
+
+        if(localValue){
 
             return localValue.trim();
         }
@@ -816,74 +1013,46 @@ function getLoggedInStaffId() {
 }
 
 
+
 /* =========================================================
-   FIND STAFF BY EXACT STAFF ID
+   LOAD HEAD FROM FIRESTORE
 ========================================================= */
 
-async function findStaffById(
-    staffId
-) {
+async function loadHead(){
 
-    if (!staffId) {
+    try{
 
-        throw new Error(
-            "Logged-in Staff ID was not found."
-        );
-    }
+        headLoading.style.display =
+            "block";
 
 
-    console.log(
-        "LOOKING UP STAFF ID:",
-        staffId
-    );
+        headDetails.style.display =
+            "none";
 
 
-    /*
-     * IMPORTANT:
-     *
-     * Query Firestore using Staff ID.
-     *
-     * Do NOT use a stored name.
-     */
+        const staffId =
+            getLoggedInStaffId();
 
-    const q =
-        query(
-            collection(
-                db,
-                "staff"
-            ),
-            where(
-                "staffId",
-                "==",
-                staffId
-            )
+
+        if(!staffId){
+
+            throw new Error(
+                "Logged-in Staff ID was not found. Please login again."
+            );
+        }
+
+
+        console.log(
+            "LOADING HEAD USING STAFF ID:",
+            staffId
         );
 
-
-    const snapshot =
-        await getDocs(q);
-
-
-    console.log(
-        "STAFF QUERY RESULT COUNT:",
-        snapshot.size
-    );
-
-
-    if (
-        snapshot.empty
-    ) {
 
         /*
-         * Try uppercase Staff ID
-         * in case database values are uppercase.
+         * EXACT STAFF ID QUERY
          */
 
-        const upperId =
-            staffId.toUpperCase();
-
-
-        const q2 =
+        let q =
             query(
                 collection(
                     db,
@@ -892,18 +1061,46 @@ async function findStaffById(
                 where(
                     "staffId",
                     "==",
-                    upperId
+                    staffId
                 )
             );
 
 
-        const snapshot2 =
-            await getDocs(q2);
+        let snapshot =
+            await getDocs(q);
 
 
-        if (
-            snapshot2.empty
-        ) {
+        /*
+         * Uppercase fallback
+         */
+
+        if(
+            snapshot.empty &&
+            staffId !== staffId.toUpperCase()
+        ){
+
+            q =
+                query(
+                    collection(
+                        db,
+                        "staff"
+                    ),
+                    where(
+                        "staffId",
+                        "==",
+                        staffId.toUpperCase()
+                    )
+                );
+
+
+            snapshot =
+                await getDocs(q);
+        }
+
+
+        if(
+            snapshot.empty
+        ){
 
             throw new Error(
                 "Staff record not found for Staff ID: " +
@@ -913,10 +1110,11 @@ async function findStaffById(
 
 
         const data =
-            snapshot2.docs[0].data();
+            snapshot.docs[0].data();
 
 
-        return {
+        currentHead = {
+
             staffId:
                 String(
                     firstValue(
@@ -947,179 +1145,73 @@ async function findStaffById(
                         data.serviceRole,
                         data.role
                     )
-                ),
-
-            serviceHeadActive:
-                data.serviceHeadActive === true,
-
-            serviceHeadDepartment:
-                String(
-                    firstValue(
-                        data.serviceHeadDepartment,
-                        data.department
-                    )
-                ).trim()
+                )
         };
-    }
-
-
-    const data =
-        snapshot.docs[0].data();
-
-
-    console.log(
-        "EXACT STAFF FIRESTORE RECORD:",
-        data
-    );
-
-
-    return {
-
-        staffId:
-            String(
-                firstValue(
-                    data.staffId,
-                    data.staffID
-                )
-            ).trim(),
-
-        name:
-            String(
-                firstValue(
-                    data.name,
-                    data.staffName
-                )
-            ).trim(),
-
-        department:
-            String(
-                firstValue(
-                    data.department,
-                    data.dept
-                )
-            ).trim(),
-
-        serviceRole:
-            normalizeRole(
-                firstValue(
-                    data.serviceRole,
-                    data.role
-                )
-            ),
-
-        serviceHeadActive:
-            data.serviceHeadActive === true,
-
-        serviceHeadDepartment:
-            String(
-                firstValue(
-                    data.serviceHeadDepartment,
-                    data.department
-                )
-            ).trim()
-    };
-}
-
-
-/* =========================================================
-   LOAD LOGGED-IN STAFF
-========================================================= */
-
-async function loadStaff() {
-
-    try {
-
-        staffLoading.style.display =
-            "block";
-
-        staffDetails.style.display =
-            "none";
-
-        leaveCard.style.display =
-            "none";
-
-
-        /*
-         * GET ONLY STAFF ID.
-         */
-
-        const storedStaffId =
-            getLoggedInStaffId();
 
 
         console.log(
-            "LOGGED-IN STAFF ID:",
-            storedStaffId
+            "CURRENT HEAD:",
+            currentHead
         );
 
 
-        if (!storedStaffId) {
+        /*
+         * SECURITY CHECK
+         */
+
+        if(
+            currentHead.serviceRole !==
+                "DEPARTMENT_HEAD" &&
+            currentHead.serviceRole !==
+                "DEPT_HEAD"
+        ){
 
             throw new Error(
-                "Staff ID not found. Please logout and login again."
+                "This page is only for Department Heads."
             );
         }
 
 
         /*
-         * GET THE ACTUAL STAFF RECORD
-         * FROM FIRESTORE.
+         * DISPLAY ACTUAL FIRESTORE DATA
          */
 
-        currentStaff =
-            await findStaffById(
-                storedStaffId
-            );
+        headId.textContent =
+            currentHead.staffId;
 
 
-        console.log(
-            "CURRENT STAFF:",
-            currentStaff
-        );
+        headName.textContent =
+            currentHead.name;
 
 
-        /*
-         * DISPLAY FIRESTORE DATA.
-         */
-
-        staffIdInput.value =
-            currentStaff.staffId;
+        headDepartment.textContent =
+            currentHead.department;
 
 
-        staffNameInput.value =
-            currentStaff.name;
+        headRole.textContent =
+            currentHead.serviceRole;
 
 
-        departmentInput.value =
-            currentStaff.department;
-
-
-        serviceRoleInput.value =
-            currentStaff.serviceRole;
-
-
-        staffLoading.style.display =
+        headLoading.style.display =
             "none";
 
-        staffDetails.style.display =
+
+        headDetails.style.display =
             "block";
 
-        leaveCard.style.display =
-            "block";
 
+        await loadLeaveRequests();
 
-        displayWorkflow();
-
-
-    } catch (error) {
+    }
+    catch(error){
 
         console.error(
-            "STAFF LOAD ERROR:",
+            "HEAD LOAD ERROR:",
             error
         );
 
 
-        staffLoading.style.display =
+        headLoading.style.display =
             "none";
 
 
@@ -1131,746 +1223,811 @@ async function loadStaff() {
 }
 
 
-/* =========================================================
-   WORKFLOW
-========================================================= */
-
-function determineWorkflow(
-    staff
-) {
-
-    const role =
-        normalizeRole(
-            staff.serviceRole
-        );
-
-
-    /*
-     * HR HEAD
-     *
-     * HR HEAD
-     * ↓
-     * DEAN
-     * ↓
-     * HR WORKER
-     * ↓
-     * HR HEAD FINAL
-     */
-
-    if (
-        role === "HR_HEAD" ||
-        role === "HRHEAD"
-    ) {
-
-        return {
-
-            workflowType:
-                "HR_HEAD_LEAVE",
-
-            status:
-                "PENDING_DEAN",
-
-            firstApproverRole:
-                "DEAN",
-
-            firstApproverLabel:
-                "Dean",
-
-            steps: [
-
-                "HR HEAD",
-
-                "DEAN",
-
-                "HR WORKER",
-
-                "HR HEAD FINAL APPROVAL"
-
-            ]
-        };
-    }
-
-
-    /*
-     * DEPARTMENT HEAD
-     *
-     * DEPARTMENT HEAD
-     * ↓
-     * HR HEAD
-     * ↓
-     * HR WORKER
-     * ↓
-     * HR HEAD FINAL
-     */
-
-    if (
-        role === "DEPARTMENT_HEAD" ||
-        role === "DEPT_HEAD"
-    ) {
-
-        return {
-
-            workflowType:
-                "DEPARTMENT_HEAD_LEAVE",
-
-            status:
-                "PENDING_HR",
-
-            firstApproverRole:
-                "HR_HEAD",
-
-            firstApproverLabel:
-                "HR Head",
-
-            steps: [
-
-                "DEPARTMENT HEAD",
-
-                "HR HEAD",
-
-                "HR WORKER",
-
-                "HR HEAD FINAL APPROVAL"
-
-            ]
-        };
-    }
-
-
-    /*
-     * NORMAL STAFF
-     *
-     * STAFF
-     * ↓
-     * DEPARTMENT HEAD
-     * ↓
-     * HR HEAD
-     * ↓
-     * HR WORKER
-     * ↓
-     * HR HEAD FINAL
-     */
-
-    return {
-
-        workflowType:
-            "STAFF_LEAVE",
-
-        status:
-            "PENDING_HEAD",
-
-        firstApproverRole:
-            "DEPARTMENT_HEAD",
-
-        firstApproverLabel:
-            "Department Head",
-
-        steps: [
-
-            "STAFF",
-
-            "DEPARTMENT HEAD",
-
-            "HR HEAD",
-
-            "HR WORKER",
-
-            "HR HEAD FINAL APPROVAL"
-
-        ]
-    };
-}
-
 
 /* =========================================================
-   DISPLAY WORKFLOW
+   LOAD LEAVE REQUESTS
 ========================================================= */
 
-function displayWorkflow() {
+async function loadLeaveRequests(){
 
-    if (!currentStaff) {
+    if(!currentHead){
         return;
     }
 
 
-    const workflow =
-        determineWorkflow(
-            currentStaff
+    try{
+
+        requestsLoading.style.display =
+            "block";
+
+
+        requestsContainer.innerHTML =
+            "";
+
+
+        /*
+         * IMPORTANT:
+         *
+         * Only query PENDING_HEAD.
+         *
+         * We filter department in JavaScript
+         * so Firestore composite indexes are
+         * not required.
+         */
+
+        const q =
+            query(
+                collection(
+                    db,
+                    "leaveRequests"
+                ),
+                where(
+                    "status",
+                    "==",
+                    "PENDING_HEAD"
+                )
+            );
+
+
+        const snapshot =
+            await getDocs(q);
+
+
+        console.log(
+            "PENDING HEAD REQUESTS:",
+            snapshot.size
         );
 
 
-    workflowDisplay.innerHTML =
-        workflow.steps
-            .map(
-                (step, index) => {
-
-                    let html =
-                        `<span class="workflow-step">
-                            ${step}
-                         </span>`;
+        const requests = [];
 
 
-                    if (
-                        index <
-                        workflow.steps.length - 1
-                    ) {
+        snapshot.forEach(
+            item => {
 
-                        html +=
-                            `<span class="arrow">
-                                →
-                             </span>`;
-                    }
+                const data =
+                    item.data();
 
 
-                    return html;
+                /*
+                 * Department matching.
+                 */
+
+                const requestDepartment =
+                    normalizeText(
+                        firstValue(
+                            data.department,
+                            data.dept
+                        )
+                    );
+
+
+                const headDept =
+                    normalizeText(
+                        currentHead.department
+                    );
+
+
+                /*
+                 * Only show requests
+                 * from this Head's department.
+                 */
+
+                if(
+                    requestDepartment ===
+                    headDept
+                ){
+
+                    requests.push({
+
+                        id:
+                            item.id,
+
+                        ...data
+
+                    });
                 }
-            )
-            .join("");
-}
 
-
-/* =========================================================
-   CALCULATE DAYS
-========================================================= */
-
-function calculateDays() {
-
-    if (
-        !fromDate.value ||
-        !toDate.value
-    ) {
-
-        totalDays.textContent =
-            "0";
-
-        return 0;
-    }
-
-
-    const start =
-        new Date(
-            fromDate.value +
-            "T00:00:00"
+            }
         );
 
 
-    const end =
-        new Date(
-            toDate.value +
-            "T00:00:00"
+        requests.sort(
+            (a,b) => {
+
+                const aTime =
+                    a.appliedAt?.seconds ||
+                    0;
+
+                const bTime =
+                    b.appliedAt?.seconds ||
+                    0;
+
+                return bTime - aTime;
+            }
         );
 
 
-    if (
-        end < start
-    ) {
-
-        totalDays.textContent =
-            "0";
-
-        return 0;
-    }
+        requestsLoading.style.display =
+            "none";
 
 
-    const difference =
-        end.getTime() -
-        start.getTime();
+        if(
+            requests.length === 0
+        ){
 
+            requestsContainer.innerHTML = `
 
-    const days =
-        Math.floor(
-            difference /
-            (
-                1000 *
-                60 *
-                60 *
-                24
-            )
-        ) + 1;
+                <div class="empty">
 
+                    <div class="empty-icon">
+                        ✓
+                    </div>
 
-    totalDays.textContent =
-        days;
+                    <div class="empty-title">
+                        No Pending Leave Requests
+                    </div>
 
+                    <div class="empty-text">
+                        There are currently no leave requests
+                        waiting for your approval.
+                    </div>
 
-    return days;
-}
+                </div>
 
+            `;
 
-fromDate.addEventListener(
-    "change",
-    calculateDays
-);
-
-toDate.addEventListener(
-    "change",
-    calculateDays
-);
-
-
-/* =========================================================
-   CLEAR
-========================================================= */
-
-function clearForm() {
-
-    leaveType.value = "";
-
-    contactNumber.value = "";
-
-    fromDate.value = "";
-
-    toDate.value = "";
-
-    reason.value = "";
-
-    totalDays.textContent =
-        "0";
-}
-
-
-document.getElementById(
-    "clearBtn"
-).addEventListener(
-    "click",
-    clearForm
-);
-
-
-/* =========================================================
-   CHECK EXISTING LEAVE
-========================================================= */
-
-async function checkExistingLeave() {
-
-    const q =
-        query(
-            collection(
-                db,
-                "leaveRequests"
-            ),
-            where(
-                "staffId",
-                "==",
-                currentStaff.staffId
-            )
-        );
-
-
-    const snapshot =
-        await getDocs(q);
-
-
-    const requestedStart =
-        new Date(
-            fromDate.value +
-            "T00:00:00"
-        );
-
-
-    const requestedEnd =
-        new Date(
-            toDate.value +
-            "T00:00:00"
-        );
-
-
-    for (
-        const doc of snapshot.docs
-    ) {
-
-        const data =
-            doc.data();
-
-
-        const status =
-            String(
-                data.status || ""
-            ).toUpperCase();
-
-
-        if (
-            status === "REJECTED" ||
-            status === "HEAD_REJECTED" ||
-            status === "HR_REJECTED" ||
-            status === "DEAN_REJECTED"
-        ) {
-
-            continue;
+            return;
         }
 
 
-        if (
-            !data.fromDate ||
-            !data.toDate
-        ) {
+        requestsContainer.innerHTML =
+            `
+            <div class="requests">
 
-            continue;
+                ${
+                    requests
+                        .map(
+                            request =>
+                                createRequestCard(
+                                    request
+                                )
+                        )
+                        .join("")
+                }
+
+            </div>
+            `;
+
+
+    }
+    catch(error){
+
+        console.error(
+            "REQUEST LOAD ERROR:",
+            error
+        );
+
+
+        requestsLoading.style.display =
+            "none";
+
+
+        requestsContainer.innerHTML = `
+
+            <div class="empty">
+
+                <div class="empty-title">
+                    Unable to Load Requests
+                </div>
+
+                <div class="empty-text">
+                    ${escapeHTML(
+                        error.message
+                    )}
+                </div>
+
+            </div>
+
+        `;
+    }
+}
+
+
+
+/* =========================================================
+   CREATE REQUEST CARD
+========================================================= */
+
+function createRequestCard(
+    request
+){
+
+    const staffName =
+        firstValue(
+            request.staffName,
+            "Unknown Staff"
+        );
+
+
+    const staffId =
+        firstValue(
+            request.staffId,
+            "-"
+        );
+
+
+    const department =
+        firstValue(
+            request.department,
+            "-"
+        );
+
+
+    const leaveType =
+        firstValue(
+            request.leaveType,
+            "-"
+        );
+
+
+    const fromDate =
+        firstValue(
+            request.fromDate,
+            "-"
+        );
+
+
+    const toDate =
+        firstValue(
+            request.toDate,
+            "-"
+        );
+
+
+    const totalDays =
+        firstValue(
+            request.totalDays,
+            "0"
+        );
+
+
+    const contact =
+        firstValue(
+            request.contactNumber,
+            "-"
+        );
+
+
+    const reason =
+        firstValue(
+            request.reason,
+            "No reason provided."
+        );
+
+
+    return `
+
+        <div
+            class="request-card"
+            id="request-${escapeHTML(
+                request.id
+            )}"
+        >
+
+            <div class="request-header">
+
+                <div>
+
+                    <div class="request-staff">
+                        ${escapeHTML(
+                            staffName
+                        )}
+                    </div>
+
+                    <div class="request-id">
+                        Staff ID:
+                        ${escapeHTML(
+                            staffId
+                        )}
+                    </div>
+
+                </div>
+
+
+                <div class="status">
+                    PENDING APPROVAL
+                </div>
+
+            </div>
+
+
+            <div class="request-body">
+
+                <div class="info-grid">
+
+
+                    <div class="info-item">
+
+                        <div class="info-label">
+                            Department
+                        </div>
+
+                        <div class="info-value">
+                            ${escapeHTML(
+                                department
+                            )}
+                        </div>
+
+                    </div>
+
+
+                    <div class="info-item">
+
+                        <div class="info-label">
+                            Leave Type
+                        </div>
+
+                        <div class="info-value">
+                            ${escapeHTML(
+                                leaveType
+                            )}
+                        </div>
+
+                    </div>
+
+
+                    <div class="info-item">
+
+                        <div class="info-label">
+                            From Date
+                        </div>
+
+                        <div class="info-value">
+                            ${escapeHTML(
+                                fromDate
+                            )}
+                        </div>
+
+                    </div>
+
+
+                    <div class="info-item">
+
+                        <div class="info-label">
+                            To Date
+                        </div>
+
+                        <div class="info-value">
+                            ${escapeHTML(
+                                toDate
+                            )}
+                        </div>
+
+                    </div>
+
+
+                    <div class="info-item">
+
+                        <div class="info-label">
+                            Total Days
+                        </div>
+
+                        <div class="info-value">
+                            ${escapeHTML(
+                                totalDays
+                            )}
+                        </div>
+
+                    </div>
+
+
+                    <div class="info-item">
+
+                        <div class="info-label">
+                            Contact
+                        </div>
+
+                        <div class="info-value">
+                            ${escapeHTML(
+                                contact
+                            )}
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="reason-box">
+
+                    <div class="reason-label">
+                        Reason
+                    </div>
+
+                    <div class="reason-text">
+                        ${escapeHTML(
+                            reason
+                        )}
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="action-area">
+
+                <label
+                    class="remarks-label"
+                    for="remarks-${escapeHTML(
+                        request.id
+                    )}"
+                >
+                    Remarks
+                </label>
+
+
+                <textarea
+                    class="remarks"
+                    id="remarks-${escapeHTML(
+                        request.id
+                    )}"
+                    placeholder="Enter remarks..."
+                ></textarea>
+
+
+                <div class="action-buttons">
+
+
+                    <button
+                        type="button"
+                        class="btn-approve"
+                        onclick="approveLeave(
+                            '${escapeHTML(
+                                request.id
+                            )}'
+                        )"
+                    >
+                        Approve & Send to HR
+                    </button>
+
+
+                    <button
+                        type="button"
+                        class="btn-reject"
+                        onclick="rejectLeave(
+                            '${escapeHTML(
+                                request.id
+                            )}'
+                        )"
+                    >
+                        Reject
+                    </button>
+
+
+                </div>
+
+            </div>
+
+        </div>
+
+    `;
+}
+
+
+
+/* =========================================================
+   GET REMARKS
+========================================================= */
+
+function getRemarks(
+    requestId
+){
+
+    const element =
+        document.getElementById(
+            "remarks-" +
+            requestId
+        );
+
+
+    if(!element){
+        return "";
+    }
+
+
+    return element.value.trim();
+}
+
+
+
+/* =========================================================
+   APPROVE LEAVE
+========================================================= */
+
+window.approveLeave =
+    async function(
+        requestId
+    ){
+
+        if(!currentHead){
+            return;
         }
 
 
-        const existingStart =
-            new Date(
-                data.fromDate +
-                "T00:00:00"
+        try{
+
+            const remarks =
+                getRemarks(
+                    requestId
+                );
+
+
+            const card =
+                document.getElementById(
+                    "request-" +
+                    requestId
+                );
+
+
+            const buttons =
+                card?.querySelectorAll(
+                    "button"
+                );
+
+
+            buttons?.forEach(
+                button => {
+                    button.disabled =
+                        true;
+                }
             );
-
-
-        const existingEnd =
-            new Date(
-                data.toDate +
-                "T00:00:00"
-            );
-
-
-        if (
-            requestedStart <= existingEnd &&
-            requestedEnd >= existingStart
-        ) {
-
-            return true;
-        }
-    }
-
-
-    return false;
-}
-
-
-/* =========================================================
-   SUBMIT
-========================================================= */
-
-submitBtn.addEventListener(
-    "click",
-    async () => {
-
-        try {
-
-            if (!currentStaff) {
-
-                showMessage(
-                    "Staff details are not loaded.",
-                    "error"
-                );
-
-                return;
-            }
-
-
-            const type =
-                leaveType.value.trim();
-
-
-            const start =
-                fromDate.value;
-
-
-            const end =
-                toDate.value;
-
-
-            const leaveReason =
-                reason.value.trim();
-
-
-            if (!type) {
-
-                showMessage(
-                    "Please select Leave Type.",
-                    "error"
-                );
-
-                return;
-            }
-
-
-            if (!start) {
-
-                showMessage(
-                    "Please select From Date.",
-                    "error"
-                );
-
-                return;
-            }
-
-
-            if (!end) {
-
-                showMessage(
-                    "Please select To Date.",
-                    "error"
-                );
-
-                return;
-            }
-
-
-            if (end < start) {
-
-                showMessage(
-                    "To Date cannot be before From Date.",
-                    "error"
-                );
-
-                return;
-            }
-
-
-            if (!leaveReason) {
-
-                showMessage(
-                    "Please enter the reason.",
-                    "error"
-                );
-
-                return;
-            }
-
-
-            const days =
-                calculateDays();
-
-
-            if (days <= 0) {
-
-                showMessage(
-                    "Invalid leave dates.",
-                    "error"
-                );
-
-                return;
-            }
-
-
-            submitBtn.disabled =
-                true;
-
-            submitBtn.textContent =
-                "Checking...";
-
-
-            const duplicate =
-                await checkExistingLeave();
-
-
-            if (duplicate) {
-
-                submitBtn.disabled =
-                    false;
-
-                submitBtn.textContent =
-                    "Submit Leave Request";
-
-
-                showMessage(
-                    "You already have a leave request covering these dates.",
-                    "error"
-                );
-
-                return;
-            }
-
-
-            /*
-             * DETERMINE CORRECT ROUTE.
-             */
-
-            const workflow =
-                determineWorkflow(
-                    currentStaff
-                );
 
 
             /*
              * IMPORTANT:
              *
-             * STAFF INFORMATION COMES
-             * DIRECTLY FROM FIRESTORE.
-             *
-             * NOT FROM STORED NAME.
+             * Department Head approval
+             * sends request to HR Head.
              */
 
-            const leaveData = {
+            await updateDoc(
+                doc(
+                    db,
+                    "leaveRequests",
+                    requestId
+                ),
+                {
 
-                staffId:
-                    currentStaff.staffId,
-
-                staffName:
-                    currentStaff.name,
-
-                department:
-                    currentStaff.department,
-
-                serviceRole:
-                    currentStaff.serviceRole,
+                    status:
+                        "PENDING_HR",
 
 
-                leaveType:
-                    type,
-
-                fromDate:
-                    start,
-
-                toDate:
-                    end,
-
-                totalDays:
-                    days,
-
-                contactNumber:
-                    contactNumber.value.trim(),
-
-                reason:
-                    leaveReason,
+                    headId:
+                        currentHead.staffId,
 
 
-                workflowType:
-                    workflow.workflowType,
-
-                firstApproverRole:
-                    workflow.firstApproverRole,
-
-                firstApproverLabel:
-                    workflow.firstApproverLabel,
-
-                status:
-                    workflow.status,
+                    headName:
+                        currentHead.name,
 
 
-                headId: "",
-                headName: "",
-                headAction: "",
-                headRemarks: "",
-                headActionAt: null,
+                    headAction:
+                        "APPROVED",
 
 
-                hrHeadId: "",
-                hrHeadName: "",
-                hrAction: "",
-                hrRemarks: "",
-                hrActionAt: null,
+                    headRemarks:
+                        remarks,
 
 
-                deanId: "",
-                deanName: "",
-                deanAction: "",
-                deanRemarks: "",
-                deanActionAt: null,
+                    headActionAt:
+                        serverTimestamp(),
 
 
-                forwardedToId: "",
-                forwardedToName: "",
-                forwardedById: "",
-                forwardedByName: "",
-                forwardRemarks: "",
-                forwardedAt: null,
+                    updatedAt:
+                        serverTimestamp()
 
-
-                workCompletedBy: "",
-                workCompletedByName: "",
-                workCompletedAt: null,
-                workRemarks: "",
-
-
-                finalApprovedBy: "",
-                finalApprovedByName: "",
-                finalApprovalAt: null,
-                finalRemarks: "",
-
-
-                appliedAt:
-                    serverTimestamp(),
-
-                updatedAt:
-                    serverTimestamp()
-            };
-
-
-            console.log(
-                "FINAL LEAVE DATA:",
-                leaveData
-            );
-
-
-            submitBtn.textContent =
-                "Submitting...";
-
-
-            const ref =
-                await addDoc(
-                    collection(
-                        db,
-                        "leaveRequests"
-                    ),
-                    leaveData
-                );
-
-
-            console.log(
-                "LEAVE REQUEST ID:",
-                ref.id
+                }
             );
 
 
             showMessage(
-                "Leave request submitted successfully and sent to " +
-                workflow.firstApproverLabel +
-                ".",
+                "Leave request approved and sent to HR Head.",
                 "success"
             );
 
 
-            clearForm();
+            await loadLeaveRequests();
 
 
-        } catch (error) {
+        }
+        catch(error){
 
             console.error(
-                "LEAVE SUBMIT ERROR:",
+                "APPROVAL ERROR:",
                 error
             );
 
 
             showMessage(
-                "Unable to submit leave request: " +
+                "Unable to approve leave: " +
                 error.message,
                 "error"
             );
 
-        } finally {
 
-            submitBtn.disabled =
-                false;
-
-            submitBtn.textContent =
-                "Submit Leave Request";
+            await loadLeaveRequests();
         }
+    };
 
-    }
-);
 
 
 /* =========================================================
-   FIREBASE AUTH
+   REJECT LEAVE
 ========================================================= */
 
-onAuthStateChanged(
-    auth,
-    async (user) => {
+window.rejectLeave =
+    async function(
+        requestId
+    ){
 
-        /*
-         * We don't use the Firebase user's
-         * displayName.
-         *
-         * We still load the staff record
-         * from Firestore using Staff ID.
-         */
+        if(!currentHead){
+            return;
+        }
 
-        await loadStaff();
+
+        try{
+
+            const remarks =
+                getRemarks(
+                    requestId
+                );
+
+
+            if(!remarks){
+
+                showMessage(
+                    "Please enter a reason for rejecting the leave request.",
+                    "error"
+                );
+
+                return;
+            }
+
+
+            const card =
+                document.getElementById(
+                    "request-" +
+                    requestId
+                );
+
+
+            const buttons =
+                card?.querySelectorAll(
+                    "button"
+                );
+
+
+            buttons?.forEach(
+                button => {
+                    button.disabled =
+                        true;
+                }
+            );
+
+
+            /*
+             * Department Head rejection.
+             */
+
+            await updateDoc(
+                doc(
+                    db,
+                    "leaveRequests",
+                    requestId
+                ),
+                {
+
+                    status:
+                        "HEAD_REJECTED",
+
+
+                    headId:
+                        currentHead.staffId,
+
+
+                    headName:
+                        currentHead.name,
+
+
+                    headAction:
+                        "REJECTED",
+
+
+                    headRemarks:
+                        remarks,
+
+
+                    headActionAt:
+                        serverTimestamp(),
+
+
+                    updatedAt:
+                        serverTimestamp()
+
+                }
+            );
+
+
+            showMessage(
+                "Leave request rejected.",
+                "success"
+            );
+
+
+            await loadLeaveRequests();
+
+
+        }
+        catch(error){
+
+            console.error(
+                "REJECTION ERROR:",
+                error
+            );
+
+
+            showMessage(
+                "Unable to reject leave: " +
+                error.message,
+                "error"
+            );
+
+
+            await loadLeaveRequests();
+        }
+    };
+
+
+
+/* =========================================================
+   REFRESH
+========================================================= */
+
+refreshBtn.addEventListener(
+    "click",
+    async function(){
+
+        if(!currentHead){
+            return;
+        }
+
+
+        refreshBtn.disabled =
+            true;
+
+        refreshBtn.textContent =
+            "Loading...";
+
+
+        await loadLeaveRequests();
+
+
+        refreshBtn.disabled =
+            false;
+
+        refreshBtn.textContent =
+            "Refresh";
     }
 );
+
+
+
+/* =========================================================
+   START
+========================================================= */
+
+loadHead();
 
 </script>
 
