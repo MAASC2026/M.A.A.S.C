@@ -1,4 +1,4 @@
-   <!DOCTYPE html>
+ <!DOCTYPE html>
    <html lang="en">
 
    <head>
@@ -1647,9 +1647,9 @@ function showIdentityError(message) {
 
        return String(department || "")
            .trim()
-           .replace(/[\\\/]/g, "\_")
-           .replace(/\s+/g, "\_")
-           .replace(/[.#$[\\]]/g, "\_");
+           .replace(/[\\\/]/g, "_")
+           .replace(/\s+/g, "_")
+           .replace(/[.#$[\\]]/g, "_");
    }
 
    async function findDepartmentHead(serviceDepartment){
@@ -1715,7 +1715,7 @@ function showIdentityError(message) {
           METHOD 2: staff fallback
 
           assign-department-head.html also stores:
-          serviceRole = DEPARTMENT\_HEAD
+          serviceRole = DEPARTMENT_HEAD
           serviceHeadDepartment = actual department
           serviceHeadActive = true
        ========================================= */
@@ -1740,7 +1740,7 @@ function showIdentityError(message) {
                const staff = staffDoc.data();
 
                if(staff.serviceHeadActive === true &&
-                  staff.serviceRole === "DEPARTMENT\_HEAD"){
+                  staff.serviceRole === "DEPARTMENT_HEAD"){
 
                    activeHead = {
                        headId: String(staff.staffId || staffDoc.id),
@@ -2042,7 +2042,7 @@ function showIdentityError(message) {
                    {
 
                        action:
-                           "REQUEST\_CREATED",
+                           "REQUEST_CREATED",
 
                        title:
                            "Service request submitted",
@@ -2447,7 +2447,7 @@ function showIdentityError(message) {
                break;
 
 
-           case "IN\_PROGRESS":
+           case "IN_PROGRESS":
 
                className =
                    "status-progress";
@@ -2455,7 +2455,7 @@ function showIdentityError(message) {
                break;
 
 
-           case "ON\_HOLD":
+           case "ON_HOLD":
 
                className =
                    "status-hold";
@@ -2463,7 +2463,7 @@ function showIdentityError(message) {
                break;
 
 
-           case "WORK\_COMPLETED":
+           case "WORK_COMPLETED":
 
                className =
                    "status-completed";
@@ -2471,7 +2471,7 @@ function showIdentityError(message) {
                break;
 
 
-           case "HEAD\_VERIFICATION":
+           case "HEAD_VERIFICATION":
 
                className =
                    "status-verification";
@@ -2499,7 +2499,7 @@ function showIdentityError(message) {
 
        text =
            text.replaceAll(
-               "\_",
+               "_",
                " "
            );
 
