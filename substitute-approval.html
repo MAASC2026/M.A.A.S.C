@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Substitute Approval</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:Arial,Helvetica,sans-serif}
+body{background:#f4f7fb;color:#1f2937}
+.header{background:#1e3a8a;color:#fff;padding:22px 30px}
+.header h1{font-size:25px;margin-bottom:5px}.header p{font-size:14px;opacity:.9}
+.container{max-width:1500px;margin:25px auto;padding:0 18px}
+.card{background:#fff;border-radius:12px;padding:22px;margin-bottom:20px;box-shadow:0 3px 14px rgba(0,0,0,.08)}
+.title{font-size:20px;font-weight:bold;color:#1e3a8a;margin-bottom:18px}
+.filters{display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:14px}
+label{display:block;font-size:13px;font-weight:bold;margin-bottom:7px}
+input,select{width:100%;padding:11px;border:1px solid #d1d5db;border-radius:7px;background:#fff}
+button{border:0;border-radius:7px;padding:10px 15px;cursor:pointer;font-weight:bold}
+.primary{background:#2563eb;color:#fff}.approve{background:#16a34a;color:#fff}.reject{background:#dc2626;color:#fff}.secondary{background:#e5e7eb}
+button:disabled{opacity:.5;cursor:not-allowed}
+.message{display:none;margin-top:14px;padding:12px;border-radius:7px;font-size:14px}
+.message.show{display:block}.ok{background:#dcfce7;color:#166534}.err{background:#fee2e2;color:#991b1b}.info{background:#dbeafe;color:#1e40af}
+.table-wrap{overflow:auto}
+table{width:100%;border-collapse:collapse;min-width:1150px}
+th,td{padding:11px 10px;border-bottom:1px solid #e5e7eb;text-align:left;font-size:13px;vertical-align:top}
+th{background:#eff6ff;color:#1e3a8a;font-weight:bold;position:sticky;top:0}
+.status{display:inline-block;padding:5px 9px;border-radius:15px;font-size:11px;font-weight:bold}
+.pending{background:#fef3c7;color:#92400e}.approved{background:#dcfce7;color:#166534}.rejected{background:#fee2e2;color:#991b1b}
+.actions{display:flex;gap:7px;flex-wrap:wrap}
+.small{font-size:12px;color:#6b7280;margin-top:4px}
+.loading{text-align:center;padding:35px;color:#6b7280}
+.empty{text-align:center;padding:35px;color:#6b7280;background:#f9fafb}
+.summary{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px}
+.stat{padding:10px 15px;border-radius:8px;background:#eff6ff;color:#1e40af;font-size:13px;font-weight:bold}
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);align-items:center;justify-content:center;padding:20px;z-index:10}
+.modal.show{display:flex}.modal-box{background:#fff;width:min(500px,100%);border-radius:12px;padding:22px}
+.modal-box h2{color:#1e3a8a;margin-bottom:15px}
+textarea{width:100%;min-height:100px;padding:11px;border:1px solid #d1d5db;border-radius:7px;resize:vertical}
+.modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:15px}
+@media(max-width:850px){.filters{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="header">
+  <h1>Substitute Approval</h1>
+  <p>Department Head approval for substitute staff requests</p>
+</div>
+
+<div class="container">
+  <div class="card">
+    <div class="title">Approval Controls</div>
+    <div class="filters">
+      <div>
+        <label>Date</label>
+        <input type="date" id="filterDate">
+      </div>
+      <div>
+        <label>Status</label>
+        <select id="filterStatus">
+          <option value="PENDING_APPROVAL">Pending Approval</option>
+          <option value="ALL">All</option>
+          <option value="APPROVED">Approved</option>
+          <option value="REJECTED">Rejected</option>
+        </select>
+      </div>
+      <div>
+        <label>Search</label>
+        <input id="searchBox" placeholder="Staff ID, name, class, subject">
+      </div>
+      <div style="display:flex;align-items:end">
+        <button class="primary" id="refreshBtn">Refresh</button>
+      </div>
+    </div>
+    <div id="message" class="message"></div>
+  </div>
+
+  <div class="card">
+    <div class="summary">
+      <div class="stat">Pending: <span id="pendingCount">0</span></div>
+      <div class="stat">Approved: <span id="approvedCount">0</span></div>
+      <div class="stat">Rejected: <span id="rejectedCount">0</span></div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>S.No</th>
+            <th>Date / Day</th>
+            <th>Session / Hour</th>
+            <th>Class / Subject</th>
+            <th>Requesting Staff</th>
+            <th>Substitute Staff</th>
+            <th>Reason</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="requestTable">
+          <tr><td colspan="9" class="loading">Loading requests...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="rejectModal">
+  <div class="modal-box">
+    <h2>Reject Substitute Request</h2>
+    <p style="font-size:13px;color:#6b7280;margin-bottom:10px">Enter the reason for rejection.</p>
+    <textarea id="rejectReason" placeholder="Rejection reason"></textarea>
+    <div class="modal-actions">
+      <button class="secondary" id="cancelReject">Cancel</button>
+      <button class="reject" id="confirmReject">Reject Request</button>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {
+  getFirestore,collection,getDocs,doc,updateDoc,serverTimestamp
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig={
+  apiKey:"AIzaSyAIv3091VM-gkmdwEAn7OhXWd9Cm2zh2bo",
+  authDomain:"maasc-2026.firebaseapp.com",
+  projectId:"maasc-2026",
+  storageBucket:"maasc-2026.appspot.com",
+  messagingSenderId:"585813001586",
+  appId:"1:585813001586:web:664e0e90ff0725d2e849eb"
+};
+const app=initializeApp(firebaseConfig);
+const db=getFirestore(app);
+
+let requests=[];
+let rejectId=null;
+
+const $=id=>document.getElementById(id);
+const clean=v=>String(v??"").trim();
+const upper=v=>clean(v).toUpperCase();
+
+function esc(v){
+ return String(v??"").replace(/&/g,"&amp;").replace(/</g,"&lt;")
+ .replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;");
+}
+function normalizeDay(v){
+ const x=upper(v),m=x.match(/DAY\s*0?([1-6])/);
+ if(m)return "DAY "+String(Number(m[1])).padStart(2,"0");
+ if(/^[1-6]$/.test(x))return "DAY "+x.padStart(2,"0");
+ const old={MONDAY:"DAY 01",TUESDAY:"DAY 02",WEDNESDAY:"DAY 03",
+ THURSDAY:"DAY 04",FRIDAY:"DAY 05",SATURDAY:"DAY 06"};
+ return old[x]||x;
+}
+function normalizeSession(v){return upper(v)}
+function show(text,type){
+ $("message").textContent=text;
+ $("message").className="message show "+type;
+}
+function hideMessage(){$("message").className="message"}
+
+function getHeadSession(){
+ const keys=["staffSession","staff_session","loggedInStaff","currentStaff","staffData","userData","user"];
+ for(const k of keys){
+   try{
+     const raw=localStorage.getItem(k)||sessionStorage.getItem(k);
+     if(!raw)continue;
+     const x=JSON.parse(raw);
+     if(x&&typeof x==="object")return x;
+   }catch(e){}
+ }
+ return {};
+}
+
+const head=getHeadSession();
+const headId=clean(head.staffId??head.staffID??head.staff??head.staff_id??head.id);
+const headName=clean(head.staffName??head.name??head.displayName??head.staff_name);
+
+async function loadRequests(){
+ $("requestTable").innerHTML='<tr><td colspan="9" class="loading">Loading substitute requests...</td></tr>';
+ hideMessage();
+ try{
+   const snap=await getDocs(collection(db,"substituteRequests"));
+   requests=[];
+   snap.forEach(x=>requests.push({id:x.id,...x.data()}));
+
+   requests.sort((a,b)=>{
+     const ad=clean(a.date),bd=clean(b.date);
+     if(ad!==bd)return bd.localeCompare(ad);
+     return String(b.requestedAt?.seconds||0).localeCompare(String(a.requestedAt?.seconds||0));
+   });
+
+   updateCounts();
+   render();
+ }catch(err){
+   console.error("APPROVAL LOAD ERROR:",err);
+   $("requestTable").innerHTML='<tr><td colspan="9" class="empty">Unable to load requests: '+esc(err.message)+'</td></tr>';
+   show("Unable to load substitute requests. Check Firestore permissions.","err");
+ }
+}
+
+function updateCounts(){
+ let p=0,a=0,r=0;
+ requests.forEach(x=>{
+   const s=upper(x.status);
+   if(s==="PENDING_APPROVAL"||s==="PENDING"||s==="ALLOTTED")p++;
+   else if(s==="APPROVED")a++;
+   else if(s==="REJECTED")r++;
+ });
+ $("pendingCount").textContent=p;
+ $("approvedCount").textContent=a;
+ $("rejectedCount").textContent=r;
+}
+
+function filtered(){
+ const status=upper($("filterStatus").value);
+ const date=$("filterDate").value;
+ const term=upper($("searchBox").value);
+
+ return requests.filter(r=>{
+   const s=upper(r.status||"PENDING_APPROVAL");
+   if(status!=="ALL"){
+     if(status==="PENDING_APPROVAL"){
+       if(!(s==="PENDING_APPROVAL"||s==="PENDING"||s==="ALLOTTED"))return false;
+     }else if(s!==status)return false;
+   }
+   if(date&&clean(r.date)!==date)return false;
+   if(term){
+     const text=upper([
+       r.requestingStaffId,r.requestingStaffName,r.substituteStaffId,
+       r.substituteStaffName,r.className,r.subject,r.day,r.session
+     ].join(" "));
+     if(!text.includes(term))return false;
+   }
+   return true;
+ });
+}
+
+function render(){
+ const data=filtered();
+ const body=$("requestTable");
+ if(!data.length){
+   body.innerHTML='<tr><td colspan="9" class="empty">No requests found.</td></tr>';
+   return;
+ }
+ body.innerHTML=data.map((r,i)=>{
+   const s=upper(r.status||"PENDING_APPROVAL");
+   const cls=s==="APPROVED"?"approved":s==="REJECTED"?"rejected":"pending";
+   let actions="";
+   if(s==="PENDING_APPROVAL"||s==="PENDING"||s==="ALLOTTED"){
+     actions=`<div class="actions">
+       <button class="approve" data-action="approve" data-id="${esc(r.id)}">Approve</button>
+       <button class="reject" data-action="reject" data-id="${esc(r.id)}">Reject</button>
+     </div>`;
+   }else{
+     actions='<span class="small">Completed</span>';
+   }
+   return `<tr>
+     <td>${i+1}</td>
+     <td><b>${esc(r.date||"-")}</b><div class="small">${esc(normalizeDay(r.day))}</div></td>
+     <td><b>${esc(normalizeSession(r.session)||"-")}</b><div class="small">Hour ${esc(r.hour||"-")}</div></td>
+     <td><b>${esc(r.className||"-")}</b><div class="small">${esc(r.subject||"-")}</div></td>
+     <td><b>${esc(r.requestingStaffName||"-")}</b><div class="small">${esc(r.requestingStaffId||"")}</div></td>
+     <td><b>${esc(r.substituteStaffName||"-")}</b><div class="small">${esc(r.substituteStaffId||"")}</div></td>
+     <td>${esc(r.remarks||"-")}</td>
+     <td><span class="status ${cls}">${esc(s)}</span>
+       ${s==="REJECTED"&&r.rejectionReason?'<div class="small">Reason: '+esc(r.rejectionReason)+'</div>':''}
+     </td>
+     <td>${actions}</td>
+   </tr>`;
+ }).join("");
+
+ body.querySelectorAll("[data-action='approve']").forEach(b=>{
+   b.addEventListener("click",()=>approveRequest(b.dataset.id,b));
+ });
+ body.querySelectorAll("[data-action='reject']").forEach(b=>{
+   b.addEventListener("click",()=>openReject(b.dataset.id));
+ });
+}
+
+async function approveRequest(id,button){
+ if(!confirm("Approve this substitute assignment? It will become visible in the substitute staff timetable."))return;
+ button.disabled=true;
+ try{
+   const snap=await getDocs(collection(db,"substituteRequests"));
+   const current=snap.docs.find(x=>x.id===id);
+   if(!current)throw new Error("Request no longer exists.");
+   const r=current.data();
+   const status=upper(r.status);
+   if(status==="APPROVED"){
+     show("This request is already approved.","info");
+     await loadRequests();return;
+   }
+   if(status==="REJECTED"){
+     show("This request has already been rejected.","err");
+     await loadRequests();return;
+   }
+
+   // Final conflict check: the substitute must still be free.
+   const tt=await getDocs(collection(db,"timetableAssignments"));
+   const busy=tt.docs.some(x=>{
+     const t=x.data();
+     const tid=clean(t.staffId??t.staffID??t.staff??t.staff_id);
+     const day=normalizeDay(t.day??t.dayName??t.dayNo);
+     const session=normalizeSession(t.session);
+     const hour=Number(t.hour??t.period??t.hourNo??t.periodNo??0);
+     return upper(tid)===upper(r.substituteStaffId) &&
+       day===normalizeDay(r.day) &&
+       session===normalizeSession(r.session) &&
+       hour===Number(r.hour);
+   });
+   if(busy){
+     show("Cannot approve: the selected substitute staff now has a timetable entry for this slot.","err");
+     await loadRequests();return;
+   }
+
+   // Prevent another active substitute request from taking the same staff slot.
+   const conflicts=snap.docs.some(x=>{
+     if(x.id===id)return false;
+     const q=x.data(),qs=upper(q.status);
+     return (qs==="APPROVED"||qs==="PENDING_APPROVAL"||qs==="PENDING"||qs==="ALLOTTED") &&
+       upper(q.substituteStaffId)===upper(r.substituteStaffId) &&
+       clean(q.date)===clean(r.date) &&
+       normalizeDay(q.day)===normalizeDay(r.day) &&
+       normalizeSession(q.session)===normalizeSession(r.session) &&
+       Number(q.hour)===Number(r.hour);
+   });
+   if(conflicts){
+     show("Cannot approve: this substitute staff is already assigned to another request for the same slot.","err");
+     await loadRequests();return;
+   }
+
+   await updateDoc(doc(db,"substituteRequests",id),{
+     status:"APPROVED",
+     approvedBy:headId||"HEAD",
+     approvedByName:headName||"Department Head",
+     approvedAt:serverTimestamp(),
+     rejectionReason:null
+   });
+
+   show("Substitute request approved successfully. It will now appear in the substitute staff timetable.","ok");
+   await loadRequests();
+ }catch(err){
+   console.error("APPROVE ERROR:",err);
+   show("Approval failed: "+err.message,"err");
+   button.disabled=false;
+ }
+}
+
+function openReject(id){
+ rejectId=id;
+ $("rejectReason").value="";
+ $("rejectModal").classList.add("show");
+ $("rejectReason").focus();
+}
+
+$("cancelReject").addEventListener("click",()=>{
+ rejectId=null;$("rejectModal").classList.remove("show");
+});
+
+$("confirmReject").addEventListener("click",rejectRequest);
+
+async function rejectRequest(){
+ if(!rejectId)return;
+ const reason=clean($("rejectReason").value);
+ if(!reason){
+   alert("Please enter the rejection reason.");
+   return;
+ }
+ const id=rejectId;
+ $("confirmReject").disabled=true;
+ try{
+   await updateDoc(doc(db,"substituteRequests",id),{
+     status:"REJECTED",
+     approvedBy:headId||"HEAD",
+     approvedByName:headName||"Department Head",
+     approvedAt:serverTimestamp(),
+     rejectionReason:reason
+   });
+   $("rejectModal").classList.remove("show");
+   rejectId=null;
+   show("Substitute request rejected.","ok");
+   await loadRequests();
+ }catch(err){
+   console.error("REJECT ERROR:",err);
+   show("Rejection failed: "+err.message,"err");
+ }finally{
+   $("confirmReject").disabled=false;
+ }
+}
+
+$("refreshBtn").addEventListener("click",loadRequests);
+$("filterStatus").addEventListener("change",render);
+$("filterDate").addEventListener("change",render);
+$("searchBox").addEventListener("input",render);
+
+loadRequests();
+</script>
+</body>
+</html>
