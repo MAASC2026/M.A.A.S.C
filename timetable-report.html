@@ -302,6 +302,13 @@ button:hover {
     font-weight: bold;
 }
 
+.substitute-date {
+    margin-top: 5px;
+    font-size: 10px;
+    color: #166534;
+    font-weight: bold;
+}
+
 .substitute-original {
     margin-top: 7px;
     font-size: 10px;
@@ -344,7 +351,7 @@ button:hover {
 .records-table table {
     width: 100%;
     border-collapse: collapse;
-    min-width: 1250px;
+    min-width: 1400px;
 }
 
 .records-table th {
@@ -382,6 +389,11 @@ button:hover {
 .badge-substitute {
     background: #dcfce7;
     color: #166534;
+}
+
+.badge-date {
+    background: #ede9fe;
+    color: #5b21b6;
 }
 
 .empty {
@@ -529,10 +541,10 @@ button:hover {
                 </div>
 
             </div>
+
         </div>
 
     </div>
-
 
     <div class="card report-card" id="reportCard">
 
@@ -569,7 +581,6 @@ button:hover {
 
         </div>
 
-
         <div class="stats">
 
             <div class="stat stat-blue">
@@ -589,7 +600,6 @@ button:hover {
 
         </div>
 
-
         <div class="table-wrapper">
 
             <table
@@ -597,12 +607,12 @@ button:hover {
                 id="timetableTable">
 
                 <thead id="timetableHead"></thead>
+
                 <tbody id="timetableBody"></tbody>
 
             </table>
 
         </div>
-
 
         <div class="records-table">
 
@@ -617,7 +627,8 @@ button:hover {
                     <thead>
                         <tr>
                             <th>S.No</th>
-                            <th>Day</th>
+                            <th>Day Order</th>
+                            <th>Assignment Date</th>
                             <th>Session</th>
                             <th>Hour</th>
                             <th>Subject Code</th>
@@ -642,7 +653,6 @@ button:hover {
     </div>
 
 </div>
-
 
 <script type="module">
 
@@ -670,8 +680,11 @@ const firebaseConfig = {
     appId: "1:585813001586:web:664e0e90ff0725d2e849eb"
 };
 
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+const app =
+    initializeApp(firebaseConfig);
+
+const db =
+    getFirestore(app);
 
 
 /* =========================================================
@@ -728,85 +741,97 @@ function escapeHtml(value) {
 
 
 /* =========================================================
-   SUBSTITUTE DATE FUNCTIONS
+   DATE
+   IMPORTANT:
+   DATE AND DAY ORDER ARE COMPLETELY INDEPENDENT
 ========================================================= */
 
-/*
- * Gets the date on which the substitute assignment
- * is actually effective.
- *
- * Supports:
- *
- * assignmentDate
- * assignedDate
- * substituteDate
- * date
- * requestDate
- * assignment_date
- * assigned_date
- *
- * Also supports Firestore Timestamp.
- */
+function formatDateOnly(date) {
 
-function getSubstituteAssignmentDate(data) {
+    const year =
+        date.getFullYear();
 
-    const rawDate =
-        firstValue(
-            data.assignmentDate,
-            data.assignedDate,
-            data.substituteDate,
-            data.date,
-            data.requestDate,
-            data.assignment_date,
-            data.assigned_date
-        );
+    const month =
+        String(
+            date.getMonth() + 1
+        ).padStart(2, "0");
 
-
-    if (!rawDate) {
-        return null;
-    }
-
-
-    /*
-     * Firestore Timestamp
-     */
-
-    if (
-        rawDate &&
-        typeof rawDate.toDate === "function"
-    ) {
-
-        const date =
-            rawDate.toDate();
-
-        return new Date(
-            date.getFullYear(),
-            date.getMonth(),
+    const day =
+        String(
             date.getDate()
-        );
-    }
+        ).padStart(2, "0");
+
+    return `${year}-${month}-${day}`;
+}
 
 
-    /*
-     * JavaScript Date
-     */
+function getTodayDate() {
 
-    if (rawDate instanceof Date) {
+    return formatDateOnly(
+        new Date()
+    );
+}
 
-        return new Date(
-            rawDate.getFullYear(),
-            rawDate.getMonth(),
-            rawDate.getDate()
-        );
-    }
 
+function getAssignmentDate(data) {
 
     const value =
-        String(rawDate).trim();
-
+        firstValue(
+            data.assignmentDate,
+            data.substituteDate,
+            data.assignedDate,
+            data.date,
+            data.requestDate,
+            data.substituteAssignmentDate
+        );
 
     if (!value) {
-        return null;
+        return "";
+    }
+
+
+    /* Firestore Timestamp */
+
+    if (
+        typeof value === "object" &&
+        typeof value.toDate === "function"
+    ) {
+
+        return formatDateOnly(
+            value.toDate()
+        );
+    }
+
+
+    /* Firestore timestamp object */
+
+    if (
+        typeof value === "object" &&
+        value.seconds !== undefined
+    ) {
+
+        return formatDateOnly(
+            new Date(
+                Number(value.seconds) * 1000
+            )
+        );
+    }
+
+
+    /* JavaScript Date */
+
+    if (value instanceof Date) {
+
+        return formatDateOnly(value);
+    }
+
+
+    const text =
+        String(value).trim();
+
+
+    if (!text) {
+        return "";
     }
 
 
@@ -814,171 +839,105 @@ function getSubstituteAssignmentDate(data) {
      * YYYY-MM-DD
      */
 
-    let match =
-        value.match(
-            /^(\d{4})-(\d{1,2})-(\d{1,2})$/
+    const iso =
+        text.match(
+            /^(\d{4})-(\d{2})-(\d{2})/
         );
 
+    if (iso) {
 
-    if (match) {
-
-        return new Date(
-            Number(match[1]),
-            Number(match[2]) - 1,
-            Number(match[3])
+        return (
+            `${iso[1]}-${iso[2]}-${iso[3]}`
         );
     }
 
 
     /*
-     * DD-MM-YYYY
-     * DD/MM/YYYY
+     * DD-MM-YYYY or DD/MM/YYYY
      */
 
-    match =
-        value.match(
-            /^(\d{1,2})[-\/](\d{1,2})[-\/](\d{4})$/
+    const dmy =
+        text.match(
+            /^(\d{1,2})[-/](\d{1,2})[-/](\d{4})$/
         );
 
+    if (dmy) {
 
-    if (match) {
-
-        return new Date(
-            Number(match[3]),
-            Number(match[2]) - 1,
-            Number(match[1])
-        );
-    }
-
-
-    /*
-     * YYYY/MM/DD
-     */
-
-    match =
-        value.match(
-            /^(\d{4})[-\/](\d{1,2})[-\/](\d{1,2})$/
-        );
-
-
-    if (match) {
-
-        return new Date(
-            Number(match[1]),
-            Number(match[2]) - 1,
-            Number(match[3])
+        return (
+            `${dmy[3]}-` +
+            `${String(dmy[2]).padStart(2, "0")}-` +
+            `${String(dmy[1]).padStart(2, "0")}`
         );
     }
 
 
     /*
-     * Normal JavaScript date parsing
+     * Date parsing fallback
      */
 
     const parsed =
-        new Date(value);
+        new Date(text);
 
+    if (
+        !isNaN(
+            parsed.getTime()
+        )
+    ) {
 
-    if (!isNaN(parsed.getTime())) {
-
-        return new Date(
-            parsed.getFullYear(),
-            parsed.getMonth(),
-            parsed.getDate()
+        return formatDateOnly(
+            parsed
         );
     }
 
 
-    return null;
+    return "";
 }
 
 
 /*
- * Returns TRUE only when the substitute assignment
- * is for TODAY or a FUTURE date.
+ * TRUE = assignment is still valid
  *
  * Example:
  *
- * Assignment = 13-08-2026
- * Today      = 14-08-2026
- * Result     = false
+ * assignmentDate = 2026-08-14
+ * today          = 2026-08-14
+ * RESULT         = true
  *
- * Assignment = 14-08-2026
- * Today      = 14-08-2026
- * Result     = true
+ * assignmentDate = 2026-08-13
+ * today          = 2026-08-14
+ * RESULT         = false
  *
- * Assignment = 15-08-2026
- * Today      = 14-08-2026
- * Result     = true
+ * Day order is NOT checked here.
  */
 
-function isSubstituteAssignmentActive(data) {
+function isSubstituteDateActive(record) {
 
-    const assignmentDate =
-        getSubstituteAssignmentDate(data);
+    if (!record.assignmentDate) {
 
+        /*
+         * Old records without a date
+         * are allowed to display.
+         */
 
-    /*
-     * IMPORTANT:
-     *
-     * If the assignment does not contain ANY
-     * recognizable date, do NOT automatically
-     * display it as an active substitute.
-     *
-     * This prevents an old assignment with a
-     * different/unknown date from appearing.
-     */
-
-    if (!assignmentDate) {
-
-        console.warn(
-            "SUBSTITUTE DATE NOT FOUND - RECORD HIDDEN:",
-            data
-        );
-
-        return false;
+        return true;
     }
-
-
-    const now =
-        new Date();
 
 
     const today =
-        new Date(
-            now.getFullYear(),
-            now.getMonth(),
-            now.getDate()
-        );
+        getTodayDate();
 
 
     return (
-        assignmentDate.getTime() >=
-        today.getTime()
+        record.assignmentDate >=
+        today
     );
-}
-
-
-/*
- * Optional helper used only for debugging.
- */
-
-function formatDateForLog(date) {
-
-    if (!date) {
-        return "-";
-    }
-
-    return [
-        String(date.getDate()).padStart(2, "0"),
-        String(date.getMonth() + 1).padStart(2, "0"),
-        date.getFullYear()
-    ].join("-");
 }
 
 
 /* =========================================================
    DAY
+   DAY ORDER IS COMPLETELY INDEPENDENT
+   FROM ASSIGNMENT DATE
 ========================================================= */
 
 function normalizeDay(value) {
@@ -994,7 +953,9 @@ function normalizeDay(value) {
 
 
     const match =
-        day.match(/DAY\s*0?([1-6])/);
+        day.match(
+            /DAY\s*0?([1-6])/
+        );
 
     if (match) {
 
@@ -1022,7 +983,10 @@ function normalizeDay(value) {
     };
 
 
-    return oldDays[day] || day;
+    return (
+        oldDays[day] ||
+        day
+    );
 }
 
 
@@ -1032,7 +996,7 @@ function normalizeDay(value) {
 
 function normalizeSession(value) {
 
-    let session =
+    const session =
         String(value ?? "")
             .trim()
             .toUpperCase();
@@ -1124,7 +1088,6 @@ function getHour(data) {
             data.hourNumber
         );
 
-
     if (typeof raw === "number") {
         return raw;
     }
@@ -1134,13 +1097,14 @@ function getHour(data) {
         String(raw ?? "")
             .match(/\d+/);
 
-
     if (!match) {
         return 0;
     }
 
 
-    return Number(match[0]);
+    return Number(
+        match[0]
+    );
 }
 
 
@@ -1154,18 +1118,20 @@ function showMessage(
 ) {
 
     const message =
-        document.getElementById("message");
-
+        document.getElementById(
+            "message"
+        );
 
     message.textContent =
         text;
-
 
     message.className =
         "message " + type;
 
 
-    if (type !== "error") {
+    if (
+        type !== "error"
+    ) {
 
         setTimeout(() => {
 
@@ -1178,7 +1144,7 @@ function showMessage(
 
 
 /* =========================================================
-   CREATE NORMALIZED TIMETABLE RECORD
+   NORMALIZE REGULAR TIMETABLE
 ========================================================= */
 
 function normalizeTimetableRecord(
@@ -1198,7 +1164,8 @@ function normalizeTimetableRecord(
                     data.day,
                     data.dayName,
                     data.dayNo,
-                    data.dayNumber
+                    data.dayNumber,
+                    data.dayOrder
                 )
             ),
 
@@ -1261,7 +1228,7 @@ function normalizeTimetableRecord(
 
 
 /* =========================================================
-   LOAD ALL TIMETABLE DATA
+   LOAD DATA
 ========================================================= */
 
 async function loadTimetableData() {
@@ -1275,18 +1242,18 @@ async function loadTimetableData() {
 
 
         timetableData = [];
-
         substituteData = [];
+
 
         const staffMap =
             new Map();
 
 
         /* =================================================
-           LOAD REGULAR TIMETABLE
+           REGULAR TIMETABLE
         ================================================= */
 
-        const snapshot =
+        const timetableSnapshot =
             await getDocs(
                 collection(
                     db,
@@ -1295,81 +1262,89 @@ async function loadTimetableData() {
             );
 
 
-        snapshot.forEach(doc => {
+        timetableSnapshot.forEach(
+            doc => {
 
-            const data =
-                doc.data() || {};
-
-
-            const record =
-                normalizeTimetableRecord(
-                    doc.id,
-                    data
-                );
+                const data =
+                    doc.data() || {};
 
 
-            if (
-                !record.normalizedStaffId
-            ) {
-                return;
-            }
-
-
-            timetableData.push(
-                record
-            );
-
-
-            const staffId =
-                record.normalizedStaffId;
-
-
-            if (!staffMap.has(staffId)) {
-
-                staffMap.set(
-                    staffId,
-                    {
-                        staffId,
-                        staffName:
-                            record.normalizedStaffName,
-                        department:
-                            record.normalizedDepartment
-                    }
-                );
-
-            } else {
-
-                const staff =
-                    staffMap.get(
-                        staffId
+                const record =
+                    normalizeTimetableRecord(
+                        doc.id,
+                        data
                     );
 
 
                 if (
-                    !staff.staffName &&
-                    record.normalizedStaffName
+                    !record.normalizedStaffId
                 ) {
-
-                    staff.staffName =
-                        record.normalizedStaffName;
+                    return;
                 }
+
+
+                timetableData.push(
+                    record
+                );
+
+
+                const staffId =
+                    record.normalizedStaffId;
 
 
                 if (
-                    !staff.department &&
-                    record.normalizedDepartment
+                    !staffMap.has(
+                        staffId
+                    )
                 ) {
 
-                    staff.department =
-                        record.normalizedDepartment;
-                }
-            }
+                    staffMap.set(
+                        staffId,
+                        {
+                            staffId,
 
-        });
+                            staffName:
+                                record.normalizedStaffName,
+
+                            department:
+                                record.normalizedDepartment
+                        }
+                    );
+
+                } else {
+
+                    const staff =
+                        staffMap.get(
+                            staffId
+                        );
+
+
+                    if (
+                        !staff.staffName &&
+                        record.normalizedStaffName
+                    ) {
+
+                        staff.staffName =
+                            record.normalizedStaffName;
+                    }
+
+
+                    if (
+                        !staff.department &&
+                        record.normalizedDepartment
+                    ) {
+
+                        staff.department =
+                            record.normalizedDepartment;
+                    }
+                }
+
+            }
+        );
 
 
         /* =================================================
-           LOAD SUBSTITUTE REQUESTS
+           SUBSTITUTE REQUESTS
         ================================================= */
 
         const substituteSnapshot =
@@ -1381,256 +1356,313 @@ async function loadTimetableData() {
             );
 
 
-        substituteSnapshot.forEach(doc => {
+        substituteSnapshot.forEach(
+            doc => {
 
-            const data =
-                doc.data() || {};
+                const data =
+                    doc.data() || {};
 
 
-            const status =
-                String(
-                    firstValue(
-                        data.status,
-                        data.approvalStatus,
-                        data.requestStatus
+                const status =
+                    String(
+                        firstValue(
+                            data.status,
+                            data.approvalStatus,
+                            data.requestStatus
+                        )
                     )
-                )
-                .trim()
-                .toUpperCase();
+                    .trim()
+                    .toUpperCase();
 
-
-            /*
-             * ONLY APPROVED RECORDS
-             */
-
-            if (
-                status !== "APPROVED"
-            ) {
-
-                return;
-            }
-
-
-            /* =================================================
-               DATE CHECK
-               =================================================
-               
-               THIS IS THE IMPORTANT FIX.
-
-               An approved substitute is loaded ONLY if
-               its assignment date is today or later.
-
-               Expired dates are NOT pushed into
-               substituteData.
-            ================================================= */
-
-            const assignmentDate =
-                getSubstituteAssignmentDate(data);
-
-
-            if (!assignmentDate) {
-
-                console.warn(
-                    "APPROVED SUBSTITUTE HIDDEN - NO VALID DATE:",
-                    doc.id,
-                    data
-                );
-
-                return;
-            }
-
-
-            if (
-                !isSubstituteAssignmentActive(data)
-            ) {
-
-                console.log(
-                    "EXPIRED SUBSTITUTE HIDDEN:",
-                    {
-                        id: doc.id,
-                        assignmentDate:
-                            formatDateForLog(
-                                assignmentDate
-                            ),
-                        today:
-                            formatDateForLog(
-                                new Date()
-                            )
-                    }
-                );
-
-                return;
-            }
-
-
-            /*
-             * Get substitute staff ID.
-             */
-
-            const substituteStaffId =
-                String(
-                    firstValue(
-                        data.substituteStaffId,
-                        data.substituteStaffID,
-                        data.substituteId,
-                        data.allottedStaffId,
-                        data.allotedStaffId,
-                        data.assignedStaffId
-                    )
-                ).trim();
-
-
-            if (!substituteStaffId) {
-
-                console.warn(
-                    "SUBSTITUTE STAFF ID MISSING:",
-                    doc.id
-                );
-
-                return;
-            }
-
-
-            const substituteStaffName =
-                String(
-                    firstValue(
-                        data.substituteStaffName,
-                        data.substituteName,
-                        data.allottedStaffName,
-                        data.allotedStaffName,
-                        data.assignedStaffName
-                    )
-                ).trim();
-
-
-            const record = {
-
-                id: doc.id,
-
-                ...data,
-
-                isSubstitute: true,
 
                 /*
-                 * Store normalized assignment date
-                 * inside the record as well.
+                 * ONLY APPROVED
                  */
 
-                substituteAssignmentDate:
-                    assignmentDate,
+                if (
+                    status !==
+                    "APPROVED"
+                ) {
 
-                normalizedDay:
+                    return;
+                }
+
+
+                const substituteStaffId =
+                    String(
+                        firstValue(
+                            data.substituteStaffId,
+                            data.substituteStaffID,
+                            data.substituteId,
+                            data.allottedStaffId,
+                            data.allotedStaffId,
+                            data.assignedStaffId
+                        )
+                    ).trim();
+
+
+                if (
+                    !substituteStaffId
+                ) {
+
+                    return;
+                }
+
+
+                const substituteStaffName =
+                    String(
+                        firstValue(
+                            data.substituteStaffName,
+                            data.substituteName,
+                            data.allottedStaffName,
+                            data.allotedStaffName,
+                            data.assignedStaffName
+                        )
+                    ).trim();
+
+
+                /*
+                 * =================================================
+                 * DAY ORDER
+                 *
+                 * ONLY READ THE SELECTED DAY ORDER.
+                 *
+                 * DO NOT CALCULATE THIS FROM DATE.
+                 * =================================================
+                 */
+
+                const assignmentDay =
                     normalizeDay(
                         firstValue(
                             data.day,
                             data.dayName,
                             data.dayNo,
+                            data.dayNumber,
+                            data.dayOrder,
                             data.assignmentDay,
-                            data.requestDay
+                            data.substituteDay
                         )
-                    ),
+                    );
 
-                normalizedSession:
+
+                /*
+                 * =================================================
+                 * ASSIGNMENT DATE
+                 *
+                 * COMPLETELY SEPARATE FROM DAY ORDER.
+                 * =================================================
+                 */
+
+                const assignmentDate =
+                    getAssignmentDate(
+                        data
+                    );
+
+
+                /*
+                 * =================================================
+                 * DATE EXPIRY CHECK
+                 *
+                 * THIS IS THE ONLY DATE CHECK.
+                 *
+                 * DAY ORDER DOES NOT PARTICIPATE.
+                 * =================================================
+                 */
+
+                if (
+                    assignmentDate &&
+                    assignmentDate <
+                    getTodayDate()
+                ) {
+
+                    console.log(
+                        "EXPIRED SUBSTITUTE NOT DISPLAYED:",
+                        {
+                            id: doc.id,
+                            day: assignmentDay,
+                            assignmentDate,
+                            today:
+                                getTodayDate()
+                        }
+                    );
+
+                    return;
+                }
+
+
+                const assignmentSession =
                     normalizeSession(
                         firstValue(
                             data.session,
                             data.substituteSession,
                             data.assignmentSession
                         )
-                    ),
+                    );
 
-                normalizedHour:
-                    getHour(data),
 
-                normalizedStaffId:
-                    substituteStaffId,
+                const assignmentHour =
+                    getHour(data);
 
-                normalizedStaffName:
-                    substituteStaffName,
 
-                normalizedDepartment:
-                    String(
+                /*
+                 * INVALID RECORD
+                 */
+
+                if (
+                    !assignmentDay ||
+                    !assignmentSession ||
+                    assignmentHour <= 0
+                ) {
+
+                    console.warn(
+                        "INVALID SUBSTITUTE:",
+                        doc.id,
+                        data
+                    );
+
+                    return;
+                }
+
+
+                /*
+                 * CREATE RECORD
+                 */
+
+                const record = {
+
+                    id: doc.id,
+
+                    ...data,
+
+                    isSubstitute:
+                        true,
+
+                    /*
+                     * DAY ORDER
+                     */
+                    normalizedDay:
+                        assignmentDay,
+
+                    /*
+                     * DATE
+                     */
+                    assignmentDate:
+                        assignmentDate,
+
+                    /*
+                     * SESSION
+                     */
+                    normalizedSession:
+                        assignmentSession,
+
+                    /*
+                     * HOUR
+                     */
+                    normalizedHour:
+                        assignmentHour,
+
+                    /*
+                     * SUBSTITUTE STAFF
+                     */
+                    normalizedStaffId:
+                        substituteStaffId,
+
+                    normalizedStaffName:
+                        substituteStaffName,
+
+                    normalizedDepartment:
+                        String(
+                            firstValue(
+                                data.substituteDepartment,
+                                data.department,
+                                data.dept
+                            )
+                        ).trim(),
+
+                    /*
+                     * ORIGINAL STAFF
+                     */
+                    originalStaffId:
+                        String(
+                            firstValue(
+                                data.requestingStaffId,
+                                data.requestedByStaffId,
+                                data.originalStaffId,
+                                data.staffId,
+                                data.staffID
+                            )
+                        ).trim(),
+
+                    originalStaffName:
+                        String(
+                            firstValue(
+                                data.requestingStaffName,
+                                data.requestedByStaffName,
+                                data.originalStaffName,
+                                data.staffName,
+                                data.name
+                            )
+                        ).trim(),
+
+                    subjectCode:
                         firstValue(
-                            data.substituteDepartment,
-                            data.department,
-                            data.dept
-                        )
-                    ).trim(),
+                            data.subjectCode,
+                            data.subjectId,
+                            data.code
+                        ),
 
-                originalStaffId:
-                    String(
+                    subjectName:
                         firstValue(
-                            data.requestingStaffId,
-                            data.requestedByStaffId,
-                            data.originalStaffId,
-                            data.staffId,
-                            data.staffID
-                        )
-                    ).trim(),
+                            data.subjectName,
+                            data.subject,
+                            data.subjectTitle
+                        ),
 
-                originalStaffName:
-                    String(
+                    classYear:
                         firstValue(
-                            data.requestingStaffName,
-                            data.requestedByStaffName,
-                            data.originalStaffName,
-                            data.staffName,
-                            data.name
+                            data.classYear,
+                            data.class,
+                            data.year,
+                            data.className
+                        ),
+
+                    section:
+                        firstValue(
+                            data.section,
+                            data.sec
+                        ),
+
+                    roomNo:
+                        firstValue(
+                            data.roomNo,
+                            data.room,
+                            data.roomNumber
                         )
-                    ).trim(),
+                };
 
-                subjectCode:
-                    firstValue(
-                        data.subjectCode,
-                        data.subjectId,
-                        data.code
-                    ),
 
-                subjectName:
-                    firstValue(
-                        data.subjectName,
-                        data.subject,
-                        data.subjectTitle
-                    ),
+                /*
+                 * Extra safety check
+                 */
 
-                classYear:
-                    firstValue(
-                        data.classYear,
-                        data.class,
-                        data.year,
-                        data.className
-                    ),
-
-                section:
-                    firstValue(
-                        data.section,
-                        data.sec
-                    ),
-
-                roomNo:
-                    firstValue(
-                        data.roomNo,
-                        data.room,
-                        data.roomNumber
+                if (
+                    !isSubstituteDateActive(
+                        record
                     )
-            };
+                ) {
 
+                    return;
+                }
 
-            /*
-             * Only valid substitute records
-             * are allowed into substituteData.
-             */
-
-            if (
-                record.normalizedDay &&
-                record.normalizedSession &&
-                record.normalizedHour > 0
-            ) {
 
                 substituteData.push(
                     record
                 );
 
+
+                /*
+                 * ADD SUBSTITUTE STAFF
+                 */
 
                 if (
                     !staffMap.has(
@@ -1655,17 +1687,19 @@ async function loadTimetableData() {
                 }
 
             }
-
-        });
+        );
 
 
         /*
-         * Copy original timetable details
-         * into every approved active substitute.
+         * ENRICH SUBSTITUTE INFORMATION
          */
 
         enrichSubstituteRecords();
 
+
+        /*
+         * STAFF LIST
+         */
 
         staffList =
             Array.from(
@@ -1674,8 +1708,7 @@ async function loadTimetableData() {
 
 
         /*
-         * Make sure active substitute staff
-         * are also included.
+         * Make sure substitute staff exists
          */
 
         substituteData.forEach(
@@ -1708,11 +1741,18 @@ async function loadTimetableData() {
 
                         department:
                             substitute.normalizedDepartment
+
                     });
+
                 }
+
             }
         );
 
+
+        /*
+         * SORT STAFF
+         */
 
         staffList.sort(
             (a, b) => {
@@ -1742,12 +1782,17 @@ async function loadTimetableData() {
 
 
         console.log(
+            "TODAY:",
+            getTodayDate()
+        );
+
+        console.log(
             "REGULAR TIMETABLE:",
             timetableData
         );
 
         console.log(
-            "ACTIVE APPROVED SUBSTITUTE DATA:",
+            "ACTIVE SUBSTITUTE DATA:",
             substituteData
         );
 
@@ -1757,20 +1802,10 @@ async function loadTimetableData() {
         );
 
 
-        if (!timetableData.length) {
-
-            showMessage(
-                "No timetable assignments found.",
-                "error"
-            );
-
-        } else {
-
-            document.getElementById(
-                "message"
-            ).className =
-                "message";
-        }
+        document.getElementById(
+            "message"
+        ).className =
+            "message";
 
 
     } catch (error) {
@@ -1791,7 +1826,7 @@ async function loadTimetableData() {
 
 
 /* =========================================================
-   ENRICH SUBSTITUTE RECORDS
+   ENRICH SUBSTITUTE
 ========================================================= */
 
 function enrichSubstituteRecords() {
@@ -1800,13 +1835,16 @@ function enrichSubstituteRecords() {
         substituteData.map(
             substitute => {
 
+                /*
+                 * Only match the original timetable
+                 * using DAY + SESSION + HOUR.
+                 *
+                 * DATE IS NOT USED.
+                 */
+
                 let originalEntry =
                     null;
 
-
-                /*
-                 * Exact match using original staff.
-                 */
 
                 if (
                     substitute.originalStaffId
@@ -1817,62 +1855,66 @@ function enrichSubstituteRecords() {
                             item =>
 
                                 item.normalizedStaffId ===
-                                    substitute.originalStaffId &&
+                                substitute.originalStaffId &&
 
                                 item.normalizedDay ===
-                                    substitute.normalizedDay &&
+                                substitute.normalizedDay &&
 
                                 item.normalizedSession ===
-                                    substitute.normalizedSession &&
+                                substitute.normalizedSession &&
 
                                 item.normalizedHour ===
-                                    substitute.normalizedHour
+                                substitute.normalizedHour
                         );
                 }
 
 
                 /*
-                 * Fallback:
-                 * DAY + SESSION + HOUR
+                 * Fallback
                  */
 
-                if (!originalEntry) {
+                if (
+                    !originalEntry
+                ) {
 
                     originalEntry =
                         timetableData.find(
                             item =>
 
                                 item.normalizedDay ===
-                                    substitute.normalizedDay &&
+                                substitute.normalizedDay &&
 
                                 item.normalizedSession ===
-                                    substitute.normalizedSession &&
+                                substitute.normalizedSession &&
 
                                 item.normalizedHour ===
-                                    substitute.normalizedHour
+                                substitute.normalizedHour
                         );
                 }
 
 
-                if (originalEntry) {
+                if (
+                    originalEntry
+                ) {
 
                     return {
 
+                        /*
+                         * Original timetable
+                         */
                         ...originalEntry,
 
+                        /*
+                         * Substitute record
+                         */
                         ...substitute,
 
-                        isSubstitute: true,
-
+                        isSubstitute:
+                            true,
 
                         /*
-                         * Preserve assignment date.
+                         * SUBJECT
                          */
-
-                        substituteAssignmentDate:
-                            substitute.substituteAssignmentDate,
-
-
                         subjectCode:
                             firstValue(
                                 originalEntry.subjectCode,
@@ -1882,7 +1924,6 @@ function enrichSubstituteRecords() {
                                 substitute.subjectId,
                                 substitute.code
                             ),
-
 
                         subjectName:
                             firstValue(
@@ -1894,7 +1935,9 @@ function enrichSubstituteRecords() {
                                 substitute.subjectTitle
                             ),
 
-
+                        /*
+                         * DEPARTMENT
+                         */
                         department:
                             firstValue(
                                 originalEntry.department,
@@ -1906,7 +1949,9 @@ function enrichSubstituteRecords() {
                                 substitute.normalizedDepartment
                             ),
 
-
+                        /*
+                         * CLASS
+                         */
                         classYear:
                             firstValue(
                                 originalEntry.classYear,
@@ -1918,7 +1963,9 @@ function enrichSubstituteRecords() {
                                 substitute.year
                             ),
 
-
+                        /*
+                         * SECTION
+                         */
                         section:
                             firstValue(
                                 originalEntry.section,
@@ -1927,7 +1974,9 @@ function enrichSubstituteRecords() {
                                 substitute.sec
                             ),
 
-
+                        /*
+                         * ROOM
+                         */
                         roomNo:
                             firstValue(
                                 originalEntry.roomNo,
@@ -1938,14 +1987,18 @@ function enrichSubstituteRecords() {
                                 substitute.roomNumber
                             ),
 
-
+                        /*
+                         * SUBSTITUTE STAFF
+                         */
                         normalizedStaffId:
                             substitute.normalizedStaffId,
 
                         normalizedStaffName:
                             substitute.normalizedStaffName,
 
-
+                        /*
+                         * ORIGINAL STAFF
+                         */
                         originalStaffId:
                             firstValue(
                                 substitute.originalStaffId,
@@ -1958,15 +2011,25 @@ function enrichSubstituteRecords() {
                                 originalEntry.normalizedStaffName
                             ),
 
-
+                        /*
+                         * KEEP SELECTED DAY ORDER
+                         *
+                         * DO NOT CHANGE USING DATE
+                         */
                         normalizedDay:
-                            originalEntry.normalizedDay,
+                            substitute.normalizedDay,
+
+                        /*
+                         * KEEP SELECTED DATE
+                         */
+                        assignmentDate:
+                            substitute.assignmentDate,
 
                         normalizedSession:
-                            originalEntry.normalizedSession,
+                            substitute.normalizedSession,
 
                         normalizedHour:
-                            originalEntry.normalizedHour
+                            substitute.normalizedHour
                     };
                 }
 
@@ -1977,12 +2040,6 @@ function enrichSubstituteRecords() {
                 };
             }
         );
-
-
-    console.log(
-        "ENRICHED ACTIVE SUBSTITUTE DATA:",
-        substituteData
-    );
 }
 
 
@@ -1994,15 +2051,15 @@ function populateStaffDropdown() {
 
     staffSelect.innerHTML = "";
 
-
     const defaultOption =
-        document.createElement("option");
+        document.createElement(
+            "option"
+        );
 
     defaultOption.value = "";
 
     defaultOption.textContent =
         "Select Staff";
-
 
     staffSelect.appendChild(
         defaultOption
@@ -2017,14 +2074,11 @@ function populateStaffDropdown() {
                     "option"
                 );
 
-
             option.value =
                 staff.staffId;
 
-
             option.textContent =
                 `${staff.staffName || "Unnamed Staff"} (${staff.staffId})`;
-
 
             staffSelect.appendChild(
                 option
@@ -2098,7 +2152,7 @@ sessionSelect.addEventListener(
 
 
 /* =========================================================
-   LOAD STAFF REPORT
+   LOAD SELECTED STAFF
 ========================================================= */
 
 function loadSelectedStaffReport(
@@ -2112,7 +2166,7 @@ function loadSelectedStaffReport(
 
 
     /*
-     * REGULAR ENTRIES
+     * REGULAR
      */
 
     let regularEntries =
@@ -2124,30 +2178,19 @@ function loadSelectedStaffReport(
 
 
     /*
-     * ACTIVE APPROVED SUBSTITUTE ENTRIES
-     *
-     * Date is checked AGAIN here.
-     *
-     * This is an additional safety check in case
-     * the page stays open across midnight.
+     * APPROVED ACTIVE SUBSTITUTE
      */
 
     let approvedSubstitutes =
         substituteData.filter(
-            item => {
+            item =>
 
-                if (
-                    item.normalizedStaffId !==
-                    staffId
-                ) {
-                    return false;
-                }
+                item.normalizedStaffId ===
+                staffId &&
 
-
-                return isSubstituteAssignmentActive(
+                isSubstituteDateActive(
                     item
-                );
-            }
+                )
         );
 
 
@@ -2156,7 +2199,8 @@ function loadSelectedStaffReport(
      */
 
     if (
-        selectedSession !== "ALL"
+        selectedSession !==
+        "ALL"
     ) {
 
         regularEntries =
@@ -2177,8 +2221,11 @@ function loadSelectedStaffReport(
 
 
     /*
-     * REMOVE ORIGINAL PERIODS
-     * ONLY WHEN THERE IS AN ACTIVE SUBSTITUTE.
+     * Remove regular period if
+     * active approved substitute
+     * occupies that period.
+     *
+     * DAY ORDER + SESSION + HOUR
      */
 
     const finalEntries =
@@ -2189,19 +2236,19 @@ function loadSelectedStaffReport(
                     substitute =>
 
                         substitute.normalizedDay ===
-                            regular.normalizedDay &&
+                        regular.normalizedDay &&
 
                         substitute.normalizedSession ===
-                            regular.normalizedSession &&
+                        regular.normalizedSession &&
 
                         substitute.normalizedHour ===
-                            regular.normalizedHour
+                        regular.normalizedHour
                 )
         );
 
 
     /*
-     * Add active substitutes.
+     * Add active substitutes
      */
 
     finalEntries.push(
@@ -2210,7 +2257,7 @@ function loadSelectedStaffReport(
 
 
     /*
-     * STAFF DETAILS
+     * DETAILS
      */
 
     document.getElementById(
@@ -2279,7 +2326,6 @@ function loadSelectedStaffReport(
         sessionText = "FN";
     }
 
-
     if (
         selectedSession === "AN"
     ) {
@@ -2290,7 +2336,7 @@ function loadSelectedStaffReport(
     document.getElementById(
         "reportSubtitle"
     ).textContent =
-        `${selectedStaff.staffName || ""} (${selectedStaff.staffId}) — ${sessionText}`;
+        `${selectedStaff.staffName || ""} (${selectedStaff.staffId}) — ${sessionText} — Today: ${getTodayDate()}`;
 
 
     renderStats(
@@ -2323,16 +2369,17 @@ function renderStats(entries) {
     entries.forEach(
         entry => {
 
-            const session =
-                entry.normalizedSession;
-
-
-            if (session === "FN") {
+            if (
+                entry.normalizedSession ===
+                "FN"
+            ) {
                 fn++;
             }
 
-
-            if (session === "AN") {
+            if (
+                entry.normalizedSession ===
+                "AN"
+            ) {
                 an++;
             }
         }
@@ -2359,7 +2406,7 @@ function renderStats(entries) {
 
 
 /* =========================================================
-   TIMETABLE HEADER
+   HEADER
 ========================================================= */
 
 function renderTimetableHeader(
@@ -2376,7 +2423,7 @@ function renderTimetableHeader(
 
 
     let html =
-        "<tr><th>Day</th>";
+        "<tr><th>Day Order</th>";
 
 
     if (
@@ -2595,29 +2642,30 @@ function createPeriodCell(
             item =>
 
                 item.normalizedDay ===
-                    normalizeDay(day) &&
+                normalizeDay(day) &&
 
                 item.normalizedSession ===
-                    normalizeSession(session) &&
+                normalizeSession(session) &&
 
                 item.normalizedHour ===
-                    Number(hour)
+                Number(hour)
         );
 
 
     /*
-     * SUBSTITUTE HAS PRIORITY.
-     *
-     * At this point substituteData already
-     * contains only active dates.
+     * Substitute priority
      */
 
     const entry =
         matching.find(
             item =>
-                item.isSubstitute
+                item.isSubstitute &&
+                isSubstituteDateActive(item)
         ) ||
-        matching[0];
+        matching.find(
+            item =>
+                !item.isSubstitute
+        );
 
 
     if (!entry) {
@@ -2710,6 +2758,19 @@ function createPeriodCell(
                         <div class="substitute-badge">
                             APPROVED SUBSTITUTE
                         </div>
+
+                        ${
+                            entry.assignmentDate
+                                ? `
+                                    <div class="substitute-date">
+                                        Assignment Date:
+                                        ${escapeHtml(
+                                            entry.assignmentDate
+                                        )}
+                                    </div>
+                                `
+                                : ""
+                        }
                     `
                     : ""
             }
@@ -2718,7 +2779,9 @@ function createPeriodCell(
                 subjectCode
                     ? `
                         <div class="subject-code">
-                            ${escapeHtml(subjectCode)}
+                            ${escapeHtml(
+                                subjectCode
+                            )}
                         </div>
                     `
                     : ""
@@ -2737,12 +2800,14 @@ function createPeriodCell(
                 ${escapeHtml(
                     department || "-"
                 )}
+
                 <br>
 
                 <strong>Class:</strong>
                 ${escapeHtml(
                     classYear || "-"
                 )}
+
                 <br>
 
                 <strong>Section:</strong>
@@ -2753,10 +2818,12 @@ function createPeriodCell(
             </div>
 
             <div class="room">
+
                 Room:
                 ${escapeHtml(
                     room || "-"
                 )}
+
             </div>
 
             ${
@@ -2783,7 +2850,7 @@ function createPeriodCell(
 
 
 /* =========================================================
-   DETAILED TABLE
+   DETAILED RECORDS
 ========================================================= */
 
 function renderDetailedRecords(
@@ -2820,7 +2887,6 @@ function renderDetailedRecords(
                         a.normalizedDay
                     ] || 99;
 
-
                 const dayB =
                     dayOrder[
                         b.normalizedDay
@@ -2830,7 +2896,11 @@ function renderDetailedRecords(
                 if (
                     dayA !== dayB
                 ) {
-                    return dayA - dayB;
+
+                    return (
+                        dayA -
+                        dayB
+                    );
                 }
 
 
@@ -2863,7 +2933,7 @@ function renderDetailedRecords(
             <tr>
 
                 <td
-                    colspan="12"
+                    colspan="13"
                     class="empty"
                 >
                     No timetable assigned
@@ -2950,14 +3020,33 @@ function renderDetailedRecords(
 
                 <td>
                     ${escapeHtml(
-                        entry.normalizedDay
+                        entry.normalizedDay ||
+                        "-"
                     )}
                 </td>
 
                 <td>
 
+                    ${
+                        entry.isSubstitute &&
+                        entry.assignmentDate
+                            ? `
+                                <span class="badge badge-date">
+                                    ${escapeHtml(
+                                        entry.assignmentDate
+                                    )}
+                                </span>
+                            `
+                            : "-"
+                    }
+
+                </td>
+
+                <td>
+
                     <span class="badge ${
-                        entry.normalizedSession === "FN"
+                        entry.normalizedSession ===
+                        "FN"
                             ? "badge-fn"
                             : "badge-an"
                     }">
@@ -3028,6 +3117,7 @@ function renderDetailedRecords(
                 </td>
 
                 <td>
+
                     ${
                         entry.isSubstitute
                             ? escapeHtml(
@@ -3035,6 +3125,7 @@ function renderDetailedRecords(
                             )
                             : "-"
                     }
+
                 </td>
 
             `;
@@ -3057,7 +3148,8 @@ function clearReport() {
     selectedStaff = null;
 
 
-    staffSelect.value = "";
+    staffSelect.value =
+        "";
 
 
     sessionSelect.value =
@@ -3066,17 +3158,20 @@ function clearReport() {
 
     document.getElementById(
         "staffId"
-    ).value = "";
+    ).value =
+        "";
 
 
     document.getElementById(
         "department"
-    ).value = "";
+    ).value =
+        "";
 
 
     document.getElementById(
         "totalPeriods"
-    ).value = "0";
+    ).value =
+        "0";
 
 
     document.getElementById(
