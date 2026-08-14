@@ -471,7 +471,6 @@ button:hover {
 
             <div class="form-group">
                 <label>Staff Name *</label>
-
                 <select id="staffSelect">
                     <option value="">Select Staff</option>
                 </select>
@@ -479,7 +478,6 @@ button:hover {
 
             <div class="form-group">
                 <label>Session *</label>
-
                 <select id="sessionSelect">
                     <option value="ALL">All Sessions</option>
                     <option value="FN">FN</option>
@@ -489,33 +487,17 @@ button:hover {
 
             <div class="form-group">
                 <label>Staff ID</label>
-
-                <input
-                    type="text"
-                    id="staffId"
-                    readonly
-                >
+                <input type="text" id="staffId" readonly>
             </div>
 
             <div class="form-group">
                 <label>Department</label>
-
-                <input
-                    type="text"
-                    id="department"
-                    readonly
-                >
+                <input type="text" id="department" readonly>
             </div>
 
             <div class="form-group">
                 <label>Total Periods</label>
-
-                <input
-                    type="text"
-                    id="totalPeriods"
-                    readonly
-                    value="0"
-                >
+                <input type="text" id="totalPeriods" readonly value="0">
             </div>
 
         </div>
@@ -547,7 +529,6 @@ button:hover {
                 </div>
 
             </div>
-
         </div>
 
     </div>
@@ -558,7 +539,6 @@ button:hover {
         <div class="report-header">
 
             <div>
-
                 <div class="report-title">
                     Staff Timetable
                 </div>
@@ -567,7 +547,6 @@ button:hover {
                     class="report-subtitle"
                     id="reportSubtitle">
                 </div>
-
             </div>
 
             <div class="button-row">
@@ -618,7 +597,6 @@ button:hover {
                 id="timetableTable">
 
                 <thead id="timetableHead"></thead>
-
                 <tbody id="timetableBody"></tbody>
 
             </table>
@@ -693,7 +671,6 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-
 const db = getFirestore(app);
 
 
@@ -702,11 +679,8 @@ const db = getFirestore(app);
 ========================================================= */
 
 let timetableData = [];
-
 let substituteData = [];
-
 let staffList = [];
-
 let selectedStaff = null;
 
 
@@ -750,6 +724,256 @@ function escapeHtml(value) {
         .replace(/>/g, "&gt;")
         .replace(/"/g, "&quot;")
         .replace(/'/g, "&#039;");
+}
+
+
+/* =========================================================
+   SUBSTITUTE DATE FUNCTIONS
+========================================================= */
+
+/*
+ * Gets the date on which the substitute assignment
+ * is actually effective.
+ *
+ * Supports:
+ *
+ * assignmentDate
+ * assignedDate
+ * substituteDate
+ * date
+ * requestDate
+ * assignment_date
+ * assigned_date
+ *
+ * Also supports Firestore Timestamp.
+ */
+
+function getSubstituteAssignmentDate(data) {
+
+    const rawDate =
+        firstValue(
+            data.assignmentDate,
+            data.assignedDate,
+            data.substituteDate,
+            data.date,
+            data.requestDate,
+            data.assignment_date,
+            data.assigned_date
+        );
+
+
+    if (!rawDate) {
+        return null;
+    }
+
+
+    /*
+     * Firestore Timestamp
+     */
+
+    if (
+        rawDate &&
+        typeof rawDate.toDate === "function"
+    ) {
+
+        const date =
+            rawDate.toDate();
+
+        return new Date(
+            date.getFullYear(),
+            date.getMonth(),
+            date.getDate()
+        );
+    }
+
+
+    /*
+     * JavaScript Date
+     */
+
+    if (rawDate instanceof Date) {
+
+        return new Date(
+            rawDate.getFullYear(),
+            rawDate.getMonth(),
+            rawDate.getDate()
+        );
+    }
+
+
+    const value =
+        String(rawDate).trim();
+
+
+    if (!value) {
+        return null;
+    }
+
+
+    /*
+     * YYYY-MM-DD
+     */
+
+    let match =
+        value.match(
+            /^(\d{4})-(\d{1,2})-(\d{1,2})$/
+        );
+
+
+    if (match) {
+
+        return new Date(
+            Number(match[1]),
+            Number(match[2]) - 1,
+            Number(match[3])
+        );
+    }
+
+
+    /*
+     * DD-MM-YYYY
+     * DD/MM/YYYY
+     */
+
+    match =
+        value.match(
+            /^(\d{1,2})[-\/](\d{1,2})[-\/](\d{4})$/
+        );
+
+
+    if (match) {
+
+        return new Date(
+            Number(match[3]),
+            Number(match[2]) - 1,
+            Number(match[1])
+        );
+    }
+
+
+    /*
+     * YYYY/MM/DD
+     */
+
+    match =
+        value.match(
+            /^(\d{4})[-\/](\d{1,2})[-\/](\d{1,2})$/
+        );
+
+
+    if (match) {
+
+        return new Date(
+            Number(match[1]),
+            Number(match[2]) - 1,
+            Number(match[3])
+        );
+    }
+
+
+    /*
+     * Normal JavaScript date parsing
+     */
+
+    const parsed =
+        new Date(value);
+
+
+    if (!isNaN(parsed.getTime())) {
+
+        return new Date(
+            parsed.getFullYear(),
+            parsed.getMonth(),
+            parsed.getDate()
+        );
+    }
+
+
+    return null;
+}
+
+
+/*
+ * Returns TRUE only when the substitute assignment
+ * is for TODAY or a FUTURE date.
+ *
+ * Example:
+ *
+ * Assignment = 13-08-2026
+ * Today      = 14-08-2026
+ * Result     = false
+ *
+ * Assignment = 14-08-2026
+ * Today      = 14-08-2026
+ * Result     = true
+ *
+ * Assignment = 15-08-2026
+ * Today      = 14-08-2026
+ * Result     = true
+ */
+
+function isSubstituteAssignmentActive(data) {
+
+    const assignmentDate =
+        getSubstituteAssignmentDate(data);
+
+
+    /*
+     * IMPORTANT:
+     *
+     * If the assignment does not contain ANY
+     * recognizable date, do NOT automatically
+     * display it as an active substitute.
+     *
+     * This prevents an old assignment with a
+     * different/unknown date from appearing.
+     */
+
+    if (!assignmentDate) {
+
+        console.warn(
+            "SUBSTITUTE DATE NOT FOUND - RECORD HIDDEN:",
+            data
+        );
+
+        return false;
+    }
+
+
+    const now =
+        new Date();
+
+
+    const today =
+        new Date(
+            now.getFullYear(),
+            now.getMonth(),
+            now.getDate()
+        );
+
+
+    return (
+        assignmentDate.getTime() >=
+        today.getTime()
+    );
+}
+
+
+/*
+ * Optional helper used only for debugging.
+ */
+
+function formatDateForLog(date) {
+
+    if (!date) {
+        return "-";
+    }
+
+    return [
+        String(date.getDate()).padStart(2, "0"),
+        String(date.getMonth() + 1).padStart(2, "0"),
+        date.getFullYear()
+    ].join("-");
 }
 
 
@@ -900,6 +1124,7 @@ function getHour(data) {
             data.hourNumber
         );
 
+
     if (typeof raw === "number") {
         return raw;
     }
@@ -909,9 +1134,11 @@ function getHour(data) {
         String(raw ?? "")
             .match(/\d+/);
 
+
     if (!match) {
         return 0;
     }
+
 
     return Number(match[0]);
 }
@@ -929,7 +1156,10 @@ function showMessage(
     const message =
         document.getElementById("message");
 
-    message.textContent = text;
+
+    message.textContent =
+        text;
+
 
     message.className =
         "message " + type;
@@ -1046,9 +1276,15 @@ async function loadTimetableData() {
 
         timetableData = [];
 
+        substituteData = [];
+
         const staffMap =
             new Map();
 
+
+        /* =================================================
+           LOAD REGULAR TIMETABLE
+        ================================================= */
 
         const snapshot =
             await getDocs(
@@ -1136,9 +1372,6 @@ async function loadTimetableData() {
            LOAD SUBSTITUTE REQUESTS
         ================================================= */
 
-        substituteData = [];
-
-
         const substituteSnapshot =
             await getDocs(
                 collection(
@@ -1173,9 +1406,66 @@ async function loadTimetableData() {
             if (
                 status !== "APPROVED"
             ) {
+
                 return;
             }
 
+
+            /* =================================================
+               DATE CHECK
+               =================================================
+               
+               THIS IS THE IMPORTANT FIX.
+
+               An approved substitute is loaded ONLY if
+               its assignment date is today or later.
+
+               Expired dates are NOT pushed into
+               substituteData.
+            ================================================= */
+
+            const assignmentDate =
+                getSubstituteAssignmentDate(data);
+
+
+            if (!assignmentDate) {
+
+                console.warn(
+                    "APPROVED SUBSTITUTE HIDDEN - NO VALID DATE:",
+                    doc.id,
+                    data
+                );
+
+                return;
+            }
+
+
+            if (
+                !isSubstituteAssignmentActive(data)
+            ) {
+
+                console.log(
+                    "EXPIRED SUBSTITUTE HIDDEN:",
+                    {
+                        id: doc.id,
+                        assignmentDate:
+                            formatDateForLog(
+                                assignmentDate
+                            ),
+                        today:
+                            formatDateForLog(
+                                new Date()
+                            )
+                    }
+                );
+
+                return;
+            }
+
+
+            /*
+             * Get substitute staff ID.
+             */
 
             const substituteStaffId =
                 String(
@@ -1191,6 +1481,12 @@ async function loadTimetableData() {
 
 
             if (!substituteStaffId) {
+
+                console.warn(
+                    "SUBSTITUTE STAFF ID MISSING:",
+                    doc.id
+                );
+
                 return;
             }
 
@@ -1214,6 +1510,14 @@ async function loadTimetableData() {
                 ...data,
 
                 isSubstitute: true,
+
+                /*
+                 * Store normalized assignment date
+                 * inside the record as well.
+                 */
+
+                substituteAssignmentDate:
+                    assignmentDate,
 
                 normalizedDay:
                     normalizeDay(
@@ -1312,6 +1616,11 @@ async function loadTimetableData() {
             };
 
 
+            /*
+             * Only valid substitute records
+             * are allowed into substituteData.
+             */
+
             if (
                 record.normalizedDay &&
                 record.normalizedSession &&
@@ -1351,10 +1660,8 @@ async function loadTimetableData() {
 
 
         /*
-         * VERY IMPORTANT:
-         *
          * Copy original timetable details
-         * into every approved substitute.
+         * into every approved active substitute.
          */
 
         enrichSubstituteRecords();
@@ -1367,8 +1674,8 @@ async function loadTimetableData() {
 
 
         /*
-         * Make sure substitute staff are
-         * also included.
+         * Make sure active substitute staff
+         * are also included.
          */
 
         substituteData.forEach(
@@ -1440,7 +1747,7 @@ async function loadTimetableData() {
         );
 
         console.log(
-            "APPROVED SUBSTITUTE DATA:",
+            "ACTIVE APPROVED SUBSTITUTE DATA:",
             substituteData
         );
 
@@ -1493,14 +1800,13 @@ function enrichSubstituteRecords() {
         substituteData.map(
             substitute => {
 
-                /*
-                 * First try exact matching with
-                 * original staff ID if available.
-                 */
-
                 let originalEntry =
                     null;
 
+
+                /*
+                 * Exact match using original staff.
+                 */
 
                 if (
                     substitute.originalStaffId
@@ -1526,8 +1832,8 @@ function enrichSubstituteRecords() {
 
 
                 /*
-                 * If original staff ID was not
-                 * stored, match DAY + SESSION + HOUR.
+                 * Fallback:
+                 * DAY + SESSION + HOUR
                  */
 
                 if (!originalEntry) {
@@ -1548,25 +1854,11 @@ function enrichSubstituteRecords() {
                 }
 
 
-                /*
-                 * If original timetable exists,
-                 * use its academic information.
-                 */
-
                 if (originalEntry) {
 
                     return {
 
-                        /*
-                         * Start with original record
-                         */
-
                         ...originalEntry,
-
-                        /*
-                         * Then overwrite with
-                         * substitute information
-                         */
 
                         ...substitute,
 
@@ -1574,8 +1866,12 @@ function enrichSubstituteRecords() {
 
 
                         /*
-                         * KEEP ORIGINAL SUBJECT
+                         * Preserve assignment date.
                          */
+
+                        substituteAssignmentDate:
+                            substitute.substituteAssignmentDate,
+
 
                         subjectCode:
                             firstValue(
@@ -1599,10 +1895,6 @@ function enrichSubstituteRecords() {
                             ),
 
 
-                        /*
-                         * KEEP ORIGINAL DEPARTMENT
-                         */
-
                         department:
                             firstValue(
                                 originalEntry.department,
@@ -1614,10 +1906,6 @@ function enrichSubstituteRecords() {
                                 substitute.normalizedDepartment
                             ),
 
-
-                        /*
-                         * KEEP ORIGINAL CLASS
-                         */
 
                         classYear:
                             firstValue(
@@ -1631,10 +1919,6 @@ function enrichSubstituteRecords() {
                             ),
 
 
-                        /*
-                         * KEEP ORIGINAL SECTION
-                         */
-
                         section:
                             firstValue(
                                 originalEntry.section,
@@ -1643,10 +1927,6 @@ function enrichSubstituteRecords() {
                                 substitute.sec
                             ),
 
-
-                        /*
-                         * KEEP ORIGINAL ROOM
-                         */
 
                         roomNo:
                             firstValue(
@@ -1659,20 +1939,12 @@ function enrichSubstituteRecords() {
                             ),
 
 
-                        /*
-                         * SUBSTITUTE STAFF
-                         */
-
                         normalizedStaffId:
                             substitute.normalizedStaffId,
 
                         normalizedStaffName:
                             substitute.normalizedStaffName,
 
-
-                        /*
-                         * ORIGINAL STAFF
-                         */
 
                         originalStaffId:
                             firstValue(
@@ -1687,10 +1959,6 @@ function enrichSubstituteRecords() {
                             ),
 
 
-                        /*
-                         * KEEP DAY / SESSION / HOUR
-                         */
-
                         normalizedDay:
                             originalEntry.normalizedDay,
 
@@ -1703,11 +1971,6 @@ function enrichSubstituteRecords() {
                 }
 
 
-                /*
-                 * No original record found.
-                 * Keep substitute information.
-                 */
-
                 return {
                     ...substitute,
                     isSubstitute: true
@@ -1717,7 +1980,7 @@ function enrichSubstituteRecords() {
 
 
     console.log(
-        "ENRICHED SUBSTITUTE DATA:",
+        "ENRICHED ACTIVE SUBSTITUTE DATA:",
         substituteData
     );
 }
@@ -1861,14 +2124,30 @@ function loadSelectedStaffReport(
 
 
     /*
-     * APPROVED SUBSTITUTE ENTRIES
+     * ACTIVE APPROVED SUBSTITUTE ENTRIES
+     *
+     * Date is checked AGAIN here.
+     *
+     * This is an additional safety check in case
+     * the page stays open across midnight.
      */
 
     let approvedSubstitutes =
         substituteData.filter(
-            item =>
-                item.normalizedStaffId ===
-                staffId
+            item => {
+
+                if (
+                    item.normalizedStaffId !==
+                    staffId
+                ) {
+                    return false;
+                }
+
+
+                return isSubstituteAssignmentActive(
+                    item
+                );
+            }
         );
 
 
@@ -1899,12 +2178,7 @@ function loadSelectedStaffReport(
 
     /*
      * REMOVE ORIGINAL PERIODS
-     * THAT HAVE APPROVED SUBSTITUTE.
-     *
-     * This is important because the
-     * original staff should not see
-     * the period as their own after
-     * substitution.
+     * ONLY WHEN THERE IS AN ACTIVE SUBSTITUTE.
      */
 
     const finalEntries =
@@ -1927,7 +2201,7 @@ function loadSelectedStaffReport(
 
 
     /*
-     * Add approved substitutes.
+     * Add active substitutes.
      */
 
     finalEntries.push(
@@ -2043,7 +2317,6 @@ function loadSelectedStaffReport(
 function renderStats(entries) {
 
     let fn = 0;
-
     let an = 0;
 
 
@@ -2334,6 +2607,9 @@ function createPeriodCell(
 
     /*
      * SUBSTITUTE HAS PRIORITY.
+     *
+     * At this point substituteData already
+     * contains only active dates.
      */
 
     const entry =
