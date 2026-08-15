@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Staff Timetable Assignment Portal</title>
 
 <style>
@@ -445,9 +446,7 @@ thead th{
 
 </div>
 
-
 <div class="container">
-
 
     <!-- CONTROL CARD -->
 
@@ -456,7 +455,6 @@ thead th{
         <div class="title">
             Staff Timetable
         </div>
-
 
         <div class="controls">
 
@@ -475,7 +473,6 @@ thead th{
                 </select>
 
             </div>
-
 
             <div class="field">
 
@@ -503,7 +500,6 @@ thead th{
 
         </div>
 
-
         <div class="buttons">
 
             <button
@@ -515,7 +511,6 @@ thead th{
 
             </button>
 
-
             <button
                 type="button"
                 class="secondary"
@@ -525,7 +520,6 @@ thead th{
 
             </button>
 
-
             <button
                 type="button"
                 class="success"
@@ -534,7 +528,6 @@ thead th{
                 Save Timetable
 
             </button>
-
 
             <button
                 type="button"
@@ -547,12 +540,10 @@ thead th{
 
         </div>
 
-
         <div
             id="message"
             class="message">
         </div>
-
 
         <div class="stats">
 
@@ -563,7 +554,6 @@ thead th{
 
             </div>
 
-
             <div class="stat">
 
                 Session:
@@ -571,14 +561,12 @@ thead th{
 
             </div>
 
-
             <div class="stat">
 
                 Assigned:
                 <b id="assignedStat">0</b>
 
             </div>
-
 
             <div class="stat">
 
@@ -592,9 +580,7 @@ thead th{
     </div>
 
 
-
     <div class="layout">
-
 
         <!-- SUBJECT LIST -->
 
@@ -606,21 +592,15 @@ thead th{
 
             </div>
 
-
             <div class="subject-table-head">
 
                 <div>DEP</div>
-
                 <div>YEAR</div>
-
                 <div>SEC</div>
-
                 <div>SUBJECT</div>
-
                 <div>CODE</div>
 
             </div>
-
 
             <div
                 id="subjectList"
@@ -638,18 +618,15 @@ thead th{
         </div>
 
 
-
         <!-- TIMETABLE -->
 
         <div class="timetable-card">
-
 
             <div class="timetable-title">
 
                 STAFF TIME TABLE
 
             </div>
-
 
             <div class="session-info">
 
@@ -661,7 +638,6 @@ thead th{
 
                 </div>
 
-
                 <div
                     id="anBadge"
                     class="session">
@@ -671,7 +647,6 @@ thead th{
                 </div>
 
             </div>
-
 
             <div class="selected-info">
 
@@ -693,7 +668,6 @@ thead th{
                 No confirmation required.
 
             </div>
-
 
             <div class="table-wrapper">
 
@@ -729,7 +703,6 @@ thead th{
 
                         </tr>
 
-
                         <tr class="time-row">
 
                             <th>
@@ -760,7 +733,6 @@ thead th{
 
                     </thead>
 
-
                     <tbody
                         id="timetableBody">
                     </tbody>
@@ -774,7 +746,6 @@ thead th{
     </div>
 
 </div>
-
 
 
 <script type="module">
@@ -799,7 +770,6 @@ import {
 }
 from
 "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
 
 
 /* =========================================================
@@ -837,7 +807,6 @@ const db =
     getFirestore(app);
 
 
-
 /* =========================================================
    VARIABLES
    ========================================================= */
@@ -855,7 +824,6 @@ let selectedSubject = null;
 let assignments = {};
 
 let firebaseAssignments = {};
-
 
 
 /* =========================================================
@@ -878,7 +846,6 @@ const timings = {
 
     ],
 
-
     AN: [
 
         "01:30 TO 02:20",
@@ -894,7 +861,6 @@ const timings = {
     ]
 
 };
-
 
 
 /* =========================================================
@@ -1139,7 +1105,6 @@ function clearMessage(){
 }
 
 
-
 /* =========================================================
    CREATE TIMETABLE
    ========================================================= */
@@ -1249,7 +1214,6 @@ function createTimetable(){
 }
 
 
-
 /* =========================================================
    TIMING HEADER
    ========================================================= */
@@ -1301,9 +1265,9 @@ function updateTimingHeaders(){
 }
 
 
-
 /* =========================================================
    LOAD STAFF
+   ONLY STAFF WITH SUBJECT ASSIGNMENTS
    ========================================================= */
 
 async function loadStaff(){
@@ -1320,7 +1284,54 @@ async function loadStaff(){
 
     try{
 
-        const snapshot =
+        /*
+         * FIRST GET ALL SUBJECT ASSIGNMENTS.
+         *
+         * This gives us the list of staff IDs
+         * who actually have subjects assigned.
+         */
+
+        const assignmentSnapshot =
+            await getDocs(
+                collection(
+                    db,
+                    "subjectAssignments"
+                )
+            );
+
+
+        const assignedStaffIds =
+            new Set();
+
+
+        assignmentSnapshot.forEach(
+            subjectDoc => {
+
+                const data =
+                    subjectDoc.data();
+
+
+                const staffId =
+                    getStaffId(data);
+
+
+                if(staffId){
+
+                    assignedStaffIds.add(
+                        upper(staffId)
+                    );
+
+                }
+
+            }
+        );
+
+
+        /*
+         * NOW LOAD STAFF COLLECTION.
+         */
+
+        const staffSnapshot =
             await getDocs(
                 collection(
                     db,
@@ -1332,7 +1343,7 @@ async function loadStaff(){
         staffList = [];
 
 
-        snapshot.forEach(
+        staffSnapshot.forEach(
             staffDoc => {
 
                 const data =
@@ -1344,6 +1355,24 @@ async function loadStaff(){
 
 
                 if(!staffId){
+
+                    return;
+
+                }
+
+
+                /*
+                 * IMPORTANT:
+                 *
+                 * STAFF WITHOUT SUBJECT ASSIGNMENT
+                 * WILL NOT BE ADDED.
+                 */
+
+                if(
+                    !assignedStaffIds.has(
+                        upper(staffId)
+                    )
+                ){
 
                     return;
 
@@ -1370,26 +1399,60 @@ async function loadStaff(){
         );
 
 
+        /*
+         * SORT STAFF BY NAME
+         */
+
         staffList.sort(
-            (a,b) =>
+            (a,b) => {
 
-                String(
-                    a.staffName ||
-                    a.staffId
-                )
-                .localeCompare(
+                const nameA =
+                    String(
+                        a.staffName ||
+                        a.staffId ||
+                        ""
+                    );
 
+
+                const nameB =
                     String(
                         b.staffName ||
-                        b.staffId
-                    )
+                        b.staffId ||
+                        ""
+                    );
 
-                )
+
+                return nameA.localeCompare(
+                    nameB
+                );
+
+            }
         );
 
 
+        /*
+         * DISPLAY STAFF
+         */
+
         select.innerHTML =
             '<option value="">Select Staff</option>';
+
+
+        if(!staffList.length){
+
+            select.innerHTML =
+                '<option value="">No Staff With Assigned Subjects</option>';
+
+
+            showMessage(
+                "No staff have subjects assigned.",
+                "warn"
+            );
+
+
+            return;
+
+        }
 
 
         staffList.forEach(
@@ -1425,6 +1488,12 @@ async function loadStaff(){
             }
         );
 
+
+        console.log(
+            "STAFF WITH SUBJECTS ONLY:",
+            staffList
+        );
+
     }
     catch(error){
 
@@ -1452,7 +1521,6 @@ async function loadStaff(){
 }
 
 
-
 /* =========================================================
    LOAD SUBJECTS
    ========================================================= */
@@ -1470,24 +1538,26 @@ async function loadSubjects(){
 
     if(!selectedStaff){
 
-        box.innerHTML =
-            `
+        box.innerHTML = `
+
             <div class="empty">
                 Select Staff first.
             </div>
-            `;
+
+        `;
 
         return;
 
     }
 
 
-    box.innerHTML =
-        `
+    box.innerHTML = `
+
         <div class="empty">
             Loading subjects...
         </div>
-        `;
+
+    `;
 
 
     try{
@@ -1634,12 +1704,13 @@ async function loadSubjects(){
         );
 
 
-        box.innerHTML =
-            `
+        box.innerHTML = `
+
             <div class="empty">
                 Unable to load subjects.
             </div>
-            `;
+
+        `;
 
 
         showMessage(
@@ -1656,7 +1727,6 @@ async function loadSubjects(){
 }
 
 
-
 /* =========================================================
    RENDER SUBJECTS
    ========================================================= */
@@ -1671,12 +1741,13 @@ function renderSubjects(){
 
     if(!subjects.length){
 
-        box.innerHTML =
-            `
+        box.innerHTML = `
+
             <div class="empty">
                 No subjects found for this staff.
             </div>
-            `;
+
+        `;
 
         return;
 
@@ -1806,7 +1877,6 @@ function renderSubjects(){
 }
 
 
-
 /* =========================================================
    LOAD EXISTING TIMETABLE
    ========================================================= */
@@ -1816,6 +1886,7 @@ async function loadExistingTimetable(){
     assignments = {};
 
     firebaseAssignments = {};
+
 
     createTimetable();
 
@@ -1991,7 +2062,6 @@ async function loadExistingTimetable(){
 }
 
 
-
 /* =========================================================
    RENDER ASSIGNMENTS
    ========================================================= */
@@ -2105,7 +2175,6 @@ function renderAssignments(){
     updateStats();
 
 }
-
 
 
 /* =========================================================
@@ -2306,7 +2375,6 @@ async function assignSlot(slot){
     await saveSingleSlot(key);
 
 }
-
 
 
 /* =========================================================
@@ -2551,7 +2619,6 @@ async function saveSingleSlot(key){
 }
 
 
-
 /* =========================================================
    SAVE ALL
    ========================================================= */
@@ -2623,6 +2690,7 @@ async function saveAllTimetable(){
 
                 );
 
+
                 continue;
 
             }
@@ -2673,7 +2741,6 @@ async function saveAllTimetable(){
 }
 
 
-
 /* =========================================================
    STATS
    ========================================================= */
@@ -2698,7 +2765,6 @@ function updateStats(){
         30 - count;
 
 }
-
 
 
 /* =========================================================
@@ -2822,7 +2888,6 @@ async function loadTimetable(){
 }
 
 
-
 /* =========================================================
    STAFF CHANGE
    ========================================================= */
@@ -2830,6 +2895,7 @@ async function loadTimetable(){
 document.getElementById(
     "staffSelect"
 )
+
 .addEventListener(
     "change",
     () => {
@@ -2870,14 +2936,15 @@ document.getElementById(
         ).innerHTML =
 
             `
+
             <div class="empty">
                 Click Load Timetable.
             </div>
+
             `;
 
     }
 );
-
 
 
 /* =========================================================
@@ -2887,6 +2954,7 @@ document.getElementById(
 document.getElementById(
     "sessionSelect"
 )
+
 .addEventListener(
     "change",
     async () => {
@@ -2925,7 +2993,6 @@ document.getElementById(
 );
 
 
-
 /* =========================================================
    BUTTONS
    ========================================================= */
@@ -2933,6 +3000,7 @@ document.getElementById(
 document.getElementById(
     "loadBtn"
 )
+
 .addEventListener(
     "click",
     loadTimetable
@@ -2942,6 +3010,7 @@ document.getElementById(
 document.getElementById(
     "saveBtn"
 )
+
 .addEventListener(
     "click",
     saveAllTimetable
@@ -2951,6 +3020,7 @@ document.getElementById(
 document.getElementById(
     "refreshBtn"
 )
+
 .addEventListener(
     "click",
     async () => {
@@ -2989,6 +3059,7 @@ document.getElementById(
 document.getElementById(
     "printBtn"
 )
+
 .addEventListener(
     "click",
     () => {
@@ -3012,7 +3083,6 @@ document.getElementById(
 
     }
 );
-
 
 
 /* =========================================================
