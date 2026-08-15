@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -129,9 +130,17 @@ button:disabled {
     color: #fff;
 }
 
+.btn-success:hover {
+    background: #047857;
+}
+
 .btn-danger {
     background: #dc2626;
     color: #fff;
+}
+
+.btn-danger:hover {
+    background: #b91c1c;
 }
 
 .btn-warning {
@@ -236,6 +245,22 @@ button:disabled {
     margin-top: 5px;
 }
 
+.subject-details.valid {
+    background: #ecfdf5;
+    color: #065f46;
+    border-left: 3px solid #059669;
+}
+
+.subject-details.invalid {
+    background: #fef2f2;
+    color: #991b1b;
+    border-left: 3px solid #dc2626;
+}
+
+.row-subject-input {
+    width: 100%;
+}
+
 .remove-row {
     display: flex;
     align-items: center;
@@ -325,6 +350,7 @@ tr:hover td {
 }
 
 @media(max-width:1100px) {
+
     .form-grid {
         grid-template-columns: repeat(2,1fr);
     }
@@ -335,6 +361,7 @@ tr:hover td {
 }
 
 @media(max-width:700px) {
+
     .form-grid {
         grid-template-columns: 1fr;
     }
@@ -359,7 +386,10 @@ tr:hover td {
 
 <div class="container">
 
-<!-- STAFF -->
+<!-- =====================================================
+     STAFF
+===================================================== -->
+
 <div class="card">
 
     <div class="card-title">
@@ -369,16 +399,21 @@ tr:hover td {
     <div class="form-grid">
 
         <div class="form-group">
+
             <label>Staff</label>
 
             <select id="staffSelect">
+
                 <option value="">
                     Loading staff...
                 </option>
+
             </select>
+
         </div>
 
         <div class="form-group">
+
             <label>Staff ID</label>
 
             <input
@@ -387,9 +422,11 @@ tr:hover td {
                 readonly
                 placeholder="Staff ID"
             >
+
         </div>
 
         <div class="form-group">
+
             <label>Staff Department</label>
 
             <input
@@ -398,6 +435,7 @@ tr:hover td {
                 readonly
                 placeholder="Department"
             >
+
         </div>
 
     </div>
@@ -417,7 +455,10 @@ tr:hover td {
 </div>
 
 
-<!-- ASSIGN SUBJECT -->
+<!-- =====================================================
+     ASSIGN SUBJECT
+===================================================== -->
+
 <div class="card">
 
     <div class="card-title">
@@ -457,7 +498,10 @@ tr:hover td {
 </div>
 
 
-<!-- EXISTING ASSIGNMENTS -->
+<!-- =====================================================
+     EXISTING ASSIGNMENTS
+===================================================== -->
+
 <div class="card">
 
     <div class="card-title">
@@ -467,13 +511,23 @@ tr:hover td {
     <div class="stats">
 
         <div class="stat total">
+
             Total Assignments:
-            <span id="totalAssignments">0</span>
+
+            <span id="totalAssignments">
+                0
+            </span>
+
         </div>
 
         <div class="stat active">
+
             Selected Staff:
-            <span id="currentStaffDisplay">None</span>
+
+            <span id="currentStaffDisplay">
+                None
+            </span>
+
         </div>
 
     </div>
@@ -491,15 +545,18 @@ tr:hover td {
             id="filterDepartment"
             onchange="filterAssignments()"
         >
+
             <option value="">
                 All Departments
             </option>
+
         </select>
 
         <select
             id="filterYear"
             onchange="filterAssignments()"
         >
+
             <option value="">
                 All Classes
             </option>
@@ -515,6 +572,7 @@ tr:hover td {
             <option value="III">
                 III Year
             </option>
+
         </select>
 
     </div>
@@ -526,6 +584,7 @@ tr:hover td {
             <thead>
 
                 <tr>
+
                     <th>S.No</th>
                     <th>Staff ID</th>
                     <th>Staff Name</th>
@@ -536,6 +595,7 @@ tr:hover td {
                     <th>Section</th>
                     <th>Room No.</th>
                     <th>Action</th>
+
                 </tr>
 
             </thead>
@@ -543,9 +603,14 @@ tr:hover td {
             <tbody id="assignmentTableBody">
 
                 <tr>
-                    <td colspan="10" class="loading">
+
+                    <td
+                        colspan="10"
+                        class="loading"
+                    >
                         Loading assignments...
                     </td>
+
                 </tr>
 
             </tbody>
@@ -560,6 +625,10 @@ tr:hover td {
 
 
 <script type="module">
+
+/* =====================================================
+   FIREBASE IMPORTS
+===================================================== */
 
 import {
     initializeApp
@@ -579,7 +648,7 @@ import {
 
 
 /* =====================================================
-   FIREBASE
+   FIREBASE CONFIG
 ===================================================== */
 
 const firebaseConfig = {
@@ -603,6 +672,11 @@ const firebaseConfig = {
         "1:585813001586:web:664e0e90ff0725d2e849eb"
 
 };
+
+
+/* =====================================================
+   INITIALIZE FIREBASE
+===================================================== */
 
 const app =
     initializeApp(firebaseConfig);
@@ -645,24 +719,31 @@ const message =
 
 
 /* =====================================================
-   MESSAGE
+   SHOW MESSAGE
 ===================================================== */
 
-function showMessage(text, type = "info") {
+function showMessage(
+    text,
+    type = "info"
+) {
 
-    message.textContent = text;
+    message.textContent =
+        text;
 
     message.className =
         "message " + type;
 
     setTimeout(() => {
-        message.className = "message";
+
+        message.className =
+            "message";
+
     }, 5000);
 }
 
 
 /* =====================================================
-   ESCAPE
+   ESCAPE HTML
 ===================================================== */
 
 function escapeHtml(value) {
@@ -673,6 +754,20 @@ function escapeHtml(value) {
         .replace(/>/g, "&gt;")
         .replace(/"/g, "&quot;")
         .replace(/'/g, "&#039;");
+
+}
+
+
+/* =====================================================
+   NORMALIZE TEXT
+===================================================== */
+
+function normalizeText(value) {
+
+    return String(value ?? "")
+        .trim()
+        .toLowerCase();
+
 }
 
 
@@ -692,55 +787,65 @@ async function loadStaff() {
 
         const snapshot =
             await getDocs(
-                collection(db, "staff")
+                collection(
+                    db,
+                    "staff"
+                )
             );
 
         staffList = [];
 
-        snapshot.forEach(documentSnapshot => {
+        snapshot.forEach(
+            documentSnapshot => {
 
-            const data =
-                documentSnapshot.data();
+                const data =
+                    documentSnapshot.data();
 
-            const staffId =
-                data.staffId ||
-                data.staffID ||
-                data.id ||
-                documentSnapshot.id;
+                const staffId =
+                    data.staffId ||
+                    data.staffID ||
+                    data.id ||
+                    documentSnapshot.id;
 
-            const name =
-                data.name ||
-                data.staffName ||
-                data.fullName ||
-                data.displayName ||
-                "Unnamed Staff";
+                const name =
+                    data.name ||
+                    data.staffName ||
+                    data.fullName ||
+                    data.displayName ||
+                    "Unnamed Staff";
 
-            const department =
-                data.department ||
-                data.dept ||
-                "";
+                const department =
+                    data.department ||
+                    data.dept ||
+                    "";
 
-            staffList.push({
+                staffList.push({
 
-                documentId:
-                    documentSnapshot.id,
+                    documentId:
+                        documentSnapshot.id,
 
-                staffId:
-                    String(staffId),
+                    staffId:
+                        String(staffId),
 
-                name:
-                    String(name),
+                    name:
+                        String(name),
 
-                department:
-                    String(department)
+                    department:
+                        String(department)
 
-            });
+                });
 
-        });
-
-        staffList.sort((a,b) =>
-            a.staffId.localeCompare(b.staffId)
+            }
         );
+
+
+        staffList.sort(
+            (a,b) =>
+                a.staffId.localeCompare(
+                    b.staffId
+                )
+        );
+
 
         staffSelect.innerHTML = `
             <option value="">
@@ -748,20 +853,27 @@ async function loadStaff() {
             </option>
         `;
 
-        staffList.forEach(staff => {
 
-            const option =
-                document.createElement("option");
+        staffList.forEach(
+            staff => {
 
-            option.value =
-                staff.staffId;
+                const option =
+                    document.createElement(
+                        "option"
+                    );
 
-            option.textContent =
-                `${staff.staffId} - ${staff.name}`;
+                option.value =
+                    staff.staffId;
 
-            staffSelect.appendChild(option);
+                option.textContent =
+                    `${staff.staffId} - ${staff.name}`;
 
-        });
+                staffSelect.appendChild(
+                    option
+                );
+
+            }
+        );
 
     }
 
@@ -783,7 +895,9 @@ async function loadStaff() {
             error.message,
             "error"
         );
+
     }
+
 }
 
 
@@ -798,42 +912,58 @@ staffSelect.addEventListener(
         const selectedId =
             this.value;
 
+
         if (!selectedId) {
 
-            staffIdInput.value = "";
+            staffIdInput.value =
+                "";
 
-            staffDepartmentInput.value = "";
+            staffDepartmentInput.value =
+                "";
+
 
             document.getElementById(
                 "staffInfo"
-            ).style.display = "none";
+            ).style.display =
+                "none";
+
 
             document.getElementById(
                 "currentStaffDisplay"
-            ).textContent = "None";
+            ).textContent =
+                "None";
+
 
             clearAssignmentRows();
 
             return;
         }
 
+
         const staff =
             staffList.find(
-                s => s.staffId === selectedId
+                s =>
+                    s.staffId ===
+                    selectedId
             );
 
+
         if (!staff) return;
+
 
         staffIdInput.value =
             staff.staffId;
 
+
         staffDepartmentInput.value =
             staff.department;
+
 
         document.getElementById(
             "selectedStaffName"
         ).textContent =
             `${staff.staffId} - ${staff.name}`;
+
 
         document.getElementById(
             "selectedStaffDetails"
@@ -841,19 +971,20 @@ staffSelect.addEventListener(
             staff.department ||
             "Department not specified";
 
+
         document.getElementById(
             "staffInfo"
         ).style.display =
             "block";
+
 
         document.getElementById(
             "currentStaffDisplay"
         ).textContent =
             staff.staffId;
 
-        clearAssignmentRows();
 
-        addAssignmentRow();
+        clearAssignmentRows();
 
         await loadAssignments();
 
@@ -871,55 +1002,97 @@ async function loadSubjects() {
 
         const snapshot =
             await getDocs(
-                collection(db, "subjects")
+                collection(
+                    db,
+                    "subjects"
+                )
             );
+
 
         subjects = [];
 
-        snapshot.forEach(documentSnapshot => {
 
-            const data =
-                documentSnapshot.data();
+        snapshot.forEach(
+            documentSnapshot => {
 
-            if (
-                data.status &&
-                data.status !== "Active"
-            ) {
-                return;
+                const data =
+                    documentSnapshot.data();
+
+
+                if (
+                    data.status &&
+                    data.status !== "Active"
+                ) {
+
+                    return;
+
+                }
+
+
+                subjects.push({
+
+                    id:
+                        documentSnapshot.id,
+
+                    subjectCode:
+                        String(
+                            data.subjectCode ||
+                            ""
+                        ),
+
+                    subjectName:
+                        String(
+                            data.subjectName ||
+                            ""
+                        ),
+
+                    department:
+                        String(
+                            data.department ||
+                            ""
+                        ),
+
+                    classYear:
+                        String(
+                            data.classYear ||
+                            ""
+                        ),
+
+                    subjectType:
+                        String(
+                            data.subjectType ||
+                            ""
+                        ),
+
+                    credits:
+                        data.credits ?? 0
+
+                });
+
             }
-
-            subjects.push({
-
-                id:
-                    documentSnapshot.id,
-
-                subjectCode:
-                    data.subjectCode || "",
-
-                subjectName:
-                    data.subjectName || "",
-
-                department:
-                    data.department || "",
-
-                classYear:
-                    data.classYear || "",
-
-                subjectType:
-                    data.subjectType || "",
-
-                credits:
-                    data.credits ?? 0
-
-            });
-
-        });
-
-        subjects.sort((a,b) =>
-            a.subjectCode.localeCompare(
-                b.subjectCode
-            )
         );
+
+
+        subjects.sort(
+            (a,b) => {
+
+                const codeA =
+                    normalizeText(
+                        a.subjectCode
+                    );
+
+                const codeB =
+                    normalizeText(
+                        b.subjectCode
+                    );
+
+                return codeA.localeCompare(
+                    codeB
+                );
+
+            }
+        );
+
 
         populateDepartmentFilter();
 
@@ -937,7 +1110,9 @@ async function loadSubjects() {
             error.message,
             "error"
         );
+
     }
+
 }
 
 
@@ -952,14 +1127,20 @@ function populateDepartmentFilter() {
             "filterDepartment"
         );
 
+
     const departments =
         [
             ...new Set(
                 subjects
-                    .map(s => s.department)
+                    .map(
+                        s =>
+                            s.department
+                    )
                     .filter(Boolean)
             )
-        ].sort();
+        ]
+        .sort();
+
 
     select.innerHTML = `
         <option value="">
@@ -967,23 +1148,224 @@ function populateDepartmentFilter() {
         </option>
     `;
 
-    departments.forEach(department => {
 
-        const option =
-            document.createElement("option");
+    departments.forEach(
+        department => {
 
-        option.value = department;
+            const option =
+                document.createElement(
+                    "option"
+                );
 
-        option.textContent = department;
+            option.value =
+                department;
 
-        select.appendChild(option);
+            option.textContent =
+                department;
 
-    });
+            select.appendChild(
+                option
+            );
+
+        }
+    );
+
 }
 
 
 /* =====================================================
-   ADD ROW
+   CREATE GLOBAL SUBJECT DATALIST
+===================================================== */
+
+function createSubjectDatalist() {
+
+    let datalist =
+        document.getElementById(
+            "subjectList"
+        );
+
+
+    if (!datalist) {
+
+        datalist =
+            document.createElement(
+                "datalist"
+            );
+
+        datalist.id =
+            "subjectList";
+
+        document.body.appendChild(
+            datalist
+        );
+
+    }
+
+
+    datalist.innerHTML =
+        subjects.map(
+            subject => `
+
+                <option
+                    value="${escapeHtml(
+                        subject.subjectCode +
+                        " - " +
+                        subject.subjectName
+                    )}"
+                    label="${escapeHtml(
+                        subject.department +
+                        " | " +
+                        subject.classYear
+                    )}"
+                ></option>
+
+                <option
+                    value="${escapeHtml(
+                        subject.subjectCode
+                    )}"
+                    label="${escapeHtml(
+                        subject.subjectName +
+                        " | " +
+                        subject.department +
+                        " | " +
+                        subject.classYear
+                    )}"
+                ></option>
+
+                <option
+                    value="${escapeHtml(
+                        subject.subjectName
+                    )}"
+                    label="${escapeHtml(
+                        subject.subjectCode +
+                        " | " +
+                        subject.department +
+                        " | " +
+                        subject.classYear
+                    )}"
+                ></option>
+
+            `
+        )
+        .join("");
+
+}
+
+
+/* =====================================================
+   FIND SUBJECT FROM TYPED VALUE
+===================================================== */
+
+function findSubjectFromInput(
+    typedValue
+) {
+
+    const value =
+        normalizeText(
+            typedValue
+        );
+
+
+    if (!value) {
+        return null;
+    }
+
+
+    /*
+       Exact complete display:
+       CODE - NAME
+    */
+
+    let subject =
+        subjects.find(
+            s =>
+                normalizeText(
+                    `${s.subjectCode} - ${s.subjectName}`
+                ) === value
+        );
+
+
+    if (subject) {
+        return subject;
+    }
+
+
+    /*
+       Exact subject code
+    */
+
+    subject =
+        subjects.find(
+            s =>
+                normalizeText(
+                    s.subjectCode
+                ) === value
+        );
+
+
+    if (subject) {
+        return subject;
+    }
+
+
+    /*
+       Exact subject name
+    */
+
+    subject =
+        subjects.find(
+            s =>
+                normalizeText(
+                    s.subjectName
+                ) === value
+        );
+
+
+    if (subject) {
+        return subject;
+    }
+
+
+    /*
+       If typed value contains
+       CODE - NAME, extract code
+    */
+
+    const parts =
+        value.split("-");
+
+
+    if (parts.length >= 2) {
+
+        const code =
+            normalizeText(
+                parts[0]
+            );
+
+
+        subject =
+            subjects.find(
+                s =>
+                    normalizeText(
+                        s.subjectCode
+                    ) === code
+            );
+
+
+        if (subject) {
+            return subject;
+        }
+
+    }
+
+
+    return null;
+
+}
+
+
+/* =====================================================
+   ADD ASSIGNMENT ROW
 ===================================================== */
 
 window.addAssignmentRow =
@@ -991,43 +1373,41 @@ function() {
 
     rowCounter++;
 
+
     const row =
-        document.createElement("div");
+        document.createElement(
+            "div"
+        );
+
 
     row.className =
         "assignment-row";
 
+
     row.dataset.rowId =
         rowCounter;
+
 
     row.innerHTML = `
 
         <div class="row-field">
 
-            <label>Subject *</label>
+            <label>
+                Subject *
+            </label>
 
-            <select class="row-subject">
 
-                <option value="">
-                    Select Subject
-                </option>
+            <input
+                type="text"
+                class="row-subject-input"
+                list="subjectList"
+                placeholder="Type subject code or name..."
+                autocomplete="off"
+            >
 
-                ${subjects.map(subject => `
-
-                    <option value="${escapeHtml(subject.id)}">
-
-                        ${escapeHtml(subject.subjectCode)}
-                        -
-                        ${escapeHtml(subject.subjectName)}
-
-                    </option>
-
-                `).join("")}
-
-            </select>
 
             <div class="subject-details">
-                Select a subject
+                Type or select a subject
             </div>
 
         </div>
@@ -1035,7 +1415,10 @@ function() {
 
         <div class="row-field">
 
-            <label>Department *</label>
+            <label>
+                Department *
+            </label>
+
 
             <input
                 type="text"
@@ -1048,7 +1431,10 @@ function() {
 
         <div class="row-field">
 
-            <label>Class / Year *</label>
+            <label>
+                Class / Year *
+            </label>
+
 
             <input
                 type="text"
@@ -1061,7 +1447,10 @@ function() {
 
         <div class="row-field">
 
-            <label>Section *</label>
+            <label>
+                Section *
+            </label>
+
 
             <select class="row-section">
 
@@ -1069,11 +1458,25 @@ function() {
                     Select Section
                 </option>
 
-                <option value="A">A</option>
-                <option value="B">B</option>
-                <option value="C">C</option>
-                <option value="D">D</option>
-                <option value="E">E</option>
+                <option value="A">
+                    A
+                </option>
+
+                <option value="B">
+                    B
+                </option>
+
+                <option value="C">
+                    C
+                </option>
+
+                <option value="D">
+                    D
+                </option>
+
+                <option value="E">
+                    E
+                </option>
 
             </select>
 
@@ -1082,7 +1485,10 @@ function() {
 
         <div class="row-field">
 
-            <label>Room No. *</label>
+            <label>
+                Room No. *
+            </label>
+
 
             <input
                 type="text"
@@ -1107,27 +1513,161 @@ function() {
 
     `;
 
-    assignmentRows.appendChild(row);
 
-    const subjectSelect =
-        row.querySelector(".row-subject");
+    assignmentRows.appendChild(
+        row
+    );
 
-    subjectSelect.addEventListener(
-        "change",
+
+    const subjectInput =
+        row.querySelector(
+            ".row-subject-input"
+        );
+
+
+    /*
+       When user types
+    */
+
+    subjectInput.addEventListener(
+        "input",
         function() {
 
-            updateSubjectDetails(
+            handleSubjectInput(
                 row,
-                this.value
+                this
             );
 
         }
     );
+
+
+    /*
+       When user leaves the field
+    */
+
+    subjectInput.addEventListener(
+        "change",
+        function() {
+
+            handleSubjectInput(
+                row,
+                this
+            );
+
+        }
+    );
+
+
+    /*
+       Keyboard support
+    */
+
+    subjectInput.addEventListener(
+        "keydown",
+        function(event) {
+
+            if (
+                event.key === "Enter"
+            ) {
+
+                event.preventDefault();
+
+                handleSubjectInput(
+                    row,
+                    this
+                );
+
+            }
+
+        }
+    );
+
 };
 
 
 /* =====================================================
-   SUBJECT DETAILS
+   HANDLE TYPED SUBJECT
+===================================================== */
+
+function handleSubjectInput(
+    row,
+    input
+) {
+
+    const typedValue =
+        input.value.trim();
+
+
+    const subject =
+        findSubjectFromInput(
+            typedValue
+        );
+
+
+    if (!subject) {
+
+        input.dataset.subjectId =
+            "";
+
+
+        updateSubjectDetails(
+            row,
+            ""
+        );
+
+
+        if (typedValue) {
+
+            const details =
+                row.querySelector(
+                    ".subject-details"
+                );
+
+
+            details.className =
+                "subject-details invalid";
+
+
+            details.innerHTML = `
+                Subject not found.
+                Please type/select a valid subject.
+            `;
+
+        }
+
+        return;
+
+    }
+
+
+    /*
+       Store actual Firebase subject ID
+    */
+
+    input.dataset.subjectId =
+        subject.id;
+
+
+    /*
+       Normalize displayed value
+       to CODE - NAME
+    */
+
+    input.value =
+        `${subject.subjectCode} - ${subject.subjectName}`;
+
+
+    updateSubjectDetails(
+        row,
+        subject.id
+    );
+
+}
+
+
+/* =====================================================
+   UPDATE SUBJECT DETAILS
 ===================================================== */
 
 function updateSubjectDetails(
@@ -1137,53 +1677,92 @@ function updateSubjectDetails(
 
     const subject =
         subjects.find(
-            s => s.id === subjectId
+            s =>
+                s.id === subjectId
         );
 
+
     const departmentInput =
-        row.querySelector(".row-department");
+        row.querySelector(
+            ".row-department"
+        );
+
 
     const yearInput =
-        row.querySelector(".row-year");
+        row.querySelector(
+            ".row-year"
+        );
+
 
     const details =
-        row.querySelector(".subject-details");
+        row.querySelector(
+            ".subject-details"
+        );
+
 
     if (!subject) {
 
-        departmentInput.value = "";
+        departmentInput.value =
+            "";
 
-        yearInput.value = "";
+        yearInput.value =
+            "";
+
+        details.className =
+            "subject-details";
+
 
         details.textContent =
-            "Select a subject";
+            "Type or select a subject";
 
         return;
+
     }
+
 
     departmentInput.value =
         subject.department;
 
+
     yearInput.value =
         subject.classYear;
+
+
+    details.className =
+        "subject-details valid";
+
 
     details.innerHTML = `
 
         <strong>
-            ${escapeHtml(subject.subjectName)}
+            ${escapeHtml(
+                subject.subjectName
+            )}
         </strong>
 
         <br>
 
+        Code:
+        ${escapeHtml(
+            subject.subjectCode
+        )}
+
+        <br>
+
         Type:
-        ${escapeHtml(subject.subjectType)}
+        ${escapeHtml(
+            subject.subjectType
+        )}
 
         &nbsp; | &nbsp;
 
         Credits:
-        ${escapeHtml(subject.credits)}
+        ${escapeHtml(
+            subject.credits
+        )}
 
     `;
+
 }
 
 
@@ -1199,15 +1778,22 @@ function(rowId) {
             `[data-row-id="${rowId}"]`
         );
 
+
     if (row) {
+
         row.remove();
+
     }
+
 
     if (
         assignmentRows.children.length === 0
     ) {
+
         addAssignmentRow();
+
     }
+
 };
 
 
@@ -1218,14 +1804,17 @@ function(rowId) {
 window.clearAssignmentRows =
 function() {
 
-    assignmentRows.innerHTML = "";
+    assignmentRows.innerHTML =
+        "";
+
 
     addAssignmentRow();
+
 };
 
 
 /* =====================================================
-   SAVE ALL
+   SAVE ALL ASSIGNMENTS
 ===================================================== */
 
 window.saveAllAssignments =
@@ -1233,6 +1822,7 @@ async function() {
 
     const selectedStaffId =
         staffSelect.value;
+
 
     if (!selectedStaffId) {
 
@@ -1242,12 +1832,17 @@ async function() {
         );
 
         return;
+
     }
+
 
     const staff =
         staffList.find(
-            s => s.staffId === selectedStaffId
+            s =>
+                s.staffId ===
+                selectedStaffId
         );
+
 
     if (!staff) {
 
@@ -1257,12 +1852,15 @@ async function() {
         );
 
         return;
+
     }
+
 
     const rows =
         Array.from(
             assignmentRows.children
         );
+
 
     if (!rows.length) {
 
@@ -1272,88 +1870,139 @@ async function() {
         );
 
         return;
+
     }
 
-    const saveButton =
-        document.getElementById("saveAllBtn");
 
-    saveButton.disabled = true;
+    const saveButton =
+        document.getElementById(
+            "saveAllBtn"
+        );
+
+
+    saveButton.disabled =
+        true;
+
 
     saveButton.textContent =
         "Saving...";
 
+
     try {
 
-        const newAssignments = [];
+        const newAssignments =
+            [];
 
-        for (const row of rows) {
+
+        for (
+            const row
+            of rows
+        ) {
+
+            /*
+               Get typed subject input
+            */
+
+            const subjectInput =
+                row.querySelector(
+                    ".row-subject-input"
+                );
+
 
             const subjectId =
-                row.querySelector(
-                    ".row-subject"
-                ).value;
+                subjectInput.dataset.subjectId ||
+                "";
+
 
             const section =
                 row.querySelector(
                     ".row-section"
                 ).value;
 
+
             const room =
                 row.querySelector(
                     ".row-room"
                 ).value.trim();
 
+
+            /*
+               SUBJECT VALIDATION
+            */
+
             if (!subjectId) {
+
                 throw new Error(
-                    "Please select a subject in every row."
+                    "Please type/select a valid subject in every row."
                 );
+
             }
 
-            if (!section) {
-                throw new Error(
-                    "Please select section in every row."
-                );
-            }
-
-            if (!room) {
-                throw new Error(
-                    "Please enter room number in every row."
-                );
-            }
 
             const subject =
                 subjects.find(
-                    s => s.id === subjectId
+                    s =>
+                        s.id === subjectId
                 );
 
+
             if (!subject) {
+
                 throw new Error(
                     "Selected subject could not be found."
                 );
+
+            }
+
+
+            /*
+               SECTION VALIDATION
+            */
+
+            if (!section) {
+
+                throw new Error(
+                    "Please select section in every row."
+                );
+
+            }
+
+
+            /*
+               ROOM VALIDATION
+            */
+
+            if (!room) {
+
+                throw new Error(
+                    "Please enter room number in every row."
+                );
+
             }
 
 
             /* ==========================================
                DUPLICATE IN CURRENT SCREEN
-               SAME STAFF + SUBJECT + DEPARTMENT +
-               CLASS + SECTION
             ========================================== */
 
             const duplicateCurrent =
-                newAssignments.some(item =>
+                newAssignments.some(
+                    item =>
 
-                    item.staffId === staff.staffId &&
+                        item.staffId ===
+                        staff.staffId &&
 
-                    item.subjectId === subject.id &&
+                        item.subjectId ===
+                        subject.id &&
 
-                    item.department ===
-                    subject.department &&
+                        item.department ===
+                        subject.department &&
 
-                    item.classYear ===
-                    subject.classYear &&
+                        item.classYear ===
+                        subject.classYear &&
 
-                    item.section === section
-
+                        item.section ===
+                        section
                 );
 
 
@@ -1369,14 +2018,7 @@ async function() {
 
 
             /* ==========================================
-               CHECK FIRESTORE
-
-               IMPORTANT:
-               SAME SUBJECT CAN BE ASSIGNED TO
-               MULTIPLE STAFF.
-
-               We check staff + subject + department +
-               class + section.
+               CHECK FIRESTORE DUPLICATE
             ========================================== */
 
             const duplicateQuery =
@@ -1440,7 +2082,7 @@ async function() {
 
 
             /* ==========================================
-               CREATE ASSIGNMENT OBJECT
+               CREATE ASSIGNMENT
             ========================================== */
 
             newAssignments.push({
@@ -1499,11 +2141,14 @@ async function() {
         ) {
 
             await addDoc(
+
                 collection(
                     db,
                     "subjectAssignments"
                 ),
+
                 assignment
+
             );
 
         }
@@ -1520,6 +2165,7 @@ async function() {
 
         clearAssignmentRows();
 
+
         await loadAssignments();
 
     }
@@ -1531,6 +2177,7 @@ async function() {
             error
         );
 
+
         showMessage(
             error.message,
             "error"
@@ -1540,12 +2187,15 @@ async function() {
 
     finally {
 
-        saveButton.disabled = false;
+        saveButton.disabled =
+            false;
+
 
         saveButton.textContent =
             "Save All Assignments";
 
     }
+
 };
 
 
@@ -1559,6 +2209,7 @@ async function loadAssignments() {
         document.getElementById(
             "assignmentTableBody"
         );
+
 
     tbody.innerHTML = `
 
@@ -1575,17 +2226,22 @@ async function loadAssignments() {
 
     `;
 
+
     try {
 
         const snapshot =
             await getDocs(
+
                 collection(
                     db,
                     "subjectAssignments"
                 )
+
             );
 
+
         assignments = [];
+
 
         snapshot.forEach(
             documentSnapshot => {
@@ -1611,10 +2267,12 @@ async function loadAssignments() {
                         a.staffId || ""
                     );
 
+
                 const staffB =
                     String(
                         b.staffId || ""
                     );
+
 
                 return staffA.localeCompare(
                     staffB
@@ -1641,6 +2299,7 @@ async function loadAssignments() {
             error
         );
 
+
         tbody.innerHTML = `
 
             <tr>
@@ -1663,12 +2322,14 @@ async function loadAssignments() {
             </tr>
 
         `;
+
     }
+
 }
 
 
 /* =====================================================
-   FILTER
+   FILTER ASSIGNMENTS
 ===================================================== */
 
 window.filterAssignments =
@@ -1682,10 +2343,12 @@ function() {
         .trim()
         .toLowerCase();
 
+
     const department =
         document.getElementById(
             "filterDepartment"
         ).value;
+
 
     const year =
         document.getElementById(
@@ -1709,6 +2372,8 @@ function() {
 
                     assignment.department,
 
+                    assignment.classYear,
+
                     assignment.section,
 
                     assignment.roomNo
@@ -1721,7 +2386,9 @@ function() {
                 return (
 
                     (!search ||
-                    searchable.includes(search))
+                    searchable.includes(
+                        search
+                    ))
 
                     &&
 
@@ -1744,19 +2411,23 @@ function() {
     renderAssignments(
         filtered
     );
+
 };
 
 
 /* =====================================================
-   RENDER
+   RENDER ASSIGNMENTS
 ===================================================== */
 
-function renderAssignments(data) {
+function renderAssignments(
+    data
+) {
 
     const tbody =
         document.getElementById(
             "assignmentTableBody"
         );
+
 
     if (!data.length) {
 
@@ -1776,6 +2447,7 @@ function renderAssignments(data) {
         `;
 
         return;
+
     }
 
 
@@ -1789,19 +2461,26 @@ function renderAssignments(data) {
                         ${index + 1}
                     </td>
 
+
                     <td>
+
                         <strong>
                             ${escapeHtml(
                                 assignment.staffId
                             )}
                         </strong>
+
                     </td>
 
+
                     <td>
+
                         ${escapeHtml(
                             assignment.staffName
                         )}
+
                     </td>
+
 
                     <td>
 
@@ -1815,35 +2494,51 @@ function renderAssignments(data) {
 
                     </td>
 
+
                     <td>
+
                         ${escapeHtml(
                             assignment.subjectName
                         )}
+
                     </td>
 
+
                     <td>
+
                         ${escapeHtml(
                             assignment.department
                         )}
+
                     </td>
 
+
                     <td>
+
                         ${escapeHtml(
                             assignment.classYear
                         )}
+
                     </td>
 
+
                     <td>
+
                         ${escapeHtml(
                             assignment.section
                         )}
+
                     </td>
 
+
                     <td>
+
                         ${escapeHtml(
                             assignment.roomNo
                         )}
+
                     </td>
+
 
                     <td>
 
@@ -1860,11 +2555,12 @@ function renderAssignments(data) {
 
             `
         ).join("");
+
 }
 
 
 /* =====================================================
-   DELETE
+   DELETE ASSIGNMENT
 ===================================================== */
 
 window.deleteAssignment =
@@ -1872,8 +2568,10 @@ async function(id) {
 
     const assignment =
         assignments.find(
-            a => a.id === id
+            a =>
+                a.id === id
         );
+
 
     if (!assignment) {
 
@@ -1883,6 +2581,7 @@ async function(id) {
         );
 
         return;
+
     }
 
 
@@ -1894,17 +2593,21 @@ async function(id) {
         );
 
 
-    if (!confirmed) return;
+    if (!confirmed) {
+        return;
+    }
 
 
     try {
 
         await deleteDoc(
+
             doc(
                 db,
                 "subjectAssignments",
                 id
             )
+
         );
 
 
@@ -1925,17 +2628,20 @@ async function(id) {
             error
         );
 
+
         showMessage(
             "Unable to delete assignment: " +
             error.message,
             "error"
         );
+
     }
+
 };
 
 
 /* =====================================================
-   INITIALIZE
+   INITIALIZE PAGE
 ===================================================== */
 
 async function initializePage() {
@@ -1950,7 +2656,25 @@ async function initializePage() {
 
         ]);
 
+
+        /*
+           Create searchable subject list
+           only after Firebase subjects load.
+        */
+
+        createSubjectDatalist();
+
+
+        /*
+           Add first assignment row.
+        */
+
         addAssignmentRow();
+
+
+        /*
+           Load existing assignments.
+        */
 
         await loadAssignments();
 
@@ -1963,9 +2687,20 @@ async function initializePage() {
             error
         );
 
+        showMessage(
+            "Page initialization failed: " +
+            error.message,
+            "error"
+        );
+
     }
+
 }
 
+
+/* =====================================================
+   START
+===================================================== */
 
 initializePage();
 
@@ -1973,3 +2708,4 @@ initializePage();
 
 </body>
 </html>
+
