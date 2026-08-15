@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -8,252 +6,702 @@
 <meta charset="UTF-8">
 
 <meta
-name="viewport"
-content="width=device-width, initial-scale=1.0">
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
 
-<title>
+<title>Staff Messaging</title>
 
-Staff Dashboard
-
-</title>
 
 <style>
 
+/* =====================================================
+   RESET
+===================================================== */
+
 *{
-
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:Arial,Helvetica,sans-serif;
-
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial,Helvetica,sans-serif;
 }
+
+
+/* =====================================================
+   BODY
+===================================================== */
 
 body{
+    width:100%;
+    height:100vh;
+    overflow:hidden;
+    background:#f4f6f9;
+}
 
-background:#f4f6f9;
+
+/* =====================================================
+   MAIN APP
+===================================================== */
+
+.messaging-app{
+    width:100%;
+    height:100vh;
+    display:flex;
+    background:white;
+}
+
+
+/* =====================================================
+   LEFT STAFF PANEL
+===================================================== */
+
+.staff-panel{
+    width:340px;
+    min-width:340px;
+    height:100vh;
+    background:white;
+    border-right:1px solid #ddd;
+    display:flex;
+    flex-direction:column;
+}
+
+
+/* =====================================================
+   PANEL HEADER
+===================================================== */
+
+.staff-panel-header{
+    background:#500454;
+    color:white;
+    padding:20px;
+}
+
+
+.staff-panel-header h2{
+    font-size:21px;
+    margin-bottom:6px;
+}
+
+
+.staff-panel-header p{
+    font-size:11px;
+    opacity:.85;
+}
+
+
+/* =====================================================
+   CURRENT USER
+===================================================== */
+
+.current-user{
+    background:#fafafa;
+    border-bottom:1px solid #eee;
+    padding:12px 15px;
+}
+
+
+.current-user-name{
+    font-size:13px;
+    font-weight:bold;
+    color:#333;
+}
+
+
+.current-user-id{
+    font-size:10px;
+    color:#777;
+    margin-top:4px;
+}
+
+
+/* =====================================================
+   SEARCH
+===================================================== */
+
+.search-area{
+    padding:12px;
+    border-bottom:1px solid #eee;
+}
+
+
+.search-box-wrapper{
+    position:relative;
+}
+
+
+.search-box{
+    width:100%;
+    height:42px;
+    border:1px solid #ccc;
+    border-radius:8px;
+    padding:0 40px 0 38px;
+    outline:none;
+    font-size:12px;
+    background:#fafafa;
+}
+
+
+.search-box:focus{
+    border-color:#500454;
+    background:white;
+}
+
+
+.search-icon{
+    position:absolute;
+    left:12px;
+    top:50%;
+    transform:translateY(-50%);
+    color:#777;
+    font-size:14px;
+    pointer-events:none;
+}
+
+
+.clear-search{
+    position:absolute;
+    right:10px;
+    top:50%;
+    transform:translateY(-50%);
+    width:22px;
+    height:22px;
+    border:none;
+    border-radius:50%;
+    background:#ddd;
+    cursor:pointer;
+    display:none;
+    font-size:13px;
+}
+
+
+.clear-search:hover{
+    background:#ccc;
+}
+
+
+.staff-count{
+    margin-top:7px;
+    font-size:10px;
+    color:#777;
+}
+
+
+/* =====================================================
+   STAFF LIST
+===================================================== */
+
+.staff-list{
+    flex:1;
+    overflow-y:auto;
+}
+
+
+.staff-list::-webkit-scrollbar{
+    width:5px;
+}
+
+
+.staff-list::-webkit-scrollbar-thumb{
+    background:#ccc;
+    border-radius:10px;
+}
+
+
+/* =====================================================
+   STAFF ITEM
+===================================================== */
+
+.staff-item{
+    min-height:70px;
+    width:100%;
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:12px 15px;
+    border-bottom:1px solid #eee;
+    cursor:pointer;
+    transition:.2s;
+    position:relative;
+}
+
+
+.staff-item:hover{
+    background:#f8f1fa;
+}
+
+
+.staff-item.active{
+    background:#f0ddf2;
+    border-left:4px solid #500454;
+    padding-left:11px;
+}
+
+
+/* =====================================================
+   AVATAR
+===================================================== */
+
+.staff-avatar{
+    width:44px;
+    height:44px;
+    min-width:44px;
+    border-radius:50%;
+    background:#500454;
+    color:white;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:13px;
+    font-weight:bold;
+}
+
+
+/* =====================================================
+   STAFF INFO
+===================================================== */
+
+.staff-info{
+    min-width:0;
+    flex:1;
+}
+
+
+.staff-name{
+    font-size:13px;
+    font-weight:bold;
+    color:#333;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+
+
+.staff-id{
+    font-size:10px;
+    color:#777;
+    margin-top:4px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+
+
+.unread-badge{
+    min-width:20px;
+    height:20px;
+    padding:0 6px;
+    border-radius:10px;
+    background:#e11d48;
+    color:white;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:10px;
+    font-weight:bold;
+}
+
+
+/* =====================================================
+   CHAT PANEL
+===================================================== */
+
+.chat-panel{
+    flex:1;
+    height:100vh;
+    min-width:0;
+    display:flex;
+    flex-direction:column;
+    background:#f4f6f9;
+}
+
+
+/* =====================================================
+   CHAT HEADER
+===================================================== */
+
+.chat-header{
+    height:72px;
+    min-height:72px;
+    background:white;
+    border-bottom:1px solid #ddd;
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:10px 20px;
+}
+
+
+.back-button{
+    display:none;
+    width:35px;
+    height:35px;
+    border:none;
+    border-radius:7px;
+    background:#eee;
+    cursor:pointer;
+}
+
+
+.chat-avatar{
+    width:45px;
+    height:45px;
+    min-width:45px;
+    border-radius:50%;
+    background:#500454;
+    color:white;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:13px;
+    font-weight:bold;
+}
+
+
+.chat-info{
+    display:none;
+}
+
+
+.chat-name{
+    font-size:15px;
+    font-weight:bold;
+    color:#333;
+}
+
+
+.chat-id{
+    font-size:10px;
+    color:#777;
+    margin-top:4px;
+}
+
+
+/* =====================================================
+   MESSAGE AREA
+===================================================== */
+
+.message-area{
+    flex:1;
+    overflow-y:auto;
+    padding:20px;
+}
+
+
+.message-area::-webkit-scrollbar{
+    width:6px;
+}
+
+
+.message-area::-webkit-scrollbar-thumb{
+    background:#ccc;
+    border-radius:10px;
+}
+
+
+/* =====================================================
+   EMPTY SCREEN
+===================================================== */
+
+.empty-screen{
+    width:100%;
+    height:100%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+}
+
+
+.empty-icon{
+    font-size:50px;
+    margin-bottom:12px;
+}
+
+
+.empty-title{
+    color:#555;
+    font-size:16px;
+    font-weight:bold;
+}
+
+
+.empty-text{
+    color:#999;
+    font-size:12px;
+    margin-top:6px;
+}
+
+
+/* =====================================================
+   MESSAGE ROW
+===================================================== */
+
+.message-row{
+    display:flex;
+    width:100%;
+    margin-bottom:12px;
+}
+
+
+.message-row.sent{
+    justify-content:flex-end;
+}
+
+
+.message-row.received{
+    justify-content:flex-start;
+}
+
+
+/* =====================================================
+   MESSAGE BUBBLE
+===================================================== */
+
+.message-bubble{
+    max-width:65%;
+    padding:10px 13px;
+    font-size:13px;
+    line-height:1.45;
+    word-break:break-word;
+}
+
+
+.message-row.sent
+.message-bubble{
+    background:#500454;
+    color:white;
+    border-radius:13px 13px 3px 13px;
+}
+
+
+.message-row.received
+.message-bubble{
+    background:white;
+    color:#333;
+    border:1px solid #ddd;
+    border-radius:13px 13px 13px 3px;
+}
+
+
+.message-time{
+    font-size:9px;
+    margin-top:5px;
+    text-align:right;
+    opacity:.65;
+}
+
+
+/* =====================================================
+   INPUT
+===================================================== */
+
+.message-input-area{
+    min-height:70px;
+    background:white;
+    border-top:1px solid #ddd;
+    padding:12px;
+    display:none;
+    gap:8px;
+}
+
+
+.message-input{
+    flex:1;
+    height:45px;
+    border:1px solid #ccc;
+    border-radius:8px;
+    outline:none;
+    padding:12px;
+    font-size:13px;
+    resize:none;
+}
+
+
+.message-input:focus{
+    border-color:#500454;
+}
+
+
+.send-button{
+    width:55px;
+    height:45px;
+    border:none;
+    border-radius:8px;
+    background:#500454;
+    color:white;
+    cursor:pointer;
+    font-size:18px;
+}
+
+
+.send-button:hover{
+    background:#6e0a75;
+}
+
+
+.send-button:disabled{
+    opacity:.5;
+    cursor:not-allowed;
+}
+
+
+/* =====================================================
+   LOADING
+===================================================== */
+
+.loading{
+    padding:30px;
+    text-align:center;
+    color:#777;
+    font-size:12px;
+}
+
+
+.spinner{
+    width:25px;
+    height:25px;
+    border:3px solid #ddd;
+    border-top-color:#500454;
+    border-radius:50%;
+    margin:0 auto 10px;
+    animation:spin .7s linear infinite;
+}
+
+
+@keyframes spin{
+
+    to{
+        transform:rotate(360deg);
+    }
 
 }
 
-.header{
 
-position:fixed;
-top:0;
-left:0;
-right:0;
+/* =====================================================
+   NO RESULTS
+===================================================== */
 
-height:70px;
+.no-results{
+    padding:40px 20px;
+    text-align:center;
+    color:#777;
+}
 
-background:#500454;
 
-display:flex;
+.no-results-icon{
+    font-size:35px;
+    margin-bottom:10px;
+}
 
-justify-content:space-between;
 
-align-items:center;
+/* =====================================================
+   NOTIFICATION
+===================================================== */
 
-padding:0 25px;
+.notification{
+    position:fixed;
+    right:20px;
+    bottom:20px;
+    width:320px;
+    background:white;
+    border-radius:10px;
+    box-shadow:0 5px 25px rgba(0,0,0,.25);
+    padding:15px;
+    z-index:9999;
+    display:none;
+    border-left:5px solid #500454;
+}
 
-color:white;
 
-box-shadow:0 2px 10px rgba(0,0,0,.3);
+.notification.show{
+    display:block;
+    animation:slideIn .3s ease;
+}
 
-z-index:1000;
+
+@keyframes slideIn{
+
+    from{
+        transform:translateX(350px);
+    }
+
+    to{
+        transform:translateX(0);
+    }
 
 }
 
-.header h2{
 
-font-size:24px;
-
+.notification-title{
+    font-size:13px;
+    font-weight:bold;
+    color:#500454;
 }
 
-.user{
 
-font-size:16px;
-
+.notification-text{
+    font-size:12px;
+    color:#555;
+    margin-top:6px;
 }
 
-.container{
 
-display:flex;
-
-margin-top:70px;
-
-height:calc(100vh - 70px);
-
+.notification-button{
+    margin-top:10px;
+    border:none;
+    background:#500454;
+    color:white;
+    padding:7px 12px;
+    border-radius:6px;
+    cursor:pointer;
+    font-size:11px;
 }
 
-.sidebar{
 
-width:260px;
+/* =====================================================
+   MOBILE
+===================================================== */
 
-background:white;
+@media(max-width:700px){
 
-box-shadow:2px 0 8px rgba(0,0,0,.15);
+    .staff-panel{
+        width:100%;
+        min-width:100%;
+    }
 
-overflow-y:auto;
 
-}
+    .chat-panel{
+        display:none;
+    }
 
-.sidebar h3{
 
-padding:20px;
+    .messaging-app.mobile-chat
+    .staff-panel{
+        display:none;
+    }
 
-background:#500454;
 
-color:white;
+    .messaging-app.mobile-chat
+    .chat-panel{
+        display:flex;
+    }
 
-text-align:center;
 
-}
+    .back-button{
+        display:block;
+    }
 
-.sidebar a{
 
-display:block;
+    .message-bubble{
+        max-width:82%;
+    }
 
-padding:15px 20px;
 
-text-decoration:none;
-
-color:#333;
-
-border-bottom:1px solid #eee;
-
-font-weight:bold;
-
-transition:.3s;
-
-}
-
-.sidebar a:hover{
-
-background:#500454;
-
-color:white;
-
-padding-left:30px;
-
-}
-
-.main{
-
-flex:1;
-
-padding:25px;
-
-overflow:auto;
-
-}
-
-.card{
-
-background:white;
-
-padding:20px;
-
-border-radius:10px;
-
-box-shadow:0 0 10px rgba(0,0,0,.15);
-
-margin-bottom:20px;
-
-}
-
-.card h2{
-
-color:#500454;
-
-margin-bottom:10px;
-
-}
-
-.dashboard{
-
-display:grid;
-
-grid-template-columns:
-
-repeat(auto-fit,minmax(250px,1fr));
-
-gap:20px;
-
-margin-top:20px;
-
-}
-
-.stat{
-
-background:white;
-
-border-radius:10px;
-
-padding:25px;
-
-box-shadow:0 0 10px rgba(0,0,0,.15);
-
-text-align:center;
-
-}
-
-.stat h1{
-
-font-size:40px;
-
-color:#500454;
-
-margin-bottom:10px;
-
-}
-
-.stat p{
-
-font-size:18px;
-
-font-weight:bold;
-
-}
-
-.quick{
-
-display:grid;
-
-grid-template-columns:
-
-repeat(auto-fit,minmax(180px,1fr));
-
-gap:20px;
-
-margin-top:25px;
-
-}
-
-.quick button{
-
-padding:20px;
-
-font-size:16px;
-
-font-weight:bold;
-
-border:none;
-
-background:#500454;
-
-color:white;
-
-border-radius:8px;
-
-cursor:pointer;
-
-transition:.3s;
-
-}
-
-.quick button:hover{
-
-background:#6e0a75;
-
-transform:scale(1.04);
+    .notification{
+        width:calc(100% - 30px);
+        right:15px;
+        bottom:15px;
+    }
 
 }
 
@@ -261,455 +709,2419 @@ transform:scale(1.04);
 
 </head>
 
+
 <body>
 
-<div class="header">
 
-<h2>
+<div
+    id="messagingApp"
+    class="messaging-app"
+>
 
-IT HEAD PORTAL
 
-</h2>
+<!-- =====================================================
+     STAFF PANEL
+===================================================== -->
 
-<div class="user">
+<div class="staff-panel">
 
-Welcome
 
-<span id="staffName">
+    <div class="staff-panel-header">
 
-</span>
+        <h2>
+            💬 Staff Messaging
+        </h2>
 
-</div>
+        <p>
+            Message other staff members
+        </p>
 
-</div>
+    </div>
 
-<div class="container">
 
-<div class="sidebar">
+    <!-- CURRENT STAFF -->
 
-<h3>
+    <div class="current-user">
 
-MENU
+        <div
+            id="currentStaffName"
+            class="current-user-name"
+        >
+            Loading...
+        </div>
 
-</h3>
+        <div
+            id="currentStaffId"
+            class="current-user-id"
+        >
+            -
+        </div>
 
-<a href="#">
+    </div>
 
- Dashboard
 
-</a>
- <a href="staff-details.html">
+    <!-- SEARCH -->
 
- Personal Details
-</a>
- <a href="message.html">
+    <div class="search-area">
 
- Message Staff
-</a>
-<a href="subject-assignment.html">
+        <div class="search-box-wrapper">
 
-Subject Assign To Staff
+            <span class="search-icon">
+                🔍
+            </span>
 
-</a>
- <a href="leave.html">
 
- Leave Approval
+            <input
+                id="searchBox"
+                class="search-box"
+                type="text"
+                placeholder="Search staff name, ID or department..."
+                autocomplete="off"
+            >
 
-</a>
-<a href="timetable-assign-staff.html">
 
- Staff Timetable Assign
+            <button
+                id="clearSearch"
+                class="clear-search"
+                type="button"
+            >
+                ×
+            </button>
 
-</a>
- <a href="substitute-approval.html">
+        </div>
 
-Substitute Approve
 
-</a>
- <a href="service-request.html">
+        <div
+            id="staffCount"
+            class="staff-count"
+        >
+            Loading staff...
+        </div>
 
- Service Request
-</a>
-  <a href="service-request-head.html">
+    </div>
 
- Request Received
-</a>
-   <a href="service-request-worker.html">
 
- Work Recieved
-   </a>
-   <a href="assign-worker.html">
+    <!-- STAFF LIST -->
 
- Assign Worker
-   </a>
+    <div
+        id="staffList"
+        class="staff-list"
+    >
 
-<a href="#" 
- onclick="logout()">
+        <div class="loading">
 
-🚪 Logout
+            <div class="spinner"></div>
 
-</a>
+            Loading staff...
 
-</div>
+        </div>
 
-<div class="main">
-
-<div class="card">
-
-<h2>
-
-Welcome <span id="staffName"></span>
-
-</h2>
-<p>
-
-Staff ID :
-
-<b id="staffId"></b>
-
-</p>
-
-<br>
-
-<p>
-
-Department :
-
-<b id="department"></b>
-
-</p>
+    </div>
 
 </div>
 
-<div class="dashboard">
 
-<div class="stat">
 
-<h1 id="studentCount">
+<!-- =====================================================
+     CHAT PANEL
+===================================================== -->
 
-0
+<div class="chat-panel">
 
-</h1>
 
-<p>
+    <div class="chat-header">
 
-Students
 
-</p>
+        <button
+            id="backButton"
+            class="back-button"
+            type="button"
+        >
+            ←
+        </button>
 
-</div>
 
-<div class="stat">
+        <div
+            id="chatAvatar"
+            class="chat-avatar"
+        >
+            ?
+        </div>
 
-<h1 id="attendanceCount">
 
-0
+        <div
+            id="chatInfo"
+            class="chat-info"
+        >
 
-</h1>
+            <div
+                id="chatName"
+                class="chat-name"
+            >
+                Staff
+            </div>
 
-<p>
 
-Attendance Entries
+            <div
+                id="chatId"
+                class="chat-id"
+            >
+                -
+            </div>
 
-</p>
+        </div>
 
-</div>
 
-<div class="stat">
+    </div>
 
-<h1 id="resultCount">
 
-0
 
-</h1>
+    <!-- MESSAGES -->
 
-<p>
+    <div
+        id="messageArea"
+        class="message-area"
+    >
 
-Results
+        <div class="empty-screen">
 
-</p>
+            <div>
 
-</div>
+                <div class="empty-icon">
+                    💬
+                </div>
 
-<div class="stat">
+                <div class="empty-title">
+                    Select a staff member
+                </div>
 
-<h1 id="materialCount">
+                <div class="empty-text">
+                    Select a staff member from the left side.
+                </div>
 
-0
+            </div>
 
-</h1>
+        </div>
 
-<p>
+    </div>
 
-Materials
 
-</p>
 
-</div>
+    <!-- INPUT -->
 
-</div>
+    <div
+        id="messageInputArea"
+        class="message-input-area"
+    >
 
-<div class="card">
+        <textarea
+            id="messageInput"
+            class="message-input"
+            placeholder="Type your message..."
+        ></textarea>
 
-<h2>
 
-Quick Access
+        <button
+            id="sendButton"
+            class="send-button"
+            type="button"
+        >
+            ➤
+        </button>
 
-</h2>
-
-<div class="quick">
-
-<button
-
-onclick="location.href='attendance.html'">
-
-Attendance
-
-</button>
-
-<button
-
-onclick="location.href='attendance-report.html'">
-
-Attendance Report
-
-</button>
-
-<button
-
-onclick="location.href='student-list.html'">
-
-Students
-
-</button>
-<button
-
-onclick="location.href='edit-student.html'">
-
-Edit Students
-
-</button>
-
-<button
-
-onclick="location.href='result-entry.html'">
-
-Results
-
-</button>
-
-<button
-
-onclick="location.href='study-material-upload.html'">
-
-Materials
-
-</button>
+    </div>
 
 </div>
 
+
 </div>
+
+
+
+<!-- =====================================================
+     NOTIFICATION
+===================================================== -->
+
+<div
+    id="notification"
+    class="notification"
+>
+
+    <div
+        id="notificationTitle"
+        class="notification-title"
+    >
+        🔔 New Message
+    </div>
+
+
+    <div
+        id="notificationText"
+        class="notification-text"
+    >
+        You have received a new message.
+    </div>
+
+
+    <button
+        id="notificationButton"
+        class="notification-button"
+        type="button"
+    >
+        Open Message
+    </button>
+
+</div>
+
+
+
 <script type="module">
 
-import { db } from "./firebase-config.js";
+
+/* =====================================================
+   FIREBASE
+===================================================== */
 
 import {
-collection,
-query,
-where,
-getDocs
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-/* ===============================
-   CHECK STAFF LOGIN
-================================= */
-
-const staffId = sessionStorage.getItem("staffId");
-const staffName = sessionStorage.getItem("staffName");
-const department = sessionStorage.getItem("department");
-
-if(!staffId){
-
-    alert("Please Login");
-
-    window.location.href="login.html";
-
+    initializeApp
 }
-
-/* ===============================
-   DISPLAY STAFF DETAILS
-================================= */
-
-document.getElementById("staffId").innerHTML = staffId;
-document.getElementById("staffName").innerHTML = staffName;
-document.getElementById("department").innerHTML = department;
+from
+"https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
 
-/* ===============================
-   LOAD TOTAL STUDENTS
-================================= */
+import {
+    getFirestore,
+    collection,
+    getDocs,
+    addDoc,
+    query,
+    where,
+    onSnapshot,
+    updateDoc,
+    doc,
+    serverTimestamp
+}
+from
+"https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-async function loadStudents(){
 
-try{
+/* =====================================================
+   FIREBASE CONFIG
+===================================================== */
 
-const q = query(
+const firebaseConfig = {
 
-collection(db,"students"),
+    apiKey:
+        "AIzaSyAIv3091VM-gkmdwEAn7OhXWd9Cm2zh2bo",
 
-where("department","==",department)
+    authDomain:
+        "maasc-2026.firebaseapp.com",
 
+    projectId:
+        "maasc-2026",
+
+    storageBucket:
+        "maasc-2026.appspot.com",
+
+    messagingSenderId:
+        "585813001586",
+
+    appId:
+        "1:585813001586:web:664e0e90ff0725d2e849eb"
+
+};
+
+
+/* =====================================================
+   FIREBASE INITIALIZE
+===================================================== */
+
+const app =
+    initializeApp(
+        firebaseConfig
+    );
+
+
+const db =
+    getFirestore(
+        app
+    );
+
+
+/* =====================================================
+   ERP SESSION
+===================================================== */
+
+const currentStaffId =
+    String(
+        sessionStorage.getItem(
+            "staffId"
+        ) || ""
+    ).trim();
+
+
+const currentStaffName =
+    String(
+        sessionStorage.getItem(
+            "staffName"
+        ) || ""
+    ).trim();
+
+
+const currentDepartment =
+    String(
+        sessionStorage.getItem(
+            "department"
+        ) || ""
+    ).trim();
+
+
+console.log(
+    "CURRENT STAFF ID:",
+    currentStaffId
 );
 
-const snap = await getDocs(q);
 
-document.getElementById("studentCount").innerHTML =
-snap.size;
-
-}catch(e){
-
-console.log(e);
-
-}
-
-}
-
-/* ===============================
-   LOAD ATTENDANCE COUNT
-================================= */
-
-async function loadAttendance(){
-
-try{
-
-const q = query(
-
-collection(db,"attendance"),
-
-where("department","==",department)
-
+console.log(
+    "CURRENT STAFF NAME:",
+    currentStaffName
 );
 
-const snap = await getDocs(q);
 
-document.getElementById("attendanceCount").innerHTML =
-snap.size;
-
-}catch(e){
-
-console.log(e);
-
-}
-
-}
-
-/* ===============================
-   LOAD RESULT COUNT
-================================= */
-
-async function loadResults(){
-
-try{
-
-const q = query(
-
-collection(db,"results"),
-
-where("department","==",department)
-
+console.log(
+    "CURRENT DEPARTMENT:",
+    currentDepartment
 );
 
-const snap = await getDocs(q);
 
-document.getElementById("resultCount").innerHTML =
-snap.size;
+/* =====================================================
+   DO NOT REDIRECT TO LOGIN
+===================================================== */
 
-}catch(e){
+if(!currentStaffId){
 
-console.log(e);
+    document.body.innerHTML = `
+
+        <div style="
+            height:100vh;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            text-align:center;
+            font-family:Arial;
+            background:#f4f6f9;
+            padding:20px;
+        ">
+
+            <div style="
+                background:white;
+                padding:35px;
+                border-radius:12px;
+                box-shadow:0 5px 25px rgba(0,0,0,.15);
+                max-width:450px;
+            ">
+
+                <div style="
+                    font-size:45px;
+                    margin-bottom:15px;
+                ">
+                    ⚠️
+                </div>
+
+                <h2 style="
+                    color:#500454;
+                    margin-bottom:10px;
+                ">
+                    Staff Session Not Found
+                </h2>
+
+                <p style="
+                    color:#666;
+                    font-size:13px;
+                    line-height:1.6;
+                ">
+                    Your ERP Staff ID is not available
+                    in this page session.
+                    <br><br>
+                    Please open the messaging page
+                    from your ERP dashboard.
+                </p>
+
+                <br>
+
+                <button
+                    onclick="history.back()"
+                    style="
+                        background:#500454;
+                        color:white;
+                        border:none;
+                        padding:10px 20px;
+                        border-radius:7px;
+                        cursor:pointer;
+                    "
+                >
+                    Go Back
+                </button>
+
+            </div>
+
+        </div>
+
+    `;
+
+    throw new Error(
+        "ERP staffId is not available."
+    );
 
 }
 
+
+/* =====================================================
+   VARIABLES
+===================================================== */
+
+let staffList = [];
+
+let filteredStaffList = [];
+
+let selectedStaff = null;
+
+let sentMessages = [];
+
+let receivedMessages = [];
+
+let unsubscribeSent = null;
+
+let unsubscribeReceived = null;
+
+let unsubscribeAllReceived = null;
+
+
+/* =====================================================
+   DOM
+===================================================== */
+
+const messagingApp =
+    document.getElementById(
+        "messagingApp"
+    );
+
+
+const currentStaffNameElement =
+    document.getElementById(
+        "currentStaffName"
+    );
+
+
+const currentStaffIdElement =
+    document.getElementById(
+        "currentStaffId"
+    );
+
+
+const searchBox =
+    document.getElementById(
+        "searchBox"
+    );
+
+
+const clearSearch =
+    document.getElementById(
+        "clearSearch"
+    );
+
+
+const staffCount =
+    document.getElementById(
+        "staffCount"
+    );
+
+
+const staffListElement =
+    document.getElementById(
+        "staffList"
+    );
+
+
+const chatAvatar =
+    document.getElementById(
+        "chatAvatar"
+    );
+
+
+const chatInfo =
+    document.getElementById(
+        "chatInfo"
+    );
+
+
+const chatName =
+    document.getElementById(
+        "chatName"
+    );
+
+
+const chatId =
+    document.getElementById(
+        "chatId"
+    );
+
+
+const messageArea =
+    document.getElementById(
+        "messageArea"
+    );
+
+
+const messageInputArea =
+    document.getElementById(
+        "messageInputArea"
+    );
+
+
+const messageInput =
+    document.getElementById(
+        "messageInput"
+    );
+
+
+const sendButton =
+    document.getElementById(
+        "sendButton"
+    );
+
+
+const backButton =
+    document.getElementById(
+        "backButton"
+    );
+
+
+const notification =
+    document.getElementById(
+        "notification"
+    );
+
+
+const notificationTitle =
+    document.getElementById(
+        "notificationTitle"
+    );
+
+
+const notificationText =
+    document.getElementById(
+        "notificationText"
+    );
+
+
+const notificationButton =
+    document.getElementById(
+        "notificationButton"
+    );
+
+
+/* =====================================================
+   DISPLAY CURRENT STAFF
+===================================================== */
+
+currentStaffNameElement.textContent =
+    currentStaffName ||
+    "Staff";
+
+
+currentStaffIdElement.textContent =
+    currentStaffId;
+
+
+/* =====================================================
+   LOAD STAFF
+===================================================== */
+
+loadStaff();
+
+
+/* =====================================================
+   LOAD STAFF FUNCTION
+===================================================== */
+
+async function loadStaff(){
+
+    staffListElement.innerHTML = `
+
+        <div class="loading">
+
+            <div class="spinner"></div>
+
+            Loading staff...
+
+        </div>
+
+    `;
+
+
+    try{
+
+        const snapshot =
+            await getDocs(
+                collection(
+                    db,
+                    "staff"
+                )
+            );
+
+
+        console.log(
+            "STAFF DOCUMENTS:",
+            snapshot.size
+        );
+
+
+        staffList = [];
+
+
+        snapshot.forEach(
+            function(docSnap){
+
+                const data =
+                    docSnap.data();
+
+
+                const staffId =
+                    String(
+
+                        data.staffId ||
+
+                        data.staffID ||
+
+                        data.staff_id ||
+
+                        data.employeeId ||
+
+                        data.employeeID ||
+
+                        docSnap.id
+
+                    ).trim();
+
+
+                const name =
+                    String(
+
+                        data.name ||
+
+                        data.staffName ||
+
+                        data.staff_name ||
+
+                        data.fullName ||
+
+                        data.full_name ||
+
+                        data.displayName ||
+
+                        data.employeeName ||
+
+                        data.employee_name ||
+
+                        staffId
+
+                    ).trim();
+
+
+                const department =
+                    String(
+
+                        data.department ||
+
+                        data.departmentName ||
+
+                        data.department_name ||
+
+                        data.dept ||
+
+                        data.deptName ||
+
+                        ""
+
+                    ).trim();
+
+
+                staffList.push({
+
+                    docId:
+                        docSnap.id,
+
+                    staffId:
+                        staffId,
+
+                    name:
+                        name,
+
+                    department:
+                        department,
+
+                    data:
+                        data
+
+                });
+
+            }
+        );
+
+
+        /*
+           Sort alphabetically
+        */
+
+        staffList.sort(
+            function(a,b){
+
+                return a.name
+                    .toLowerCase()
+                    .localeCompare(
+                        b.name.toLowerCase()
+                    );
+
+            }
+        );
+
+
+        filteredStaffList =
+            [...staffList];
+
+
+        renderStaff();
+
+
+        /*
+           Start global message listener
+        */
+
+        startGlobalMessageListener();
+
+
+    }
+    catch(error){
+
+        console.error(
+            "STAFF LOAD ERROR:",
+            error
+        );
+
+
+        staffListElement.innerHTML = `
+
+            <div class="no-results">
+
+                <div class="no-results-icon">
+                    ⚠️
+                </div>
+
+                <b>
+                    Unable to load staff
+                </b>
+
+                <br><br>
+
+                <small>
+                    ${escapeHtml(
+                        error.message
+                    )}
+                </small>
+
+            </div>
+
+        `;
+
+    }
+
 }
 
-/* ===============================
-   LOAD MATERIAL COUNT
-================================= */
 
-async function loadMaterials(){
+/* =====================================================
+   SEARCH
+===================================================== */
 
-try{
+searchBox.addEventListener(
+    "input",
+    function(){
 
-const q = query(
+        const text =
+            this.value
+                .trim()
+                .toLowerCase();
 
-collection(db,"materials"),
 
-where("department","==",department)
+        if(text){
 
+            clearSearch.style.display =
+                "block";
+
+        }
+        else{
+
+            clearSearch.style.display =
+                "none";
+
+        }
+
+
+        if(!text){
+
+            filteredStaffList =
+                [...staffList];
+
+        }
+        else{
+
+            filteredStaffList =
+                staffList.filter(
+                    function(staff){
+
+                        const name =
+                            String(
+                                staff.name || ""
+                            )
+                            .toLowerCase();
+
+
+                        const id =
+                            String(
+                                staff.staffId || ""
+                            )
+                            .toLowerCase();
+
+
+                        const department =
+                            String(
+                                staff.department || ""
+                            )
+                            .toLowerCase();
+
+
+                        return (
+
+                            name.includes(
+                                text
+                            )
+
+                            ||
+
+                            id.includes(
+                                text
+                            )
+
+                            ||
+
+                            department.includes(
+                                text
+                            )
+
+                        );
+
+                    }
+                );
+
+        }
+
+
+        renderStaff();
+
+    }
 );
 
-const snap = await getDocs(q);
 
-document.getElementById("materialCount").innerHTML =
-snap.size;
+/* =====================================================
+   CLEAR SEARCH
+===================================================== */
 
-}catch(e){
+clearSearch.addEventListener(
+    "click",
+    function(){
 
-console.log(e);
+        searchBox.value = "";
+
+        filteredStaffList =
+            [...staffList];
+
+        clearSearch.style.display =
+            "none";
+
+        renderStaff();
+
+        searchBox.focus();
+
+    }
+);
+
+
+/* =====================================================
+   RENDER STAFF
+===================================================== */
+
+function renderStaff(){
+
+    staffListElement.innerHTML = "";
+
+
+    let count = 0;
+
+
+    filteredStaffList.forEach(
+        function(staff){
+
+            /*
+               Don't show current user
+            */
+
+            if(
+                staff.staffId.toLowerCase() ===
+                currentStaffId.toLowerCase()
+            ){
+
+                return;
+
+            }
+
+
+            count++;
+
+
+            const item =
+                document.createElement(
+                    "div"
+                );
+
+
+            item.className =
+                "staff-item";
+
+
+            if(
+                selectedStaff &&
+                selectedStaff.staffId ===
+                staff.staffId
+            ){
+
+                item.classList.add(
+                    "active"
+                );
+
+            }
+
+
+            const initials =
+                getInitials(
+                    staff.name
+                );
+
+
+            const unread =
+                getUnreadCount(
+                    staff.staffId
+                );
+
+
+            item.innerHTML = `
+
+                <div class="staff-avatar">
+
+                    ${escapeHtml(
+                        initials
+                    )}
+
+                </div>
+
+
+                <div class="staff-info">
+
+                    <div class="staff-name">
+
+                        ${escapeHtml(
+                            staff.name
+                        )}
+
+                    </div>
+
+
+                    <div class="staff-id">
+
+                        ${escapeHtml(
+                            staff.staffId
+                        )}
+
+                        ${
+                            staff.department
+                            ?
+                            " • " +
+                            escapeHtml(
+                                staff.department
+                            )
+                            :
+                            ""
+                        }
+
+                    </div>
+
+                </div>
+
+
+                ${
+                    unread > 0
+                    ?
+                    `
+                    <div class="unread-badge">
+
+                        ${unread}
+
+                    </div>
+                    `
+                    :
+                    ""
+                }
+
+            `;
+
+
+            item.addEventListener(
+                "click",
+                function(){
+
+                    openChat(
+                        staff
+                    );
+
+                }
+            );
+
+
+            staffListElement.appendChild(
+                item
+            );
+
+        }
+    );
+
+
+    staffCount.textContent =
+        count +
+        (
+            count === 1
+            ?
+            " staff"
+            :
+            " staff"
+        );
+
+
+    if(count === 0){
+
+        staffListElement.innerHTML = `
+
+            <div class="no-results">
+
+                <div class="no-results-icon">
+                    🔍
+                </div>
+
+                <b>
+                    No staff found
+                </b>
+
+                <br><br>
+
+                <small>
+                    Try another name,
+                    Staff ID or department.
+                </small>
+
+            </div>
+
+        `;
+
+    }
 
 }
 
+
+/* =====================================================
+   OPEN CHAT
+===================================================== */
+
+function openChat(staff){
+
+    selectedStaff =
+        staff;
+
+
+    /*
+       Header
+    */
+
+    chatAvatar.textContent =
+        getInitials(
+            staff.name
+        );
+
+
+    chatName.textContent =
+        staff.name;
+
+
+    chatId.textContent =
+        staff.staffId;
+
+
+    chatInfo.style.display =
+        "block";
+
+
+    messageInputArea.style.display =
+        "flex";
+
+
+    /*
+       Mobile
+    */
+
+    messagingApp.classList.add(
+        "mobile-chat"
+    );
+
+
+    /*
+       Load messages
+    */
+
+    loadConversation(
+        staff.staffId
+    );
+
+
+    /*
+       Mark received messages read
+    */
+
+    markStaffMessagesRead(
+        staff.staffId
+    );
+
+
+    /*
+       Render list
+    */
+
+    renderStaff();
+
+
+    messageInput.focus();
+
 }
 
-/* ===============================
-   LOAD DASHBOARD
-================================= */
 
-loadStudents();
+/* =====================================================
+   LOAD CONVERSATION
+===================================================== */
 
-loadAttendance();
+function loadConversation(
+    otherStaffId
+){
 
-loadResults();
+    /*
+       Remove previous listeners
+    */
 
-loadMaterials();
+    if(
+        unsubscribeSent
+    ){
 
-/* ===============================
-   AUTO REFRESH EVERY 30 SECONDS
-================================= */
+        unsubscribeSent();
 
-setInterval(()=>{
+        unsubscribeSent = null;
 
-loadStudents();
+    }
 
-loadAttendance();
 
-loadResults();
+    if(
+        unsubscribeReceived
+    ){
 
-loadMaterials();
+        unsubscribeReceived();
 
-},30000);
+        unsubscribeReceived = null;
 
-/* ===============================
-   LOGOUT
-================================= */
+    }
 
-window.logout=function(){
 
-if(confirm("Logout ?")){
+    sentMessages = [];
 
-sessionStorage.clear();
+    receivedMessages = [];
 
-window.location.href="login.html";
+
+    /*
+       SENT
+    */
+
+    const sentQuery =
+        query(
+
+            collection(
+                db,
+                "messages"
+            ),
+
+            where(
+                "senderId",
+                "==",
+                currentStaffId
+            ),
+
+            where(
+                "receiverId",
+                "==",
+                otherStaffId
+            )
+
+        );
+
+
+    /*
+       RECEIVED
+    */
+
+    const receivedQuery =
+        query(
+
+            collection(
+                db,
+                "messages"
+            ),
+
+            where(
+                "senderId",
+                "==",
+                otherStaffId
+            ),
+
+            where(
+                "receiverId",
+                "==",
+                currentStaffId
+            )
+
+        );
+
+
+    /*
+       SENT LISTENER
+    */
+
+    unsubscribeSent =
+        onSnapshot(
+
+            sentQuery,
+
+            function(snapshot){
+
+                sentMessages =
+                    snapshot.docs.map(
+                        function(docSnap){
+
+                            return {
+
+                                id:
+                                    docSnap.id,
+
+                                ...docSnap.data()
+
+                            };
+
+                        }
+                    );
+
+
+                renderMessages();
+
+            },
+
+            function(error){
+
+                console.error(
+                    "SENT LISTENER ERROR:",
+                    error
+                );
+
+            }
+
+        );
+
+
+    /*
+       RECEIVED LISTENER
+    */
+
+    unsubscribeReceived =
+        onSnapshot(
+
+            receivedQuery,
+
+            function(snapshot){
+
+                receivedMessages =
+                    snapshot.docs.map(
+                        function(docSnap){
+
+                            return {
+
+                                id:
+                                    docSnap.id,
+
+                                ...docSnap.data()
+
+                            };
+
+                        }
+                    );
+
+
+                renderMessages();
+
+
+                markStaffMessagesRead(
+                    otherStaffId
+                );
+
+            },
+
+            function(error){
+
+                console.error(
+                    "RECEIVED LISTENER ERROR:",
+                    error
+                );
+
+            }
+
+        );
 
 }
 
+
+/* =====================================================
+   RENDER MESSAGES
+===================================================== */
+
+function renderMessages(){
+
+    const allMessages = [
+
+        ...sentMessages,
+
+        ...receivedMessages
+
+    ];
+
+
+    allMessages.sort(
+        function(a,b){
+
+            return getTime(
+                a.timestamp
+            )
+            -
+            getTime(
+                b.timestamp
+            );
+
+        }
+    );
+
+
+    messageArea.innerHTML = "";
+
+
+    if(
+        allMessages.length === 0
+    ){
+
+        messageArea.innerHTML = `
+
+            <div class="empty-screen">
+
+                <div>
+
+                    <div class="empty-icon">
+                        💬
+                    </div>
+
+                    <div class="empty-title">
+                        No messages yet
+                    </div>
+
+                    <div class="empty-text">
+                        Start the conversation.
+                    </div>
+
+                </div>
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+    allMessages.forEach(
+        function(message){
+
+            const isSent =
+                String(
+                    message.senderId
+                ).toLowerCase()
+                ===
+                currentStaffId.toLowerCase();
+
+
+            const row =
+                document.createElement(
+                    "div"
+                );
+
+
+            row.className =
+                isSent
+                ?
+                "message-row sent"
+                :
+                "message-row received";
+
+
+            const bubble =
+                document.createElement(
+                    "div"
+                );
+
+
+            bubble.className =
+                "message-bubble";
+
+
+            const messageText =
+                escapeHtml(
+                    message.message || ""
+                )
+                .replace(
+                    /\n/g,
+                    "<br>"
+                );
+
+
+            const readStatus =
+                isSent
+                ?
+                (
+                    message.read === true
+                    ?
+                    " ✓✓"
+                    :
+                    " ✓"
+                )
+                :
+                "";
+
+
+            bubble.innerHTML = `
+
+                <div>
+
+                    ${messageText}
+
+                </div>
+
+
+                <div class="message-time">
+
+                    ${formatTime(
+                        message.timestamp
+                    )}
+
+                    ${readStatus}
+
+                </div>
+
+            `;
+
+
+            row.appendChild(
+                bubble
+            );
+
+
+            messageArea.appendChild(
+                row
+            );
+
+        }
+    );
+
+
+    messageArea.scrollTop =
+        messageArea.scrollHeight;
+
 }
+
+
+/* =====================================================
+   SEND MESSAGE
+===================================================== */
+
+sendButton.addEventListener(
+    "click",
+    sendMessage
+);
+
+
+async function sendMessage(){
+
+    if(!selectedStaff){
+
+        alert(
+            "Please select a staff member."
+        );
+
+        return;
+
+    }
+
+
+    const text =
+        messageInput.value.trim();
+
+
+    if(!text){
+
+        return;
+
+    }
+
+
+    /*
+       IMPORTANT:
+       This comes directly from
+       your ERP sessionStorage.
+    */
+
+    const senderId =
+        currentStaffId;
+
+
+    const senderName =
+        currentStaffName ||
+        "Staff";
+
+
+    const receiverId =
+        String(
+            selectedStaff.staffId
+        ).trim();
+
+
+    const receiverName =
+        selectedStaff.name;
+
+
+    console.log(
+        "SENDER:",
+        senderId
+    );
+
+
+    console.log(
+        "RECEIVER:",
+        receiverId
+    );
+
+
+    sendButton.disabled =
+        true;
+
+
+    try{
+
+        await addDoc(
+
+            collection(
+                db,
+                "messages"
+            ),
+
+            {
+
+                senderId:
+                    senderId,
+
+                senderName:
+                    senderName,
+
+                senderDepartment:
+                    currentDepartment,
+
+                receiverId:
+                    receiverId,
+
+                receiverName:
+                    receiverName,
+
+                receiverDepartment:
+                    selectedStaff.department || "",
+
+                message:
+                    text,
+
+                read:
+                    false,
+
+                timestamp:
+                    serverTimestamp()
+
+            }
+
+        );
+
+
+        messageInput.value =
+            "";
+
+
+        messageInput.focus();
+
+
+        console.log(
+            "MESSAGE SENT SUCCESSFULLY"
+        );
+
+    }
+    catch(error){
+
+        console.error(
+            "SEND ERROR:",
+            error
+        );
+
+
+        alert(
+            "Message could not be sent.\n\n" +
+            error.message
+        );
+
+    }
+    finally{
+
+        sendButton.disabled =
+            false;
+
+    }
+
+}
+
+
+/* =====================================================
+   ENTER TO SEND
+===================================================== */
+
+messageInput.addEventListener(
+    "keydown",
+    function(event){
+
+        if(
+            event.key === "Enter" &&
+            !event.shiftKey
+        ){
+
+            event.preventDefault();
+
+            sendMessage();
+
+        }
+
+    }
+);
+
+
+/* =====================================================
+   GLOBAL INCOMING MESSAGE LISTENER
+===================================================== */
+
+function startGlobalMessageListener(){
+
+    /*
+       Listen for every message sent TO
+       the currently logged-in staff.
+    */
+
+    const receivedQuery =
+        query(
+
+            collection(
+                db,
+                "messages"
+            ),
+
+            where(
+                "receiverId",
+                "==",
+                currentStaffId
+            )
+
+        );
+
+
+    unsubscribeAllReceived =
+        onSnapshot(
+
+            receivedQuery,
+
+            function(snapshot){
+
+                /*
+                   Detect latest messages
+                */
+
+                snapshot.docChanges()
+                    .forEach(
+                        function(change){
+
+                            if(
+                                change.type !==
+                                "added"
+                            ){
+
+                                return;
+
+                            }
+
+
+                            const data =
+                                change.doc.data();
+
+
+                            /*
+                               Existing messages
+                               shouldn't show notification
+                               repeatedly.
+                            */
+
+                            const createdTime =
+                                getTime(
+                                    data.timestamp
+                                );
+
+
+                            const now =
+                                Date.now();
+
+
+                            /*
+                               Only recent messages
+                            */
+
+                            if(
+                                createdTime > 0 &&
+                                now - createdTime <
+                                15000
+                            ){
+
+                                showNewMessageNotification(
+                                    data
+                                );
+
+                            }
+
+                        }
+                    );
+
+
+                /*
+                   Update staff badges
+                */
+
+                renderStaff();
+
+            },
+
+            function(error){
+
+                console.error(
+                    "GLOBAL MESSAGE LISTENER ERROR:",
+                    error
+                );
+
+            }
+
+        );
+
+}
+
+
+/* =====================================================
+   UNREAD COUNT
+===================================================== */
+
+function getUnreadCount(
+    staffId
+){
+
+    /*
+       We cannot synchronously query Firestore
+       for every staff item.
+
+       The global listener maintains this
+       cached count.
+    */
+
+    return window.messageUnreadCounts?.[
+        staffId
+    ] || 0;
+
+}
+
+
+window.messageUnreadCounts = {};
+
+
+/* =====================================================
+   UPDATE UNREAD COUNTS
+===================================================== */
+
+function updateUnreadCounts(
+    messages
+){
+
+    window.messageUnreadCounts = {};
+
+
+    messages.forEach(
+        function(message){
+
+            if(
+                message.read === true
+            ){
+
+                return;
+
+            }
+
+
+            if(
+                String(
+                    message.receiverId
+                ).toLowerCase()
+                !==
+                currentStaffId.toLowerCase()
+            ){
+
+                return;
+
+            }
+
+
+            const sender =
+                String(
+                    message.senderId
+                );
+
+
+            window.messageUnreadCounts[
+                sender
+            ] =
+                (
+                    window.messageUnreadCounts[
+                        sender
+                    ] || 0
+                ) + 1;
+
+        }
+    );
+
+
+    renderStaff();
+
+}
+
+
+/* =====================================================
+   IMPROVED GLOBAL LISTENER
+===================================================== */
+
+function startUnreadListener(){
+
+    const q =
+        query(
+
+            collection(
+                db,
+                "messages"
+            ),
+
+            where(
+                "receiverId",
+                "==",
+                currentStaffId
+            )
+
+        );
+
+
+    onSnapshot(
+        q,
+        function(snapshot){
+
+            const messages =
+                snapshot.docs.map(
+                    function(d){
+
+                        return d.data();
+
+                    }
+                );
+
+
+            updateUnreadCounts(
+                messages
+            );
+
+        }
+    );
+
+}
+
+
+/* =====================================================
+   START UNREAD LISTENER
+===================================================== */
+
+startUnreadListener();
+
+
+/* =====================================================
+   MARK STAFF MESSAGES READ
+===================================================== */
+
+async function markStaffMessagesRead(
+    senderId
+){
+
+    try{
+
+        const q =
+            query(
+
+                collection(
+                    db,
+                    "messages"
+                ),
+
+                where(
+                    "senderId",
+                    "==",
+                    senderId
+                ),
+
+                where(
+                    "receiverId",
+                    "==",
+                    currentStaffId
+                )
+
+            );
+
+
+        const snapshot =
+            await getDocs(q);
+
+
+        const updates = [];
+
+
+        snapshot.forEach(
+            function(docSnap){
+
+                const data =
+                    docSnap.data();
+
+
+                if(
+                    data.read !== true
+                ){
+
+                    updates.push(
+
+                        updateDoc(
+
+                            doc(
+                                db,
+                                "messages",
+                                docSnap.id
+                            ),
+
+                            {
+
+                                read:
+                                    true
+
+                            }
+
+                        )
+
+                    );
+
+                }
+
+            }
+        );
+
+
+        await Promise.all(
+            updates
+        );
+
+
+        /*
+           Update local badge
+        */
+
+        window.messageUnreadCounts[
+            senderId
+        ] = 0;
+
+
+        renderStaff();
+
+    }
+    catch(error){
+
+        console.error(
+            "MARK READ ERROR:",
+            error
+        );
+
+    }
+
+}
+
+
+/* =====================================================
+   NEW MESSAGE NOTIFICATION
+===================================================== */
+
+function showNewMessageNotification(
+    message
+){
+
+    /*
+       If currently chatting with this sender,
+       don't show popup.
+    */
+
+    if(
+        selectedStaff &&
+        String(
+            selectedStaff.staffId
+        ).toLowerCase()
+        ===
+        String(
+            message.senderId
+        ).toLowerCase()
+    ){
+
+        return;
+
+    }
+
+
+    notificationTitle.textContent =
+        "🔔 New Message";
+
+
+    notificationText.textContent =
+        (
+            message.senderName ||
+            message.senderId ||
+            "Staff"
+        )
+        +
+        ": "
+        +
+        (
+            message.message || ""
+        );
+
+
+    notification.classList.add(
+        "show"
+    );
+
+
+    notificationButton.onclick =
+        function(){
+
+            const staff =
+                staffList.find(
+                    function(item){
+
+                        return String(
+                            item.staffId
+                        ).toLowerCase()
+                        ===
+                        String(
+                            message.senderId
+                        ).toLowerCase();
+
+                    }
+                );
+
+
+            if(staff){
+
+                openChat(
+                    staff
+                );
+
+            }
+
+
+            notification.classList.remove(
+                "show"
+            );
+
+        };
+
+
+    setTimeout(
+        function(){
+
+            notification.classList.remove(
+                "show"
+            );
+
+        },
+        6000
+    );
+
+}
+
+
+/* =====================================================
+   BACK BUTTON
+===================================================== */
+
+backButton.addEventListener(
+    "click",
+    function(){
+
+        messagingApp.classList.remove(
+            "mobile-chat"
+        );
+
+        selectedStaff = null;
+
+        messageInputArea.style.display =
+            "none";
+
+    }
+);
+
+
+/* =====================================================
+   GET INITIALS
+===================================================== */
+
+function getInitials(
+    name
+){
+
+    const value =
+        String(
+            name || ""
+        ).trim();
+
+
+    if(!value){
+
+        return "?";
+
+    }
+
+
+    const parts =
+        value.split(
+            /\s+/
+        );
+
+
+    if(
+        parts.length === 1
+    ){
+
+        return parts[0]
+            .substring(
+                0,
+                2
+            )
+            .toUpperCase();
+
+    }
+
+
+    return (
+
+        parts[0].charAt(0) +
+
+        parts[
+            parts.length - 1
+        ].charAt(0)
+
+    ).toUpperCase();
+
+}
+
+
+/* =====================================================
+   GET TIMESTAMP
+===================================================== */
+
+function getTime(
+    timestamp
+){
+
+    if(!timestamp){
+
+        return 0;
+
+    }
+
+
+    if(
+        typeof timestamp.toMillis ===
+        "function"
+    ){
+
+        return timestamp.toMillis();
+
+    }
+
+
+    if(
+        timestamp.seconds
+    ){
+
+        return Number(
+            timestamp.seconds
+        ) * 1000;
+
+    }
+
+
+    return 0;
+
+}
+
+
+/* =====================================================
+   FORMAT TIME
+===================================================== */
+
+function formatTime(
+    timestamp
+){
+
+    const time =
+        getTime(
+            timestamp
+        );
+
+
+    if(!time){
+
+        return "...";
+
+    }
+
+
+    return new Date(
+        time
+    ).toLocaleTimeString(
+        "en-IN",
+        {
+
+            hour:
+                "2-digit",
+
+            minute:
+                "2-digit"
+
+        }
+    );
+
+}
+
+
+/* =====================================================
+   ESCAPE HTML
+===================================================== */
+
+function escapeHtml(
+    value
+){
+
+    return String(
+        value ?? ""
+    )
+    .replace(
+        /&/g,
+        "&amp;"
+    )
+    .replace(
+        /</g,
+        "&lt;"
+    )
+    .replace(
+        />/g,
+        "&gt;"
+    )
+    .replace(
+        /"/g,
+        "&quot;"
+    )
+    .replace(
+        /'/g,
+        "&#039;"
+    );
+
+}
+
+
+console.log(
+    "===================================="
+);
+
+console.log(
+    "MAASC STAFF MESSAGING READY"
+);
+
+console.log(
+    "CURRENT STAFF:",
+    currentStaffId
+);
+
+console.log(
+    "===================================="
+);
 
 </script>
-
-</div>
-
-</div>
 
 </body>
 
