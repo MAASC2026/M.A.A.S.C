@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Staff Messaging System</title>
+<title>Staff Messages</title>
 
 <style>
 *{
@@ -15,511 +15,711 @@
 }
 
 body{
-    background:#f3f6fb;
-    color:#1f2937;
+    background:#e9edef;
+    height:100vh;
+    overflow:hidden;
 }
 
-/* HEADER */
-.header{
-    background:#1e3a8a;
-    color:white;
-    padding:20px 28px;
+button,
+input,
+textarea{
+    font-family:inherit;
 }
 
-.header h1{
-    font-size:24px;
+button{
+    cursor:pointer;
 }
 
-.header p{
-    margin-top:5px;
-    font-size:14px;
+.app{
+    width:100%;
+    height:100vh;
+    display:flex;
+    background:#fff;
+}
+
+/* LEFT */
+
+.sidebar{
+    width:360px;
+    min-width:360px;
+    border-right:1px solid #ddd;
+    background:#fff;
+    display:flex;
+    flex-direction:column;
+}
+
+.sidebar-header{
+    background:#075e54;
+    color:#fff;
+    padding:18px;
+}
+
+.sidebar-header h2{
+    font-size:20px;
+    margin-bottom:12px;
+}
+
+.current-user{
+    font-size:13px;
     opacity:.9;
 }
 
-/* MAIN */
-.container{
-    max-width:1300px;
-    margin:25px auto;
-    padding:0 18px;
+.search-box{
+    padding:10px;
+    background:#f0f2f5;
 }
 
-.layout{
-    display:grid;
-    grid-template-columns:330px 1fr;
-    gap:20px;
-}
-
-/* CARDS */
-.card{
-    background:white;
-    border-radius:12px;
-    box-shadow:0 3px 15px rgba(0,0,0,.08);
-}
-
-.left{
-    min-height:680px;
-}
-
-.right{
-    min-height:680px;
-}
-
-/* STAFF LIST */
-.card-header{
-    padding:18px;
-    border-bottom:1px solid #e5e7eb;
-    font-size:17px;
-    font-weight:bold;
-}
-
-.staff-search{
-    padding:12px;
-    border-bottom:1px solid #e5e7eb;
-}
-
-.staff-search input{
+.search-box input{
     width:100%;
-    padding:11px;
-    border:1px solid #d1d5db;
-    border-radius:7px;
+    border:none;
     outline:none;
+    padding:11px 15px;
+    border-radius:20px;
+    background:#fff;
+    font-size:14px;
 }
 
-.staff-search input:focus{
-    border-color:#2563eb;
-}
-
-.staff-list{
-    max-height:590px;
+.chat-list{
+    flex:1;
     overflow-y:auto;
 }
 
-.staff-item{
-    padding:13px 15px;
-    border-bottom:1px solid #f0f0f0;
-    cursor:pointer;
+.chat-item{
     display:flex;
     align-items:center;
-    justify-content:space-between;
+    padding:13px 14px;
+    border-bottom:1px solid #eee;
+    cursor:pointer;
+    transition:.15s;
 }
 
-.staff-item:hover{
-    background:#f3f7ff;
+.chat-item:hover{
+    background:#f5f5f5;
 }
 
-.staff-item.active{
-    background:#dbeafe;
+.chat-item.active{
+    background:#e9edef;
 }
 
-.staff-name{
-    font-size:14px;
+.avatar{
+    width:48px;
+    height:48px;
+    min-width:48px;
+    border-radius:50%;
+    background:#128c7e;
+    color:#fff;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:18px;
     font-weight:bold;
+    margin-right:12px;
 }
 
-.staff-info{
-    margin-top:4px;
-    font-size:12px;
-    color:#6b7280;
+.chat-info{
+    min-width:0;
+    flex:1;
+}
+
+.chat-top{
+    display:flex;
+    justify-content:space-between;
+    gap:8px;
+}
+
+.chat-name{
+    font-size:15px;
+    font-weight:bold;
+    color:#222;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+
+.chat-time{
+    font-size:11px;
+    color:#777;
+    white-space:nowrap;
+}
+
+.chat-last{
+    margin-top:5px;
+    font-size:13px;
+    color:#777;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
 }
 
 .unread{
-    min-width:22px;
-    height:22px;
-    padding:0 6px;
+    background:#25d366;
+    color:#fff;
+    min-width:21px;
+    height:21px;
     border-radius:50%;
-    background:#dc2626;
-    color:white;
     display:flex;
     align-items:center;
     justify-content:center;
     font-size:11px;
     font-weight:bold;
+    margin-left:7px;
 }
 
-/* COMPOSE */
-.compose{
-    padding:20px;
+/* NEW MESSAGE */
+
+.new-message-area{
+    border-top:1px solid #ddd;
+    padding:10px;
 }
 
-.top-actions{
-    display:flex;
-    gap:10px;
-    margin-bottom:20px;
-}
-
-.action-btn{
-    padding:10px 15px;
+.new-message-btn{
+    width:100%;
     border:none;
+    background:#128c7e;
+    color:#fff;
+    padding:12px;
     border-radius:7px;
-    cursor:pointer;
+    font-size:14px;
     font-weight:bold;
 }
 
-.inbox-btn{
-    background:#2563eb;
-    color:white;
+.new-message-btn:hover{
+    background:#0b766c;
 }
 
-.sent-btn{
-    background:#e5e7eb;
-    color:#111827;
+/* CHAT */
+
+.chat-panel{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    min-width:0;
+    background:#efeae2;
 }
 
-.count{
-    display:inline-flex;
+.chat-header{
+    height:70px;
+    background:#075e54;
+    color:#fff;
+    display:flex;
     align-items:center;
-    justify-content:center;
-    min-width:20px;
-    height:20px;
-    margin-left:5px;
-    padding:0 5px;
-    background:#dc2626;
-    color:white;
-    border-radius:50%;
-    font-size:10px;
+    padding:10px 18px;
 }
 
-/* TABS */
-.recipient-tabs{
-    display:flex;
-    gap:8px;
-    flex-wrap:wrap;
-    margin-bottom:20px;
+.chat-header .avatar{
+    background:#128c7e;
 }
 
-.tab{
-    padding:10px 15px;
-    border:1px solid #d1d5db;
-    border-radius:7px;
-    background:white;
-    cursor:pointer;
-    font-weight:bold;
-    font-size:13px;
+.header-info{
+    min-width:0;
 }
 
-.tab.active{
-    background:#2563eb;
-    border-color:#2563eb;
-    color:white;
-}
-
-/* FORM */
-.group{
-    margin-bottom:17px;
-}
-
-.group label{
-    display:block;
-    margin-bottom:7px;
-    font-size:13px;
+.header-name{
+    font-size:16px;
     font-weight:bold;
 }
 
-input,
-select,
-textarea{
-    width:100%;
-    padding:11px;
-    border:1px solid #d1d5db;
-    border-radius:7px;
-    outline:none;
-    font-size:14px;
-}
-
-input:focus,
-select:focus,
-textarea:focus{
-    border-color:#2563eb;
-}
-
-textarea{
-    min-height:140px;
-    resize:vertical;
-}
-
-/* SEARCHABLE STAFF */
-.staff-picker{
-    position:relative;
-}
-
-.staff-picker input[type="text"]{
-    width:100%;
-}
-
-.staff-results{
-    position:absolute;
-    left:0;
-    right:0;
-    top:100%;
-    background:white;
-    border:1px solid #d1d5db;
-    border-radius:0 0 8px 8px;
-    max-height:280px;
-    overflow-y:auto;
-    z-index:1000;
-    box-shadow:0 6px 18px rgba(0,0,0,.15);
-    display:none;
-}
-
-.staff-results.show{
-    display:block;
-}
-
-.staff-result-item{
-    padding:12px;
-    border-bottom:1px solid #f0f0f0;
-    cursor:pointer;
-}
-
-.staff-result-item:hover{
-    background:#eff6ff;
-}
-
-.staff-result-name{
-    font-size:14px;
-    font-weight:bold;
-}
-
-.staff-result-info{
-    margin-top:4px;
-    color:#6b7280;
+.header-status{
     font-size:12px;
-}
-
-.selected-staff{
-    display:none;
-    margin-top:7px;
-    padding:8px 10px;
-    border-radius:6px;
-    background:#dcfce7;
-    color:#166534;
-    font-size:13px;
-}
-
-/* BUTTONS */
-.btn{
-    padding:11px 20px;
-    border:none;
-    border-radius:7px;
-    cursor:pointer;
-    font-weight:bold;
-}
-
-.send{
-    background:#2563eb;
-    color:white;
-}
-
-.send:hover{
-    background:#1d4ed8;
-}
-
-.send:disabled{
-    opacity:.6;
-    cursor:not-allowed;
-}
-
-.clear{
-    background:#e5e7eb;
-    margin-left:8px;
-}
-
-/* ALERT */
-.message{
-    display:none;
-    padding:12px;
-    margin-top:15px;
-    border-radius:7px;
-    font-size:13px;
-}
-
-.message.show{
-    display:block;
-}
-
-.success{
-    background:#dcfce7;
-    color:#166534;
-}
-
-.error{
-    background:#fee2e2;
-    color:#991b1b;
-}
-
-.info{
-    background:#dbeafe;
-    color:#1e40af;
-}
-
-/* CONVERSATION */
-.conversation{
-    display:none;
-}
-
-.conversation.show{
-    display:block;
-}
-
-.conversation-header{
-    padding:18px;
-    border-top:1px solid #e5e7eb;
-    border-bottom:1px solid #e5e7eb;
-}
-
-.conversation-header h2{
-    font-size:18px;
-}
-
-.conversation-header p{
-    margin-top:4px;
-    font-size:12px;
-    color:#6b7280;
+    opacity:.85;
+    margin-top:3px;
 }
 
 .messages{
-    height:450px;
+    flex:1;
     overflow-y:auto;
     padding:20px;
-    background:#f8fafc;
+    background-color:#efeae2;
+    background-image:
+        radial-gradient(rgba(0,0,0,.035) 1px,transparent 1px);
+    background-size:20px 20px;
 }
 
-.msg{
-    max-width:75%;
-    margin-bottom:15px;
+.message-row{
+    display:flex;
+    margin-bottom:7px;
 }
 
-.msg.mine{
-    margin-left:auto;
+.message-row.mine{
+    justify-content:flex-end;
 }
 
-.msg-bubble{
-    padding:12px 14px;
-    border-radius:10px;
-    background:white;
-    box-shadow:0 1px 4px rgba(0,0,0,.08);
+.message{
+    max-width:70%;
+    padding:8px 10px 5px;
+    border-radius:8px;
+    position:relative;
+    box-shadow:0 1px 1px rgba(0,0,0,.08);
+}
+
+.message.mine .message{
+    background:#d9fdd3;
+    border-top-right-radius:2px;
+}
+
+.message.theirs .message{
+    background:#fff;
+    border-top-left-radius:2px;
+}
+
+.message-text{
+    font-size:14px;
+    color:#222;
+    white-space:pre-wrap;
     word-break:break-word;
+    line-height:1.4;
+    padding-right:50px;
 }
 
-.msg.mine .msg-bubble{
-    background:#dbeafe;
+.message-meta{
+    text-align:right;
+    font-size:10px;
+    color:#777;
+    margin-top:3px;
+    white-space:nowrap;
 }
 
-.msg-sender{
-    margin-bottom:5px;
-    font-size:11px;
+.read{
+    color:#0b8ed1;
     font-weight:bold;
 }
 
-.msg-time{
-    margin-top:5px;
-    color:#6b7280;
-    font-size:10px;
+.sender-name{
+    font-size:11px;
+    color:#128c7e;
+    font-weight:bold;
+    margin-bottom:3px;
 }
 
-.reply{
+/* INPUT */
+
+.message-input-area{
+    background:#f0f2f5;
+    padding:10px;
     display:flex;
+    align-items:flex-end;
     gap:8px;
-    padding:15px;
-    border-top:1px solid #e5e7eb;
 }
 
-.reply textarea{
-    min-height:45px;
-    max-height:100px;
+.message-input{
+    flex:1;
+    border:none;
+    outline:none;
+    resize:none;
+    max-height:120px;
+    min-height:42px;
+    border-radius:22px;
+    padding:12px 16px;
+    font-size:14px;
 }
 
-.reply button{
+.send-btn{
+    width:45px;
     height:45px;
-    align-self:flex-end;
+    border:none;
+    border-radius:50%;
+    background:#128c7e;
+    color:#fff;
+    font-size:18px;
 }
 
-/* EMPTY / LOADING */
-.empty{
-    padding:40px 15px;
-    text-align:center;
-    color:#6b7280;
+.send-btn:hover{
+    background:#075e54;
 }
+
+/* EMPTY */
+
+.empty{
+    flex:1;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-direction:column;
+    color:#777;
+    text-align:center;
+    padding:30px;
+}
+
+.empty-icon{
+    font-size:65px;
+    margin-bottom:15px;
+}
+
+.empty h2{
+    color:#444;
+    margin-bottom:8px;
+}
+
+.empty p{
+    font-size:14px;
+}
+
+/* MODAL */
+
+.modal{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.5);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    z-index:1000;
+    padding:20px;
+}
+
+.modal.show{
+    display:flex;
+}
+
+.modal-box{
+    width:500px;
+    max-width:100%;
+    max-height:90vh;
+    overflow:hidden;
+    background:#fff;
+    border-radius:10px;
+    box-shadow:0 10px 40px rgba(0,0,0,.3);
+    display:flex;
+    flex-direction:column;
+}
+
+.modal-header{
+    background:#075e54;
+    color:#fff;
+    padding:17px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.modal-header h3{
+    font-size:18px;
+}
+
+.close-btn{
+    border:none;
+    background:transparent;
+    color:#fff;
+    font-size:25px;
+}
+
+.recipient-tabs{
+    display:flex;
+    border-bottom:1px solid #ddd;
+}
+
+.recipient-tab{
+    flex:1;
+    border:none;
+    background:#fff;
+    padding:13px 5px;
+    font-size:13px;
+}
+
+.recipient-tab.active{
+    color:#075e54;
+    font-weight:bold;
+    border-bottom:3px solid #075e54;
+}
+
+.modal-content{
+    padding:15px;
+    overflow-y:auto;
+}
+
+.recipient-search{
+    width:100%;
+    border:1px solid #ddd;
+    outline:none;
+    padding:12px;
+    border-radius:7px;
+    margin-bottom:10px;
+}
+
+.result-list{
+    max-height:300px;
+    overflow-y:auto;
+}
+
+.result-item{
+    padding:12px;
+    border:1px solid #eee;
+    border-radius:7px;
+    margin-bottom:7px;
+    cursor:pointer;
+}
+
+.result-item:hover{
+    background:#f0f7f5;
+}
+
+.result-title{
+    font-weight:bold;
+    font-size:14px;
+}
+
+.result-sub{
+    color:#777;
+    font-size:12px;
+    margin-top:3px;
+}
+
+.selected-recipient{
+    padding:10px;
+    background:#e8f5e9;
+    color:#075e54;
+    border-radius:7px;
+    margin-bottom:10px;
+    display:none;
+}
+
+.compose-box{
+    margin-top:12px;
+}
+
+.compose-box textarea{
+    width:100%;
+    min-height:100px;
+    resize:vertical;
+    border:1px solid #ddd;
+    border-radius:7px;
+    padding:12px;
+    outline:none;
+}
+
+.modal-footer{
+    padding:12px 15px;
+    border-top:1px solid #ddd;
+    display:flex;
+    justify-content:flex-end;
+    gap:8px;
+}
+
+.cancel-btn{
+    border:none;
+    background:#eee;
+    padding:10px 18px;
+    border-radius:6px;
+}
+
+.send-new-btn{
+    border:none;
+    background:#128c7e;
+    color:#fff;
+    padding:10px 18px;
+    border-radius:6px;
+    font-weight:bold;
+}
+
+.all-staff-box{
+    border:1px solid #ddd;
+    border-radius:8px;
+    padding:15px;
+    background:#fafafa;
+}
+
+.all-staff-box h4{
+    margin-bottom:7px;
+    color:#075e54;
+}
+
+.all-staff-count{
+    color:#777;
+    font-size:13px;
+}
+
+/* LOADING */
 
 .loading{
-    padding:30px;
     text-align:center;
-    color:#6b7280;
+    padding:30px;
+    color:#777;
+}
+
+.no-results{
+    text-align:center;
+    padding:20px;
+    color:#777;
+    font-size:13px;
 }
 
 /* MOBILE */
-@media(max-width:850px){
 
-    .layout{
-        grid-template-columns:1fr;
+@media(max-width:700px){
+
+    .sidebar{
+        width:100%;
+        min-width:100%;
     }
 
-    .left{
-        min-height:auto;
+    .chat-panel{
+        display:none;
     }
 
-    .staff-list{
-        max-height:320px;
+    .app.chat-open .sidebar{
+        display:none;
     }
 
-    .right{
-        min-height:auto;
+    .app.chat-open .chat-panel{
+        display:flex;
     }
 
-    .messages{
-        height:400px;
+    .mobile-back{
+        display:block !important;
     }
 
-    .msg{
-        max-width:90%;
+    .message{
+        max-width:85%;
     }
+}
+
+.mobile-back{
+    display:none;
+    border:none;
+    background:transparent;
+    color:#fff;
+    font-size:24px;
+    margin-right:10px;
 }
 </style>
 </head>
 
 <body>
 
-<!-- HEADER -->
-<div class="header">
+<div class="app" id="app">
 
-    <h1>💬 Staff Messaging</h1>
+    <!-- SIDEBAR -->
 
-    <p>
-        Send messages to individual staff, departments or all staff
-    </p>
+    <div class="sidebar">
 
-</div>
+        <div class="sidebar-header">
 
+            <h2>💬 Staff Messages</h2>
 
-<div class="container">
+            <div class="current-user" id="currentUser">
+                Loading user...
+            </div>
 
-<div class="layout">
+        </div>
 
-<!-- =====================================================
-     LEFT STAFF LIST
-===================================================== -->
+        <div class="search-box">
 
-<div class="card left">
+            <input
+                type="text"
+                id="conversationSearch"
+                placeholder="🔍 Search conversations..."
+            >
 
-    <div class="card-header">
-        👥 Staff List
+        </div>
+
+        <div class="chat-list" id="chatList">
+
+            <div class="loading">
+                Loading conversations...
+            </div>
+
+        </div>
+
+        <div class="new-message-area">
+
+            <button
+                class="new-message-btn"
+                onclick="openNewMessage()"
+            >
+                ✏️ New Message
+            </button>
+
+        </div>
+
     </div>
 
-    <div class="staff-search">
 
-        <input
-            type="text"
-            id="staffSearch"
-            placeholder="Search staff...">
+    <!-- CHAT -->
 
-    </div>
+    <div class="chat-panel" id="chatPanel">
 
-    <div
-        id="staffList"
-        class="staff-list">
+        <div class="empty" id="emptyChat">
 
-        <div class="loading">
-            Loading staff...
+            <div class="empty-icon">💬</div>
+
+            <h2>Staff Messages</h2>
+
+            <p>
+                Select a conversation or start a new message.
+            </p>
+
+        </div>
+
+
+        <div
+            class="chat-header"
+            id="chatHeader"
+            style="display:none;"
+        >
+
+            <button
+                class="mobile-back"
+                onclick="closeMobileChat()"
+            >
+                ‹
+            </button>
+
+            <div
+                class="avatar"
+                id="headerAvatar"
+            >
+                ?
+            </div>
+
+            <div class="header-info">
+
+                <div
+                    class="header-name"
+                    id="headerName"
+                >
+                    Staff
+                </div>
+
+                <div
+                    class="header-status"
+                    id="headerStatus"
+                >
+                    Staff conversation
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div
+            class="messages"
+            id="messages"
+            style="display:none;"
+        >
+        </div>
+
+
+        <div
+            class="message-input-area"
+            id="messageInputArea"
+            style="display:none;"
+        >
+
+            <textarea
+                id="messageInput"
+                class="message-input"
+                placeholder="Type a message..."
+                rows="1"
+            ></textarea>
+
+            <button
+                class="send-btn"
+                onclick="sendMessage()"
+            >
+                ➤
+            </button>
+
         </div>
 
     </div>
@@ -527,982 +727,542 @@ textarea{
 </div>
 
 
-<!-- =====================================================
-     RIGHT SIDE
-===================================================== -->
+<!-- NEW MESSAGE MODAL -->
 
-<div class="card right">
+<div
+    class="modal"
+    id="newMessageModal"
+>
 
-<div class="compose">
+    <div class="modal-box">
 
-    <!-- INBOX / SENT -->
+        <div class="modal-header">
 
-    <div class="top-actions">
+            <h3>New Message</h3>
 
-        <button
-            id="inboxBtn"
-            class="action-btn inbox-btn">
+            <button
+                class="close-btn"
+                onclick="closeNewMessage()"
+            >
+                ×
+            </button>
 
-            📥 Inbox
-
-            <span
-                id="unreadCount"
-                class="count"
-                style="display:none">
-
-                0
-
-            </span>
-
-        </button>
+        </div>
 
 
-        <button
-            id="sentBtn"
-            class="action-btn sent-btn">
+        <div class="recipient-tabs">
 
-            📤 Sent
+            <button
+                class="recipient-tab active"
+                id="tabIndividual"
+                onclick="selectRecipientMode('individual')"
+            >
+                👤 Individual
+            </button>
 
-        </button>
+            <button
+                class="recipient-tab"
+                id="tabDepartment"
+                onclick="selectRecipientMode('department')"
+            >
+                🏢 Department
+            </button>
 
-    </div>
+            <button
+                class="recipient-tab"
+                id="tabAll"
+                onclick="selectRecipientMode('all')"
+            >
+                📢 All Staff
+            </button>
 
-
-    <!-- RECIPIENT TYPES -->
-
-    <div class="recipient-tabs">
-
-        <button
-            class="tab active"
-            data-type="individual">
-
-            👤 Individual Staff
-
-        </button>
-
-
-        <button
-            class="tab"
-            data-type="department">
-
-            🏢 Department Staff
-
-        </button>
+        </div>
 
 
-        <button
-            class="tab"
-            data-type="all">
+        <div class="modal-content">
 
-            📢 All Staff
+            <!-- INDIVIDUAL -->
 
-        </button>
-
-    </div>
-
-
-    <!-- =================================================
-         INDIVIDUAL STAFF
-    ================================================== -->
-
-    <div
-        id="individualBox">
-
-        <div class="group">
-
-            <label>
-                Select Staff
-            </label>
-
-
-            <div class="staff-picker">
+            <div id="individualSection">
 
                 <input
                     type="text"
-                    id="individualStaffSearch"
-                    placeholder="Type staff name or Staff ID..."
-                    autocomplete="off">
-
-
-                <!-- Hidden selected staff ID -->
-
-                <input
-                    type="hidden"
-                    id="individualStaff">
-
+                    id="staffSearch"
+                    class="recipient-search"
+                    placeholder="🔍 Type staff name or Staff ID..."
+                    autocomplete="off"
+                >
 
                 <div
-                    id="individualStaffResults"
-                    class="staff-results">
+                    class="result-list"
+                    id="staffResults"
+                >
+                </div>
+
+            </div>
+
+
+            <!-- DEPARTMENT -->
+
+            <div
+                id="departmentSection"
+                style="display:none;"
+            >
+
+                <input
+                    type="text"
+                    id="departmentSearch"
+                    class="recipient-search"
+                    placeholder="🔍 Type department..."
+                    autocomplete="off"
+                >
+
+                <div
+                    class="result-list"
+                    id="departmentResults"
+                >
+                </div>
+
+            </div>
+
+
+            <!-- ALL -->
+
+            <div
+                id="allSection"
+                style="display:none;"
+            >
+
+                <div class="all-staff-box">
+
+                    <h4>📢 Message All Staff</h4>
+
+                    <div
+                        class="all-staff-count"
+                        id="allStaffCount"
+                    >
+                        Loading active staff...
+                    </div>
+
                 </div>
 
             </div>
 
 
             <div
-                id="selectedStaffDisplay"
-                class="selected-staff">
+                class="selected-recipient"
+                id="selectedRecipient"
+            >
+            </div>
+
+
+            <div class="compose-box">
+
+                <textarea
+                    id="newMessageText"
+                    placeholder="Type your message..."
+                ></textarea>
+
             </div>
 
         </div>
 
-    </div>
 
+        <div class="modal-footer">
 
-    <!-- =================================================
-         DEPARTMENT STAFF
-    ================================================== -->
+            <button
+                class="cancel-btn"
+                onclick="closeNewMessage()"
+            >
+                Cancel
+            </button>
 
-    <div
-        id="departmentBox"
-        style="display:none">
-
-        <div class="group">
-
-            <label>
-                Select Department
-            </label>
-
-            <select
-                id="departmentSelect">
-
-                <option value="">
-                    Select Department
-                </option>
-
-            </select>
+            <button
+                class="send-new-btn"
+                onclick="sendNewMessage()"
+            >
+                Send ➤
+            </button>
 
         </div>
 
     </div>
 
-
-    <!-- =================================================
-         ALL STAFF
-    ================================================== -->
-
-    <div
-        id="allBox"
-        style="display:none">
-
-        <div class="message show info">
-
-            📢 This message will be sent to
-            <b>all active staff</b>.
-
-        </div>
-
-    </div>
-
-
-    <!-- MESSAGE -->
-
-    <div class="group">
-
-        <label>
-            Message
-        </label>
-
-        <textarea
-            id="messageText"
-            placeholder="Type your message..."></textarea>
-
-    </div>
-
-
-    <button
-        id="sendBtn"
-        class="btn send">
-
-        SEND MESSAGE
-
-    </button>
-
-
-    <button
-        id="clearBtn"
-        class="btn clear">
-
-        CLEAR
-
-    </button>
-
-
-    <div
-        id="sendMessage"
-        class="message">
-    </div>
-
 </div>
 
-
-<!-- =====================================================
-     CONVERSATION
-===================================================== -->
-
-<div
-    id="conversation"
-    class="conversation">
-
-    <div
-        class="conversation-header">
-
-        <h2
-            id="conversationTitle">
-
-            Messages
-
-        </h2>
-
-        <p
-            id="conversationInfo">
-        </p>
-
-    </div>
-
-
-    <div
-        id="messages"
-        class="messages">
-
-        <div class="empty">
-
-            No messages
-
-        </div>
-
-    </div>
-
-
-    <div class="reply">
-
-        <textarea
-            id="replyText"
-            placeholder="Write a reply..."></textarea>
-
-
-        <button
-            id="replyBtn"
-            class="btn send">
-
-            Send
-
-        </button>
-
-    </div>
-
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-
-<!-- =====================================================
-     FIREBASE
-===================================================== -->
 
 <script type="module">
 
 import {
     initializeApp
-}
-from
-"https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
+import {
+    getAuth,
+    onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 import {
     getFirestore,
     collection,
-    getDocs,
+    doc,
     addDoc,
+    setDoc,
+    getDoc,
+    getDocs,
+    updateDoc,
     query,
     where,
+    orderBy,
     onSnapshot,
-    doc,
-    updateDoc,
-    serverTimestamp
-}
-from
-"https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    serverTimestamp,
+    limit,
+    arrayUnion
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 
-/* =====================================================
-   FIREBASE CONFIG
-===================================================== */
+/* =========================================================
+   FIREBASE
+========================================================= */
 
 const firebaseConfig = {
 
-    apiKey:
-        "AIzaSyAIv3091VM-gkmdwEAn7OhXWd9Cm2zh2bo",
+    apiKey: "AIzaSyAIv3091VM-gkmdwEAn7OhXWd9Cm2zh2bo",
 
-    authDomain:
-        "maasc-2026.firebaseapp.com",
+    authDomain: "maasc-2026.firebaseapp.com",
 
-    projectId:
-        "maasc-2026",
+    projectId: "maasc-2026",
 
-    storageBucket:
-        "maasc-2026.appspot.com",
+    storageBucket: "maasc-2026.appspot.com",
 
-    messagingSenderId:
-        "585813001586",
+    messagingSenderId: "585813001586",
 
-    appId:
-        "1:585813001586:web:664e0e90ff0725d2e849eb"
+    appId: "1:585813001586:web:664e0e90ff0725d2e849eb"
 
 };
 
 
-const app =
-    initializeApp(
-        firebaseConfig
-    );
+const app = initializeApp(firebaseConfig);
+
+const auth = getAuth(app);
+
+const db = getFirestore(app);
 
 
-const db =
-    getFirestore(app);
-
-
-/* =====================================================
+/* =========================================================
    GLOBAL VARIABLES
-===================================================== */
+========================================================= */
+
+let currentUser = null;
 
 let currentStaff = null;
 
 let allStaff = [];
 
-let currentType =
-    "individual";
+let currentChatId = null;
 
-let selectedConversationStaff =
-    null;
+let currentChatUnsubscribe = null;
 
-let unsubscribeInbox =
-    null;
+let conversationUnsubscribe = null;
 
-let unsubscribeConversation =
-    null;
+let currentRecipient = null;
 
+let recipientMode = "individual";
 
-/* =====================================================
-   SHORTCUT
-===================================================== */
+let conversations = [];
 
-function $(id){
+let unreadMap = {};
 
-    return document.getElementById(id);
-
-}
+let staffMap = {};
 
 
-/* =====================================================
-   CLEAN TEXT
-===================================================== */
+/* =========================================================
+   HELPERS
+========================================================= */
 
-function clean(value){
+function safeString(value){
 
-    return String(
-        value ?? ""
-    ).trim();
+    return value === undefined ||
+           value === null
+        ? ""
+        : String(value);
 
 }
 
-
-function upper(value){
-
-    return clean(
-        value
-    ).toUpperCase();
-
-}
-
-
-/* =====================================================
-   HTML ESCAPE
-===================================================== */
-
-function esc(value){
-
-    return String(
-        value ?? ""
-    )
-    .replace(
-        /&/g,
-        "&amp;"
-    )
-    .replace(
-        /</g,
-        "&lt;"
-    )
-    .replace(
-        />/g,
-        "&gt;"
-    )
-    .replace(
-        /"/g,
-        "&quot;"
-    )
-    .replace(
-        /'/g,
-        "&#039;"
-    );
-
-}
-
-
-/* =====================================================
-   SHOW MESSAGE
-===================================================== */
-
-function showMessage(
-    text,
-    type
-){
-
-    const box =
-        $("sendMessage");
-
-    box.textContent =
-        text;
-
-    box.className =
-        "message show " +
-        type;
-
-}
-
-
-/* =====================================================
-   HIDE MESSAGE
-===================================================== */
-
-function hideMessage(){
-
-    $("sendMessage")
-        .className =
-        "message";
-
-}
-
-
-/* =====================================================
-   GET STAFF SESSION
-===================================================== */
-
-function getLoggedInStaff(){
-
-    const keys = [
-
-        "staffSession",
-        "staff_session",
-        "loggedInStaff",
-        "currentStaff",
-        "staffData",
-        "userData",
-        "user"
-
-    ];
-
-
-    for(
-        const key of keys
-    ){
-
-        try{
-
-            const raw =
-
-                localStorage.getItem(
-                    key
-                )
-
-                ||
-
-                sessionStorage.getItem(
-                    key
-                );
-
-
-            if(!raw)
-                continue;
-
-
-            const data =
-                JSON.parse(
-                    raw
-                );
-
-
-            if(
-                data &&
-                typeof data ===
-                "object"
-            ){
-
-                return data;
-
-            }
-
-        }
-        catch(error){
-
-            console.warn(
-                "Session parse error:",
-                error
-            );
-
-        }
-
-    }
-
-
-    const idKeys = [
-
-        "staffId",
-        "staffID",
-        "loggedInStaffId",
-        "currentStaffId",
-        "userStaffId"
-
-    ];
-
-
-    for(
-        const key of idKeys
-    ){
-
-        const id =
-
-            localStorage.getItem(
-                key
-            )
-
-            ||
-
-            sessionStorage.getItem(
-                key
-            );
-
-
-        if(id){
-
-            return {
-
-                staffId:id
-
-            };
-
-        }
-
-    }
-
-
-    return null;
-
-}
-
-
-/* =====================================================
-   STAFF FIELD HELPERS
-===================================================== */
 
 function getStaffId(data){
 
-    return clean(
-
-        data.staffId ??
-
-        data.staffID ??
-
-        data.staff_id ??
-
-        data.id
-
-    );
+    return safeString(
+        data.staffId ||
+        data.staffID ||
+        data.id ||
+        data.employeeId ||
+        data.employeeID
+    ).trim();
 
 }
 
 
 function getStaffName(data){
 
-    return clean(
-
-        data.staffName ??
-
-        data.name ??
-
-        data.staff_name ??
-
-        data.displayName
-
-    );
+    return safeString(
+        data.name ||
+        data.staffName ||
+        data.fullName ||
+        data.displayName ||
+        data.employeeName ||
+        "Staff"
+    ).trim();
 
 }
 
 
 function getDepartment(data){
 
-    return clean(
-
-        data.department ??
-
-        data.dept ??
-
-        data.departmentName
-
-    );
+    return safeString(
+        data.department ||
+        data.dept ||
+        data.Department ||
+        ""
+    ).trim();
 
 }
 
 
-/* =====================================================
-   LOAD CURRENT STAFF
-===================================================== */
+function isStaffActive(data){
 
-async function loadCurrentStaff(){
-
-    const session =
-        getLoggedInStaff();
-
-
-    if(!session){
-
-        alert(
-            "Staff login session not found. Please login first."
-        );
-
+    if(
+        data.active === false ||
+        data.isActive === false ||
+        data.workerActive === false
+    ){
         return false;
-
     }
-
-
-    const id =
-
-        clean(
-
-            session.staffId ??
-
-            session.staffID ??
-
-            session.staff_id ??
-
-            session.id
-
-        );
-
-
-    if(!id){
-
-        alert(
-            "Staff ID was not found in the login session."
-        );
-
-        return false;
-
-    }
-
-
-    currentStaff = {
-
-        staffId:id,
-
-        staffName:
-
-            clean(
-
-                session.staffName ??
-
-                session.name ??
-
-                session.staff_name
-
-            ),
-
-        department:
-
-            clean(
-
-                session.department ??
-
-                session.dept ??
-
-                session.departmentName
-
-            )
-
-    };
-
-
-    /*
-     * Get complete staff details
-     * from Firestore.
-     */
-
-    try{
-
-        const snap =
-            await getDocs(
-                collection(
-                    db,
-                    "staff"
-                )
-            );
-
-
-        snap.forEach(
-            item => {
-
-                const data =
-                    item.data();
-
-
-                const sid =
-                    getStaffId(
-                        data
-                    );
-
-
-                if(
-                    upper(sid) ===
-                    upper(
-                        currentStaff.staffId
-                    )
-                ){
-
-                    currentStaff.staffName =
-
-                        currentStaff.staffName
-                        ||
-
-                        getStaffName(
-                            data
-                        );
-
-
-                    currentStaff.department =
-
-                        currentStaff.department
-                        ||
-
-                        getDepartment(
-                            data
-                        );
-
-                }
-
-            }
-        );
-
-    }
-    catch(error){
-
-        console.error(
-            "Current staff lookup:",
-            error
-        );
-
-    }
-
 
     return true;
 
 }
 
 
-/* =====================================================
-   LOAD ALL STAFF
-===================================================== */
+function getInitial(name){
 
-async function loadStaff(){
+    const value = safeString(name).trim();
 
-    const box =
-        $("staffList");
+    if(!value) return "?";
+
+    return value.charAt(0).toUpperCase();
+
+}
 
 
-    box.innerHTML =
-        `
-        <div class="loading">
-            Loading staff...
-        </div>
-        `;
+function escapeHtml(value){
 
+    return safeString(value)
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
+
+}
+
+
+function formatTime(timestamp){
+
+    if(!timestamp) return "";
+
+    let date;
 
     try{
 
-        const snap =
-            await getDocs(
-                collection(
-                    db,
-                    "staff"
-                )
-            );
+        if(timestamp.toDate){
 
+            date = timestamp.toDate();
 
-        const map =
-            new Map();
+        }else{
 
+            date = new Date(timestamp);
 
-        snap.forEach(
-            item => {
+        }
 
-                const data =
-                    item.data();
-
-
-                const staffId =
-                    getStaffId(
-                        data
-                    );
-
-
-                if(!staffId)
-                    return;
-
-
-                /*
-                 * Do not display
-                 * currently logged staff.
-                 */
-
-                if(
-                    upper(staffId) ===
-                    upper(
-                        currentStaff.staffId
-                    )
-                ){
-
-                    return;
-
-                }
-
-
-                map.set(
-                    upper(
-                        staffId
-                    ),
-                    {
-
-                        documentId:
-                            item.id,
-
-                        staffId:
-                            staffId,
-
-                        staffName:
-                            getStaffName(
-                                data
-                            ) ||
-                            staffId,
-
-                        department:
-                            getDepartment(
-                                data
-                            )
-
-                    }
-                );
-
+        return date.toLocaleTimeString(
+            [],
+            {
+                hour:"2-digit",
+                minute:"2-digit"
             }
         );
 
+    }catch(e){
 
-        allStaff =
-            Array.from(
-                map.values()
-            );
-
-
-        allStaff.sort(
-            (a,b) =>
-
-                String(
-                    a.staffName
-                ).localeCompare(
-                    String(
-                        b.staffName
-                    )
-                )
-        );
-
-
-        populateDepartments();
-
-        populateSearchableStaff();
-
-        renderStaffList(
-            allStaff
-        );
+        return "";
 
     }
-    catch(error){
+
+}
+
+
+function formatDateTime(timestamp){
+
+    if(!timestamp) return "";
+
+    let date;
+
+    try{
+
+        if(timestamp.toDate){
+
+            date = timestamp.toDate();
+
+        }else{
+
+            date = new Date(timestamp);
+
+        }
+
+        return date.toLocaleDateString(
+            [],
+            {
+                day:"2-digit",
+                month:"short",
+                year:"numeric"
+            }
+        )
+        +
+        " "
+        +
+        date.toLocaleTimeString(
+            [],
+            {
+                hour:"2-digit",
+                minute:"2-digit"
+            }
+        );
+
+    }catch(e){
+
+        return "";
+
+    }
+
+}
+
+
+function conversationIdForIndividual(a,b){
+
+    return [
+        safeString(a),
+        safeString(b)
+    ]
+    .sort()
+    .join("__");
+
+}
+
+
+/* =========================================================
+   LOAD ALL STAFF
+========================================================= */
+
+async function loadAllStaff(){
+
+    try{
+
+        const snapshot = await getDocs(
+            collection(db,"staff")
+        );
+
+        allStaff = [];
+
+        staffMap = {};
+
+        snapshot.forEach(item => {
+
+            const data = item.data();
+
+            const staffId =
+                getStaffId(data) ||
+                item.id;
+
+            if(!staffId) return;
+
+            const staff = {
+
+                firestoreId:item.id,
+
+                staffId:staffId,
+
+                name:getStaffName(data),
+
+                department:getDepartment(data),
+
+                active:isStaffActive(data),
+
+                email:safeString(data.email)
+
+            };
+
+            allStaff.push(staff);
+
+            staffMap[staffId] = staff;
+
+        });
+
+
+        allStaff.sort((a,b) =>
+            a.name.localeCompare(
+                b.name
+            )
+        );
+
+
+        updateAllStaffCount();
+
+        renderStaffResults("");
+
+        renderDepartmentResults("");
+
+        console.log(
+            "STAFF LOADED:",
+            allStaff.length
+        );
+
+    }catch(error){
 
         console.error(
             "STAFF LOAD ERROR:",
             error
         );
 
-
-        box.innerHTML =
-
-            `
-            <div class="empty">
-
+        document.getElementById(
+            "staffResults"
+        ).innerHTML =
+            `<div class="no-results">
                 Unable to load staff.
-
-                <br><br>
-
-                ${esc(
-                    error.message
-                )}
-
-            </div>
-            `;
+            </div>`;
 
     }
 
 }
 
 
-/* =====================================================
-   SEARCHABLE INDIVIDUAL STAFF
-===================================================== */
+/* =========================================================
+   AUTH
+========================================================= */
 
-function populateSearchableStaff(){
+onAuthStateChanged(
+    auth,
+    async user => {
 
-    const search =
-        $("individualStaffSearch");
+        if(!user){
 
+            document.getElementById(
+                "currentUser"
+            ).textContent =
+                "Not logged in";
 
-    const results =
-        $("individualStaffResults");
-
-
-    const hidden =
-        $("individualStaff");
-
-
-    const selected =
-        $("selectedStaffDisplay");
-
-
-    function showResults(){
-
-        const text =
-            upper(
-                search.value
-            );
-
-
-        if(!text){
-
-            results.innerHTML =
-                "";
-
-            results.classList.remove(
-                "show"
+            console.warn(
+                "NO FIREBASE USER"
             );
 
             return;
@@ -1510,1084 +1270,504 @@ function populateSearchableStaff(){
         }
 
 
-        const matches =
-            allStaff.filter(
-                staff => {
+        currentUser = user;
 
-                    const name =
-                        upper(
-                            staff.staffName
-                        );
 
-                    const id =
-                        upper(
-                            staff.staffId
-                        );
+        await loadAllStaff();
 
-                    const department =
-                        upper(
-                            staff.department
-                        );
 
+        await identifyCurrentStaff(user);
 
-                    return (
 
-                        name.includes(
-                            text
-                        )
+        if(currentStaff){
 
-                        ||
+            document.getElementById(
+                "currentUser"
+            ).textContent =
+                currentStaff.name +
+                " • " +
+                currentStaff.staffId;
 
-                        id.includes(
-                            text
-                        )
-
-                        ||
-
-                        department.includes(
-                            text
-                        )
-
-                    );
-
-                }
-            );
-
-
-        if(!matches.length){
-
-            results.innerHTML =
-
-                `
-                <div
-                    class="empty"
-                    style="padding:15px">
-
-                    No matching staff found.
-
-                </div>
-                `;
-
-
-            results.classList.add(
-                "show"
-            );
-
-            return;
-
-        }
-
-
-        results.innerHTML =
-
-            matches.map(
-                staff => `
-
-                <div
-                    class="staff-result-item"
-                    data-staff-id="${esc(
-                        staff.staffId
-                    )}">
-
-                    <div
-                        class="staff-result-name">
-
-                        ${esc(
-                            staff.staffName
-                        )}
-
-                    </div>
-
-                    <div
-                        class="staff-result-info">
-
-                        ${esc(
-                            staff.staffId
-                        )}
-
-                        ${
-                            staff.department
-
-                            ? " • " +
-                              esc(
-                                  staff.department
-                              )
-
-                            : ""
-                        }
-
-                    </div>
-
-                </div>
-
-                `
-            )
-            .join("");
-
-
-        results.classList.add(
-            "show"
-        );
-
-
-        results
-            .querySelectorAll(
-                ".staff-result-item"
-            )
-            .forEach(
-                item => {
-
-                    item.addEventListener(
-                        "click",
-                        () => {
-
-                            const id =
-                                item.dataset.staffId;
-
-
-                            const staff =
-                                allStaff.find(
-                                    s =>
-                                        upper(
-                                            s.staffId
-                                        ) ===
-                                        upper(
-                                            id
-                                        )
-                                );
-
-
-                            if(!staff)
-                                return;
-
-
-                            /*
-                             * Store selected
-                             * Staff ID.
-                             */
-
-                            hidden.value =
-                                staff.staffId;
-
-
-                            /*
-                             * Show staff name
-                             * in search field.
-                             */
-
-                            search.value =
-                                staff.staffName;
-
-
-                            /*
-                             * Show selected
-                             * staff information.
-                             */
-
-                            selected.textContent =
-
-                                "✓ Selected: " +
-
-                                staff.staffName +
-
-                                " (" +
-
-                                staff.staffId +
-
-                                ")" +
-
-                                (
-                                    staff.department
-
-                                    ? " • " +
-                                      staff.department
-
-                                    : ""
-                                );
-
-
-                            selected.style.display =
-                                "block";
-
-
-                            search.style.borderColor =
-                                "#16a34a";
-
-
-                            results.innerHTML =
-                                "";
-
-
-                            results.classList.remove(
-                                "show"
-                            );
-
-                        }
-                    );
-
-                }
-            );
-
-    }
-
-
-    search.addEventListener(
-        "input",
-        () => {
-
-            /*
-             * If user changes
-             * selected name, remove
-             * previous selection.
-             */
-
-            hidden.value =
-                "";
-
-            selected.style.display =
-                "none";
-
-            search.style.borderColor =
-                "#d1d5db";
-
-
-            showResults();
-
-        }
-    );
-
-
-    search.addEventListener(
-        "focus",
-        () => {
-
-            if(
-                search.value.trim()
-            ){
-
-                showResults();
-
-            }
-
-        }
-    );
-
-
-    document.addEventListener(
-        "click",
-        event => {
-
-            if(
-                !event.target.closest(
-                    ".staff-picker"
-                )
-            ){
-
-                results.classList.remove(
-                    "show"
-                );
-
-            }
-
-        }
-    );
-
-}
-
-
-/* =====================================================
-   POPULATE DEPARTMENTS
-===================================================== */
-
-function populateDepartments(){
-
-    const select =
-        $("departmentSelect");
-
-
-    const departments =
-
-        [
-            ...new Set(
-
-                allStaff
-
-                    .map(
-                        staff =>
-                            clean(
-                                staff.department
-                            )
-                    )
-
-                    .filter(
-                        Boolean
-                    )
-
-            )
-        ];
-
-
-    departments.sort(
-        (a,b) =>
-            a.localeCompare(
-                b
-            )
-    );
-
-
-    select.innerHTML =
-
-        `
-        <option value="">
-            Select Department
-        </option>
-        `;
-
-
-    departments.forEach(
-        department => {
-
-            const option =
-                document.createElement(
-                    "option"
-                );
-
-
-            option.value =
-                department;
-
-
-            option.textContent =
-                department;
-
-
-            select.appendChild(
-                option
-            );
-
-        }
-    );
-
-}
-
-
-/* =====================================================
-   LEFT STAFF LIST
-===================================================== */
-
-function renderStaffList(
-    list
-){
-
-    const box =
-        $("staffList");
-
-
-    if(!list.length){
-
-        box.innerHTML =
-
-            `
-            <div class="empty">
-
-                No staff found.
-
-            </div>
-            `;
-
-        return;
-
-    }
-
-
-    box.innerHTML =
-
-        list.map(
-            staff => `
-
-            <div
-                class="staff-item"
-                data-id="${esc(
-                    staff.staffId
-                )}">
-
-                <div>
-
-                    <div class="staff-name">
-
-                        ${esc(
-                            staff.staffName
-                        )}
-
-                    </div>
-
-
-                    <div class="staff-info">
-
-                        ${esc(
-                            staff.staffId
-                        )}
-
-                        ${
-                            staff.department
-
-                            ? " • " +
-                              esc(
-                                  staff.department
-                              )
-
-                            : ""
-                        }
-
-                    </div>
-
-                </div>
-
-
-                <span
-                    class="unread"
-                    id="unread-${safeId(
-                        staff.staffId
-                    )}"
-                    style="display:none">
-
-                    0
-
-                </span>
-
-            </div>
-
-            `
-        )
-        .join("");
-
-
-    box
-        .querySelectorAll(
-            ".staff-item"
-        )
-        .forEach(
-            item => {
-
-                item.addEventListener(
-                    "click",
-                    () => {
-
-                        const staff =
-                            allStaff.find(
-                                s =>
-                                    upper(
-                                        s.staffId
-                                    ) ===
-                                    upper(
-                                        item.dataset.id
-                                    )
-                            );
-
-
-                        if(staff){
-
-                            selectedConversationStaff =
-                                staff;
-
-
-                            openConversation(
-                                staff
-                            );
-
-                        }
-
-                    }
-                );
-
-            }
-        );
-
-
-    loadUnreadCounts();
-
-}
-
-
-/* =====================================================
-   SAFE ID
-===================================================== */
-
-function safeId(value){
-
-    return String(
-        value
-    )
-    .replace(
-        /[^a-zA-Z0-9_-]/g,
-        "_"
-    );
-
-}
-
-
-/* =====================================================
-   RECIPIENT TABS
-===================================================== */
-
-document
-    .querySelectorAll(
-        ".tab"
-    )
-    .forEach(
-        tab => {
-
-            tab.addEventListener(
-                "click",
-                () => {
-
-                    document
-                        .querySelectorAll(
-                            ".tab"
-                        )
-                        .forEach(
-                            t =>
-                                t.classList.remove(
-                                    "active"
-                                )
-                        );
-
-
-                    tab.classList.add(
-                        "active"
-                    );
-
-
-                    currentType =
-                        tab.dataset.type;
-
-
-                    $("individualBox")
-                        .style
-                        .display =
-
-                            currentType ===
-                            "individual"
-
-                            ? "block"
-                            : "none";
-
-
-                    $("departmentBox")
-                        .style
-                        .display =
-
-                            currentType ===
-                            "department"
-
-                            ? "block"
-                            : "none";
-
-
-                    $("allBox")
-                        .style
-                        .display =
-
-                            currentType ===
-                            "all"
-
-                            ? "block"
-                            : "none";
-
-
-                    hideMessage();
-
-                }
-            );
-
-        }
-    );
-
-
-/* =====================================================
-   LEFT STAFF SEARCH
-===================================================== */
-
-$("staffSearch")
-    .addEventListener(
-        "input",
-        event => {
-
-            const text =
-                upper(
-                    event.target.value
-                );
-
-
-            const filtered =
-                allStaff.filter(
-                    staff =>
-
-                        upper(
-                            staff.staffName
-                        ).includes(
-                            text
-                        )
-
-                        ||
-
-                        upper(
-                            staff.staffId
-                        ).includes(
-                            text
-                        )
-
-                        ||
-
-                        upper(
-                            staff.department
-                        ).includes(
-                            text
-                        )
-
-                );
-
-
-            renderStaffList(
-                filtered
-            );
-
-        }
-    );
-
-
-/* =====================================================
-   SEND MESSAGE
-===================================================== */
-
-$("sendBtn")
-    .addEventListener(
-        "click",
-        sendMessage
-    );
-
-
-async function sendMessage(){
-
-    hideMessage();
-
-
-    const text =
-        clean(
-            $("messageText").value
-        );
-
-
-    if(!text){
-
-        showMessage(
-            "Please type a message.",
-            "error"
-        );
-
-        return;
-
-    }
-
-
-    let recipients = [];
-
-
-    /* INDIVIDUAL */
-
-    if(
-        currentType ===
-        "individual"
-    ){
-
-        const id =
-            clean(
-                $("individualStaff").value
-            );
-
-
-        if(!id){
-
-            showMessage(
-                "Please type and select a staff member.",
-                "error"
-            );
-
-            return;
-
-        }
-
-
-        const staff =
-            allStaff.find(
-                s =>
-                    upper(
-                        s.staffId
-                    ) ===
-                    upper(
-                        id
-                    )
-            );
-
-
-        if(!staff){
-
-            showMessage(
-                "Selected staff was not found.",
-                "error"
-            );
-
-            return;
-
-        }
-
-
-        recipients = [
-            staff
-        ];
-
-    }
-
-
-    /* DEPARTMENT */
-
-    else if(
-        currentType ===
-        "department"
-    ){
-
-        const department =
-            clean(
-                $("departmentSelect").value
-            );
-
-
-        if(!department){
-
-            showMessage(
-                "Please select a department.",
-                "error"
-            );
-
-            return;
-
-        }
-
-
-        recipients =
-            allStaff.filter(
-                staff =>
-
-                    upper(
-                        staff.department
-                    ) ===
-                    upper(
-                        department
-                    )
-            );
-
-
-        if(!recipients.length){
-
-            showMessage(
-                "No staff found in this department.",
-                "error"
-            );
-
-            return;
+            startConversationListener();
 
         }
 
     }
+);
 
 
-    /* ALL STAFF */
+/* =========================================================
+   IDENTIFY CURRENT STAFF
+========================================================= */
 
-    else if(
-        currentType ===
-        "all"
-    ){
-
-        recipients =
-            [...allStaff];
-
-
-        if(!recipients.length){
-
-            showMessage(
-                "No staff members are available.",
-                "error"
-            );
-
-            return;
-
-        }
-
-    }
-
-
-    const sendButton =
-        $("sendBtn");
-
-
-    sendButton.disabled =
-        true;
-
-
-    sendButton.textContent =
-        "SENDING...";
-
+async function identifyCurrentStaff(user){
 
     try{
 
         /*
-         * One Firestore document
-         * per recipient.
-         */
+           First try UID field.
+        */
 
-        const promises =
-            recipients.map(
-                recipient =>
-
-                    addDoc(
-                        collection(
-                            db,
-                            "staffMessages"
-                        ),
-                        {
-
-                            senderId:
-                                currentStaff.staffId,
-
-                            senderName:
-                                currentStaff.staffName ||
-                                currentStaff.staffId,
-
-                            senderDepartment:
-                                currentStaff.department ||
-                                "",
-
-                            receiverId:
-                                recipient.staffId,
-
-                            receiverName:
-                                recipient.staffName,
-
-                            receiverDepartment:
-                                recipient.department ||
-                                "",
-
-                            message:
-                                text,
-
-                            type:
-                                currentType,
-
-                            isRead:
-                                false,
-
-                            createdAt:
-                                serverTimestamp()
-
-                        }
-                    )
-            );
-
-
-        await Promise.all(
-            promises
+        let found = allStaff.find(
+            staff =>
+                staff.firestoreId === user.uid
         );
 
 
-        if(
-            currentType ===
-            "all"
-        ){
+        /*
+           Try staff UID field.
+        */
 
-            showMessage(
+        if(!found){
 
-                "Message sent to " +
-                recipients.length +
-                " staff members.",
+            found = allStaff.find(
+                staff => {
 
-                "success"
+                    const original =
+                        allStaff.find(
+                            x =>
+                                x.firestoreId ===
+                                staff.firestoreId
+                        );
 
-            );
+                    return false;
 
-        }
-        else if(
-            currentType ===
-            "department"
-        ){
-
-            showMessage(
-
-                "Message sent to " +
-                recipients.length +
-                " staff members in " +
-                $("departmentSelect").value +
-                ".",
-
-                "success"
-
-            );
-
-        }
-        else{
-
-            showMessage(
-
-                "Message sent to " +
-                recipients[0].staffName +
-                ".",
-
-                "success"
-
+                }
             );
 
         }
 
 
-        $("messageText")
-            .value =
-            "";
+        /*
+           Try email.
+        */
+
+        if(!found && user.email){
+
+            const email =
+                user.email.toLowerCase();
+
+            found = allStaff.find(
+                staff =>
+                    safeString(
+                        staff.email
+                    ).toLowerCase() === email
+            );
+
+        }
 
 
-    }
-    catch(error){
+        /*
+           Try localStorage values commonly
+           used in your existing staff login.
+        */
+
+        if(!found){
+
+            const possibleKeys = [
+
+                "staffId",
+                "staffID",
+                "currentStaffId",
+                "loggedInStaffId",
+                "staff_id"
+
+            ];
+
+            for(
+                const key of possibleKeys
+            ){
+
+                const stored =
+                    localStorage.getItem(key);
+
+                if(stored){
+
+                    found =
+                        allStaff.find(
+                            staff =>
+                                staff.staffId
+                                    .toUpperCase() ===
+                                stored
+                                    .toUpperCase()
+                        );
+
+                    if(found) break;
+
+                }
+
+            }
+
+        }
+
+
+        /*
+           Try Firebase user displayName
+        */
+
+        if(!found && user.displayName){
+
+            found =
+                allStaff.find(
+                    staff =>
+                        staff.name
+                            .toLowerCase() ===
+                        user.displayName
+                            .toLowerCase()
+                );
+
+        }
+
+
+        if(found){
+
+            currentStaff = found;
+
+            console.log(
+                "CURRENT STAFF:",
+                currentStaff
+            );
+
+        }else{
+
+            console.error(
+                "CURRENT STAFF NOT FOUND"
+            );
+
+            document.getElementById(
+                "currentUser"
+            ).textContent =
+                "Staff profile not found";
+
+        }
+
+    }catch(error){
 
         console.error(
-            "SEND MESSAGE ERROR:",
+            "IDENTIFY STAFF ERROR:",
             error
         );
 
-
-        showMessage(
-
-            "Message could not be sent: " +
-            error.message,
-
-            "error"
-
-        );
-
-    }
-    finally{
-
-        sendButton.disabled =
-            false;
-
-
-        sendButton.textContent =
-            "SEND MESSAGE";
-
     }
 
 }
 
 
-/* =====================================================
-   CLEAR
-===================================================== */
+/* =========================================================
+   CONVERSATIONS LISTENER
+========================================================= */
 
-$("clearBtn")
-    .addEventListener(
-        "click",
-        () => {
+function startConversationListener(){
 
-            $("messageText")
-                .value =
-                "";
+    if(!currentStaff) return;
 
 
-            $("individualStaff")
-                .value =
-                "";
+    if(conversationUnsubscribe){
+
+        conversationUnsubscribe();
+
+    }
 
 
-            $("individualStaffSearch")
-                .value =
-                "";
+    const conversationsRef =
+        collection(
+            db,
+            "staffConversations"
+        );
 
 
-            $("selectedStaffDisplay")
-                .style
-                .display =
-                "none";
-
-
-            $("individualStaffSearch")
-                .style
-                .borderColor =
-                "#d1d5db";
-
-
-            $("departmentSelect")
-                .value =
-                "";
-
-
-            hideMessage();
-
-        }
+    const q = query(
+        conversationsRef,
+        where(
+            "participantIds",
+            "array-contains",
+            currentStaff.staffId
+        )
     );
 
 
-/* =====================================================
+    conversationUnsubscribe =
+        onSnapshot(
+            q,
+            snapshot => {
+
+                conversations = [];
+
+                snapshot.forEach(item => {
+
+                    conversations.push({
+
+                        id:item.id,
+
+                        ...item.data()
+
+                    });
+
+                });
+
+
+                conversations.sort(
+                    (a,b) => {
+
+                        const at =
+                            a.lastMessageTime &&
+                            a.lastMessageTime.toMillis
+                                ? a.lastMessageTime.toMillis()
+                                : 0;
+
+                        const bt =
+                            b.lastMessageTime &&
+                            b.lastMessageTime.toMillis
+                                ? b.lastMessageTime.toMillis()
+                                : 0;
+
+                        return bt - at;
+
+                    }
+                );
+
+
+                renderConversations();
+
+            },
+            error => {
+
+                console.error(
+                    "CONVERSATION LIST ERROR:",
+                    error
+                );
+
+            }
+        );
+
+}
+
+
+/* =========================================================
+   RENDER CONVERSATIONS
+========================================================= */
+
+function renderConversations(){
+
+    const list =
+        document.getElementById(
+            "chatList"
+        );
+
+    const search =
+        document.getElementById(
+            "conversationSearch"
+        )
+        .value
+        .trim()
+        .toLowerCase();
+
+
+    const filtered =
+        conversations.filter(
+            chat => {
+
+                if(!search) return true;
+
+                return safeString(
+                    chat.title
+                )
+                .toLowerCase()
+                .includes(search);
+
+            }
+        );
+
+
+    if(!filtered.length){
+
+        list.innerHTML = `
+            <div class="no-results">
+                No conversations yet.
+            </div>
+        `;
+
+        return;
+
+    }
+
+
+    list.innerHTML = "";
+
+
+    filtered.forEach(chat => {
+
+        const div =
+            document.createElement("div");
+
+        div.className =
+            "chat-item" +
+            (
+                currentChatId === chat.id
+                    ? " active"
+                    : ""
+            );
+
+
+        const title =
+            chat.title ||
+            "Staff Conversation";
+
+
+        const initials =
+            chat.type === "all"
+                ? "A"
+                : chat.type === "department"
+                    ? "D"
+                    : getInitial(title);
+
+
+        const unread =
+            Number(
+                chat.unreadCounts &&
+                chat.unreadCounts[
+                    currentStaff.staffId
+                ]
+                || 0
+            );
+
+
+        div.innerHTML = `
+
+            <div class="avatar">
+                ${escapeHtml(initials)}
+            </div>
+
+            <div class="chat-info">
+
+                <div class="chat-top">
+
+                    <div class="chat-name">
+                        ${escapeHtml(title)}
+                    </div>
+
+                    <div class="chat-time">
+                        ${
+                            formatTime(
+                                chat.lastMessageTime
+                            )
+                        }
+                    </div>
+
+                </div>
+
+                <div class="chat-last">
+
+                    ${
+                        escapeHtml(
+                            chat.lastMessage ||
+                            "No messages yet"
+                        )
+                    }
+
+                </div>
+
+            </div>
+
+            ${
+                unread > 0
+                    ? `
+                    <div class="unread">
+                        ${unread > 99 ? "99+" : unread}
+                    </div>
+                    `
+                    : ""
+            }
+
+        `;
+
+
+        div.addEventListener(
+            "click",
+            () =>
+                openConversation(
+                    chat.id
+                )
+        );
+
+
+        list.appendChild(div);
+
+    });
+
+}
+
+
+/* =========================================================
    OPEN CONVERSATION
-===================================================== */
+========================================================= */
 
-function openConversation(
-    staff
-){
+async function openConversation(chatId){
 
-    $("conversation")
-        .classList
-        .add("show");
+    currentChatId = chatId;
 
 
-    $("conversationTitle")
-        .textContent =
-        staff.staffName;
-
-
-    $("conversationInfo")
-        .textContent =
-
-        staff.staffId +
-
-        (
-
-            staff.department
-
-            ? " • " +
-              staff.department
-
-            : ""
-
+    const chat =
+        conversations.find(
+            x => x.id === chatId
         );
 
 
-    loadConversation(
-        staff
-    );
-
-}
+    if(!chat) return;
 
 
-/* =====================================================
-   CONVERSATION
-===================================================== */
+    document.getElementById(
+        "emptyChat"
+    ).style.display = "none";
 
-function loadConversation(
-    staff
-){
 
-    if(
-        unsubscribeConversation
-    ){
+    document.getElementById(
+        "chatHeader"
+    ).style.display = "flex";
 
-        unsubscribeConversation();
+
+    document.getElementById(
+        "messages"
+    ).style.display = "block";
+
+
+    document.getElementById(
+        "messageInputArea"
+    ).style.display = "flex";
+
+
+    document.getElementById(
+        "headerName"
+    ).textContent =
+        chat.title ||
+        "Staff Conversation";
+
+
+    document.getElementById(
+        "headerAvatar"
+    ).textContent =
+        chat.type === "all"
+            ? "A"
+            : chat.type === "department"
+                ? "D"
+                : getInitial(
+                    chat.title
+                );
+
+
+    document.getElementById(
+        "headerStatus"
+    ).textContent =
+        chat.type === "all"
+            ? "All Staff"
+            : chat.type === "department"
+                ? "Department Staff"
+                : "Staff Conversation";
+
+
+    if(currentChatUnsubscribe){
+
+        currentChatUnsubscribe();
 
     }
 
@@ -2595,397 +1775,797 @@ function loadConversation(
     const messagesRef =
         collection(
             db,
-            "staffMessages"
+            "staffConversations",
+            chatId,
+            "messages"
         );
 
 
-    /*
-     * We query by sender ID
-     * and filter the other side
-     * in JavaScript.
-     */
-
-    const q =
-        query(
-
-            messagesRef,
-
-            where(
-                "senderId",
-                "in",
-                [
-                    currentStaff.staffId,
-                    staff.staffId
-                ]
-            )
-
-        );
+    const q = query(
+        messagesRef,
+        orderBy(
+            "timestamp",
+            "asc"
+        )
+    );
 
 
-    unsubscribeConversation =
+    currentChatUnsubscribe =
         onSnapshot(
             q,
-            async snapshot => {
+            snapshot => {
 
-                const messages = [];
-
-
-                snapshot.forEach(
-                    item => {
-
-                        const data =
-                            item.data();
-
-
-                        const isConversation =
-
-                            (
-
-                                upper(
-                                    data.senderId
-                                ) ===
-                                upper(
-                                    currentStaff.staffId
-                                )
-
-                                &&
-
-                                upper(
-                                    data.receiverId
-                                ) ===
-                                upper(
-                                    staff.staffId
-                                )
-
-                            )
-
-                            ||
-
-                            (
-
-                                upper(
-                                    data.senderId
-                                ) ===
-                                upper(
-                                    staff.staffId
-                                )
-
-                                &&
-
-                                upper(
-                                    data.receiverId
-                                ) ===
-                                upper(
-                                    currentStaff.staffId
-                                )
-
-                            );
-
-
-                        if(
-                            isConversation
-                        ){
-
-                            messages.push({
-
-                                id:
-                                    item.id,
-
-                                ...data
-
-                            });
-
-                        }
-
-                    }
+                renderMessages(
+                    snapshot
                 );
-
-
-                messages.sort(
-                    (a,b) =>
-
-                        (
-                            a.createdAt?.seconds ||
-                            0
-                        )
-
-                        -
-
-                        (
-                            b.createdAt?.seconds ||
-                            0
-                        )
-
-                );
-
-
-                renderConversation(
-                    messages
-                );
-
-
-                /*
-                 * Mark received messages
-                 * as read.
-                 */
-
-                for(
-                    const message
-                    of messages
-                ){
-
-                    if(
-
-                        upper(
-                            message.receiverId
-                        ) ===
-                        upper(
-                            currentStaff.staffId
-                        )
-
-                        &&
-
-                        message.isRead !==
-                        true
-
-                    ){
-
-                        try{
-
-                            await updateDoc(
-
-                                doc(
-                                    db,
-                                    "staffMessages",
-                                    message.id
-                                ),
-
-                                {
-                                    isRead:true
-                                }
-
-                            );
-
-                        }
-                        catch(error){
-
-                            console.error(
-                                error
-                            );
-
-                        }
-
-                    }
-
-                }
 
             },
-
             error => {
 
                 console.error(
-                    "CONVERSATION ERROR:",
+                    "MESSAGE LIST ERROR:",
                     error
                 );
 
             }
         );
 
+
+    /*
+       Mark conversation read.
+    */
+
+    try{
+
+        const chatRef =
+            doc(
+                db,
+                "staffConversations",
+                chatId
+            );
+
+
+        const currentUnread =
+            chat.unreadCounts || {};
+
+
+        currentUnread[
+            currentStaff.staffId
+        ] = 0;
+
+
+        await updateDoc(
+            chatRef,
+            {
+                unreadCounts:
+                    currentUnread
+            }
+        );
+
+    }catch(error){
+
+        console.warn(
+            "READ UPDATE:",
+            error
+        );
+
+    }
+
+
+    renderConversations();
+
+
+    document.getElementById(
+        "app"
+    ).classList.add(
+        "chat-open"
+    );
+
+
+    setTimeout(
+        () => {
+
+            document.getElementById(
+                "messageInput"
+            ).focus();
+
+        },
+        200
+    );
+
 }
 
 
-/* =====================================================
-   RENDER CONVERSATION
-===================================================== */
+/* =========================================================
+   RENDER MESSAGES
+========================================================= */
 
-function renderConversation(
-    messages
-){
+function renderMessages(snapshot){
 
-    const box =
-        $("messages");
+    const container =
+        document.getElementById(
+            "messages"
+        );
 
 
-    if(!messages.length){
+    container.innerHTML = "";
 
-        box.innerHTML =
 
-            `
-            <div class="empty">
+    snapshot.forEach(item => {
 
-                No messages with this staff member.
+        const data =
+            item.data();
+
+
+        const mine =
+            data.senderId ===
+            currentStaff.staffId;
+
+
+        const row =
+            document.createElement(
+                "div"
+            );
+
+
+        row.className =
+            "message-row " +
+            (
+                mine
+                    ? "mine"
+                    : "theirs"
+            );
+
+
+        const bubble =
+            document.createElement(
+                "div"
+            );
+
+
+        bubble.className =
+            "message";
+
+
+        let senderHtml = "";
+
+
+        if(
+            !mine &&
+            (
+                data.senderName ||
+                data.senderId
+            )
+        ){
+
+            senderHtml = `
+
+                <div class="sender-name">
+
+                    ${escapeHtml(
+                        data.senderName ||
+                        data.senderId
+                    )}
+
+                </div>
+
+            `;
+
+        }
+
+
+        bubble.innerHTML = `
+
+            ${senderHtml}
+
+            <div class="message-text">
+
+                ${escapeHtml(
+                    data.text || ""
+                )}
 
             </div>
-            `;
+
+            <div class="message-meta">
+
+                ${formatTime(
+                    data.timestamp
+                )}
+
+                ${
+                    mine
+                        ? `
+                        <span
+                            class="${
+                                data.readBy &&
+                                data.readBy.length > 1
+                                    ? "read"
+                                    : ""
+                            }"
+                        >
+                            ${
+                                data.readBy &&
+                                data.readBy.length > 1
+                                    ? "✓✓"
+                                    : "✓"
+                            }
+                        </span>
+                        `
+                        : ""
+                }
+
+            </div>
+
+        `;
+
+
+        row.appendChild(
+            bubble
+        );
+
+
+        container.appendChild(
+            row
+        );
+
+    });
+
+
+    container.scrollTop =
+        container.scrollHeight;
+
+}
+
+
+/* =========================================================
+   SEND MESSAGE IN CURRENT CHAT
+========================================================= */
+
+window.sendMessage = async function(){
+
+    if(!currentChatId) return;
+
+    const input =
+        document.getElementById(
+            "messageInput"
+        );
+
+
+    const text =
+        input.value.trim();
+
+
+    if(!text) return;
+
+
+    if(!currentStaff){
+
+        alert(
+            "Staff profile not found."
+        );
 
         return;
 
     }
 
 
-    box.innerHTML =
-
-        messages.map(
-            message => {
-
-                const mine =
-
-                    upper(
-                        message.senderId
-                    ) ===
-                    upper(
-                        currentStaff.staffId
-                    );
+    input.value = "";
 
 
-                return `
+    try{
 
-                <div
-                    class="msg ${
-                        mine
-                        ? "mine"
-                        : ""
-                    }">
-
-                    <div
-                        class="msg-bubble">
-
-                        <div
-                            class="msg-sender">
-
-                            ${esc(
-                                message.senderName ||
-                                message.senderId
-                            )}
-
-                        </div>
+        const chatRef =
+            doc(
+                db,
+                "staffConversations",
+                currentChatId
+            );
 
 
-                        <div>
-
-                            ${esc(
-                                message.message
-                            )}
-
-                        </div>
+        const chatSnapshot =
+            await getDoc(
+                chatRef
+            );
 
 
-                        <div
-                            class="msg-time">
+        if(!chatSnapshot.exists()){
 
-                            ${esc(
-                                formatTimestamp(
-                                    message.createdAt
-                                )
-                            )}
+            alert(
+                "Conversation no longer exists."
+            );
 
-                        </div>
+            return;
 
-                    </div>
+        }
+
+
+        const chat =
+            chatSnapshot.data();
+
+
+        const messageRef =
+            collection(
+                db,
+                "staffConversations",
+                currentChatId,
+                "messages"
+            );
+
+
+        await addDoc(
+            messageRef,
+            {
+
+                senderId:
+                    currentStaff.staffId,
+
+                senderName:
+                    currentStaff.name,
+
+                text:text,
+
+                timestamp:
+                    serverTimestamp(),
+
+                readBy:[
+                    currentStaff.staffId
+                ]
+
+            }
+        );
+
+
+        const unreadCounts =
+            {
+                ...(chat.unreadCounts || {})
+            };
+
+
+        const participants =
+            chat.participantIds || [];
+
+
+        participants.forEach(
+            id => {
+
+                if(
+                    id !==
+                    currentStaff.staffId
+                ){
+
+                    unreadCounts[id] =
+                        Number(
+                            unreadCounts[id] ||
+                            0
+                        ) + 1;
+
+                }
+
+            }
+        );
+
+
+        await updateDoc(
+            chatRef,
+            {
+
+                lastMessage:text,
+
+                lastMessageTime:
+                    serverTimestamp(),
+
+                lastSenderId:
+                    currentStaff.staffId,
+
+                unreadCounts:
+                    unreadCounts
+
+            }
+        );
+
+
+    }catch(error){
+
+        console.error(
+            "SEND MESSAGE ERROR:",
+            error
+        );
+
+
+        alert(
+            "Unable to send message.\n\n" +
+            error.message
+        );
+
+        input.value = text;
+
+    }
+
+};
+
+
+/* =========================================================
+   NEW MESSAGE
+========================================================= */
+
+window.openNewMessage = function(){
+
+    document.getElementById(
+        "newMessageModal"
+    )
+    .classList.add(
+        "show"
+    );
+
+
+    recipientMode =
+        "individual";
+
+
+    resetRecipient();
+
+
+    selectRecipientMode(
+        "individual"
+    );
+
+
+    setTimeout(
+        () => {
+
+            document.getElementById(
+                "staffSearch"
+            ).focus();
+
+        },
+        100
+    );
+
+};
+
+
+window.closeNewMessage = function(){
+
+    document.getElementById(
+        "newMessageModal"
+    )
+    .classList.remove(
+        "show"
+    );
+
+};
+
+
+/* =========================================================
+   RECIPIENT MODE
+========================================================= */
+
+window.selectRecipientMode =
+function(mode){
+
+    recipientMode = mode;
+
+
+    document
+        .querySelectorAll(
+            ".recipient-tab"
+        )
+        .forEach(
+            tab =>
+                tab.classList.remove(
+                    "active"
+                )
+        );
+
+
+    if(mode === "individual"){
+
+        document.getElementById(
+            "tabIndividual"
+        ).classList.add("active");
+
+        document.getElementById(
+            "individualSection"
+        ).style.display = "block";
+
+        document.getElementById(
+            "departmentSection"
+        ).style.display = "none";
+
+        document.getElementById(
+            "allSection"
+        ).style.display = "none";
+
+    }
+
+
+    if(mode === "department"){
+
+        document.getElementById(
+            "tabDepartment"
+        ).classList.add("active");
+
+        document.getElementById(
+            "individualSection"
+        ).style.display = "none";
+
+        document.getElementById(
+            "departmentSection"
+        ).style.display = "block";
+
+        document.getElementById(
+            "allSection"
+        ).style.display = "none";
+
+        renderDepartmentResults("");
+
+    }
+
+
+    if(mode === "all"){
+
+        document.getElementById(
+            "tabAll"
+        ).classList.add("active");
+
+        document.getElementById(
+            "individualSection"
+        ).style.display = "none";
+
+        document.getElementById(
+            "departmentSection"
+        ).style.display = "none";
+
+        document.getElementById(
+            "allSection"
+        ).style.display = "block";
+
+        currentRecipient = {
+
+            type:"all",
+
+            title:"All Staff"
+
+        };
+
+    }
+
+
+    updateSelectedRecipient();
+
+};
+
+
+/* =========================================================
+   STAFF SEARCH
+========================================================= */
+
+document.getElementById(
+    "staffSearch"
+).addEventListener(
+    "input",
+    function(){
+
+        renderStaffResults(
+            this.value
+        );
+
+    }
+);
+
+
+function renderStaffResults(search){
+
+    const container =
+        document.getElementById(
+            "staffResults"
+        );
+
+
+    if(!container) return;
+
+
+    const term =
+        safeString(search)
+            .trim()
+            .toLowerCase();
+
+
+    let results =
+        allStaff.filter(
+            staff => {
+
+                if(
+                    currentStaff &&
+                    staff.staffId ===
+                    currentStaff.staffId
+                ){
+
+                    return false;
+
+                }
+
+
+                if(!term) return true;
+
+
+                return (
+
+                    staff.name
+                        .toLowerCase()
+                        .includes(term)
+
+                    ||
+
+                    staff.staffId
+                        .toLowerCase()
+                        .includes(term)
+
+                    ||
+
+                    staff.department
+                        .toLowerCase()
+                        .includes(term)
+
+                );
+
+            }
+        );
+
+
+    results =
+        results.slice(
+            0,
+            50
+        );
+
+
+    if(!results.length){
+
+        container.innerHTML = `
+            <div class="no-results">
+                No staff found.
+            </div>
+        `;
+
+        return;
+
+    }
+
+
+    container.innerHTML = "";
+
+
+    results.forEach(
+        staff => {
+
+            const div =
+                document.createElement(
+                    "div"
+                );
+
+
+            div.className =
+                "result-item";
+
+
+            div.innerHTML = `
+
+                <div class="result-title">
+
+                    ${escapeHtml(
+                        staff.name
+                    )}
 
                 </div>
 
-                `;
+                <div class="result-sub">
 
-            }
-        )
-        .join("");
+                    ${escapeHtml(
+                        staff.staffId
+                    )}
+
+                    ${
+                        staff.department
+                            ? " • " +
+                              escapeHtml(
+                                  staff.department
+                              )
+                            : ""
+                    }
+
+                </div>
+
+            `;
 
 
-    box.scrollTop =
-        box.scrollHeight;
+            div.onclick = () => {
+
+                currentRecipient = {
+
+                    type:"individual",
+
+                    staffId:
+                        staff.staffId,
+
+                    title:
+                        staff.name,
+
+                    name:
+                        staff.name,
+
+                    department:
+                        staff.department
+
+                };
+
+
+                updateSelectedRecipient();
+
+            };
+
+
+            container.appendChild(
+                div
+            );
+
+        }
+    );
 
 }
 
 
-/* =====================================================
-   REPLY
-===================================================== */
+/* =========================================================
+   DEPARTMENT SEARCH
+========================================================= */
 
-$("replyBtn")
-    .addEventListener(
-        "click",
-        async () => {
+document.getElementById(
+    "departmentSearch"
+).addEventListener(
+    "input",
+    function(){
 
-            if(
-                !selectedConversationStaff
-            ){
+        renderDepartmentResults(
+            this.value
+        );
 
+    }
+);
+
+
+function getDepartments(){
+
+    const map = {};
+
+
+    allStaff.forEach(
+        staff => {
+
+            if(!staff.department)
                 return;
+
+
+            const key =
+                staff.department
+                    .trim();
+
+
+            if(!map[key]){
+
+                map[key] = {
+
+                    name:key,
+
+                    count:0
+
+                };
 
             }
 
 
-            const text =
-                clean(
-                    $("replyText").value
-                );
+            if(staff.active){
 
-
-            if(!text)
-                return;
-
-
-            try{
-
-                await addDoc(
-
-                    collection(
-                        db,
-                        "staffMessages"
-                    ),
-
-                    {
-
-                        senderId:
-                            currentStaff.staffId,
-
-                        senderName:
-                            currentStaff.staffName ||
-                            currentStaff.staffId,
-
-                        senderDepartment:
-                            currentStaff.department ||
-                            "",
-
-                        receiverId:
-                            selectedConversationStaff.staffId,
-
-                        receiverName:
-                            selectedConversationStaff.staffName,
-
-                        receiverDepartment:
-                            selectedConversationStaff.department ||
-                            "",
-
-                        message:
-                            text,
-
-                        type:
-                            "individual",
-
-                        isRead:
-                            false,
-
-                        createdAt:
-                            serverTimestamp()
-
-                    }
-
-                );
-
-
-                $("replyText")
-                    .value =
-                    "";
-
-            }
-            catch(error){
-
-                alert(
-                    "Unable to send reply: " +
-                    error.message
-                );
+                map[key].count++;
 
             }
 
@@ -2993,707 +2573,780 @@ $("replyBtn")
     );
 
 
-/* =====================================================
-   UNREAD COUNT
-===================================================== */
+    return Object.values(map)
+        .sort(
+            (a,b) =>
+                a.name.localeCompare(
+                    b.name
+                )
+        );
 
-function loadUnreadCounts(){
+}
 
-    if(
-        unsubscribeInbox
-    ){
 
-        unsubscribeInbox();
+function renderDepartmentResults(search){
+
+    const container =
+        document.getElementById(
+            "departmentResults"
+        );
+
+
+    if(!container) return;
+
+
+    const term =
+        safeString(search)
+            .trim()
+            .toLowerCase();
+
+
+    let departments =
+        getDepartments();
+
+
+    if(term){
+
+        departments =
+            departments.filter(
+                dept =>
+                    dept.name
+                        .toLowerCase()
+                        .includes(term)
+            );
 
     }
 
 
-    const q =
-        query(
+    if(!departments.length){
 
-            collection(
-                db,
-                "staffMessages"
-            ),
+        container.innerHTML = `
+            <div class="no-results">
+                No department found.
+            </div>
+        `;
 
-            where(
-                "receiverId",
-                "==",
-                currentStaff.staffId
-            ),
+        return;
 
-            where(
-                "isRead",
-                "==",
-                false
-            )
-
-        );
+    }
 
 
-    unsubscribeInbox =
-        onSnapshot(
-            q,
-            snapshot => {
-
-                const count =
-                    snapshot.size;
+    container.innerHTML = "";
 
 
-                const badge =
-                    $("unreadCount");
+    departments.forEach(
+        department => {
 
-
-                badge.textContent =
-                    count;
-
-
-                badge.style.display =
-
-                    count > 0
-
-                    ? "inline-flex"
-                    : "none";
-
-
-                const counts = {};
-
-
-                snapshot.forEach(
-                    item => {
-
-                        const data =
-                            item.data();
-
-
-                        const senderId =
-                            data.senderId;
-
-
-                        if(!senderId)
-                            return;
-
-
-                        counts[
-                            senderId
-                        ] =
-
-                            (
-                                counts[
-                                    senderId
-                                ] || 0
-                            ) + 1;
-
-                    }
+            const div =
+                document.createElement(
+                    "div"
                 );
 
 
-                allStaff.forEach(
-                    staff => {
-
-                        const element =
-                            document.getElementById(
-                                "unread-" +
-                                safeId(
-                                    staff.staffId
-                                )
-                            );
+            div.className =
+                "result-item";
 
 
-                        if(!element)
-                            return;
+            div.innerHTML = `
 
+                <div class="result-title">
 
-                        const number =
+                    🏢 ${escapeHtml(
+                        department.name
+                    )}
 
-                            counts[
-                                staff.staffId
-                            ] || 0;
+                </div>
 
+                <div class="result-sub">
 
-                        element.textContent =
-                            number;
-
-
-                        element.style.display =
-
-                            number > 0
-
-                            ? "flex"
-                            : "none";
-
+                    ${
+                        department.count
                     }
+                    active staff
+
+                </div>
+
+            `;
+
+
+            div.onclick = () => {
+
+                currentRecipient = {
+
+                    type:"department",
+
+                    department:
+                        department.name,
+
+                    title:
+                        department.name +
+                        " Staff"
+
+                };
+
+
+                updateSelectedRecipient();
+
+            };
+
+
+            container.appendChild(
+                div
+            );
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   ALL STAFF COUNT
+========================================================= */
+
+function updateAllStaffCount(){
+
+    const activeCount =
+        allStaff.filter(
+            staff =>
+                staff.active &&
+                (
+                    !currentStaff ||
+                    staff.staffId !==
+                    currentStaff.staffId
+                )
+        ).length;
+
+
+    const element =
+        document.getElementById(
+            "allStaffCount"
+        );
+
+
+    if(element){
+
+        element.textContent =
+            activeCount +
+            " active staff will receive this message.";
+
+    }
+
+}
+
+
+/* =========================================================
+   SELECTED RECIPIENT
+========================================================= */
+
+function updateSelectedRecipient(){
+
+    const box =
+        document.getElementById(
+            "selectedRecipient"
+        );
+
+
+    if(!currentRecipient){
+
+        box.style.display =
+            "none";
+
+        return;
+
+    }
+
+
+    box.style.display =
+        "block";
+
+
+    if(
+        currentRecipient.type ===
+        "individual"
+    ){
+
+        box.innerHTML =
+            "👤 Sending to: <strong>" +
+            escapeHtml(
+                currentRecipient.name
+            ) +
+            "</strong> (" +
+            escapeHtml(
+                currentRecipient.staffId
+            ) +
+            ")";
+
+    }
+    else if(
+        currentRecipient.type ===
+        "department"
+    ){
+
+        box.innerHTML =
+            "🏢 Sending to: <strong>" +
+            escapeHtml(
+                currentRecipient.department
+            ) +
+            "</strong> staff";
+
+    }
+    else{
+
+        box.innerHTML =
+            "📢 Sending to <strong>ALL ACTIVE STAFF</strong>";
+
+    }
+
+}
+
+
+/* =========================================================
+   RESET RECIPIENT
+========================================================= */
+
+function resetRecipient(){
+
+    currentRecipient = null;
+
+
+    document.getElementById(
+        "newMessageText"
+    ).value = "";
+
+
+    document.getElementById(
+        "staffSearch"
+    ).value = "";
+
+
+    document.getElementById(
+        "departmentSearch"
+    ).value = "";
+
+
+    document.getElementById(
+        "selectedRecipient"
+    ).style.display =
+        "none";
+
+
+    renderStaffResults("");
+
+    renderDepartmentResults("");
+
+}
+
+
+/* =========================================================
+   SEND NEW MESSAGE
+========================================================= */
+
+window.sendNewMessage =
+async function(){
+
+    if(!currentStaff){
+
+        alert(
+            "Your staff profile could not be identified."
+        );
+
+        return;
+
+    }
+
+
+    const text =
+        document.getElementById(
+            "newMessageText"
+        )
+        .value
+        .trim();
+
+
+    if(!text){
+
+        alert(
+            "Please type a message."
+        );
+
+        return;
+
+    }
+
+
+    if(!currentRecipient){
+
+        alert(
+            "Please select a recipient."
+        );
+
+        return;
+
+    }
+
+
+    try{
+
+        let participantStaff = [];
+
+
+        /*
+         INDIVIDUAL
+        */
+
+        if(
+            currentRecipient.type ===
+            "individual"
+        ){
+
+            participantStaff = [
+
+                currentStaff,
+
+                staffMap[
+                    currentRecipient.staffId
+                ]
+
+            ].filter(Boolean);
+
+
+        }
+
+
+        /*
+         DEPARTMENT
+        */
+
+        else if(
+            currentRecipient.type ===
+            "department"
+        ){
+
+            participantStaff =
+                allStaff.filter(
+                    staff =>
+
+                        staff.active &&
+
+                        staff.department
+                            .trim()
+                            .toLowerCase() ===
+                        currentRecipient.department
+                            .trim()
+                            .toLowerCase()
+
+                );
+
+
+            if(
+                !participantStaff.some(
+                    staff =>
+                        staff.staffId ===
+                        currentStaff.staffId
+                )
+            ){
+
+                participantStaff.push(
+                    currentStaff
+                );
+
+            }
+
+        }
+
+
+        /*
+         ALL STAFF
+        */
+
+        else if(
+            currentRecipient.type ===
+            "all"
+        ){
+
+            participantStaff =
+                allStaff.filter(
+                    staff =>
+                        staff.active
+                );
+
+
+            if(
+                !participantStaff.some(
+                    staff =>
+                        staff.staffId ===
+                        currentStaff.staffId
+                )
+            ){
+
+                participantStaff.push(
+                    currentStaff
+                );
+
+            }
+
+        }
+
+
+        participantStaff =
+            participantStaff.filter(
+                Boolean
+            );
+
+
+        const participantIds =
+            [
+                ...new Set(
+                    participantStaff.map(
+                        staff =>
+                            staff.staffId
+                    )
+                )
+            ];
+
+
+        if(
+            participantIds.length <
+            2
+        ){
+
+            alert(
+                "No valid staff recipients found."
+            );
+
+            return;
+
+        }
+
+
+        let chatId = "";
+
+        let title = "";
+
+        let type =
+            currentRecipient.type;
+
+
+        /*
+         INDIVIDUAL CHAT ID
+        */
+
+        if(
+            type ===
+            "individual"
+        ){
+
+            chatId =
+                conversationIdForIndividual(
+                    currentStaff.staffId,
+                    currentRecipient.staffId
+                );
+
+
+            title =
+                currentRecipient.name;
+
+        }
+
+
+        /*
+         DEPARTMENT / ALL
+        */
+
+        else{
+
+            /*
+               Create a unique conversation
+               for every new broadcast.
+
+               This allows the sender to send
+               multiple All Staff messages
+               without mixing unrelated
+               conversations.
+            */
+
+            const conversationRef =
+                doc(
+                    collection(
+                        db,
+                        "staffConversations"
+                    )
+                );
+
+
+            chatId =
+                conversationRef.id;
+
+
+            title =
+                type === "all"
+                    ? "All Staff"
+                    : currentRecipient.department +
+                      " Staff";
+
+        }
+
+
+        const chatRef =
+            doc(
+                db,
+                "staffConversations",
+                chatId
+            );
+
+
+        /*
+           For individual existing chat,
+           get existing unread counts.
+        */
+
+        let existing = null;
+
+
+        try{
+
+            const existingSnapshot =
+                await getDoc(
+                    chatRef
+                );
+
+
+            if(
+                existingSnapshot.exists()
+            ){
+
+                existing =
+                    existingSnapshot.data();
+
+            }
+
+        }catch(e){}
+
+
+        const unreadCounts =
+            {
+                ...(
+                    existing &&
+                    existing.unreadCounts
+                        ? existing.unreadCounts
+                        : {}
+                )
+            };
+
+
+        participantIds.forEach(
+            id => {
+
+                unreadCounts[id] =
+                    Number(
+                        unreadCounts[id] ||
+                        0
+                    );
+
+            }
+        );
+
+
+        participantIds.forEach(
+            id => {
+
+                if(
+                    id !==
+                    currentStaff.staffId
+                ){
+
+                    unreadCounts[id] =
+                        Number(
+                            unreadCounts[id] ||
+                            0
+                        ) + 1;
+
+                }
+
+            }
+        );
+
+
+        await setDoc(
+            chatRef,
+            {
+
+                title:title,
+
+                type:type,
+
+                participantIds:
+                    participantIds,
+
+                participantNames:
+                    participantStaff.map(
+                        staff =>
+                            staff.name
+                    ),
+
+                department:
+                    currentRecipient.department ||
+                    "",
+
+                lastMessage:text,
+
+                lastSenderId:
+                    currentStaff.staffId,
+
+                lastSenderName:
+                    currentStaff.name,
+
+                lastMessageTime:
+                    serverTimestamp(),
+
+                unreadCounts:
+                    unreadCounts,
+
+                createdBy:
+                    currentStaff.staffId,
+
+                createdAt:
+                    existing &&
+                    existing.createdAt
+                        ? existing.createdAt
+                        : serverTimestamp()
+
+            },
+            {
+                merge:true
+            }
+        );
+
+
+        const messagesRef =
+            collection(
+                db,
+                "staffConversations",
+                chatId,
+                "messages"
+            );
+
+
+        await addDoc(
+            messagesRef,
+            {
+
+                senderId:
+                    currentStaff.staffId,
+
+                senderName:
+                    currentStaff.name,
+
+                text:text,
+
+                timestamp:
+                    serverTimestamp(),
+
+                readBy:[
+                    currentStaff.staffId
+                ]
+
+            }
+        );
+
+
+        closeNewMessage();
+
+
+        /*
+           Open the newly created conversation.
+        */
+
+        setTimeout(
+            () => {
+
+                openConversation(
+                    chatId
                 );
 
             },
-
-            error => {
-
-                console.error(
-                    "UNREAD ERROR:",
-                    error
-                );
-
-            }
-        );
-
-}
-
-
-/* =====================================================
-   INBOX
-===================================================== */
-
-$("inboxBtn")
-    .addEventListener(
-        "click",
-        loadInbox
-    );
-
-
-async function loadInbox(){
-
-    try{
-
-        const q =
-            query(
-
-                collection(
-                    db,
-                    "staffMessages"
-                ),
-
-                where(
-                    "receiverId",
-                    "==",
-                    currentStaff.staffId
-                )
-
-            );
-
-
-        const snap =
-            await getDocs(
-                q
-            );
-
-
-        const messages = [];
-
-
-        snap.forEach(
-            item => {
-
-                messages.push({
-
-                    id:
-                        item.id,
-
-                    ...item.data()
-
-                });
-
-            }
+            500
         );
 
 
-        /*
-         * Newest first.
-         */
+    }catch(error){
 
-        messages.sort(
-            (a,b) =>
-
-                (
-                    b.createdAt?.seconds ||
-                    0
-                )
-
-                -
-
-                (
-                    a.createdAt?.seconds ||
-                    0
-                )
-
+        console.error(
+            "NEW MESSAGE ERROR:",
+            error
         );
 
 
-        $("conversation")
-            .classList
-            .add("show");
+        alert(
+            "Message could not be sent.\n\n" +
+            error.message
+        );
+
+    }
+
+};
 
 
-        $("conversationTitle")
-            .textContent =
-            "📥 Inbox";
+/* =========================================================
+   CONVERSATION SEARCH
+========================================================= */
+
+document.getElementById(
+    "conversationSearch"
+).addEventListener(
+    "input",
+    renderConversations
+);
 
 
-        $("conversationInfo")
-            .textContent =
-            "Received messages";
+/* =========================================================
+   ENTER TO SEND
+========================================================= */
 
+document.getElementById(
+    "messageInput"
+).addEventListener(
+    "keydown",
+    function(event){
 
-        $("messages")
-            .innerHTML =
-
-            messages.length
-
-            ?
-
-            messages.map(
-                message => `
-
-                <div class="msg">
-
-                    <div
-                        class="msg-bubble">
-
-                        <div
-                            class="msg-sender">
-
-                            ${esc(
-                                message.senderName ||
-                                message.senderId
-                            )}
-
-                            ${
-                                message.type ===
-                                "all"
-
-                                ? " • 📢 All Staff"
-
-                                :
-
-                                message.type ===
-                                "department"
-
-                                ? " • 🏢 Department"
-
-                                : ""
-
-                            }
-
-                        </div>
-
-
-                        <div>
-
-                            ${esc(
-                                message.message
-                            )}
-
-                        </div>
-
-
-                        <div
-                            class="msg-time">
-
-                            ${esc(
-                                formatTimestamp(
-                                    message.createdAt
-                                )
-                            )}
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-                `
-            )
-            .join("")
-
-            :
-
-            `
-            <div class="empty">
-
-                No received messages.
-
-            </div>
-            `;
-
-
-        /*
-         * Mark inbox messages
-         * as read.
-         */
-
-        for(
-            const message
-            of messages
+        if(
+            event.key === "Enter" &&
+            !event.shiftKey
         ){
 
-            if(
-                message.isRead !==
-                true
-            ){
+            event.preventDefault();
 
-                try{
-
-                    await updateDoc(
-
-                        doc(
-                            db,
-                            "staffMessages",
-                            message.id
-                        ),
-
-                        {
-                            isRead:true
-                        }
-
-                    );
-
-                }
-                catch(error){
-
-                    console.error(
-                        error
-                    );
-
-                }
-
-            }
+            sendMessage();
 
         }
 
     }
-    catch(error){
-
-        console.error(
-            "INBOX ERROR:",
-            error
-        );
+);
 
 
-        $("messages")
-            .innerHTML =
+/* =========================================================
+   MOBILE BACK
+========================================================= */
 
-            `
-            <div class="empty">
+window.closeMobileChat =
+function(){
 
-                Unable to load inbox.
-
-                <br><br>
-
-                ${esc(
-                    error.message
-                )}
-
-            </div>
-            `;
-
-    }
-
-}
-
-
-/* =====================================================
-   SENT
-===================================================== */
-
-$("sentBtn")
-    .addEventListener(
-        "click",
-        loadSent
+    document.getElementById(
+        "app"
+    ).classList.remove(
+        "chat-open"
     );
 
+};
 
-async function loadSent(){
 
-    try{
+/* =========================================================
+   INITIAL
+========================================================= */
 
-        const q =
-            query(
-
-                collection(
-                    db,
-                    "staffMessages"
-                ),
-
-                where(
-                    "senderId",
-                    "==",
-                    currentStaff.staffId
-                )
-
-            );
-
-
-        const snap =
-            await getDocs(
-                q
-            );
-
-
-        const messages = [];
-
-
-        snap.forEach(
-            item => {
-
-                messages.push({
-
-                    id:
-                        item.id,
-
-                    ...item.data()
-
-                });
-
-            }
-        );
-
-
-        messages.sort(
-            (a,b) =>
-
-                (
-                    b.createdAt?.seconds ||
-                    0
-                )
-
-                -
-
-                (
-                    a.createdAt?.seconds ||
-                    0
-                )
-
-        );
-
-
-        $("conversation")
-            .classList
-            .add("show");
-
-
-        $("conversationTitle")
-            .textContent =
-            "📤 Sent Messages";
-
-
-        $("conversationInfo")
-            .textContent =
-            "Messages sent by you";
-
-
-        $("messages")
-            .innerHTML =
-
-            messages.length
-
-            ?
-
-            messages.map(
-                message => `
-
-                <div
-                    class="msg mine">
-
-                    <div
-                        class="msg-bubble">
-
-                        <div
-                            class="msg-sender">
-
-                            To:
-
-                            ${esc(
-                                message.receiverName ||
-                                message.receiverId
-                            )}
-
-                            ${
-                                message.type ===
-                                "all"
-
-                                ? " • 📢 All Staff"
-
-                                :
-
-                                message.type ===
-                                "department"
-
-                                ? " • 🏢 Department"
-
-                                : ""
-
-                            }
-
-                        </div>
-
-
-                        <div>
-
-                            ${esc(
-                                message.message
-                            )}
-
-                        </div>
-
-
-                        <div
-                            class="msg-time">
-
-                            ${esc(
-                                formatTimestamp(
-                                    message.createdAt
-                                )
-                            )}
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-                `
-            )
-            .join("")
-
-            :
-
-            `
-            <div class="empty">
-
-                No sent messages.
-
-            </div>
-            `;
-
-    }
-    catch(error){
-
-        console.error(
-            "SENT ERROR:",
-            error
-        );
-
-
-        $("messages")
-            .innerHTML =
-
-            `
-            <div class="empty">
-
-                Unable to load sent messages.
-
-            </div>
-            `;
-
-    }
-
-}
-
-
-/* =====================================================
-   DATE FORMAT
-===================================================== */
-
-function formatTimestamp(
-    timestamp
-){
-
-    if(!timestamp){
-
-        return "Just now";
-
-    }
-
-
-    try{
-
-        const date =
-
-            timestamp.toDate
-
-            ?
-
-            timestamp.toDate()
-
-            :
-
-            new Date(
-                timestamp.seconds *
-                1000
-            );
-
-
-        return date.toLocaleString(
-            "en-IN",
-            {
-
-                day:
-                    "2-digit",
-
-                month:
-                    "short",
-
-                year:
-                    "numeric",
-
-                hour:
-                    "2-digit",
-
-                minute:
-                    "2-digit"
-
-            }
-        );
-
-    }
-    catch(error){
-
-        return "Just now";
-
-    }
-
-}
-
-
-/* =====================================================
-   START APPLICATION
-===================================================== */
-
-async function init(){
-
-    try{
-
-        const loggedIn =
-            await loadCurrentStaff();
-
-
-        if(!loggedIn)
-            return;
-
-
-        await loadStaff();
-
-
-        loadUnreadCounts();
-
-    }
-    catch(error){
-
-        console.error(
-            "INITIALIZATION ERROR:",
-            error
-        );
-
-        alert(
-            "Messaging system could not be initialized."
-        );
-
-    }
-
-}
-
-
-init();
+window.selectRecipientMode =
+    window.selectRecipientMode;
 
 </script>
 
