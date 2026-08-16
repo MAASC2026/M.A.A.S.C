@@ -1,12 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
 
 <title>Staff Messaging</title>
 
 <style>
+
 *{
     margin:0;
     padding:0;
@@ -31,11 +37,12 @@ button{
 }
 
 .app{
-    height:100vh;
     width:100%;
+    height:100vh;
     display:flex;
     background:#fff;
 }
+
 
 /* =====================================================
    SIDEBAR
@@ -188,13 +195,15 @@ button{
     background:#075e54;
 }
 
+
 /* =====================================================
-   CHAT
+   CHAT PANEL
 ===================================================== */
 
 .chat-panel{
     flex:1;
     min-width:0;
+    height:100%;
     display:flex;
     flex-direction:column;
     background:#efeae2;
@@ -331,6 +340,7 @@ button{
 .send-btn{
     width:45px;
     height:45px;
+    min-width:45px;
     border:none;
     border-radius:50%;
     background:#128c7e;
@@ -341,6 +351,7 @@ button{
 .send-btn:hover{
     background:#075e54;
 }
+
 
 /* =====================================================
    MODAL
@@ -541,6 +552,7 @@ button{
     margin-right:8px;
 }
 
+
 /* =====================================================
    MOBILE
 ===================================================== */
@@ -573,12 +585,20 @@ button{
     }
 
 }
+
 </style>
+
 </head>
+
 
 <body>
 
-<div class="app" id="app">
+
+<div
+    class="app"
+    id="app"
+>
+
 
     <!-- =================================================
          SIDEBAR
@@ -586,9 +606,12 @@ button{
 
     <div class="sidebar">
 
+
         <div class="sidebar-header">
 
-            <h2>💬 Staff Messages</h2>
+            <h2>
+                💬 Staff Messages
+            </h2>
 
             <div
                 class="current-user"
@@ -638,10 +661,11 @@ button{
 
 
     <!-- =================================================
-         CHAT PANEL
+         CHAT
     ================================================== -->
 
     <div class="chat-panel">
+
 
         <div
             class="empty-chat"
@@ -694,6 +718,7 @@ button{
                     Staff
                 </div>
 
+
                 <div
                     class="header-status"
                     id="headerStatus"
@@ -742,6 +767,7 @@ button{
 </div>
 
 
+
 <!-- =====================================================
      NEW MESSAGE MODAL
 ====================================================== -->
@@ -751,13 +777,16 @@ button{
     id="newMessageModal"
 >
 
+
     <div class="modal-box">
+
 
         <div class="modal-header">
 
             <h3>
                 New Message
             </h3>
+
 
             <button
                 class="close-btn"
@@ -771,6 +800,7 @@ button{
 
         <div class="tabs">
 
+
             <button
                 class="tab active"
                 id="individualTab"
@@ -778,12 +808,14 @@ button{
                 👤 Individual
             </button>
 
+
             <button
                 class="tab"
                 id="departmentTab"
             >
                 🏢 Department
             </button>
+
 
             <button
                 class="tab"
@@ -796,6 +828,7 @@ button{
 
 
         <div class="modal-content">
+
 
             <!-- INDIVIDUAL -->
 
@@ -844,7 +877,7 @@ button{
             </div>
 
 
-            <!-- ALL -->
+            <!-- ALL STAFF -->
 
             <div
                 id="allSection"
@@ -887,12 +920,14 @@ button{
 
         <div class="modal-footer">
 
+
             <button
                 class="cancel-btn"
                 id="cancelModal"
             >
                 Cancel
             </button>
+
 
             <button
                 class="send-new-btn"
@@ -908,10 +943,12 @@ button{
 </div>
 
 
+
 <script type="module">
 
+
 /* =====================================================
-   FIREBASE IMPORTS
+   FIREBASE
 ===================================================== */
 
 import {
@@ -997,26 +1034,38 @@ const db =
    GLOBAL VARIABLES
 ===================================================== */
 
-let currentFirebaseUser = null;
+let currentFirebaseUser =
+    null;
 
-let currentStaff = null;
+let currentStaff =
+    null;
 
-let allStaff = [];
+let allStaff =
+    [];
 
-let staffMap = {};
+let staffMap =
+    {};
 
-let conversations = [];
+let conversations =
+    [];
 
-let currentChatId = null;
+let currentChatId =
+    null;
 
-let currentChatUnsubscribe = null;
+let currentChatUnsubscribe =
+    null;
 
-let conversationUnsubscribe = null;
+let conversationUnsubscribe =
+    null;
 
-let currentRecipient = null;
+let currentRecipient =
+    null;
 
 let recipientMode =
     "individual";
+
+let messagingStarted =
+    false;
 
 
 /* =====================================================
@@ -1028,20 +1077,24 @@ const appElement =
         "app"
     );
 
+
 const currentUserElement =
     document.getElementById(
         "currentUser"
     );
+
 
 const chatListElement =
     document.getElementById(
         "chatList"
     );
 
+
 const conversationSearch =
     document.getElementById(
         "conversationSearch"
     );
+
 
 const newMessageModal =
     document.getElementById(
@@ -1268,8 +1321,11 @@ function timeText(
         return date.toLocaleTimeString(
             [],
             {
-                hour:"2-digit",
-                minute:"2-digit"
+                hour:
+                    "2-digit",
+
+                minute:
+                    "2-digit"
             }
         );
 
@@ -1403,11 +1459,15 @@ async function loadStaff(){
         chatListElement.innerHTML = `
 
             <div class="no-results">
+
                 Unable to load staff.
+
                 <br><br>
+
                 ${escapeHTML(
                     error.message
                 )}
+
             </div>
 
         `;
@@ -1423,9 +1483,10 @@ async function loadStaff(){
 
 async function findCurrentStaff(){
 
-    /*
-       1. Firebase Auth
-    */
+
+    /* -----------------------------------------------
+       1. FIREBASE AUTH
+    ------------------------------------------------ */
 
     if(
         currentFirebaseUser
@@ -1435,10 +1496,6 @@ async function findCurrentStaff(){
             currentFirebaseUser;
 
 
-        /*
-           Match UID to Firestore document.
-        */
-
         let found =
             allStaff.find(
                 staff =>
@@ -1446,10 +1503,6 @@ async function findCurrentStaff(){
                     user.uid
             );
 
-
-        /*
-           Match email.
-        */
 
         if(
             !found &&
@@ -1473,10 +1526,6 @@ async function findCurrentStaff(){
 
         }
 
-
-        /*
-           Match displayName.
-        */
 
         if(
             !found &&
@@ -1506,9 +1555,9 @@ async function findCurrentStaff(){
     }
 
 
-    /*
-       2. Existing browser session.
-    */
+    /* -----------------------------------------------
+       2. EXISTING STAFF SESSION
+    ------------------------------------------------ */
 
     const sessionKeys = [
 
@@ -1534,7 +1583,8 @@ async function findCurrentStaff(){
     ];
 
 
-    const possibleIds = [];
+    const possibleIds =
+        [];
 
 
     for(
@@ -1584,9 +1634,11 @@ async function findCurrentStaff(){
     }
 
 
-    /*
-       Remove duplicates.
-    */
+    console.log(
+        "SESSION STAFF IDS:",
+        possibleIds
+    );
+
 
     const uniqueIds =
         [
@@ -1594,12 +1646,6 @@ async function findCurrentStaff(){
                 possibleIds
             )
         ];
-
-
-    console.log(
-        "SESSION STAFF IDS:",
-        uniqueIds
-    );
 
 
     for(
@@ -1612,7 +1658,8 @@ async function findCurrentStaff(){
                 staff =>
                     staff.staffId
                         .toUpperCase() ===
-                    id.toUpperCase()
+                    str(id)
+                        .toUpperCase()
             );
 
 
@@ -1625,9 +1672,9 @@ async function findCurrentStaff(){
     }
 
 
-    /*
-       3. Stored staff object.
-    */
+    /* -----------------------------------------------
+       3. STORED STAFF OBJECT
+    ------------------------------------------------ */
 
     const objectKeys = [
 
@@ -1724,10 +1771,23 @@ async function findCurrentStaff(){
 
 
 /* =====================================================
-   INITIALIZE
+   START MESSAGING
 ===================================================== */
 
 async function initializeMessaging(){
+
+    if(
+        messagingStarted
+    ){
+
+        return;
+
+    }
+
+
+    messagingStarted =
+        true;
+
 
     try{
 
@@ -1757,8 +1817,8 @@ async function initializeMessaging(){
 
                     <br><br>
 
-                    Open this page from
-                    your logged-in staff dashboard.
+                    Please open the messaging
+                    page from your staff dashboard.
 
                 </div>
 
@@ -1766,7 +1826,7 @@ async function initializeMessaging(){
 
 
             console.error(
-                "CURRENT STAFF NOT FOUND"
+                "NO CURRENT STAFF FOUND"
             );
 
 
@@ -1796,7 +1856,7 @@ async function initializeMessaging(){
     catch(error){
 
         console.error(
-            "INITIALIZATION ERROR:",
+            "MESSAGING INITIALIZATION ERROR:",
             error
         );
 
@@ -1806,7 +1866,7 @@ async function initializeMessaging(){
 
 
 /* =====================================================
-   AUTH STATE
+   FIREBASE AUTH STATE
 ===================================================== */
 
 onAuthStateChanged(
@@ -1824,10 +1884,10 @@ onAuthStateChanged(
 
 
         /*
-           IMPORTANT:
-           Even when Firebase Auth is null,
-           initializeMessaging()
-           continues using browser session.
+         IMPORTANT:
+         Firebase user can be null.
+         We still continue using the
+         existing dashboard session.
         */
 
         await initializeMessaging();
@@ -1857,6 +1917,9 @@ function startConversationListener(){
 
         conversationUnsubscribe();
 
+        conversationUnsubscribe =
+            null;
+
     }
 
 
@@ -1883,7 +1946,8 @@ function startConversationListener(){
             q,
             snapshot => {
 
-                conversations = [];
+                conversations =
+                    [];
 
 
                 snapshot.forEach(
@@ -1923,6 +1987,7 @@ function startConversationListener(){
                     "CONVERSATION ERROR:",
                     error
                 );
+
 
                 chatListElement.innerHTML = `
 
@@ -2094,6 +2159,7 @@ function renderConversations(){
 
                         </div>
 
+
                         <div class="chat-time">
 
                             ${timeText(
@@ -2222,9 +2288,9 @@ async function openConversation(
         chat.type === "department"
             ? "D"
             :
-        initial(
-            chat.title
-        );
+            initial(
+                chat.title
+            );
 
 
     document.getElementById(
@@ -2244,6 +2310,9 @@ async function openConversation(
     ){
 
         currentChatUnsubscribe();
+
+        currentChatUnsubscribe =
+            null;
 
     }
 
@@ -2280,7 +2349,7 @@ async function openConversation(
             error => {
 
                 console.error(
-                    "MESSAGE ERROR:",
+                    "MESSAGE LISTENER ERROR:",
                     error
                 );
 
@@ -2434,7 +2503,9 @@ function renderMessages(
 
 
             const read =
-                data.readBy &&
+                Array.isArray(
+                    data.readBy
+                ) &&
                 data.readBy.length > 1;
 
 
@@ -2503,7 +2574,7 @@ function renderMessages(
 
 
 /* =====================================================
-   SEND CURRENT MESSAGE
+   SEND MESSAGE IN CURRENT CHAT
 ===================================================== */
 
 async function sendCurrentMessage(){
@@ -2584,17 +2655,13 @@ async function sendCurrentMessage(){
             chatSnapshot.data();
 
 
-        const messageReference =
+        await addDoc(
             collection(
                 db,
                 "staffConversations",
                 currentChatId,
                 "messages"
-            );
-
-
-        await addDoc(
-            messageReference,
+            ),
             {
 
                 senderId:
@@ -2609,9 +2676,10 @@ async function sendCurrentMessage(){
                 timestamp:
                     serverTimestamp(),
 
-                readBy:[
-                    currentStaff.staffId
-                ]
+                readBy:
+                    [
+                        currentStaff.staffId
+                    ]
 
             }
         );
@@ -2624,7 +2692,8 @@ async function sendCurrentMessage(){
 
 
         const participants =
-            chat.participantIds || [];
+            chat.participantIds ||
+            [];
 
 
         participants.forEach(
@@ -2693,7 +2762,7 @@ async function sendCurrentMessage(){
 
 
 /* =====================================================
-   OPEN NEW MESSAGE
+   NEW MESSAGE MODAL
 ===================================================== */
 
 function openNewMessage(){
@@ -3062,7 +3131,7 @@ function renderStaffResults(
 
 
 /* =====================================================
-   DEPARTMENT SEARCH
+   DEPARTMENT LIST
 ===================================================== */
 
 function getDepartments(){
@@ -3083,8 +3152,7 @@ function getDepartments(){
 
 
             const key =
-                staff.department
-                    .trim();
+                staff.department.trim();
 
 
             if(
@@ -3128,6 +3196,10 @@ function getDepartments(){
 
 }
 
+
+/* =====================================================
+   DEPARTMENT SEARCH
+===================================================== */
 
 function renderDepartmentResults(
     search
@@ -3261,12 +3333,15 @@ function updateAllStaffCount(){
     const count =
         allStaff.filter(
             staff =>
+
                 staff.active &&
+
                 (
                     !currentStaff ||
                     staff.staffId !==
                     currentStaff.staffId
                 )
+
         ).length;
 
 
@@ -3409,10 +3484,13 @@ async function sendNewMessage(){
 
     try{
 
-        let recipients = [];
+        let recipients =
+            [];
 
 
-        /* INDIVIDUAL */
+        /* ---------------------------------------------
+           INDIVIDUAL
+        ---------------------------------------------- */
 
         if(
             currentRecipient.type ===
@@ -3441,7 +3519,9 @@ async function sendNewMessage(){
         }
 
 
-        /* DEPARTMENT */
+        /* ---------------------------------------------
+           DEPARTMENT
+        ---------------------------------------------- */
 
         if(
             currentRecipient.type ===
@@ -3457,6 +3537,7 @@ async function sendNewMessage(){
                         staff.department
                             .trim()
                             .toLowerCase() ===
+
                         currentRecipient
                             .department
                             .trim()
@@ -3482,7 +3563,9 @@ async function sendNewMessage(){
         }
 
 
-        /* ALL STAFF */
+        /* ---------------------------------------------
+           ALL STAFF
+        ---------------------------------------------- */
 
         if(
             currentRecipient.type ===
@@ -3544,15 +3627,20 @@ async function sendNewMessage(){
         }
 
 
-        let chatId;
+        let chatId =
+            "";
 
-        let title;
+        let title =
+            "";
+
 
         const type =
             currentRecipient.type;
 
 
-        /* INDIVIDUAL */
+        /* ---------------------------------------------
+           INDIVIDUAL CHAT ID
+        ---------------------------------------------- */
 
         if(
             type ===
@@ -3576,7 +3664,9 @@ async function sendNewMessage(){
         }
 
 
-        /* DEPARTMENT / ALL */
+        /* ---------------------------------------------
+           GROUP CHAT ID
+        ---------------------------------------------- */
 
         else{
 
@@ -3593,16 +3683,22 @@ async function sendNewMessage(){
                 newReference.id;
 
 
-            title =
+            if(
                 type ===
                 "all"
+            ){
 
-                    ? "All Staff"
+                title =
+                    "All Staff";
 
-                    :
-                currentRecipient
-                    .department +
-                " Staff";
+            }
+            else{
+
+                title =
+                    currentRecipient.department +
+                    " Staff";
+
+            }
 
         }
 
@@ -3615,14 +3711,14 @@ async function sendNewMessage(){
             );
 
 
-        let existingData =
-            null;
-
-
         const existingSnapshot =
             await getDoc(
                 chatReference
             );
+
+
+        let existingData =
+            null;
 
 
         if(
@@ -3650,7 +3746,8 @@ async function sendNewMessage(){
             id => {
 
                 if(
-                    !unreadCounts[id]
+                    unreadCounts[id] ===
+                    undefined
                 ){
 
                     unreadCounts[id] =
@@ -3670,7 +3767,11 @@ async function sendNewMessage(){
                     currentStaff.staffId
                 ){
 
-                    unreadCounts[id]++;
+                    unreadCounts[id] =
+                        Number(
+                            unreadCounts[id] ||
+                            0
+                        ) + 1;
 
                 }
 
@@ -3728,7 +3829,8 @@ async function sendNewMessage(){
             },
 
             {
-                merge:true
+                merge:
+                    true
             }
 
         );
@@ -3833,10 +3935,13 @@ document.getElementById(
 )
 .addEventListener(
     "click",
-    () =>
+    () => {
+
         setRecipientMode(
             "individual"
-        )
+        );
+
+    }
 );
 
 
@@ -3845,10 +3950,13 @@ document.getElementById(
 )
 .addEventListener(
     "click",
-    () =>
+    () => {
+
         setRecipientMode(
             "department"
-        )
+        );
+
+    }
 );
 
 
@@ -3857,10 +3965,14 @@ document.getElementById(
 )
 .addEventListener(
     "click",
-    () =>
+    () => {
+
         setRecipientMode(
             "all"
         );
+
+    }
+);
 
 
 document.getElementById(
@@ -3868,10 +3980,13 @@ document.getElementById(
 )
 .addEventListener(
     "input",
-    event =>
+    event => {
+
         renderStaffResults(
             event.target.value
-        )
+        );
+
+    }
 );
 
 
@@ -3880,16 +3995,23 @@ document.getElementById(
 )
 .addEventListener(
     "input",
-    event =>
+    event => {
+
         renderDepartmentResults(
             event.target.value
-        )
+        );
+
+    }
 );
 
 
 conversationSearch.addEventListener(
     "input",
-    renderConversations
+    () => {
+
+        renderConversations();
+
+    }
 );
 
 
@@ -3898,7 +4020,11 @@ document.getElementById(
 )
 .addEventListener(
     "click",
-    sendCurrentMessage
+    () => {
+
+        sendCurrentMessage();
+
+    }
 );
 
 
@@ -3930,7 +4056,11 @@ document.getElementById(
 )
 .addEventListener(
     "click",
-    sendNewMessage
+    () => {
+
+        sendNewMessage();
+
+    }
 );
 
 
@@ -3948,10 +4078,6 @@ document.getElementById(
     }
 );
 
-
-/* =====================================================
-   CLOSE MODAL WHEN CLICKING OUTSIDE
-===================================================== */
 
 newMessageModal.addEventListener(
     "click",
