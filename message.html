@@ -4,20 +4,20 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Staff Messages</title>
+<title>Staff Messaging</title>
 
 <style>
 *{
-    box-sizing:border-box;
     margin:0;
     padding:0;
+    box-sizing:border-box;
     font-family:Arial,Helvetica,sans-serif;
 }
 
 body{
-    background:#e9edef;
     height:100vh;
     overflow:hidden;
+    background:#e9edef;
 }
 
 button,
@@ -31,51 +31,54 @@ button{
 }
 
 .app{
-    width:100%;
     height:100vh;
+    width:100%;
     display:flex;
     background:#fff;
 }
 
-/* LEFT */
+/* =====================================================
+   SIDEBAR
+===================================================== */
 
 .sidebar{
     width:360px;
     min-width:360px;
-    border-right:1px solid #ddd;
-    background:#fff;
+    height:100%;
     display:flex;
     flex-direction:column;
+    background:#fff;
+    border-right:1px solid #ddd;
 }
 
 .sidebar-header{
     background:#075e54;
-    color:#fff;
-    padding:18px;
+    color:white;
+    padding:17px;
 }
 
 .sidebar-header h2{
     font-size:20px;
-    margin-bottom:12px;
+    margin-bottom:8px;
 }
 
 .current-user{
-    font-size:13px;
+    font-size:12px;
     opacity:.9;
 }
 
-.search-box{
+.search-container{
     padding:10px;
     background:#f0f2f5;
 }
 
-.search-box input{
+.search-container input{
     width:100%;
     border:none;
     outline:none;
+    background:white;
+    border-radius:22px;
     padding:11px 15px;
-    border-radius:20px;
-    background:#fff;
     font-size:14px;
 }
 
@@ -87,10 +90,9 @@ button{
 .chat-item{
     display:flex;
     align-items:center;
-    padding:13px 14px;
+    padding:13px;
     border-bottom:1px solid #eee;
     cursor:pointer;
-    transition:.15s;
 }
 
 .chat-item:hover{
@@ -117,14 +119,14 @@ button{
 }
 
 .chat-info{
-    min-width:0;
     flex:1;
+    min-width:0;
 }
 
 .chat-top{
     display:flex;
     justify-content:space-between;
-    gap:8px;
+    gap:10px;
 }
 
 .chat-name{
@@ -137,37 +139,36 @@ button{
 }
 
 .chat-time{
-    font-size:11px;
     color:#777;
+    font-size:10px;
     white-space:nowrap;
 }
 
 .chat-last{
-    margin-top:5px;
-    font-size:13px;
     color:#777;
+    font-size:13px;
+    margin-top:5px;
     white-space:nowrap;
     overflow:hidden;
     text-overflow:ellipsis;
 }
 
 .unread{
-    background:#25d366;
-    color:#fff;
     min-width:21px;
     height:21px;
+    padding:0 5px;
     border-radius:50%;
+    background:#25d366;
+    color:white;
     display:flex;
     align-items:center;
     justify-content:center;
-    font-size:11px;
+    font-size:10px;
     font-weight:bold;
     margin-left:7px;
 }
 
-/* NEW MESSAGE */
-
-.new-message-area{
+.new-message-container{
     border-top:1px solid #ddd;
     padding:10px;
 }
@@ -176,7 +177,7 @@ button{
     width:100%;
     border:none;
     background:#128c7e;
-    color:#fff;
+    color:white;
     padding:12px;
     border-radius:7px;
     font-size:14px;
@@ -184,30 +185,53 @@ button{
 }
 
 .new-message-btn:hover{
-    background:#0b766c;
+    background:#075e54;
 }
 
-/* CHAT */
+/* =====================================================
+   CHAT
+===================================================== */
 
 .chat-panel{
     flex:1;
+    min-width:0;
     display:flex;
     flex-direction:column;
-    min-width:0;
     background:#efeae2;
+}
+
+.empty-chat{
+    flex:1;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    flex-direction:column;
+    color:#777;
+    text-align:center;
+}
+
+.empty-icon{
+    font-size:65px;
+    margin-bottom:15px;
+}
+
+.empty-chat h2{
+    color:#444;
+    margin-bottom:8px;
+}
+
+.empty-chat p{
+    font-size:14px;
 }
 
 .chat-header{
     height:70px;
-    background:#075e54;
-    color:#fff;
+    min-height:70px;
     display:flex;
     align-items:center;
-    padding:10px 18px;
-}
-
-.chat-header .avatar{
-    background:#128c7e;
+    background:#075e54;
+    color:#fff;
+    padding:10px 15px;
 }
 
 .header-info{
@@ -215,29 +239,25 @@ button{
 }
 
 .header-name{
-    font-size:16px;
     font-weight:bold;
+    font-size:16px;
 }
 
 .header-status{
-    font-size:12px;
+    font-size:11px;
+    margin-top:4px;
     opacity:.85;
-    margin-top:3px;
 }
 
 .messages{
     flex:1;
     overflow-y:auto;
     padding:20px;
-    background-color:#efeae2;
-    background-image:
-        radial-gradient(rgba(0,0,0,.035) 1px,transparent 1px);
-    background-size:20px 20px;
 }
 
 .message-row{
     display:flex;
-    margin-bottom:7px;
+    margin-bottom:8px;
 }
 
 .message-row.mine{
@@ -248,66 +268,61 @@ button{
     max-width:70%;
     padding:8px 10px 5px;
     border-radius:8px;
-    position:relative;
     box-shadow:0 1px 1px rgba(0,0,0,.08);
 }
 
-.message.mine .message{
+.message.mine{
     background:#d9fdd3;
     border-top-right-radius:2px;
 }
 
-.message.theirs .message{
+.message.theirs{
     background:#fff;
     border-top-left-radius:2px;
 }
 
-.message-text{
-    font-size:14px;
-    color:#222;
-    white-space:pre-wrap;
-    word-break:break-word;
-    line-height:1.4;
-    padding-right:50px;
-}
-
-.message-meta{
-    text-align:right;
-    font-size:10px;
-    color:#777;
-    margin-top:3px;
-    white-space:nowrap;
-}
-
-.read{
-    color:#0b8ed1;
-    font-weight:bold;
-}
-
 .sender-name{
-    font-size:11px;
     color:#128c7e;
+    font-size:11px;
     font-weight:bold;
     margin-bottom:3px;
 }
 
-/* INPUT */
+.message-text{
+    color:#222;
+    font-size:14px;
+    line-height:1.4;
+    white-space:pre-wrap;
+    word-break:break-word;
+}
+
+.message-meta{
+    text-align:right;
+    color:#777;
+    font-size:10px;
+    margin-top:3px;
+}
+
+.read{
+    color:#008fd5;
+    font-weight:bold;
+}
 
 .message-input-area{
     background:#f0f2f5;
     padding:10px;
     display:flex;
-    align-items:flex-end;
     gap:8px;
+    align-items:flex-end;
 }
 
 .message-input{
     flex:1;
+    resize:none;
+    min-height:43px;
+    max-height:120px;
     border:none;
     outline:none;
-    resize:none;
-    max-height:120px;
-    min-height:42px;
     border-radius:22px;
     padding:12px 16px;
     font-size:14px;
@@ -319,7 +334,7 @@ button{
     border:none;
     border-radius:50%;
     background:#128c7e;
-    color:#fff;
+    color:white;
     font-size:18px;
 }
 
@@ -327,34 +342,9 @@ button{
     background:#075e54;
 }
 
-/* EMPTY */
-
-.empty{
-    flex:1;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    flex-direction:column;
-    color:#777;
-    text-align:center;
-    padding:30px;
-}
-
-.empty-icon{
-    font-size:65px;
-    margin-bottom:15px;
-}
-
-.empty h2{
-    color:#444;
-    margin-bottom:8px;
-}
-
-.empty p{
-    font-size:14px;
-}
-
-/* MODAL */
+/* =====================================================
+   MODAL
+===================================================== */
 
 .modal{
     position:fixed;
@@ -363,7 +353,7 @@ button{
     display:none;
     align-items:center;
     justify-content:center;
-    z-index:1000;
+    z-index:9999;
     padding:20px;
 }
 
@@ -372,21 +362,20 @@ button{
 }
 
 .modal-box{
-    width:500px;
+    width:520px;
     max-width:100%;
     max-height:90vh;
-    overflow:hidden;
-    background:#fff;
+    background:white;
     border-radius:10px;
-    box-shadow:0 10px 40px rgba(0,0,0,.3);
+    overflow:hidden;
     display:flex;
     flex-direction:column;
 }
 
 .modal-header{
     background:#075e54;
-    color:#fff;
-    padding:17px;
+    color:white;
+    padding:16px;
     display:flex;
     justify-content:space-between;
     align-items:center;
@@ -397,26 +386,26 @@ button{
 }
 
 .close-btn{
+    background:none;
     border:none;
-    background:transparent;
-    color:#fff;
+    color:white;
     font-size:25px;
 }
 
-.recipient-tabs{
+.tabs{
     display:flex;
     border-bottom:1px solid #ddd;
 }
 
-.recipient-tab{
+.tab{
     flex:1;
     border:none;
-    background:#fff;
+    background:white;
     padding:13px 5px;
     font-size:13px;
 }
 
-.recipient-tab.active{
+.tab.active{
     color:#075e54;
     font-weight:bold;
     border-bottom:3px solid #075e54;
@@ -427,21 +416,22 @@ button{
     overflow-y:auto;
 }
 
-.recipient-search{
+.search-input{
     width:100%;
     border:1px solid #ddd;
     outline:none;
-    padding:12px;
     border-radius:7px;
+    padding:12px;
+    font-size:14px;
     margin-bottom:10px;
 }
 
-.result-list{
-    max-height:300px;
+.results{
+    max-height:260px;
     overflow-y:auto;
 }
 
-.result-item{
+.result{
     padding:12px;
     border:1px solid #eee;
     border-radius:7px;
@@ -449,8 +439,8 @@ button{
     cursor:pointer;
 }
 
-.result-item:hover{
-    background:#f0f7f5;
+.result:hover{
+    background:#f2f8f7;
 }
 
 .result-title{
@@ -464,32 +454,50 @@ button{
     margin-top:3px;
 }
 
-.selected-recipient{
+.selected{
+    display:none;
     padding:10px;
     background:#e8f5e9;
     color:#075e54;
     border-radius:7px;
-    margin-bottom:10px;
-    display:none;
+    margin-top:10px;
 }
 
-.compose-box{
+.compose{
     margin-top:12px;
 }
 
-.compose-box textarea{
+.compose textarea{
     width:100%;
     min-height:100px;
-    resize:vertical;
     border:1px solid #ddd;
-    border-radius:7px;
-    padding:12px;
     outline:none;
+    border-radius:7px;
+    resize:vertical;
+    padding:12px;
+    font-size:14px;
+}
+
+.all-box{
+    padding:17px;
+    background:#f7f7f7;
+    border:1px solid #ddd;
+    border-radius:8px;
+}
+
+.all-box h4{
+    color:#075e54;
+    margin-bottom:7px;
+}
+
+.all-box p{
+    color:#777;
+    font-size:13px;
 }
 
 .modal-footer{
-    padding:12px 15px;
     border-top:1px solid #ddd;
+    padding:12px 15px;
     display:flex;
     justify-content:flex-end;
     gap:8px;
@@ -505,45 +513,37 @@ button{
 .send-new-btn{
     border:none;
     background:#128c7e;
-    color:#fff;
+    color:white;
     padding:10px 18px;
     border-radius:6px;
     font-weight:bold;
 }
 
-.all-staff-box{
-    border:1px solid #ddd;
-    border-radius:8px;
-    padding:15px;
-    background:#fafafa;
-}
-
-.all-staff-box h4{
-    margin-bottom:7px;
-    color:#075e54;
-}
-
-.all-staff-count{
-    color:#777;
-    font-size:13px;
-}
-
-/* LOADING */
-
 .loading{
-    text-align:center;
     padding:30px;
+    text-align:center;
     color:#777;
 }
 
 .no-results{
+    padding:25px;
     text-align:center;
-    padding:20px;
     color:#777;
     font-size:13px;
 }
 
-/* MOBILE */
+.mobile-back{
+    display:none;
+    border:none;
+    background:none;
+    color:white;
+    font-size:28px;
+    margin-right:8px;
+}
+
+/* =====================================================
+   MOBILE
+===================================================== */
 
 @media(max-width:700px){
 
@@ -565,21 +565,13 @@ button{
     }
 
     .mobile-back{
-        display:block !important;
+        display:block;
     }
 
     .message{
         max-width:85%;
     }
-}
 
-.mobile-back{
-    display:none;
-    border:none;
-    background:transparent;
-    color:#fff;
-    font-size:24px;
-    margin-right:10px;
 }
 </style>
 </head>
@@ -588,7 +580,9 @@ button{
 
 <div class="app" id="app">
 
-    <!-- SIDEBAR -->
+    <!-- =================================================
+         SIDEBAR
+    ================================================== -->
 
     <div class="sidebar">
 
@@ -596,13 +590,17 @@ button{
 
             <h2>💬 Staff Messages</h2>
 
-            <div class="current-user" id="currentUser">
-                Loading user...
+            <div
+                class="current-user"
+                id="currentUser"
+            >
+                Loading staff...
             </div>
 
         </div>
 
-        <div class="search-box">
+
+        <div class="search-container">
 
             <input
                 type="text"
@@ -612,7 +610,11 @@ button{
 
         </div>
 
-        <div class="chat-list" id="chatList">
+
+        <div
+            class="chat-list"
+            id="chatList"
+        >
 
             <div class="loading">
                 Loading conversations...
@@ -620,11 +622,12 @@ button{
 
         </div>
 
-        <div class="new-message-area">
+
+        <div class="new-message-container">
 
             <button
                 class="new-message-btn"
-                onclick="openNewMessage()"
+                id="newMessageButton"
             >
                 ✏️ New Message
             </button>
@@ -634,18 +637,27 @@ button{
     </div>
 
 
-    <!-- CHAT -->
+    <!-- =================================================
+         CHAT PANEL
+    ================================================== -->
 
-    <div class="chat-panel" id="chatPanel">
+    <div class="chat-panel">
 
-        <div class="empty" id="emptyChat">
+        <div
+            class="empty-chat"
+            id="emptyChat"
+        >
 
-            <div class="empty-icon">💬</div>
+            <div class="empty-icon">
+                💬
+            </div>
 
-            <h2>Staff Messages</h2>
+            <h2>
+                Staff Messages
+            </h2>
 
             <p>
-                Select a conversation or start a new message.
+                Select a conversation or create a new message.
             </p>
 
         </div>
@@ -659,10 +671,11 @@ button{
 
             <button
                 class="mobile-back"
-                onclick="closeMobileChat()"
+                id="mobileBack"
             >
                 ‹
             </button>
+
 
             <div
                 class="avatar"
@@ -670,6 +683,7 @@ button{
             >
                 ?
             </div>
+
 
             <div class="header-info">
 
@@ -707,15 +721,16 @@ button{
         >
 
             <textarea
-                id="messageInput"
                 class="message-input"
-                placeholder="Type a message..."
+                id="messageInput"
                 rows="1"
+                placeholder="Type a message..."
             ></textarea>
+
 
             <button
                 class="send-btn"
-                onclick="sendMessage()"
+                id="sendButton"
             >
                 ➤
             </button>
@@ -727,7 +742,9 @@ button{
 </div>
 
 
-<!-- NEW MESSAGE MODAL -->
+<!-- =====================================================
+     NEW MESSAGE MODAL
+====================================================== -->
 
 <div
     class="modal"
@@ -738,11 +755,13 @@ button{
 
         <div class="modal-header">
 
-            <h3>New Message</h3>
+            <h3>
+                New Message
+            </h3>
 
             <button
                 class="close-btn"
-                onclick="closeNewMessage()"
+                id="closeModal"
             >
                 ×
             </button>
@@ -750,28 +769,25 @@ button{
         </div>
 
 
-        <div class="recipient-tabs">
+        <div class="tabs">
 
             <button
-                class="recipient-tab active"
-                id="tabIndividual"
-                onclick="selectRecipientMode('individual')"
+                class="tab active"
+                id="individualTab"
             >
                 👤 Individual
             </button>
 
             <button
-                class="recipient-tab"
-                id="tabDepartment"
-                onclick="selectRecipientMode('department')"
+                class="tab"
+                id="departmentTab"
             >
                 🏢 Department
             </button>
 
             <button
-                class="recipient-tab"
-                id="tabAll"
-                onclick="selectRecipientMode('all')"
+                class="tab"
+                id="allTab"
             >
                 📢 All Staff
             </button>
@@ -783,18 +799,20 @@ button{
 
             <!-- INDIVIDUAL -->
 
-            <div id="individualSection">
+            <div
+                id="individualSection"
+            >
 
                 <input
                     type="text"
+                    class="search-input"
                     id="staffSearch"
-                    class="recipient-search"
-                    placeholder="🔍 Type staff name or Staff ID..."
-                    autocomplete="off"
+                    placeholder="🔍 Type Staff Name or Staff ID..."
                 >
 
+
                 <div
-                    class="result-list"
+                    class="results"
                     id="staffResults"
                 >
                 </div>
@@ -811,14 +829,14 @@ button{
 
                 <input
                     type="text"
+                    class="search-input"
                     id="departmentSearch"
-                    class="recipient-search"
-                    placeholder="🔍 Type department..."
-                    autocomplete="off"
+                    placeholder="🔍 Type Department..."
                 >
 
+
                 <div
-                    class="result-list"
+                    class="results"
                     id="departmentResults"
                 >
                 </div>
@@ -833,16 +851,15 @@ button{
                 style="display:none;"
             >
 
-                <div class="all-staff-box">
+                <div class="all-box">
 
-                    <h4>📢 Message All Staff</h4>
+                    <h4>
+                        📢 Message All Staff
+                    </h4>
 
-                    <div
-                        class="all-staff-count"
-                        id="allStaffCount"
-                    >
+                    <p id="allStaffCount">
                         Loading active staff...
-                    </div>
+                    </p>
 
                 </div>
 
@@ -850,13 +867,13 @@ button{
 
 
             <div
-                class="selected-recipient"
+                class="selected"
                 id="selectedRecipient"
             >
             </div>
 
 
-            <div class="compose-box">
+            <div class="compose">
 
                 <textarea
                     id="newMessageText"
@@ -872,14 +889,14 @@ button{
 
             <button
                 class="cancel-btn"
-                onclick="closeNewMessage()"
+                id="cancelModal"
             >
                 Cancel
             </button>
 
             <button
                 class="send-new-btn"
-                onclick="sendNewMessage()"
+                id="sendNewButton"
             >
                 Send ➤
             </button>
@@ -893,14 +910,24 @@ button{
 
 <script type="module">
 
+/* =====================================================
+   FIREBASE IMPORTS
+===================================================== */
+
 import {
     initializeApp
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+}
+from
+"https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
 
 import {
     getAuth,
     onAuthStateChanged
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+}
+from
+"https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
 
 import {
     getFirestore,
@@ -915,49 +942,70 @@ import {
     where,
     orderBy,
     onSnapshot,
-    serverTimestamp,
-    limit,
-    arrayUnion
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    serverTimestamp
+}
+from
+"https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 
-/* =========================================================
-   FIREBASE
-========================================================= */
+/* =====================================================
+   FIREBASE CONFIG
+===================================================== */
 
 const firebaseConfig = {
 
-    apiKey: "AIzaSyAIv3091VM-gkmdwEAn7OhXWd9Cm2zh2bo",
+    apiKey:
+        "AIzaSyAIv3091VM-gkmdwEAn7OhXWd9Cm2zh2bo",
 
-    authDomain: "maasc-2026.firebaseapp.com",
+    authDomain:
+        "maasc-2026.firebaseapp.com",
 
-    projectId: "maasc-2026",
+    projectId:
+        "maasc-2026",
 
-    storageBucket: "maasc-2026.appspot.com",
+    storageBucket:
+        "maasc-2026.appspot.com",
 
-    messagingSenderId: "585813001586",
+    messagingSenderId:
+        "585813001586",
 
-    appId: "1:585813001586:web:664e0e90ff0725d2e849eb"
+    appId:
+        "1:585813001586:web:664e0e90ff0725d2e849eb"
 
 };
 
 
-const app = initializeApp(firebaseConfig);
+const firebaseApp =
+    initializeApp(
+        firebaseConfig
+    );
 
-const auth = getAuth(app);
 
-const db = getFirestore(app);
+const auth =
+    getAuth(
+        firebaseApp
+    );
 
 
-/* =========================================================
+const db =
+    getFirestore(
+        firebaseApp
+    );
+
+
+/* =====================================================
    GLOBAL VARIABLES
-========================================================= */
+===================================================== */
 
-let currentUser = null;
+let currentFirebaseUser = null;
 
 let currentStaff = null;
 
 let allStaff = [];
+
+let staffMap = {};
+
+let conversations = [];
 
 let currentChatId = null;
 
@@ -967,76 +1015,154 @@ let conversationUnsubscribe = null;
 
 let currentRecipient = null;
 
-let recipientMode = "individual";
-
-let conversations = [];
-
-let unreadMap = {};
-
-let staffMap = {};
+let recipientMode =
+    "individual";
 
 
-/* =========================================================
+/* =====================================================
+   ELEMENTS
+===================================================== */
+
+const appElement =
+    document.getElementById(
+        "app"
+    );
+
+const currentUserElement =
+    document.getElementById(
+        "currentUser"
+    );
+
+const chatListElement =
+    document.getElementById(
+        "chatList"
+    );
+
+const conversationSearch =
+    document.getElementById(
+        "conversationSearch"
+    );
+
+const newMessageModal =
+    document.getElementById(
+        "newMessageModal"
+    );
+
+
+/* =====================================================
    HELPERS
-========================================================= */
+===================================================== */
 
-function safeString(value){
-
-    return value === undefined ||
-           value === null
-        ? ""
-        : String(value);
-
-}
-
-
-function getStaffId(data){
-
-    return safeString(
-        data.staffId ||
-        data.staffID ||
-        data.id ||
-        data.employeeId ||
-        data.employeeID
-    ).trim();
-
-}
-
-
-function getStaffName(data){
-
-    return safeString(
-        data.name ||
-        data.staffName ||
-        data.fullName ||
-        data.displayName ||
-        data.employeeName ||
-        "Staff"
-    ).trim();
-
-}
-
-
-function getDepartment(data){
-
-    return safeString(
-        data.department ||
-        data.dept ||
-        data.Department ||
-        ""
-    ).trim();
-
-}
-
-
-function isStaffActive(data){
+function str(value){
 
     if(
-        data.active === false ||
-        data.isActive === false ||
+        value === null ||
+        value === undefined
+    ){
+
+        return "";
+
+    }
+
+    return String(
+        value
+    );
+
+}
+
+
+function staffIdFromData(
+    data,
+    documentId
+){
+
+    return str(
+
+        data.staffId ||
+
+        data.staffID ||
+
+        data.employeeId ||
+
+        data.employeeID ||
+
+        data.id ||
+
+        documentId
+
+    ).trim();
+
+}
+
+
+function staffNameFromData(
+    data
+){
+
+    return str(
+
+        data.name ||
+
+        data.staffName ||
+
+        data.fullName ||
+
+        data.displayName ||
+
+        data.employeeName ||
+
+        "Staff"
+
+    ).trim();
+
+}
+
+
+function departmentFromData(
+    data
+){
+
+    return str(
+
+        data.department ||
+
+        data.dept ||
+
+        data.Department ||
+
+        ""
+
+    ).trim();
+
+}
+
+
+function isActive(
+    data
+){
+
+    if(
+        data.active === false
+    ){
+
+        return false;
+
+    }
+
+    if(
+        data.isActive === false
+    ){
+
+        return false;
+
+    }
+
+    if(
         data.workerActive === false
     ){
+
         return false;
+
     }
 
     return true;
@@ -1044,46 +1170,100 @@ function isStaffActive(data){
 }
 
 
-function getInitial(name){
+function initial(
+    name
+){
 
-    const value = safeString(name).trim();
+    const value =
+        str(name).trim();
 
-    if(!value) return "?";
+    if(!value){
 
-    return value.charAt(0).toUpperCase();
+        return "?";
 
-}
+    }
 
-
-function escapeHtml(value){
-
-    return safeString(value)
-        .replace(/&/g,"&amp;")
-        .replace(/</g,"&lt;")
-        .replace(/>/g,"&gt;")
-        .replace(/"/g,"&quot;")
-        .replace(/'/g,"&#039;");
+    return value
+        .charAt(0)
+        .toUpperCase();
 
 }
 
 
-function formatTime(timestamp){
+function escapeHTML(
+    value
+){
 
-    if(!timestamp) return "";
+    return str(value)
 
-    let date;
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+
+        .replace(
+            /</g,
+            "&lt;"
+        )
+
+        .replace(
+            />/g,
+            "&gt;"
+        )
+
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+
+        .replace(
+            /'/g,
+            "&#039;"
+        );
+
+}
+
+
+function timestampMillis(
+    value
+){
 
     try{
 
-        if(timestamp.toDate){
+        if(
+            value &&
+            typeof value.toMillis ===
+            "function"
+        ){
 
-            date = timestamp.toDate();
-
-        }else{
-
-            date = new Date(timestamp);
+            return value.toMillis();
 
         }
+
+    }
+    catch(e){}
+
+    return 0;
+
+}
+
+
+function timeText(
+    value
+){
+
+    if(!value){
+
+        return "";
+
+    }
+
+    try{
+
+        const date =
+            value.toDate
+                ? value.toDate()
+                : new Date(value);
 
         return date.toLocaleTimeString(
             [],
@@ -1093,7 +1273,8 @@ function formatTime(timestamp){
             }
         );
 
-    }catch(e){
+    }
+    catch(e){
 
         return "";
 
@@ -1102,318 +1283,215 @@ function formatTime(timestamp){
 }
 
 
-function formatDateTime(timestamp){
+/* =====================================================
+   LOAD STAFF
+===================================================== */
 
-    if(!timestamp) return "";
-
-    let date;
-
-    try{
-
-        if(timestamp.toDate){
-
-            date = timestamp.toDate();
-
-        }else{
-
-            date = new Date(timestamp);
-
-        }
-
-        return date.toLocaleDateString(
-            [],
-            {
-                day:"2-digit",
-                month:"short",
-                year:"numeric"
-            }
-        )
-        +
-        " "
-        +
-        date.toLocaleTimeString(
-            [],
-            {
-                hour:"2-digit",
-                minute:"2-digit"
-            }
-        );
-
-    }catch(e){
-
-        return "";
-
-    }
-
-}
-
-
-function conversationIdForIndividual(a,b){
-
-    return [
-        safeString(a),
-        safeString(b)
-    ]
-    .sort()
-    .join("__");
-
-}
-
-
-/* =========================================================
-   LOAD ALL STAFF
-========================================================= */
-
-async function loadAllStaff(){
+async function loadStaff(){
 
     try{
 
-        const snapshot = await getDocs(
-            collection(db,"staff")
-        );
+        const snapshot =
+            await getDocs(
+                collection(
+                    db,
+                    "staff"
+                )
+            );
+
 
         allStaff = [];
 
         staffMap = {};
 
-        snapshot.forEach(item => {
 
-            const data = item.data();
+        snapshot.forEach(
+            item => {
 
-            const staffId =
-                getStaffId(data) ||
-                item.id;
-
-            if(!staffId) return;
-
-            const staff = {
-
-                firestoreId:item.id,
-
-                staffId:staffId,
-
-                name:getStaffName(data),
-
-                department:getDepartment(data),
-
-                active:isStaffActive(data),
-
-                email:safeString(data.email)
-
-            };
-
-            allStaff.push(staff);
-
-            staffMap[staffId] = staff;
-
-        });
+                const data =
+                    item.data();
 
 
-        allStaff.sort((a,b) =>
-            a.name.localeCompare(
-                b.name
-            )
+                const staffId =
+                    staffIdFromData(
+                        data,
+                        item.id
+                    );
+
+
+                if(!staffId){
+
+                    return;
+
+                }
+
+
+                const staff = {
+
+                    firestoreId:
+                        item.id,
+
+                    staffId:
+                        staffId,
+
+                    name:
+                        staffNameFromData(
+                            data
+                        ),
+
+                    department:
+                        departmentFromData(
+                            data
+                        ),
+
+                    active:
+                        isActive(
+                            data
+                        ),
+
+                    email:
+                        str(
+                            data.email
+                        )
+
+                };
+
+
+                allStaff.push(
+                    staff
+                );
+
+
+                staffMap[
+                    staff.staffId
+                ] =
+                    staff;
+
+            }
         );
 
 
-        updateAllStaffCount();
+        allStaff.sort(
+            (a,b) =>
+                a.name.localeCompare(
+                    b.name
+                )
+        );
+
 
         renderStaffResults("");
 
         renderDepartmentResults("");
 
+        updateAllStaffCount();
+
+
         console.log(
-            "STAFF LOADED:",
+            "TOTAL STAFF:",
             allStaff.length
         );
 
-    }catch(error){
+    }
+    catch(error){
 
         console.error(
             "STAFF LOAD ERROR:",
             error
         );
 
-        document.getElementById(
-            "staffResults"
-        ).innerHTML =
-            `<div class="no-results">
+
+        chatListElement.innerHTML = `
+
+            <div class="no-results">
                 Unable to load staff.
-            </div>`;
+                <br><br>
+                ${escapeHTML(
+                    error.message
+                )}
+            </div>
+
+        `;
 
     }
 
 }
 
 
-/* =========================================================
-   AUTH
-========================================================= */
+/* =====================================================
+   FIND CURRENT STAFF
+===================================================== */
 
-onAuthStateChanged(
-    auth,
-    async user => {
+async function findCurrentStaff(){
 
-        if(!user){
+    /*
+       1. Firebase Auth
+    */
 
-            document.getElementById(
-                "currentUser"
-            ).textContent =
-                "Not logged in";
+    if(
+        currentFirebaseUser
+    ){
 
-            console.warn(
-                "NO FIREBASE USER"
+        const user =
+            currentFirebaseUser;
+
+
+        /*
+           Match UID to Firestore document.
+        */
+
+        let found =
+            allStaff.find(
+                staff =>
+                    staff.firestoreId ===
+                    user.uid
             );
 
-            return;
-
-        }
-
-
-        currentUser = user;
-
-
-        await loadAllStaff();
-
-
-        await identifyCurrentStaff(user);
-
-
-        if(currentStaff){
-
-            document.getElementById(
-                "currentUser"
-            ).textContent =
-                currentStaff.name +
-                " • " +
-                currentStaff.staffId;
-
-            startConversationListener();
-
-        }
-
-    }
-);
-
-
-/* =========================================================
-   IDENTIFY CURRENT STAFF
-========================================================= */
-
-async function identifyCurrentStaff(user){
-
-    try{
 
         /*
-           First try UID field.
+           Match email.
         */
 
-        let found = allStaff.find(
-            staff =>
-                staff.firestoreId === user.uid
-        );
-
-
-        /*
-           Try staff UID field.
-        */
-
-        if(!found){
-
-            found = allStaff.find(
-                staff => {
-
-                    const original =
-                        allStaff.find(
-                            x =>
-                                x.firestoreId ===
-                                staff.firestoreId
-                        );
-
-                    return false;
-
-                }
-            );
-
-        }
-
-
-        /*
-           Try email.
-        */
-
-        if(!found && user.email){
+        if(
+            !found &&
+            user.email
+        ){
 
             const email =
-                user.email.toLowerCase();
-
-            found = allStaff.find(
-                staff =>
-                    safeString(
-                        staff.email
-                    ).toLowerCase() === email
-            );
-
-        }
+                user.email
+                    .toLowerCase();
 
 
-        /*
-           Try localStorage values commonly
-           used in your existing staff login.
-        */
-
-        if(!found){
-
-            const possibleKeys = [
-
-                "staffId",
-                "staffID",
-                "currentStaffId",
-                "loggedInStaffId",
-                "staff_id"
-
-            ];
-
-            for(
-                const key of possibleKeys
-            ){
-
-                const stored =
-                    localStorage.getItem(key);
-
-                if(stored){
-
-                    found =
-                        allStaff.find(
-                            staff =>
-                                staff.staffId
-                                    .toUpperCase() ===
-                                stored
-                                    .toUpperCase()
-                        );
-
-                    if(found) break;
-
-                }
-
-            }
+            found =
+                allStaff.find(
+                    staff =>
+                        str(
+                            staff.email
+                        )
+                        .toLowerCase() ===
+                        email
+                );
 
         }
 
 
         /*
-           Try Firebase user displayName
+           Match displayName.
         */
 
-        if(!found && user.displayName){
+        if(
+            !found &&
+            user.displayName
+        ){
 
             found =
                 allStaff.find(
                     staff =>
                         staff.name
                             .toLowerCase() ===
-                        user.displayName
-                            .toLowerCase()
+                        str(
+                            user.displayName
+                        )
+                        .toLowerCase()
                 );
 
         }
@@ -1421,30 +1499,304 @@ async function identifyCurrentStaff(user){
 
         if(found){
 
-            currentStaff = found;
+            return found;
 
-            console.log(
-                "CURRENT STAFF:",
-                currentStaff
+        }
+
+    }
+
+
+    /*
+       2. Existing browser session.
+    */
+
+    const sessionKeys = [
+
+        "staffId",
+        "staffID",
+        "staff_id",
+
+        "currentStaffId",
+        "currentStaffID",
+
+        "loggedInStaffId",
+        "loggedInStaffID",
+
+        "employeeId",
+        "employeeID",
+
+        "userId",
+        "userID",
+
+        "staffCode",
+        "employeeCode"
+
+    ];
+
+
+    const possibleIds = [];
+
+
+    for(
+        const key
+        of sessionKeys
+    ){
+
+        try{
+
+            const local =
+                localStorage.getItem(
+                    key
+                );
+
+
+            if(local){
+
+                possibleIds.push(
+                    local.trim()
+                );
+
+            }
+
+        }
+        catch(e){}
+
+
+        try{
+
+            const session =
+                sessionStorage.getItem(
+                    key
+                );
+
+
+            if(session){
+
+                possibleIds.push(
+                    session.trim()
+                );
+
+            }
+
+        }
+        catch(e){}
+
+    }
+
+
+    /*
+       Remove duplicates.
+    */
+
+    const uniqueIds =
+        [
+            ...new Set(
+                possibleIds
+            )
+        ];
+
+
+    console.log(
+        "SESSION STAFF IDS:",
+        uniqueIds
+    );
+
+
+    for(
+        const id
+        of uniqueIds
+    ){
+
+        const found =
+            allStaff.find(
+                staff =>
+                    staff.staffId
+                        .toUpperCase() ===
+                    id.toUpperCase()
             );
 
-        }else{
+
+        if(found){
+
+            return found;
+
+        }
+
+    }
+
+
+    /*
+       3. Stored staff object.
+    */
+
+    const objectKeys = [
+
+        "staff",
+        "currentStaff",
+        "loggedInStaff",
+        "staffData",
+        "userData"
+
+    ];
+
+
+    for(
+        const key
+        of objectKeys
+    ){
+
+        const stores = [
+
+            localStorage,
+            sessionStorage
+
+        ];
+
+
+        for(
+            const store
+            of stores
+        ){
+
+            try{
+
+                const raw =
+                    store.getItem(
+                        key
+                    );
+
+
+                if(!raw){
+
+                    continue;
+
+                }
+
+
+                const data =
+                    JSON.parse(
+                        raw
+                    );
+
+
+                const id =
+                    data.staffId ||
+                    data.staffID ||
+                    data.employeeId ||
+                    data.employeeID ||
+                    data.id;
+
+
+                if(!id){
+
+                    continue;
+
+                }
+
+
+                const found =
+                    allStaff.find(
+                        staff =>
+                            staff.staffId
+                                .toUpperCase() ===
+                            str(id)
+                                .toUpperCase()
+                    );
+
+
+                if(found){
+
+                    return found;
+
+                }
+
+            }
+            catch(e){}
+
+        }
+
+    }
+
+
+    return null;
+
+}
+
+
+/* =====================================================
+   INITIALIZE
+===================================================== */
+
+async function initializeMessaging(){
+
+    try{
+
+        currentUserElement.textContent =
+            "Loading staff...";
+
+
+        await loadStaff();
+
+
+        currentStaff =
+            await findCurrentStaff();
+
+
+        if(!currentStaff){
+
+            currentUserElement.textContent =
+                "Staff session not found";
+
+
+            chatListElement.innerHTML = `
+
+                <div class="no-results">
+
+                    Staff login information
+                    could not be detected.
+
+                    <br><br>
+
+                    Open this page from
+                    your logged-in staff dashboard.
+
+                </div>
+
+            `;
+
 
             console.error(
                 "CURRENT STAFF NOT FOUND"
             );
 
-            document.getElementById(
-                "currentUser"
-            ).textContent =
-                "Staff profile not found";
+
+            return;
 
         }
 
-    }catch(error){
+
+        currentUserElement.textContent =
+            currentStaff.name +
+            " • " +
+            currentStaff.staffId;
+
+
+        console.log(
+            "CURRENT STAFF:",
+            currentStaff
+        );
+
+
+        updateAllStaffCount();
+
+
+        startConversationListener();
+
+    }
+    catch(error){
 
         console.error(
-            "IDENTIFY STAFF ERROR:",
+            "INITIALIZATION ERROR:",
             error
         );
 
@@ -1453,37 +1805,77 @@ async function identifyCurrentStaff(user){
 }
 
 
-/* =========================================================
-   CONVERSATIONS LISTENER
-========================================================= */
+/* =====================================================
+   AUTH STATE
+===================================================== */
+
+onAuthStateChanged(
+    auth,
+    async user => {
+
+        currentFirebaseUser =
+            user;
+
+
+        console.log(
+            "AUTH STATE:",
+            user
+        );
+
+
+        /*
+           IMPORTANT:
+           Even when Firebase Auth is null,
+           initializeMessaging()
+           continues using browser session.
+        */
+
+        await initializeMessaging();
+
+    }
+);
+
+
+/* =====================================================
+   CONVERSATION LISTENER
+===================================================== */
 
 function startConversationListener(){
 
-    if(!currentStaff) return;
+    if(
+        !currentStaff
+    ){
+
+        return;
+
+    }
 
 
-    if(conversationUnsubscribe){
+    if(
+        conversationUnsubscribe
+    ){
 
         conversationUnsubscribe();
 
     }
 
 
-    const conversationsRef =
+    const reference =
         collection(
             db,
             "staffConversations"
         );
 
 
-    const q = query(
-        conversationsRef,
-        where(
-            "participantIds",
-            "array-contains",
-            currentStaff.staffId
-        )
-    );
+    const q =
+        query(
+            reference,
+            where(
+                "participantIds",
+                "array-contains",
+                currentStaff.staffId
+            )
+        );
 
 
     conversationUnsubscribe =
@@ -1493,37 +1885,32 @@ function startConversationListener(){
 
                 conversations = [];
 
-                snapshot.forEach(item => {
 
-                    conversations.push({
+                snapshot.forEach(
+                    item => {
 
-                        id:item.id,
+                        conversations.push({
 
-                        ...item.data()
+                            id:
+                                item.id,
 
-                    });
+                            ...item.data()
 
-                });
+                        });
+
+                    }
+                );
 
 
                 conversations.sort(
-                    (a,b) => {
-
-                        const at =
-                            a.lastMessageTime &&
-                            a.lastMessageTime.toMillis
-                                ? a.lastMessageTime.toMillis()
-                                : 0;
-
-                        const bt =
-                            b.lastMessageTime &&
-                            b.lastMessageTime.toMillis
-                                ? b.lastMessageTime.toMillis()
-                                : 0;
-
-                        return bt - at;
-
-                    }
+                    (a,b) =>
+                        timestampMillis(
+                            b.lastMessageTime
+                        )
+                        -
+                        timestampMillis(
+                            a.lastMessageTime
+                        )
                 );
 
 
@@ -1533,9 +1920,25 @@ function startConversationListener(){
             error => {
 
                 console.error(
-                    "CONVERSATION LIST ERROR:",
+                    "CONVERSATION ERROR:",
                     error
                 );
+
+                chatListElement.innerHTML = `
+
+                    <div class="no-results">
+
+                        Unable to load messages.
+
+                        <br><br>
+
+                        ${escapeHTML(
+                            error.message
+                        )}
+
+                    </div>
+
+                `;
 
             }
         );
@@ -1543,48 +1946,63 @@ function startConversationListener(){
 }
 
 
-/* =========================================================
+/* =====================================================
    RENDER CONVERSATIONS
-========================================================= */
+===================================================== */
 
 function renderConversations(){
 
-    const list =
-        document.getElementById(
-            "chatList"
-        );
-
     const search =
-        document.getElementById(
-            "conversationSearch"
-        )
-        .value
-        .trim()
-        .toLowerCase();
+        conversationSearch.value
+            .trim()
+            .toLowerCase();
 
 
     const filtered =
         conversations.filter(
             chat => {
 
-                if(!search) return true;
+                if(!search){
 
-                return safeString(
-                    chat.title
-                )
-                .toLowerCase()
-                .includes(search);
+                    return true;
+
+                }
+
+
+                return (
+
+                    str(
+                        chat.title
+                    )
+                    .toLowerCase()
+                    .includes(search)
+
+                    ||
+
+                    str(
+                        chat.lastMessage
+                    )
+                    .toLowerCase()
+                    .includes(search)
+
+                );
 
             }
         );
 
 
-    if(!filtered.length){
+    if(
+        !filtered.length
+    ){
 
-        list.innerHTML = `
+        chatListElement.innerHTML = `
+
             <div class="no-results">
+
                 No conversations yet.
+
             </div>
+
         `;
 
         return;
@@ -1592,155 +2010,207 @@ function renderConversations(){
     }
 
 
-    list.innerHTML = "";
+    chatListElement.innerHTML =
+        "";
 
 
-    filtered.forEach(chat => {
+    filtered.forEach(
+        chat => {
 
-        const div =
-            document.createElement("div");
-
-        div.className =
-            "chat-item" +
-            (
-                currentChatId === chat.id
-                    ? " active"
-                    : ""
-            );
+            const div =
+                document.createElement(
+                    "div"
+                );
 
 
-        const title =
-            chat.title ||
-            "Staff Conversation";
+            div.className =
+                "chat-item" +
+                (
+                    currentChatId ===
+                    chat.id
+                        ? " active"
+                        : ""
+                );
 
 
-        const initials =
-            chat.type === "all"
-                ? "A"
-                : chat.type === "department"
-                    ? "D"
-                    : getInitial(title);
+            const unread =
+                Number(
+                    (
+                        chat.unreadCounts ||
+                        {}
+                    )[
+                        currentStaff.staffId
+                    ] || 0
+                );
 
 
-        const unread =
-            Number(
-                chat.unreadCounts &&
-                chat.unreadCounts[
-                    currentStaff.staffId
-                ]
-                || 0
-            );
+            let icon =
+                initial(
+                    chat.title
+                );
 
 
-        div.innerHTML = `
+            if(
+                chat.type ===
+                "all"
+            ){
 
-            <div class="avatar">
-                ${escapeHtml(initials)}
-            </div>
+                icon = "A";
 
-            <div class="chat-info">
-
-                <div class="chat-top">
-
-                    <div class="chat-name">
-                        ${escapeHtml(title)}
-                    </div>
-
-                    <div class="chat-time">
-                        ${
-                            formatTime(
-                                chat.lastMessageTime
-                            )
-                        }
-                    </div>
-
-                </div>
-
-                <div class="chat-last">
-
-                    ${
-                        escapeHtml(
-                            chat.lastMessage ||
-                            "No messages yet"
-                        )
-                    }
-
-                </div>
-
-            </div>
-
-            ${
-                unread > 0
-                    ? `
-                    <div class="unread">
-                        ${unread > 99 ? "99+" : unread}
-                    </div>
-                    `
-                    : ""
             }
 
-        `;
+
+            if(
+                chat.type ===
+                "department"
+            ){
+
+                icon = "D";
+
+            }
 
 
-        div.addEventListener(
-            "click",
-            () =>
-                openConversation(
-                    chat.id
-                )
-        );
+            div.innerHTML = `
+
+                <div class="avatar">
+
+                    ${escapeHTML(
+                        icon
+                    )}
+
+                </div>
 
 
-        list.appendChild(div);
+                <div class="chat-info">
 
-    });
+                    <div class="chat-top">
+
+                        <div class="chat-name">
+
+                            ${escapeHTML(
+                                chat.title ||
+                                "Staff"
+                            )}
+
+                        </div>
+
+                        <div class="chat-time">
+
+                            ${timeText(
+                                chat.lastMessageTime
+                            )}
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="chat-last">
+
+                        ${escapeHTML(
+                            chat.lastMessage ||
+                            "No messages yet"
+                        )}
+
+                    </div>
+
+                </div>
+
+
+                ${
+                    unread > 0
+                        ? `
+                            <div class="unread">
+
+                                ${
+                                    unread > 99
+                                        ? "99+"
+                                        : unread
+                                }
+
+                            </div>
+                          `
+                        : ""
+                }
+
+            `;
+
+
+            div.addEventListener(
+                "click",
+                () =>
+                    openConversation(
+                        chat.id
+                    )
+            );
+
+
+            chatListElement.appendChild(
+                div
+            );
+
+        }
+    );
 
 }
 
 
-/* =========================================================
+/* =====================================================
    OPEN CONVERSATION
-========================================================= */
+===================================================== */
 
-async function openConversation(chatId){
+async function openConversation(
+    chatId
+){
 
-    currentChatId = chatId;
+    currentChatId =
+        chatId;
 
 
     const chat =
         conversations.find(
-            x => x.id === chatId
+            item =>
+                item.id ===
+                chatId
         );
 
 
-    if(!chat) return;
+    if(!chat){
+
+        return;
+
+    }
 
 
     document.getElementById(
         "emptyChat"
-    ).style.display = "none";
+    ).style.display =
+        "none";
 
 
     document.getElementById(
         "chatHeader"
-    ).style.display = "flex";
+    ).style.display =
+        "flex";
 
 
     document.getElementById(
         "messages"
-    ).style.display = "block";
+    ).style.display =
+        "block";
 
 
     document.getElementById(
         "messageInputArea"
-    ).style.display = "flex";
+    ).style.display =
+        "flex";
 
 
     document.getElementById(
         "headerName"
     ).textContent =
         chat.title ||
-        "Staff Conversation";
+        "Staff";
 
 
     document.getElementById(
@@ -1748,11 +2218,13 @@ async function openConversation(chatId){
     ).textContent =
         chat.type === "all"
             ? "A"
-            : chat.type === "department"
-                ? "D"
-                : getInitial(
-                    chat.title
-                );
+            :
+        chat.type === "department"
+            ? "D"
+            :
+        initial(
+            chat.title
+        );
 
 
     document.getElementById(
@@ -1760,19 +2232,23 @@ async function openConversation(chatId){
     ).textContent =
         chat.type === "all"
             ? "All Staff"
-            : chat.type === "department"
-                ? "Department Staff"
-                : "Staff Conversation";
+            :
+        chat.type === "department"
+            ? "Department Staff"
+            :
+            "Staff Conversation";
 
 
-    if(currentChatUnsubscribe){
+    if(
+        currentChatUnsubscribe
+    ){
 
         currentChatUnsubscribe();
 
     }
 
 
-    const messagesRef =
+    const messagesReference =
         collection(
             db,
             "staffConversations",
@@ -1781,13 +2257,14 @@ async function openConversation(chatId){
         );
 
 
-    const q = query(
-        messagesRef,
-        orderBy(
-            "timestamp",
-            "asc"
-        )
-    );
+    const q =
+        query(
+            messagesReference,
+            orderBy(
+                "timestamp",
+                "asc"
+            )
+        );
 
 
     currentChatUnsubscribe =
@@ -1803,7 +2280,7 @@ async function openConversation(chatId){
             error => {
 
                 console.error(
-                    "MESSAGE LIST ERROR:",
+                    "MESSAGE ERROR:",
                     error
                 );
 
@@ -1812,54 +2289,51 @@ async function openConversation(chatId){
 
 
     /*
-       Mark conversation read.
+       Reset unread.
     */
 
     try{
 
-        const chatRef =
-            doc(
-                db,
-                "staffConversations",
-                chatId
-            );
+        const unreadCounts =
+            {
+                ...(chat.unreadCounts || {})
+            };
 
 
-        const currentUnread =
-            chat.unreadCounts || {};
-
-
-        currentUnread[
+        unreadCounts[
             currentStaff.staffId
         ] = 0;
 
 
         await updateDoc(
-            chatRef,
+            doc(
+                db,
+                "staffConversations",
+                chatId
+            ),
             {
                 unreadCounts:
-                    currentUnread
+                    unreadCounts
             }
         );
 
-    }catch(error){
+    }
+    catch(error){
 
         console.warn(
-            "READ UPDATE:",
+            "READ UPDATE ERROR:",
             error
         );
 
     }
 
 
-    renderConversations();
-
-
-    document.getElementById(
-        "app"
-    ).classList.add(
+    appElement.classList.add(
         "chat-open"
     );
+
+
+    renderConversations();
 
 
     setTimeout(
@@ -1876,11 +2350,13 @@ async function openConversation(chatId){
 }
 
 
-/* =========================================================
+/* =====================================================
    RENDER MESSAGES
-========================================================= */
+===================================================== */
 
-function renderMessages(snapshot){
+function renderMessages(
+    snapshot
+){
 
     const container =
         document.getElementById(
@@ -1888,127 +2364,136 @@ function renderMessages(snapshot){
         );
 
 
-    container.innerHTML = "";
+    container.innerHTML =
+        "";
 
 
-    snapshot.forEach(item => {
+    snapshot.forEach(
+        item => {
 
-        const data =
-            item.data();
-
-
-        const mine =
-            data.senderId ===
-            currentStaff.staffId;
+            const data =
+                item.data();
 
 
-        const row =
-            document.createElement(
-                "div"
-            );
+            const mine =
+                data.senderId ===
+                currentStaff.staffId;
 
 
-        row.className =
-            "message-row " +
-            (
-                mine
-                    ? "mine"
-                    : "theirs"
-            );
+            const row =
+                document.createElement(
+                    "div"
+                );
 
 
-        const bubble =
-            document.createElement(
-                "div"
-            );
+            row.className =
+                "message-row " +
+                (
+                    mine
+                        ? "mine"
+                        : ""
+                );
 
 
-        bubble.className =
-            "message";
+            const bubble =
+                document.createElement(
+                    "div"
+                );
 
 
-        let senderHtml = "";
+            bubble.className =
+                "message " +
+                (
+                    mine
+                        ? "mine"
+                        : "theirs"
+                );
 
 
-        if(
-            !mine &&
-            (
-                data.senderName ||
-                data.senderId
-            )
-        ){
+            let sender =
+                "";
 
-            senderHtml = `
 
-                <div class="sender-name">
+            if(!mine){
 
-                    ${escapeHtml(
-                        data.senderName ||
-                        data.senderId
+                sender = `
+
+                    <div class="sender-name">
+
+                        ${escapeHTML(
+                            data.senderName ||
+                            data.senderId ||
+                            "Staff"
+                        )}
+
+                    </div>
+
+                `;
+
+            }
+
+
+            const read =
+                data.readBy &&
+                data.readBy.length > 1;
+
+
+            bubble.innerHTML = `
+
+                ${sender}
+
+
+                <div class="message-text">
+
+                    ${escapeHTML(
+                        data.text
                     )}
+
+                </div>
+
+
+                <div class="message-meta">
+
+                    ${timeText(
+                        data.timestamp
+                    )}
+
+                    ${
+                        mine
+                            ? `
+                                <span
+                                    class="${
+                                        read
+                                            ? "read"
+                                            : ""
+                                    }"
+                                >
+                                    ${
+                                        read
+                                            ? "✓✓"
+                                            : "✓"
+                                    }
+                                </span>
+                              `
+                            : ""
+                    }
 
                 </div>
 
             `;
 
+
+            row.appendChild(
+                bubble
+            );
+
+
+            container.appendChild(
+                row
+            );
+
         }
-
-
-        bubble.innerHTML = `
-
-            ${senderHtml}
-
-            <div class="message-text">
-
-                ${escapeHtml(
-                    data.text || ""
-                )}
-
-            </div>
-
-            <div class="message-meta">
-
-                ${formatTime(
-                    data.timestamp
-                )}
-
-                ${
-                    mine
-                        ? `
-                        <span
-                            class="${
-                                data.readBy &&
-                                data.readBy.length > 1
-                                    ? "read"
-                                    : ""
-                            }"
-                        >
-                            ${
-                                data.readBy &&
-                                data.readBy.length > 1
-                                    ? "✓✓"
-                                    : "✓"
-                            }
-                        </span>
-                        `
-                        : ""
-                }
-
-            </div>
-
-        `;
-
-
-        row.appendChild(
-            bubble
-        );
-
-
-        container.appendChild(
-            row
-        );
-
-    });
+    );
 
 
     container.scrollTop =
@@ -2017,13 +2502,33 @@ function renderMessages(snapshot){
 }
 
 
-/* =========================================================
-   SEND MESSAGE IN CURRENT CHAT
-========================================================= */
+/* =====================================================
+   SEND CURRENT MESSAGE
+===================================================== */
 
-window.sendMessage = async function(){
+async function sendCurrentMessage(){
 
-    if(!currentChatId) return;
+    if(
+        !currentChatId
+    ){
+
+        return;
+
+    }
+
+
+    if(
+        !currentStaff
+    ){
+
+        alert(
+            "Staff information not found."
+        );
+
+        return;
+
+    }
+
 
     const input =
         document.getElementById(
@@ -2035,26 +2540,20 @@ window.sendMessage = async function(){
         input.value.trim();
 
 
-    if(!text) return;
-
-
-    if(!currentStaff){
-
-        alert(
-            "Staff profile not found."
-        );
+    if(!text){
 
         return;
 
     }
 
 
-    input.value = "";
+    input.value =
+        "";
 
 
     try{
 
-        const chatRef =
+        const chatReference =
             doc(
                 db,
                 "staffConversations",
@@ -2064,14 +2563,16 @@ window.sendMessage = async function(){
 
         const chatSnapshot =
             await getDoc(
-                chatRef
+                chatReference
             );
 
 
-        if(!chatSnapshot.exists()){
+        if(
+            !chatSnapshot.exists()
+        ){
 
             alert(
-                "Conversation no longer exists."
+                "Conversation not found."
             );
 
             return;
@@ -2083,7 +2584,7 @@ window.sendMessage = async function(){
             chatSnapshot.data();
 
 
-        const messageRef =
+        const messageReference =
             collection(
                 db,
                 "staffConversations",
@@ -2093,7 +2594,7 @@ window.sendMessage = async function(){
 
 
         await addDoc(
-            messageRef,
+            messageReference,
             {
 
                 senderId:
@@ -2102,7 +2603,8 @@ window.sendMessage = async function(){
                 senderName:
                     currentStaff.name,
 
-                text:text,
+                text:
+                    text,
 
                 timestamp:
                     serverTimestamp(),
@@ -2146,10 +2648,11 @@ window.sendMessage = async function(){
 
 
         await updateDoc(
-            chatRef,
+            chatReference,
             {
 
-                lastMessage:text,
+                lastMessage:
+                    text,
 
                 lastMessageTime:
                     serverTimestamp(),
@@ -2157,98 +2660,120 @@ window.sendMessage = async function(){
                 lastSenderId:
                     currentStaff.staffId,
 
+                lastSenderName:
+                    currentStaff.name,
+
                 unreadCounts:
                     unreadCounts
 
             }
         );
 
-
-    }catch(error){
+    }
+    catch(error){
 
         console.error(
-            "SEND MESSAGE ERROR:",
+            "SEND ERROR:",
             error
         );
 
 
         alert(
-            "Unable to send message.\n\n" +
+            "Message could not be sent.\n\n" +
             error.message
         );
 
-        input.value = text;
+
+        input.value =
+            text;
 
     }
 
-};
+}
 
 
-/* =========================================================
-   NEW MESSAGE
-========================================================= */
+/* =====================================================
+   OPEN NEW MESSAGE
+===================================================== */
 
-window.openNewMessage = function(){
+function openNewMessage(){
 
-    document.getElementById(
-        "newMessageModal"
-    )
-    .classList.add(
+    newMessageModal.classList.add(
         "show"
     );
 
 
-    recipientMode =
-        "individual";
+    resetNewMessage();
 
 
-    resetRecipient();
-
-
-    selectRecipientMode(
+    setRecipientMode(
         "individual"
     );
 
-
-    setTimeout(
-        () => {
-
-            document.getElementById(
-                "staffSearch"
-            ).focus();
-
-        },
-        100
-    );
-
-};
+}
 
 
-window.closeNewMessage = function(){
+function closeNewMessage(){
 
-    document.getElementById(
-        "newMessageModal"
-    )
-    .classList.remove(
+    newMessageModal.classList.remove(
         "show"
     );
 
-};
+}
 
 
-/* =========================================================
+function resetNewMessage(){
+
+    currentRecipient =
+        null;
+
+
+    document.getElementById(
+        "staffSearch"
+    ).value =
+        "";
+
+
+    document.getElementById(
+        "departmentSearch"
+    ).value =
+        "";
+
+
+    document.getElementById(
+        "newMessageText"
+    ).value =
+        "";
+
+
+    document.getElementById(
+        "selectedRecipient"
+    ).style.display =
+        "none";
+
+
+    renderStaffResults("");
+
+    renderDepartmentResults("");
+
+}
+
+
+/* =====================================================
    RECIPIENT MODE
-========================================================= */
+===================================================== */
 
-window.selectRecipientMode =
-function(mode){
+function setRecipientMode(
+    mode
+){
 
-    recipientMode = mode;
+    recipientMode =
+        mode;
 
 
     document
         .querySelectorAll(
-            ".recipient-tab"
+            ".tab"
         )
         .forEach(
             tab =>
@@ -2258,73 +2783,95 @@ function(mode){
         );
 
 
-    if(mode === "individual"){
+    document.getElementById(
+        "individualSection"
+    ).style.display =
+        "none";
+
+
+    document.getElementById(
+        "departmentSection"
+    ).style.display =
+        "none";
+
+
+    document.getElementById(
+        "allSection"
+    ).style.display =
+        "none";
+
+
+    if(
+        mode ===
+        "individual"
+    ){
 
         document.getElementById(
-            "tabIndividual"
-        ).classList.add("active");
+            "individualTab"
+        ).classList.add(
+            "active"
+        );
+
 
         document.getElementById(
             "individualSection"
-        ).style.display = "block";
+        ).style.display =
+            "block";
 
-        document.getElementById(
-            "departmentSection"
-        ).style.display = "none";
 
-        document.getElementById(
-            "allSection"
-        ).style.display = "none";
+        renderStaffResults("");
 
     }
 
 
-    if(mode === "department"){
+    if(
+        mode ===
+        "department"
+    ){
 
         document.getElementById(
-            "tabDepartment"
-        ).classList.add("active");
+            "departmentTab"
+        ).classList.add(
+            "active"
+        );
 
-        document.getElementById(
-            "individualSection"
-        ).style.display = "none";
 
         document.getElementById(
             "departmentSection"
-        ).style.display = "block";
+        ).style.display =
+            "block";
 
-        document.getElementById(
-            "allSection"
-        ).style.display = "none";
 
         renderDepartmentResults("");
 
     }
 
 
-    if(mode === "all"){
+    if(
+        mode ===
+        "all"
+    ){
 
         document.getElementById(
-            "tabAll"
-        ).classList.add("active");
+            "allTab"
+        ).classList.add(
+            "active"
+        );
 
-        document.getElementById(
-            "individualSection"
-        ).style.display = "none";
-
-        document.getElementById(
-            "departmentSection"
-        ).style.display = "none";
 
         document.getElementById(
             "allSection"
-        ).style.display = "block";
+        ).style.display =
+            "block";
+
 
         currentRecipient = {
 
-            type:"all",
+            type:
+                "all",
 
-            title:"All Staff"
+            title:
+                "All Staff"
 
         };
 
@@ -2333,28 +2880,16 @@ function(mode){
 
     updateSelectedRecipient();
 
-};
+}
 
 
-/* =========================================================
+/* =====================================================
    STAFF SEARCH
-========================================================= */
+===================================================== */
 
-document.getElementById(
-    "staffSearch"
-).addEventListener(
-    "input",
-    function(){
-
-        renderStaffResults(
-            this.value
-        );
-
-    }
-);
-
-
-function renderStaffResults(search){
+function renderStaffResults(
+    search
+){
 
     const container =
         document.getElementById(
@@ -2362,11 +2897,8 @@ function renderStaffResults(search){
         );
 
 
-    if(!container) return;
-
-
     const term =
-        safeString(search)
+        str(search)
             .trim()
             .toLowerCase();
 
@@ -2386,7 +2918,11 @@ function renderStaffResults(search){
                 }
 
 
-                if(!term) return true;
+                if(!term){
+
+                    return true;
+
+                }
 
 
                 return (
@@ -2420,12 +2956,18 @@ function renderStaffResults(search){
         );
 
 
-    if(!results.length){
+    if(
+        !results.length
+    ){
 
         container.innerHTML = `
+
             <div class="no-results">
+
                 No staff found.
+
             </div>
+
         `;
 
         return;
@@ -2433,7 +2975,8 @@ function renderStaffResults(search){
     }
 
 
-    container.innerHTML = "";
+    container.innerHTML =
+        "";
 
 
     results.forEach(
@@ -2446,29 +2989,30 @@ function renderStaffResults(search){
 
 
             div.className =
-                "result-item";
+                "result";
 
 
             div.innerHTML = `
 
                 <div class="result-title">
 
-                    ${escapeHtml(
+                    ${escapeHTML(
                         staff.name
                     )}
 
                 </div>
 
+
                 <div class="result-sub">
 
-                    ${escapeHtml(
+                    ${escapeHTML(
                         staff.staffId
                     )}
 
                     ${
                         staff.department
                             ? " • " +
-                              escapeHtml(
+                              escapeHTML(
                                   staff.department
                               )
                             : ""
@@ -2479,30 +3023,32 @@ function renderStaffResults(search){
             `;
 
 
-            div.onclick = () => {
+            div.onclick =
+                () => {
 
-                currentRecipient = {
+                    currentRecipient = {
 
-                    type:"individual",
+                        type:
+                            "individual",
 
-                    staffId:
-                        staff.staffId,
+                        staffId:
+                            staff.staffId,
 
-                    title:
-                        staff.name,
+                        name:
+                            staff.name,
 
-                    name:
-                        staff.name,
+                        title:
+                            staff.name,
 
-                    department:
-                        staff.department
+                        department:
+                            staff.department
+
+                    };
+
+
+                    updateSelectedRecipient();
 
                 };
-
-
-                updateSelectedRecipient();
-
-            };
 
 
             container.appendChild(
@@ -2515,23 +3061,9 @@ function renderStaffResults(search){
 }
 
 
-/* =========================================================
+/* =====================================================
    DEPARTMENT SEARCH
-========================================================= */
-
-document.getElementById(
-    "departmentSearch"
-).addEventListener(
-    "input",
-    function(){
-
-        renderDepartmentResults(
-            this.value
-        );
-
-    }
-);
-
+===================================================== */
 
 function getDepartments(){
 
@@ -2541,8 +3073,13 @@ function getDepartments(){
     allStaff.forEach(
         staff => {
 
-            if(!staff.department)
+            if(
+                !staff.department
+            ){
+
                 return;
+
+            }
 
 
             const key =
@@ -2550,20 +3087,26 @@ function getDepartments(){
                     .trim();
 
 
-            if(!map[key]){
+            if(
+                !map[key]
+            ){
 
                 map[key] = {
 
-                    name:key,
+                    name:
+                        key,
 
-                    count:0
+                    count:
+                        0
 
                 };
 
             }
 
 
-            if(staff.active){
+            if(
+                staff.active
+            ){
 
                 map[key].count++;
 
@@ -2573,18 +3116,22 @@ function getDepartments(){
     );
 
 
-    return Object.values(map)
-        .sort(
-            (a,b) =>
-                a.name.localeCompare(
-                    b.name
-                )
-        );
+    return Object.values(
+        map
+    )
+    .sort(
+        (a,b) =>
+            a.name.localeCompare(
+                b.name
+            )
+    );
 
 }
 
 
-function renderDepartmentResults(search){
+function renderDepartmentResults(
+    search
+){
 
     const container =
         document.getElementById(
@@ -2592,11 +3139,8 @@ function renderDepartmentResults(search){
         );
 
 
-    if(!container) return;
-
-
     const term =
-        safeString(search)
+        str(search)
             .trim()
             .toLowerCase();
 
@@ -2609,8 +3153,8 @@ function renderDepartmentResults(search){
 
         departments =
             departments.filter(
-                dept =>
-                    dept.name
+                department =>
+                    department.name
                         .toLowerCase()
                         .includes(term)
             );
@@ -2618,12 +3162,18 @@ function renderDepartmentResults(search){
     }
 
 
-    if(!departments.length){
+    if(
+        !departments.length
+    ){
 
         container.innerHTML = `
+
             <div class="no-results">
+
                 No department found.
+
             </div>
+
         `;
 
         return;
@@ -2631,7 +3181,8 @@ function renderDepartmentResults(search){
     }
 
 
-    container.innerHTML = "";
+    container.innerHTML =
+        "";
 
 
     departments.forEach(
@@ -2644,24 +3195,23 @@ function renderDepartmentResults(search){
 
 
             div.className =
-                "result-item";
+                "result";
 
 
             div.innerHTML = `
 
                 <div class="result-title">
 
-                    🏢 ${escapeHtml(
+                    🏢 ${escapeHTML(
                         department.name
                     )}
 
                 </div>
 
+
                 <div class="result-sub">
 
-                    ${
-                        department.count
-                    }
+                    ${department.count}
                     active staff
 
                 </div>
@@ -2669,25 +3219,27 @@ function renderDepartmentResults(search){
             `;
 
 
-            div.onclick = () => {
+            div.onclick =
+                () => {
 
-                currentRecipient = {
+                    currentRecipient = {
 
-                    type:"department",
+                        type:
+                            "department",
 
-                    department:
-                        department.name,
+                        department:
+                            department.name,
 
-                    title:
-                        department.name +
-                        " Staff"
+                        title:
+                            department.name +
+                            " Staff"
+
+                    };
+
+
+                    updateSelectedRecipient();
 
                 };
-
-
-                updateSelectedRecipient();
-
-            };
 
 
             container.appendChild(
@@ -2700,13 +3252,13 @@ function renderDepartmentResults(search){
 }
 
 
-/* =========================================================
+/* =====================================================
    ALL STAFF COUNT
-========================================================= */
+===================================================== */
 
 function updateAllStaffCount(){
 
-    const activeCount =
+    const count =
         allStaff.filter(
             staff =>
                 staff.active &&
@@ -2718,38 +3270,32 @@ function updateAllStaffCount(){
         ).length;
 
 
-    const element =
-        document.getElementById(
-            "allStaffCount"
-        );
-
-
-    if(element){
-
-        element.textContent =
-            activeCount +
-            " active staff will receive this message.";
-
-    }
+    document.getElementById(
+        "allStaffCount"
+    ).textContent =
+        count +
+        " active staff will receive this message.";
 
 }
 
 
-/* =========================================================
+/* =====================================================
    SELECTED RECIPIENT
-========================================================= */
+===================================================== */
 
 function updateSelectedRecipient(){
 
-    const box =
+    const element =
         document.getElementById(
             "selectedRecipient"
         );
 
 
-    if(!currentRecipient){
+    if(
+        !currentRecipient
+    ){
 
-        box.style.display =
+        element.style.display =
             "none";
 
         return;
@@ -2757,7 +3303,7 @@ function updateSelectedRecipient(){
     }
 
 
-    box.style.display =
+    element.style.display =
         "block";
 
 
@@ -2766,15 +3312,20 @@ function updateSelectedRecipient(){
         "individual"
     ){
 
-        box.innerHTML =
-            "👤 Sending to: <strong>" +
-            escapeHtml(
+        element.innerHTML =
+
+            "👤 Sending to <strong>" +
+
+            escapeHTML(
                 currentRecipient.name
             ) +
+
             "</strong> (" +
-            escapeHtml(
+
+            escapeHTML(
                 currentRecipient.staffId
             ) +
+
             ")";
 
     }
@@ -2783,17 +3334,21 @@ function updateSelectedRecipient(){
         "department"
     ){
 
-        box.innerHTML =
-            "🏢 Sending to: <strong>" +
-            escapeHtml(
+        element.innerHTML =
+
+            "🏢 Sending to <strong>" +
+
+            escapeHTML(
                 currentRecipient.department
             ) +
+
             "</strong> staff";
 
     }
     else{
 
-        box.innerHTML =
+        element.innerHTML =
+
             "📢 Sending to <strong>ALL ACTIVE STAFF</strong>";
 
     }
@@ -2801,54 +3356,18 @@ function updateSelectedRecipient(){
 }
 
 
-/* =========================================================
-   RESET RECIPIENT
-========================================================= */
-
-function resetRecipient(){
-
-    currentRecipient = null;
-
-
-    document.getElementById(
-        "newMessageText"
-    ).value = "";
-
-
-    document.getElementById(
-        "staffSearch"
-    ).value = "";
-
-
-    document.getElementById(
-        "departmentSearch"
-    ).value = "";
-
-
-    document.getElementById(
-        "selectedRecipient"
-    ).style.display =
-        "none";
-
-
-    renderStaffResults("");
-
-    renderDepartmentResults("");
-
-}
-
-
-/* =========================================================
+/* =====================================================
    SEND NEW MESSAGE
-========================================================= */
+===================================================== */
 
-window.sendNewMessage =
-async function(){
+async function sendNewMessage(){
 
-    if(!currentStaff){
+    if(
+        !currentStaff
+    ){
 
         alert(
-            "Your staff profile could not be identified."
+            "Staff information not found."
         );
 
         return;
@@ -2875,7 +3394,9 @@ async function(){
     }
 
 
-    if(!currentRecipient){
+    if(
+        !currentRecipient
+    ){
 
         alert(
             "Please select a recipient."
@@ -2888,42 +3409,46 @@ async function(){
 
     try{
 
-        let participantStaff = [];
+        let recipients = [];
 
 
-        /*
-         INDIVIDUAL
-        */
+        /* INDIVIDUAL */
 
         if(
             currentRecipient.type ===
             "individual"
         ){
 
-            participantStaff = [
-
-                currentStaff,
-
+            const target =
                 staffMap[
                     currentRecipient.staffId
-                ]
+                ];
 
-            ].filter(Boolean);
 
+            if(target){
+
+                recipients.push(
+                    target
+                );
+
+            }
+
+
+            recipients.push(
+                currentStaff
+            );
 
         }
 
 
-        /*
-         DEPARTMENT
-        */
+        /* DEPARTMENT */
 
-        else if(
+        if(
             currentRecipient.type ===
             "department"
         ){
 
-            participantStaff =
+            recipients =
                 allStaff.filter(
                     staff =>
 
@@ -2932,7 +3457,8 @@ async function(){
                         staff.department
                             .trim()
                             .toLowerCase() ===
-                        currentRecipient.department
+                        currentRecipient
+                            .department
                             .trim()
                             .toLowerCase()
 
@@ -2940,14 +3466,14 @@ async function(){
 
 
             if(
-                !participantStaff.some(
+                !recipients.some(
                     staff =>
                         staff.staffId ===
                         currentStaff.staffId
                 )
             ){
 
-                participantStaff.push(
+                recipients.push(
                     currentStaff
                 );
 
@@ -2956,16 +3482,14 @@ async function(){
         }
 
 
-        /*
-         ALL STAFF
-        */
+        /* ALL STAFF */
 
-        else if(
+        if(
             currentRecipient.type ===
             "all"
         ){
 
-            participantStaff =
+            recipients =
                 allStaff.filter(
                     staff =>
                         staff.active
@@ -2973,14 +3497,14 @@ async function(){
 
 
             if(
-                !participantStaff.some(
+                !recipients.some(
                     staff =>
                         staff.staffId ===
                         currentStaff.staffId
                 )
             ){
 
-                participantStaff.push(
+                recipients.push(
                     currentStaff
                 );
 
@@ -2989,8 +3513,8 @@ async function(){
         }
 
 
-        participantStaff =
-            participantStaff.filter(
+        recipients =
+            recipients.filter(
                 Boolean
             );
 
@@ -2998,7 +3522,7 @@ async function(){
         const participantIds =
             [
                 ...new Set(
-                    participantStaff.map(
+                    recipients.map(
                         staff =>
                             staff.staffId
                     )
@@ -3012,7 +3536,7 @@ async function(){
         ){
 
             alert(
-                "No valid staff recipients found."
+                "No valid recipient found."
             );
 
             return;
@@ -3020,17 +3544,15 @@ async function(){
         }
 
 
-        let chatId = "";
+        let chatId;
 
-        let title = "";
+        let title;
 
-        let type =
+        const type =
             currentRecipient.type;
 
 
-        /*
-         INDIVIDUAL CHAT ID
-        */
+        /* INDIVIDUAL */
 
         if(
             type ===
@@ -3038,9 +3560,13 @@ async function(){
         ){
 
             chatId =
-                conversationIdForIndividual(
+                [
                     currentStaff.staffId,
                     currentRecipient.staffId
+                ]
+                .sort()
+                .join(
+                    "__"
                 );
 
 
@@ -3050,23 +3576,11 @@ async function(){
         }
 
 
-        /*
-         DEPARTMENT / ALL
-        */
+        /* DEPARTMENT / ALL */
 
         else{
 
-            /*
-               Create a unique conversation
-               for every new broadcast.
-
-               This allows the sender to send
-               multiple All Staff messages
-               without mixing unrelated
-               conversations.
-            */
-
-            const conversationRef =
+            const newReference =
                 doc(
                     collection(
                         db,
@@ -3076,19 +3590,24 @@ async function(){
 
 
             chatId =
-                conversationRef.id;
+                newReference.id;
 
 
             title =
-                type === "all"
+                type ===
+                "all"
+
                     ? "All Staff"
-                    : currentRecipient.department +
-                      " Staff";
+
+                    :
+                currentRecipient
+                    .department +
+                " Staff";
 
         }
 
 
-        const chatRef =
+        const chatReference =
             doc(
                 db,
                 "staffConversations",
@@ -3096,40 +3615,32 @@ async function(){
             );
 
 
-        /*
-           For individual existing chat,
-           get existing unread counts.
-        */
-
-        let existing = null;
+        let existingData =
+            null;
 
 
-        try{
-
-            const existingSnapshot =
-                await getDoc(
-                    chatRef
-                );
+        const existingSnapshot =
+            await getDoc(
+                chatReference
+            );
 
 
-            if(
-                existingSnapshot.exists()
-            ){
+        if(
+            existingSnapshot.exists()
+        ){
 
-                existing =
-                    existingSnapshot.data();
+            existingData =
+                existingSnapshot.data();
 
-            }
-
-        }catch(e){}
+        }
 
 
         const unreadCounts =
             {
                 ...(
-                    existing &&
-                    existing.unreadCounts
-                        ? existing.unreadCounts
+                    existingData &&
+                    existingData.unreadCounts
+                        ? existingData.unreadCounts
                         : {}
                 )
             };
@@ -3138,11 +3649,14 @@ async function(){
         participantIds.forEach(
             id => {
 
-                unreadCounts[id] =
-                    Number(
-                        unreadCounts[id] ||
-                        0
-                    );
+                if(
+                    !unreadCounts[id]
+                ){
+
+                    unreadCounts[id] =
+                        0;
+
+                }
 
             }
         );
@@ -3156,11 +3670,7 @@ async function(){
                     currentStaff.staffId
                 ){
 
-                    unreadCounts[id] =
-                        Number(
-                            unreadCounts[id] ||
-                            0
-                        ) + 1;
+                    unreadCounts[id]++;
 
                 }
 
@@ -3169,18 +3679,20 @@ async function(){
 
 
         await setDoc(
-            chatRef,
+            chatReference,
             {
 
-                title:title,
+                title:
+                    title,
 
-                type:type,
+                type:
+                    type,
 
                 participantIds:
                     participantIds,
 
                 participantNames:
-                    participantStaff.map(
+                    recipients.map(
                         staff =>
                             staff.name
                     ),
@@ -3189,7 +3701,8 @@ async function(){
                     currentRecipient.department ||
                     "",
 
-                lastMessage:text,
+                lastMessage:
+                    text,
 
                 lastSenderId:
                     currentStaff.staffId,
@@ -3207,29 +3720,27 @@ async function(){
                     currentStaff.staffId,
 
                 createdAt:
-                    existing &&
-                    existing.createdAt
-                        ? existing.createdAt
+                    existingData &&
+                    existingData.createdAt
+                        ? existingData.createdAt
                         : serverTimestamp()
 
             },
+
             {
                 merge:true
             }
+
         );
 
 
-        const messagesRef =
+        await addDoc(
             collection(
                 db,
                 "staffConversations",
                 chatId,
                 "messages"
-            );
-
-
-        await addDoc(
-            messagesRef,
+            ),
             {
 
                 senderId:
@@ -3238,14 +3749,16 @@ async function(){
                 senderName:
                     currentStaff.name,
 
-                text:text,
+                text:
+                    text,
 
                 timestamp:
                     serverTimestamp(),
 
-                readBy:[
-                    currentStaff.staffId
-                ]
+                readBy:
+                    [
+                        currentStaff.staffId
+                    ]
 
             }
         );
@@ -3253,10 +3766,6 @@ async function(){
 
         closeNewMessage();
 
-
-        /*
-           Open the newly created conversation.
-        */
 
         setTimeout(
             () => {
@@ -3269,8 +3778,8 @@ async function(){
             500
         );
 
-
-    }catch(error){
+    }
+    catch(error){
 
         console.error(
             "NEW MESSAGE ERROR:",
@@ -3279,45 +3788,136 @@ async function(){
 
 
         alert(
-            "Message could not be sent.\n\n" +
+            "Unable to send message.\n\n" +
             error.message
         );
 
     }
 
-};
+}
 
 
-/* =========================================================
-   CONVERSATION SEARCH
-========================================================= */
+/* =====================================================
+   EVENTS
+===================================================== */
 
 document.getElementById(
-    "conversationSearch"
-).addEventListener(
+    "newMessageButton"
+)
+.addEventListener(
+    "click",
+    openNewMessage
+);
+
+
+document.getElementById(
+    "closeModal"
+)
+.addEventListener(
+    "click",
+    closeNewMessage
+);
+
+
+document.getElementById(
+    "cancelModal"
+)
+.addEventListener(
+    "click",
+    closeNewMessage
+);
+
+
+document.getElementById(
+    "individualTab"
+)
+.addEventListener(
+    "click",
+    () =>
+        setRecipientMode(
+            "individual"
+        )
+);
+
+
+document.getElementById(
+    "departmentTab"
+)
+.addEventListener(
+    "click",
+    () =>
+        setRecipientMode(
+            "department"
+        )
+);
+
+
+document.getElementById(
+    "allTab"
+)
+.addEventListener(
+    "click",
+    () =>
+        setRecipientMode(
+            "all"
+        );
+
+
+document.getElementById(
+    "staffSearch"
+)
+.addEventListener(
+    "input",
+    event =>
+        renderStaffResults(
+            event.target.value
+        )
+);
+
+
+document.getElementById(
+    "departmentSearch"
+)
+.addEventListener(
+    "input",
+    event =>
+        renderDepartmentResults(
+            event.target.value
+        )
+);
+
+
+conversationSearch.addEventListener(
     "input",
     renderConversations
 );
 
 
-/* =========================================================
-   ENTER TO SEND
-========================================================= */
+document.getElementById(
+    "sendButton"
+)
+.addEventListener(
+    "click",
+    sendCurrentMessage
+);
+
 
 document.getElementById(
     "messageInput"
-).addEventListener(
+)
+.addEventListener(
     "keydown",
-    function(event){
+    event => {
 
         if(
-            event.key === "Enter" &&
+            event.key ===
+            "Enter" &&
             !event.shiftKey
         ){
 
             event.preventDefault();
 
-            sendMessage();
+            sendCurrentMessage();
 
         }
 
@@ -3325,28 +3925,49 @@ document.getElementById(
 );
 
 
-/* =========================================================
-   MOBILE BACK
-========================================================= */
-
-window.closeMobileChat =
-function(){
-
-    document.getElementById(
-        "app"
-    ).classList.remove(
-        "chat-open"
-    );
-
-};
+document.getElementById(
+    "sendNewButton"
+)
+.addEventListener(
+    "click",
+    sendNewMessage
+);
 
 
-/* =========================================================
-   INITIAL
-========================================================= */
+document.getElementById(
+    "mobileBack"
+)
+.addEventListener(
+    "click",
+    () => {
 
-window.selectRecipientMode =
-    window.selectRecipientMode;
+        appElement.classList.remove(
+            "chat-open"
+        );
+
+    }
+);
+
+
+/* =====================================================
+   CLOSE MODAL WHEN CLICKING OUTSIDE
+===================================================== */
+
+newMessageModal.addEventListener(
+    "click",
+    event => {
+
+        if(
+            event.target ===
+            newMessageModal
+        ){
+
+            closeNewMessage();
+
+        }
+
+    }
+);
 
 </script>
 
