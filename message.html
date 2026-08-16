@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Staff Messages</title>
+<title>Staff Messaging System</title>
 
 <style>
 *{
@@ -19,6 +19,7 @@ body{
     color:#1f2937;
 }
 
+/* HEADER */
 .header{
     background:#1e3a8a;
     color:white;
@@ -31,12 +32,13 @@ body{
 
 .header p{
     margin-top:5px;
-    opacity:.9;
     font-size:14px;
+    opacity:.9;
 }
 
+/* MAIN */
 .container{
-    max-width:1250px;
+    max-width:1300px;
     margin:25px auto;
     padding:0 18px;
 }
@@ -47,6 +49,7 @@ body{
     gap:20px;
 }
 
+/* CARDS */
 .card{
     background:white;
     border-radius:12px;
@@ -54,18 +57,19 @@ body{
 }
 
 .left{
-    min-height:650px;
+    min-height:680px;
 }
 
 .right{
-    min-height:650px;
+    min-height:680px;
 }
 
+/* STAFF LIST */
 .card-header{
     padding:18px;
     border-bottom:1px solid #e5e7eb;
-    font-weight:bold;
     font-size:17px;
+    font-weight:bold;
 }
 
 .staff-search{
@@ -75,14 +79,18 @@ body{
 
 .staff-search input{
     width:100%;
-    padding:10px;
+    padding:11px;
     border:1px solid #d1d5db;
     border-radius:7px;
     outline:none;
 }
 
+.staff-search input:focus{
+    border-color:#2563eb;
+}
+
 .staff-list{
-    max-height:560px;
+    max-height:590px;
     overflow-y:auto;
 }
 
@@ -91,8 +99,8 @@ body{
     border-bottom:1px solid #f0f0f0;
     cursor:pointer;
     display:flex;
-    justify-content:space-between;
     align-items:center;
+    justify-content:space-between;
 }
 
 .staff-item:hover{
@@ -104,33 +112,74 @@ body{
 }
 
 .staff-name{
-    font-weight:bold;
     font-size:14px;
+    font-weight:bold;
 }
 
 .staff-info{
+    margin-top:4px;
     font-size:12px;
     color:#6b7280;
-    margin-top:3px;
 }
 
 .unread{
-    background:#dc2626;
-    color:white;
     min-width:22px;
     height:22px;
+    padding:0 6px;
     border-radius:50%;
+    background:#dc2626;
+    color:white;
     display:flex;
-    justify-content:center;
     align-items:center;
+    justify-content:center;
     font-size:11px;
     font-weight:bold;
 }
 
+/* COMPOSE */
 .compose{
     padding:20px;
 }
 
+.top-actions{
+    display:flex;
+    gap:10px;
+    margin-bottom:20px;
+}
+
+.action-btn{
+    padding:10px 15px;
+    border:none;
+    border-radius:7px;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+.inbox-btn{
+    background:#2563eb;
+    color:white;
+}
+
+.sent-btn{
+    background:#e5e7eb;
+    color:#111827;
+}
+
+.count{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    min-width:20px;
+    height:20px;
+    margin-left:5px;
+    padding:0 5px;
+    background:#dc2626;
+    color:white;
+    border-radius:50%;
+    font-size:10px;
+}
+
+/* TABS */
 .recipient-tabs{
     display:flex;
     gap:8px;
@@ -142,7 +191,7 @@ body{
     padding:10px 15px;
     border:1px solid #d1d5db;
     border-radius:7px;
-    background:#fff;
+    background:white;
     cursor:pointer;
     font-weight:bold;
     font-size:13px;
@@ -150,24 +199,25 @@ body{
 
 .tab.active{
     background:#2563eb;
-    color:white;
     border-color:#2563eb;
+    color:white;
 }
 
+/* FORM */
 .group{
-    margin-bottom:16px;
+    margin-bottom:17px;
 }
 
 .group label{
     display:block;
-    font-weight:bold;
-    font-size:13px;
     margin-bottom:7px;
+    font-size:13px;
+    font-weight:bold;
 }
 
+input,
 select,
-textarea,
-input{
+textarea{
     width:100%;
     padding:11px;
     border:1px solid #d1d5db;
@@ -176,20 +226,80 @@ input{
     font-size:14px;
 }
 
+input:focus,
+select:focus,
+textarea:focus{
+    border-color:#2563eb;
+}
+
 textarea{
     min-height:140px;
     resize:vertical;
 }
 
-select:focus,
-textarea:focus,
-input:focus{
-    border-color:#2563eb;
+/* SEARCHABLE STAFF */
+.staff-picker{
+    position:relative;
 }
 
+.staff-picker input[type="text"]{
+    width:100%;
+}
+
+.staff-results{
+    position:absolute;
+    left:0;
+    right:0;
+    top:100%;
+    background:white;
+    border:1px solid #d1d5db;
+    border-radius:0 0 8px 8px;
+    max-height:280px;
+    overflow-y:auto;
+    z-index:1000;
+    box-shadow:0 6px 18px rgba(0,0,0,.15);
+    display:none;
+}
+
+.staff-results.show{
+    display:block;
+}
+
+.staff-result-item{
+    padding:12px;
+    border-bottom:1px solid #f0f0f0;
+    cursor:pointer;
+}
+
+.staff-result-item:hover{
+    background:#eff6ff;
+}
+
+.staff-result-name{
+    font-size:14px;
+    font-weight:bold;
+}
+
+.staff-result-info{
+    margin-top:4px;
+    color:#6b7280;
+    font-size:12px;
+}
+
+.selected-staff{
+    display:none;
+    margin-top:7px;
+    padding:8px 10px;
+    border-radius:6px;
+    background:#dcfce7;
+    color:#166534;
+    font-size:13px;
+}
+
+/* BUTTONS */
 .btn{
     padding:11px 20px;
-    border:0;
+    border:none;
     border-radius:7px;
     cursor:pointer;
     font-weight:bold;
@@ -204,16 +314,22 @@ input:focus{
     background:#1d4ed8;
 }
 
+.send:disabled{
+    opacity:.6;
+    cursor:not-allowed;
+}
+
 .clear{
     background:#e5e7eb;
     margin-left:8px;
 }
 
+/* ALERT */
 .message{
+    display:none;
     padding:12px;
     margin-top:15px;
     border-radius:7px;
-    display:none;
     font-size:13px;
 }
 
@@ -236,6 +352,7 @@ input:focus{
     color:#1e40af;
 }
 
+/* CONVERSATION */
 .conversation{
     display:none;
 }
@@ -246,6 +363,7 @@ input:focus{
 
 .conversation-header{
     padding:18px;
+    border-top:1px solid #e5e7eb;
     border-bottom:1px solid #e5e7eb;
 }
 
@@ -254,9 +372,9 @@ input:focus{
 }
 
 .conversation-header p{
+    margin-top:4px;
     font-size:12px;
     color:#6b7280;
-    margin-top:4px;
 }
 
 .messages{
@@ -280,6 +398,7 @@ input:focus{
     border-radius:10px;
     background:white;
     box-shadow:0 1px 4px rgba(0,0,0,.08);
+    word-break:break-word;
 }
 
 .msg.mine .msg-bubble{
@@ -287,16 +406,15 @@ input:focus{
 }
 
 .msg-sender{
+    margin-bottom:5px;
     font-size:11px;
     font-weight:bold;
-    margin-bottom:5px;
-    color:#374151;
 }
 
 .msg-time{
-    font-size:10px;
-    color:#6b7280;
     margin-top:5px;
+    color:#6b7280;
+    font-size:10px;
 }
 
 .reply{
@@ -312,58 +430,24 @@ input:focus{
 }
 
 .reply button{
-    align-self:flex-end;
     height:45px;
+    align-self:flex-end;
 }
 
+/* EMPTY / LOADING */
 .empty{
+    padding:40px 15px;
     text-align:center;
     color:#6b7280;
-    padding:40px 15px;
 }
 
 .loading{
-    text-align:center;
     padding:30px;
+    text-align:center;
     color:#6b7280;
 }
 
-.top-actions{
-    display:flex;
-    gap:10px;
-    margin-bottom:20px;
-}
-
-.action-btn{
-    padding:10px 14px;
-    border-radius:7px;
-    border:0;
-    cursor:pointer;
-    font-weight:bold;
-}
-
-.inbox-btn{
-    background:#2563eb;
-    color:white;
-}
-
-.sent-btn{
-    background:#e5e7eb;
-}
-
-.count{
-    display:inline-flex;
-    min-width:20px;
-    height:20px;
-    align-items:center;
-    justify-content:center;
-    background:#dc2626;
-    color:#fff;
-    border-radius:50%;
-    font-size:10px;
-    margin-left:5px;
-}
-
+/* MOBILE */
 @media(max-width:850px){
 
     .layout{
@@ -375,7 +459,7 @@ input:focus{
     }
 
     .staff-list{
-        max-height:300px;
+        max-height:320px;
     }
 
     .right{
@@ -385,261 +469,57 @@ input:focus{
     .messages{
         height:400px;
     }
+
+    .msg{
+        max-width:90%;
+    }
 }
 </style>
 </head>
 
 <body>
 
+<!-- HEADER -->
 <div class="header">
+
     <h1>💬 Staff Messaging</h1>
-    <p>Send messages to individual staff, departments or all staff</p>
+
+    <p>
+        Send messages to individual staff, departments or all staff
+    </p>
+
 </div>
+
 
 <div class="container">
 
-    <div class="layout">
+<div class="layout">
 
-        <!-- LEFT -->
-        <div class="card left">
+<!-- =====================================================
+     LEFT STAFF LIST
+===================================================== -->
 
-            <div class="card-header">
-                Staff
-            </div>
+<div class="card left">
 
-            <div class="staff-search">
-                <input
-                    type="text"
-                    id="staffSearch"
-                    placeholder="Search staff...">
-            </div>
+    <div class="card-header">
+        👥 Staff List
+    </div>
 
-            <div
-                id="staffList"
-                class="staff-list">
+    <div class="staff-search">
 
-                <div class="loading">
-                    Loading staff...
-                </div>
+        <input
+            type="text"
+            id="staffSearch"
+            placeholder="Search staff...">
 
-            </div>
+    </div>
 
-        </div>
+    <div
+        id="staffList"
+        class="staff-list">
 
-
-        <!-- RIGHT -->
-        <div class="card right">
-
-            <div class="compose">
-
-                <div class="top-actions">
-
-                    <button
-                        id="inboxBtn"
-                        class="action-btn inbox-btn">
-
-                        📥 Inbox
-                        <span
-                            id="unreadCount"
-                            class="count"
-                            style="display:none">
-                            0
-                        </span>
-
-                    </button>
-
-                    <button
-                        id="sentBtn"
-                        class="action-btn sent-btn">
-
-                        📤 Sent
-
-                    </button>
-
-                </div>
-
-
-                <div class="recipient-tabs">
-
-                    <button
-                        class="tab active"
-                        data-type="individual">
-
-                        👤 Individual Staff
-
-                    </button>
-
-                    <button
-                        class="tab"
-                        data-type="department">
-
-                        🏢 Department Staff
-
-                    </button>
-
-                    <button
-                        class="tab"
-                        data-type="all">
-
-                        📢 All Staff
-
-                    </button>
-
-                </div>
-
-
-                <!-- INDIVIDUAL -->
-
-                <div
-                    id="individualBox">
-
-                    <div class="group">
-
-                        <label>
-                            Select Staff
-                        </label>
-
-                        <select id="individualStaff">
-
-                            <option value="">
-                                Select Staff
-                            </option>
-
-                        </select>
-
-                    </div>
-
-                </div>
-
-
-                <!-- DEPARTMENT -->
-
-                <div
-                    id="departmentBox"
-                    style="display:none">
-
-                    <div class="group">
-
-                        <label>
-                            Select Department
-                        </label>
-
-                        <select id="departmentSelect">
-
-                            <option value="">
-                                Select Department
-                            </option>
-
-                        </select>
-
-                    </div>
-
-                </div>
-
-
-                <!-- ALL -->
-
-                <div
-                    id="allBox"
-                    style="display:none">
-
-                    <div class="message show info">
-
-                        📢 This message will be sent to
-                        <b>all active staff</b>.
-
-                    </div>
-
-                </div>
-
-
-                <div class="group">
-
-                    <label>
-                        Message
-                    </label>
-
-                    <textarea
-                        id="messageText"
-                        placeholder="Type your message..."></textarea>
-
-                </div>
-
-
-                <button
-                    id="sendBtn"
-                    class="btn send">
-
-                    SEND MESSAGE
-
-                </button>
-
-
-                <button
-                    id="clearBtn"
-                    class="btn clear">
-
-                    CLEAR
-
-                </button>
-
-
-                <div
-                    id="sendMessage"
-                    class="message">
-                </div>
-
-            </div>
-
-
-            <!-- CONVERSATION -->
-
-            <div
-                id="conversation"
-                class="conversation">
-
-                <div
-                    class="conversation-header">
-
-                    <h2 id="conversationTitle">
-                        Messages
-                    </h2>
-
-                    <p id="conversationInfo">
-                    </p>
-
-                </div>
-
-
-                <div
-                    id="messages"
-                    class="messages">
-
-                    <div class="empty">
-                        No messages
-                    </div>
-
-                </div>
-
-
-                <div class="reply">
-
-                    <textarea
-                        id="replyText"
-                        placeholder="Write a reply..."></textarea>
-
-                    <button
-                        id="replyBtn"
-                        class="btn send">
-
-                        Send
-
-                    </button>
-
-                </div>
-
-            </div>
-
+        <div class="loading">
+            Loading staff...
         </div>
 
     </div>
@@ -647,16 +527,291 @@ input:focus{
 </div>
 
 
-<script type="module">
+<!-- =====================================================
+     RIGHT SIDE
+===================================================== -->
 
-/* =========================================================
-   FIREBASE
-========================================================= */
+<div class="card right">
+
+<div class="compose">
+
+    <!-- INBOX / SENT -->
+
+    <div class="top-actions">
+
+        <button
+            id="inboxBtn"
+            class="action-btn inbox-btn">
+
+            📥 Inbox
+
+            <span
+                id="unreadCount"
+                class="count"
+                style="display:none">
+
+                0
+
+            </span>
+
+        </button>
+
+
+        <button
+            id="sentBtn"
+            class="action-btn sent-btn">
+
+            📤 Sent
+
+        </button>
+
+    </div>
+
+
+    <!-- RECIPIENT TYPES -->
+
+    <div class="recipient-tabs">
+
+        <button
+            class="tab active"
+            data-type="individual">
+
+            👤 Individual Staff
+
+        </button>
+
+
+        <button
+            class="tab"
+            data-type="department">
+
+            🏢 Department Staff
+
+        </button>
+
+
+        <button
+            class="tab"
+            data-type="all">
+
+            📢 All Staff
+
+        </button>
+
+    </div>
+
+
+    <!-- =================================================
+         INDIVIDUAL STAFF
+    ================================================== -->
+
+    <div
+        id="individualBox">
+
+        <div class="group">
+
+            <label>
+                Select Staff
+            </label>
+
+
+            <div class="staff-picker">
+
+                <input
+                    type="text"
+                    id="individualStaffSearch"
+                    placeholder="Type staff name or Staff ID..."
+                    autocomplete="off">
+
+
+                <!-- Hidden selected staff ID -->
+
+                <input
+                    type="hidden"
+                    id="individualStaff">
+
+
+                <div
+                    id="individualStaffResults"
+                    class="staff-results">
+                </div>
+
+            </div>
+
+
+            <div
+                id="selectedStaffDisplay"
+                class="selected-staff">
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =================================================
+         DEPARTMENT STAFF
+    ================================================== -->
+
+    <div
+        id="departmentBox"
+        style="display:none">
+
+        <div class="group">
+
+            <label>
+                Select Department
+            </label>
+
+            <select
+                id="departmentSelect">
+
+                <option value="">
+                    Select Department
+                </option>
+
+            </select>
+
+        </div>
+
+    </div>
+
+
+    <!-- =================================================
+         ALL STAFF
+    ================================================== -->
+
+    <div
+        id="allBox"
+        style="display:none">
+
+        <div class="message show info">
+
+            📢 This message will be sent to
+            <b>all active staff</b>.
+
+        </div>
+
+    </div>
+
+
+    <!-- MESSAGE -->
+
+    <div class="group">
+
+        <label>
+            Message
+        </label>
+
+        <textarea
+            id="messageText"
+            placeholder="Type your message..."></textarea>
+
+    </div>
+
+
+    <button
+        id="sendBtn"
+        class="btn send">
+
+        SEND MESSAGE
+
+    </button>
+
+
+    <button
+        id="clearBtn"
+        class="btn clear">
+
+        CLEAR
+
+    </button>
+
+
+    <div
+        id="sendMessage"
+        class="message">
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     CONVERSATION
+===================================================== -->
+
+<div
+    id="conversation"
+    class="conversation">
+
+    <div
+        class="conversation-header">
+
+        <h2
+            id="conversationTitle">
+
+            Messages
+
+        </h2>
+
+        <p
+            id="conversationInfo">
+        </p>
+
+    </div>
+
+
+    <div
+        id="messages"
+        class="messages">
+
+        <div class="empty">
+
+            No messages
+
+        </div>
+
+    </div>
+
+
+    <div class="reply">
+
+        <textarea
+            id="replyText"
+            placeholder="Write a reply..."></textarea>
+
+
+        <button
+            id="replyBtn"
+            class="btn send">
+
+            Send
+
+        </button>
+
+    </div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+
+<!-- =====================================================
+     FIREBASE
+===================================================== -->
+
+<script type="module">
 
 import {
     initializeApp
 }
-from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+from
+"https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
 
 import {
     getFirestore,
@@ -665,14 +820,18 @@ import {
     addDoc,
     query,
     where,
-    orderBy,
     onSnapshot,
     doc,
     updateDoc,
     serverTimestamp
 }
-from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+from
+"https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
+
+/* =====================================================
+   FIREBASE CONFIG
+===================================================== */
 
 const firebaseConfig = {
 
@@ -698,71 +857,109 @@ const firebaseConfig = {
 
 
 const app =
-    initializeApp(firebaseConfig);
+    initializeApp(
+        firebaseConfig
+    );
+
 
 const db =
     getFirestore(app);
 
 
-/* =========================================================
-   VARIABLES
-========================================================= */
+/* =====================================================
+   GLOBAL VARIABLES
+===================================================== */
 
 let currentStaff = null;
 
 let allStaff = [];
 
-let currentType = "individual";
+let currentType =
+    "individual";
 
-let selectedConversationStaff = null;
+let selectedConversationStaff =
+    null;
 
-let unsubscribeInbox = null;
+let unsubscribeInbox =
+    null;
 
-let unsubscribeConversation = null;
-
-
-/* =========================================================
-   HELPERS
-========================================================= */
-
-const $ =
-    id => document.getElementById(id);
+let unsubscribeConversation =
+    null;
 
 
-function clean(v){
+/* =====================================================
+   SHORTCUT
+===================================================== */
 
-    return String(v ?? "").trim();
+function $(id){
 
-}
-
-
-function upper(v){
-
-    return clean(v).toUpperCase();
+    return document.getElementById(id);
 
 }
 
 
-function esc(v){
+/* =====================================================
+   CLEAN TEXT
+===================================================== */
 
-    return String(v ?? "")
+function clean(value){
 
-        .replace(/&/g,"&amp;")
-
-        .replace(/</g,"&lt;")
-
-        .replace(/>/g,"&gt;")
-
-        .replace(/"/g,"&quot;")
-
-        .replace(/'/g,"&#039;");
+    return String(
+        value ?? ""
+    ).trim();
 
 }
 
+
+function upper(value){
+
+    return clean(
+        value
+    ).toUpperCase();
+
+}
+
+
+/* =====================================================
+   HTML ESCAPE
+===================================================== */
+
+function esc(value){
+
+    return String(
+        value ?? ""
+    )
+    .replace(
+        /&/g,
+        "&amp;"
+    )
+    .replace(
+        /</g,
+        "&lt;"
+    )
+    .replace(
+        />/g,
+        "&gt;"
+    )
+    .replace(
+        /"/g,
+        "&quot;"
+    )
+    .replace(
+        /'/g,
+        "&#039;"
+    );
+
+}
+
+
+/* =====================================================
+   SHOW MESSAGE
+===================================================== */
 
 function showMessage(
     text,
-    type="success"
+    type
 ){
 
     const box =
@@ -778,6 +975,10 @@ function showMessage(
 }
 
 
+/* =====================================================
+   HIDE MESSAGE
+===================================================== */
+
 function hideMessage(){
 
     $("sendMessage")
@@ -787,9 +988,9 @@ function hideMessage(){
 }
 
 
-/* =========================================================
-   GET LOGGED IN STAFF
-========================================================= */
+/* =====================================================
+   GET STAFF SESSION
+===================================================== */
 
 function getLoggedInStaff(){
 
@@ -813,18 +1014,32 @@ function getLoggedInStaff(){
         try{
 
             const raw =
-                localStorage.getItem(key) ||
-                sessionStorage.getItem(key);
+
+                localStorage.getItem(
+                    key
+                )
+
+                ||
+
+                sessionStorage.getItem(
+                    key
+                );
+
 
             if(!raw)
                 continue;
 
+
             const data =
-                JSON.parse(raw);
+                JSON.parse(
+                    raw
+                );
+
 
             if(
                 data &&
-                typeof data === "object"
+                typeof data ===
+                "object"
             ){
 
                 return data;
@@ -832,7 +1047,12 @@ function getLoggedInStaff(){
             }
 
         }
-        catch(e){
+        catch(error){
+
+            console.warn(
+                "Session parse error:",
+                error
+            );
 
         }
 
@@ -855,13 +1075,24 @@ function getLoggedInStaff(){
     ){
 
         const id =
-            localStorage.getItem(key) ||
-            sessionStorage.getItem(key);
+
+            localStorage.getItem(
+                key
+            )
+
+            ||
+
+            sessionStorage.getItem(
+                key
+            );
+
 
         if(id){
 
             return {
+
                 staffId:id
+
             };
 
         }
@@ -874,54 +1105,62 @@ function getLoggedInStaff(){
 }
 
 
-/* =========================================================
+/* =====================================================
    STAFF FIELD HELPERS
-========================================================= */
+===================================================== */
 
-function getStaffId(d){
+function getStaffId(data){
 
     return clean(
 
-        d.staffId ??
-        d.staffID ??
-        d.staff_id ??
-        d.id
+        data.staffId ??
+
+        data.staffID ??
+
+        data.staff_id ??
+
+        data.id
 
     );
 
 }
 
 
-function getStaffName(d){
+function getStaffName(data){
 
     return clean(
 
-        d.staffName ??
-        d.name ??
-        d.staff_name ??
-        d.displayName
+        data.staffName ??
+
+        data.name ??
+
+        data.staff_name ??
+
+        data.displayName
 
     );
 
 }
 
 
-function getDepartment(d){
+function getDepartment(data){
 
     return clean(
 
-        d.department ??
-        d.dept ??
-        d.departmentName
+        data.department ??
+
+        data.dept ??
+
+        data.departmentName
 
     );
 
 }
 
 
-/* =========================================================
+/* =====================================================
    LOAD CURRENT STAFF
-========================================================= */
+===================================================== */
 
 async function loadCurrentStaff(){
 
@@ -941,11 +1180,15 @@ async function loadCurrentStaff(){
 
 
     const id =
+
         clean(
 
             session.staffId ??
+
             session.staffID ??
+
             session.staff_id ??
+
             session.id
 
         );
@@ -967,24 +1210,35 @@ async function loadCurrentStaff(){
         staffId:id,
 
         staffName:
+
             clean(
+
                 session.staffName ??
+
                 session.name ??
+
                 session.staff_name
+
             ),
 
         department:
+
             clean(
+
                 session.department ??
+
                 session.dept ??
+
                 session.departmentName
+
             )
 
     };
 
 
     /*
-     * Get latest details from Firestore.
+     * Get complete staff details
+     * from Firestore.
      */
 
     try{
@@ -999,27 +1253,43 @@ async function loadCurrentStaff(){
 
 
         snap.forEach(
-            d => {
+            item => {
 
                 const data =
-                    d.data();
+                    item.data();
+
 
                 const sid =
-                    getStaffId(data);
+                    getStaffId(
+                        data
+                    );
 
 
                 if(
                     upper(sid) ===
-                    upper(currentStaff.staffId)
+                    upper(
+                        currentStaff.staffId
+                    )
                 ){
 
                     currentStaff.staffName =
-                        currentStaff.staffName ||
-                        getStaffName(data);
+
+                        currentStaff.staffName
+                        ||
+
+                        getStaffName(
+                            data
+                        );
+
 
                     currentStaff.department =
-                        currentStaff.department ||
-                        getDepartment(data);
+
+                        currentStaff.department
+                        ||
+
+                        getDepartment(
+                            data
+                        );
 
                 }
 
@@ -1027,11 +1297,11 @@ async function loadCurrentStaff(){
         );
 
     }
-    catch(e){
+    catch(error){
 
         console.error(
-            "Staff lookup error:",
-            e
+            "Current staff lookup:",
+            error
         );
 
     }
@@ -1042,17 +1312,22 @@ async function loadCurrentStaff(){
 }
 
 
-/* =========================================================
-   LOAD STAFF
-========================================================= */
+/* =====================================================
+   LOAD ALL STAFF
+===================================================== */
 
 async function loadStaff(){
 
     const box =
         $("staffList");
 
+
     box.innerHTML =
-        `<div class="loading">Loading staff...</div>`;
+        `
+        <div class="loading">
+            Loading staff...
+        </div>
+        `;
 
 
     try{
@@ -1071,13 +1346,16 @@ async function loadStaff(){
 
 
         snap.forEach(
-            d => {
+            item => {
 
                 const data =
-                    d.data();
+                    item.data();
+
 
                 const staffId =
-                    getStaffId(data);
+                    getStaffId(
+                        data
+                    );
 
 
                 if(!staffId)
@@ -1085,13 +1363,15 @@ async function loadStaff(){
 
 
                 /*
-                 * Don't show logged-in staff
-                 * in recipient list.
+                 * Do not display
+                 * currently logged staff.
                  */
 
                 if(
                     upper(staffId) ===
-                    upper(currentStaff.staffId)
+                    upper(
+                        currentStaff.staffId
+                    )
                 ){
 
                     return;
@@ -1100,21 +1380,27 @@ async function loadStaff(){
 
 
                 map.set(
-                    upper(staffId),
+                    upper(
+                        staffId
+                    ),
                     {
 
-                        id:
-                            d.id,
+                        documentId:
+                            item.id,
 
                         staffId:
                             staffId,
 
                         staffName:
-                            getStaffName(data) ||
+                            getStaffName(
+                                data
+                            ) ||
                             staffId,
 
                         department:
-                            getDepartment(data)
+                            getDepartment(
+                                data
+                            )
 
                     }
                 );
@@ -1131,6 +1417,7 @@ async function loadStaff(){
 
         allStaff.sort(
             (a,b) =>
+
                 String(
                     a.staffName
                 ).localeCompare(
@@ -1141,9 +1428,9 @@ async function loadStaff(){
         );
 
 
-        populateIndividualStaff();
-
         populateDepartments();
+
+        populateSearchableStaff();
 
         renderStaffList(
             allStaff
@@ -1159,6 +1446,7 @@ async function loadStaff(){
 
 
         box.innerHTML =
+
             `
             <div class="empty">
 
@@ -1178,54 +1466,328 @@ async function loadStaff(){
 }
 
 
-/* =========================================================
-   POPULATE INDIVIDUAL STAFF
-========================================================= */
+/* =====================================================
+   SEARCHABLE INDIVIDUAL STAFF
+===================================================== */
 
-function populateIndividualStaff(){
+function populateSearchableStaff(){
 
-    const select =
+    const search =
+        $("individualStaffSearch");
+
+
+    const results =
+        $("individualStaffResults");
+
+
+    const hidden =
         $("individualStaff");
 
 
-    select.innerHTML =
-        `
-        <option value="">
-            Select Staff
-        </option>
-        `;
+    const selected =
+        $("selectedStaffDisplay");
 
 
-    allStaff.forEach(
-        staff => {
+    function showResults(){
 
-            const option =
-                document.createElement(
-                    "option"
-                );
-
-
-            option.value =
-                staff.staffId;
-
-
-            option.textContent =
-
-                staff.staffName +
-                " (" +
-                staff.staffId +
-                ")" +
-                (
-                    staff.department
-                        ? " - " +
-                          staff.department
-                        : ""
-                );
-
-
-            select.appendChild(
-                option
+        const text =
+            upper(
+                search.value
             );
+
+
+        if(!text){
+
+            results.innerHTML =
+                "";
+
+            results.classList.remove(
+                "show"
+            );
+
+            return;
+
+        }
+
+
+        const matches =
+            allStaff.filter(
+                staff => {
+
+                    const name =
+                        upper(
+                            staff.staffName
+                        );
+
+                    const id =
+                        upper(
+                            staff.staffId
+                        );
+
+                    const department =
+                        upper(
+                            staff.department
+                        );
+
+
+                    return (
+
+                        name.includes(
+                            text
+                        )
+
+                        ||
+
+                        id.includes(
+                            text
+                        )
+
+                        ||
+
+                        department.includes(
+                            text
+                        )
+
+                    );
+
+                }
+            );
+
+
+        if(!matches.length){
+
+            results.innerHTML =
+
+                `
+                <div
+                    class="empty"
+                    style="padding:15px">
+
+                    No matching staff found.
+
+                </div>
+                `;
+
+
+            results.classList.add(
+                "show"
+            );
+
+            return;
+
+        }
+
+
+        results.innerHTML =
+
+            matches.map(
+                staff => `
+
+                <div
+                    class="staff-result-item"
+                    data-staff-id="${esc(
+                        staff.staffId
+                    )}">
+
+                    <div
+                        class="staff-result-name">
+
+                        ${esc(
+                            staff.staffName
+                        )}
+
+                    </div>
+
+                    <div
+                        class="staff-result-info">
+
+                        ${esc(
+                            staff.staffId
+                        )}
+
+                        ${
+                            staff.department
+
+                            ? " • " +
+                              esc(
+                                  staff.department
+                              )
+
+                            : ""
+                        }
+
+                    </div>
+
+                </div>
+
+                `
+            )
+            .join("");
+
+
+        results.classList.add(
+            "show"
+        );
+
+
+        results
+            .querySelectorAll(
+                ".staff-result-item"
+            )
+            .forEach(
+                item => {
+
+                    item.addEventListener(
+                        "click",
+                        () => {
+
+                            const id =
+                                item.dataset.staffId;
+
+
+                            const staff =
+                                allStaff.find(
+                                    s =>
+                                        upper(
+                                            s.staffId
+                                        ) ===
+                                        upper(
+                                            id
+                                        )
+                                );
+
+
+                            if(!staff)
+                                return;
+
+
+                            /*
+                             * Store selected
+                             * Staff ID.
+                             */
+
+                            hidden.value =
+                                staff.staffId;
+
+
+                            /*
+                             * Show staff name
+                             * in search field.
+                             */
+
+                            search.value =
+                                staff.staffName;
+
+
+                            /*
+                             * Show selected
+                             * staff information.
+                             */
+
+                            selected.textContent =
+
+                                "✓ Selected: " +
+
+                                staff.staffName +
+
+                                " (" +
+
+                                staff.staffId +
+
+                                ")" +
+
+                                (
+                                    staff.department
+
+                                    ? " • " +
+                                      staff.department
+
+                                    : ""
+                                );
+
+
+                            selected.style.display =
+                                "block";
+
+
+                            search.style.borderColor =
+                                "#16a34a";
+
+
+                            results.innerHTML =
+                                "";
+
+
+                            results.classList.remove(
+                                "show"
+                            );
+
+                        }
+                    );
+
+                }
+            );
+
+    }
+
+
+    search.addEventListener(
+        "input",
+        () => {
+
+            /*
+             * If user changes
+             * selected name, remove
+             * previous selection.
+             */
+
+            hidden.value =
+                "";
+
+            selected.style.display =
+                "none";
+
+            search.style.borderColor =
+                "#d1d5db";
+
+
+            showResults();
+
+        }
+    );
+
+
+    search.addEventListener(
+        "focus",
+        () => {
+
+            if(
+                search.value.trim()
+            ){
+
+                showResults();
+
+            }
+
+        }
+    );
+
+
+    document.addEventListener(
+        "click",
+        event => {
+
+            if(
+                !event.target.closest(
+                    ".staff-picker"
+                )
+            ){
+
+                results.classList.remove(
+                    "show"
+                );
+
+            }
 
         }
     );
@@ -1233,9 +1795,9 @@ function populateIndividualStaff(){
 }
 
 
-/* =========================================================
+/* =====================================================
    POPULATE DEPARTMENTS
-========================================================= */
+===================================================== */
 
 function populateDepartments(){
 
@@ -1244,19 +1806,22 @@ function populateDepartments(){
 
 
     const departments =
+
         [
             ...new Set(
 
                 allStaff
 
                     .map(
-                        s =>
+                        staff =>
                             clean(
-                                s.department
+                                staff.department
                             )
                     )
 
-                    .filter(Boolean)
+                    .filter(
+                        Boolean
+                    )
 
             )
         ];
@@ -1264,11 +1829,14 @@ function populateDepartments(){
 
     departments.sort(
         (a,b) =>
-            a.localeCompare(b)
+            a.localeCompare(
+                b
+            )
     );
 
 
     select.innerHTML =
+
         `
         <option value="">
             Select Department
@@ -1303,9 +1871,9 @@ function populateDepartments(){
 }
 
 
-/* =========================================================
-   STAFF LIST
-========================================================= */
+/* =====================================================
+   LEFT STAFF LIST
+===================================================== */
 
 function renderStaffList(
     list
@@ -1318,9 +1886,12 @@ function renderStaffList(
     if(!list.length){
 
         box.innerHTML =
+
             `
             <div class="empty">
+
                 No staff found.
+
             </div>
             `;
 
@@ -1330,6 +1901,7 @@ function renderStaffList(
 
 
     box.innerHTML =
+
         list.map(
             staff => `
 
@@ -1349,6 +1921,7 @@ function renderStaffList(
 
                     </div>
 
+
                     <div class="staff-info">
 
                         ${esc(
@@ -1357,16 +1930,19 @@ function renderStaffList(
 
                         ${
                             staff.department
-                                ? " • " +
-                                  esc(
-                                      staff.department
-                                  )
-                                : ""
+
+                            ? " • " +
+                              esc(
+                                  staff.department
+                              )
+
+                            : ""
                         }
 
                     </div>
 
                 </div>
+
 
                 <span
                     class="unread"
@@ -1374,7 +1950,9 @@ function renderStaffList(
                         staff.staffId
                     )}"
                     style="display:none">
+
                     0
+
                 </span>
 
             </div>
@@ -1431,27 +2009,31 @@ function renderStaffList(
 }
 
 
-/* =========================================================
+/* =====================================================
    SAFE ID
-========================================================= */
+===================================================== */
 
-function safeId(v){
+function safeId(value){
 
-    return String(v)
-        .replace(
-            /[^a-zA-Z0-9_-]/g,
-            "_"
-        );
+    return String(
+        value
+    )
+    .replace(
+        /[^a-zA-Z0-9_-]/g,
+        "_"
+    );
 
 }
 
 
-/* =========================================================
-   TAB SWITCHING
-========================================================= */
+/* =====================================================
+   RECIPIENT TABS
+===================================================== */
 
 document
-    .querySelectorAll(".tab")
+    .querySelectorAll(
+        ".tab"
+    )
     .forEach(
         tab => {
 
@@ -1483,28 +2065,34 @@ document
                     $("individualBox")
                         .style
                         .display =
+
                             currentType ===
                             "individual"
-                                ? "block"
-                                : "none";
+
+                            ? "block"
+                            : "none";
 
 
                     $("departmentBox")
                         .style
                         .display =
+
                             currentType ===
                             "department"
-                                ? "block"
-                                : "none";
+
+                            ? "block"
+                            : "none";
 
 
                     $("allBox")
                         .style
                         .display =
+
                             currentType ===
                             "all"
-                                ? "block"
-                                : "none";
+
+                            ? "block"
+                            : "none";
 
 
                     hideMessage();
@@ -1516,18 +2104,18 @@ document
     );
 
 
-/* =========================================================
-   SEARCH
-========================================================= */
+/* =====================================================
+   LEFT STAFF SEARCH
+===================================================== */
 
 $("staffSearch")
     .addEventListener(
         "input",
-        e => {
+        event => {
 
             const text =
                 upper(
-                    e.target.value
+                    event.target.value
                 );
 
 
@@ -1537,19 +2125,25 @@ $("staffSearch")
 
                         upper(
                             staff.staffName
-                        ).includes(text)
+                        ).includes(
+                            text
+                        )
 
                         ||
 
                         upper(
                             staff.staffId
-                        ).includes(text)
+                        ).includes(
+                            text
+                        )
 
                         ||
 
                         upper(
                             staff.department
-                        ).includes(text)
+                        ).includes(
+                            text
+                        )
 
                 );
 
@@ -1562,9 +2156,9 @@ $("staffSearch")
     );
 
 
-/* =========================================================
+/* =====================================================
    SEND MESSAGE
-========================================================= */
+===================================================== */
 
 $("sendBtn")
     .addEventListener(
@@ -1599,9 +2193,7 @@ async function sendMessage(){
     let recipients = [];
 
 
-    /*
-     * INDIVIDUAL
-     */
+    /* INDIVIDUAL */
 
     if(
         currentType ===
@@ -1609,13 +2201,15 @@ async function sendMessage(){
     ){
 
         const id =
-            $("individualStaff").value;
+            clean(
+                $("individualStaff").value
+            );
 
 
         if(!id){
 
             showMessage(
-                "Please select a staff member.",
+                "Please type and select a staff member.",
                 "error"
             );
 
@@ -1630,7 +2224,9 @@ async function sendMessage(){
                     upper(
                         s.staffId
                     ) ===
-                    upper(id)
+                    upper(
+                        id
+                    )
             );
 
 
@@ -1653,9 +2249,7 @@ async function sendMessage(){
     }
 
 
-    /*
-     * DEPARTMENT
-     */
+    /* DEPARTMENT */
 
     else if(
         currentType ===
@@ -1663,7 +2257,9 @@ async function sendMessage(){
     ){
 
         const department =
-            $("departmentSelect").value;
+            clean(
+                $("departmentSelect").value
+            );
 
 
         if(!department){
@@ -1681,6 +2277,7 @@ async function sendMessage(){
         recipients =
             allStaff.filter(
                 staff =>
+
                     upper(
                         staff.department
                     ) ===
@@ -1704,9 +2301,7 @@ async function sendMessage(){
     }
 
 
-    /*
-     * ALL STAFF
-     */
+    /* ALL STAFF */
 
     else if(
         currentType ===
@@ -1731,28 +2326,23 @@ async function sendMessage(){
     }
 
 
-    const sendBtn =
+    const sendButton =
         $("sendBtn");
 
 
-    sendBtn.disabled =
+    sendButton.disabled =
         true;
 
 
-    sendBtn.textContent =
+    sendButton.textContent =
         "SENDING...";
 
 
     try{
 
         /*
-         * Each recipient gets an
-         * independent Firestore message.
-         *
-         * This makes unread counts,
-         * individual inboxes and
-         * department messages work
-         * correctly.
+         * One Firestore document
+         * per recipient.
          */
 
         const promises =
@@ -1809,23 +2399,53 @@ async function sendMessage(){
         );
 
 
-        showMessage(
-
+        if(
             currentType ===
             "all"
+        ){
 
-                ? `Message sent to ${recipients.length} staff members.`
+            showMessage(
 
-                : currentType ===
-                  "department"
+                "Message sent to " +
+                recipients.length +
+                " staff members.",
 
-                    ? `Message sent to ${recipients.length} staff members in the selected department.`
+                "success"
 
-                    : `Message sent to ${recipients[0].staffName}.`,
+            );
 
-            "success"
+        }
+        else if(
+            currentType ===
+            "department"
+        ){
 
-        );
+            showMessage(
+
+                "Message sent to " +
+                recipients.length +
+                " staff members in " +
+                $("departmentSelect").value +
+                ".",
+
+                "success"
+
+            );
+
+        }
+        else{
+
+            showMessage(
+
+                "Message sent to " +
+                recipients[0].staffName +
+                ".",
+
+                "success"
+
+            );
+
+        }
 
 
         $("messageText")
@@ -1843,18 +2463,22 @@ async function sendMessage(){
 
 
         showMessage(
+
             "Message could not be sent: " +
             error.message,
+
             "error"
+
         );
 
     }
     finally{
 
-        sendBtn.disabled =
+        sendButton.disabled =
             false;
 
-        sendBtn.textContent =
+
+        sendButton.textContent =
             "SEND MESSAGE";
 
     }
@@ -1862,9 +2486,9 @@ async function sendMessage(){
 }
 
 
-/* =========================================================
+/* =====================================================
    CLEAR
-========================================================= */
+===================================================== */
 
 $("clearBtn")
     .addEventListener(
@@ -1875,13 +2499,33 @@ $("clearBtn")
                 .value =
                 "";
 
+
             $("individualStaff")
                 .value =
                 "";
 
+
+            $("individualStaffSearch")
+                .value =
+                "";
+
+
+            $("selectedStaffDisplay")
+                .style
+                .display =
+                "none";
+
+
+            $("individualStaffSearch")
+                .style
+                .borderColor =
+                "#d1d5db";
+
+
             $("departmentSelect")
                 .value =
                 "";
+
 
             hideMessage();
 
@@ -1889,9 +2533,9 @@ $("clearBtn")
     );
 
 
-/* =========================================================
+/* =====================================================
    OPEN CONVERSATION
-========================================================= */
+===================================================== */
 
 function openConversation(
     staff
@@ -1904,19 +2548,24 @@ function openConversation(
 
     $("conversationTitle")
         .textContent =
-            staff.staffName;
+        staff.staffName;
 
 
     $("conversationInfo")
         .textContent =
 
-            staff.staffId +
-            (
-                staff.department
-                    ? " • " +
-                      staff.department
-                    : ""
-            );
+        staff.staffId +
+
+        (
+
+            staff.department
+
+            ? " • " +
+              staff.department
+
+            : ""
+
+        );
 
 
     loadConversation(
@@ -1926,9 +2575,9 @@ function openConversation(
 }
 
 
-/* =========================================================
-   LOAD CONVERSATION
-========================================================= */
+/* =====================================================
+   CONVERSATION
+===================================================== */
 
 function loadConversation(
     staff
@@ -1951,15 +2600,16 @@ function loadConversation(
 
 
     /*
-     * We intentionally query only
-     * by sender/receiver instead of
-     * requiring a composite Firestore
-     * index.
+     * We query by sender ID
+     * and filter the other side
+     * in JavaScript.
      */
 
     const q =
         query(
+
             messagesRef,
+
             where(
                 "senderId",
                 "in",
@@ -1968,6 +2618,7 @@ function loadConversation(
                     staff.staffId
                 ]
             )
+
         );
 
 
@@ -1980,10 +2631,10 @@ function loadConversation(
 
 
                 snapshot.forEach(
-                    d => {
+                    item => {
 
                         const data =
-                            d.data();
+                            item.data();
 
 
                         const isConversation =
@@ -2038,7 +2689,7 @@ function loadConversation(
                             messages.push({
 
                                 id:
-                                    d.id,
+                                    item.id,
 
                                 ...data
 
@@ -2051,22 +2702,20 @@ function loadConversation(
 
 
                 messages.sort(
-                    (a,b) => {
+                    (a,b) =>
 
-                        const aTime =
+                        (
                             a.createdAt?.seconds ||
-                            0;
+                            0
+                        )
 
-                        const bTime =
+                        -
+
+                        (
                             b.createdAt?.seconds ||
-                            0;
+                            0
+                        )
 
-                        return (
-                            aTime -
-                            bTime
-                        );
-
-                    }
                 );
 
 
@@ -2081,14 +2730,14 @@ function loadConversation(
                  */
 
                 for(
-                    const msg
+                    const message
                     of messages
                 ){
 
                     if(
 
                         upper(
-                            msg.receiverId
+                            message.receiverId
                         ) ===
                         upper(
                             currentStaff.staffId
@@ -2096,7 +2745,7 @@ function loadConversation(
 
                         &&
 
-                        msg.isRead !==
+                        message.isRead !==
                         true
 
                     ){
@@ -2108,7 +2757,7 @@ function loadConversation(
                                 doc(
                                     db,
                                     "staffMessages",
-                                    msg.id
+                                    message.id
                                 ),
 
                                 {
@@ -2118,9 +2767,11 @@ function loadConversation(
                             );
 
                         }
-                        catch(e){
+                        catch(error){
 
-                            console.error(e);
+                            console.error(
+                                error
+                            );
 
                         }
 
@@ -2143,9 +2794,9 @@ function loadConversation(
 }
 
 
-/* =========================================================
+/* =====================================================
    RENDER CONVERSATION
-========================================================= */
+===================================================== */
 
 function renderConversation(
     messages
@@ -2158,6 +2809,7 @@ function renderConversation(
     if(!messages.length){
 
         box.innerHTML =
+
             `
             <div class="empty">
 
@@ -2172,22 +2824,17 @@ function renderConversation(
 
 
     box.innerHTML =
+
         messages.map(
-            msg => {
+            message => {
 
                 const mine =
 
                     upper(
-                        msg.senderId
+                        message.senderId
                     ) ===
                     upper(
                         currentStaff.staffId
-                    );
-
-
-                const time =
-                    formatTimestamp(
-                        msg.createdAt
                     );
 
 
@@ -2196,8 +2843,8 @@ function renderConversation(
                 <div
                     class="msg ${
                         mine
-                            ? "mine"
-                            : ""
+                        ? "mine"
+                        : ""
                     }">
 
                     <div
@@ -2207,24 +2854,30 @@ function renderConversation(
                             class="msg-sender">
 
                             ${esc(
-                                msg.senderName ||
-                                msg.senderId
+                                message.senderName ||
+                                message.senderId
                             )}
 
                         </div>
+
 
                         <div>
 
                             ${esc(
-                                msg.message
+                                message.message
                             )}
 
                         </div>
 
+
                         <div
                             class="msg-time">
 
-                            ${esc(time)}
+                            ${esc(
+                                formatTimestamp(
+                                    message.createdAt
+                                )
+                            )}
 
                         </div>
 
@@ -2245,9 +2898,9 @@ function renderConversation(
 }
 
 
-/* =========================================================
+/* =====================================================
    REPLY
-========================================================= */
+===================================================== */
 
 $("replyBtn")
     .addEventListener(
@@ -2340,9 +2993,9 @@ $("replyBtn")
     );
 
 
-/* =========================================================
-   UNREAD COUNTS
-========================================================= */
+/* =====================================================
+   UNREAD COUNT
+===================================================== */
 
 function loadUnreadCounts(){
 
@@ -2396,38 +3049,39 @@ function loadUnreadCounts(){
 
 
                 badge.style.display =
+
                     count > 0
-                        ? "inline-flex"
-                        : "none";
+
+                    ? "inline-flex"
+                    : "none";
 
 
-                /*
-                 * Per-staff unread counts
-                 */
-
-                const counts =
-                    {};
+                const counts = {};
 
 
                 snapshot.forEach(
-                    d => {
+                    item => {
 
                         const data =
-                            d.data();
+                            item.data();
 
 
-                        const id =
+                        const senderId =
                             data.senderId;
 
 
-                        if(!id)
+                        if(!senderId)
                             return;
 
 
-                        counts[id] =
+                        counts[
+                            senderId
+                        ] =
+
                             (
-                                counts[id] ||
-                                0
+                                counts[
+                                    senderId
+                                ] || 0
                             ) + 1;
 
                     }
@@ -2451,6 +3105,7 @@ function loadUnreadCounts(){
 
 
                         const number =
+
                             counts[
                                 staff.staffId
                             ] || 0;
@@ -2461,9 +3116,11 @@ function loadUnreadCounts(){
 
 
                         element.style.display =
+
                             number > 0
-                                ? "flex"
-                                : "none";
+
+                            ? "flex"
+                            : "none";
 
                     }
                 );
@@ -2483,18 +3140,14 @@ function loadUnreadCounts(){
 }
 
 
-/* =========================================================
+/* =====================================================
    INBOX
-========================================================= */
+===================================================== */
 
 $("inboxBtn")
     .addEventListener(
         "click",
-        () => {
-
-            loadInbox();
-
-        }
+        loadInbox
     );
 
 
@@ -2520,27 +3173,33 @@ async function loadInbox(){
 
 
         const snap =
-            await getDocs(q);
+            await getDocs(
+                q
+            );
 
 
         const messages = [];
 
 
         snap.forEach(
-            d => {
+            item => {
 
                 messages.push({
 
                     id:
-                        d.id,
+                        item.id,
 
-                    ...d.data()
+                    ...item.data()
 
                 });
 
             }
         );
 
+
+        /*
+         * Newest first.
+         */
 
         messages.sort(
             (a,b) =>
@@ -2549,11 +3208,14 @@ async function loadInbox(){
                     b.createdAt?.seconds ||
                     0
                 )
+
                 -
+
                 (
                     a.createdAt?.seconds ||
                     0
                 )
+
         );
 
 
@@ -2575,93 +3237,98 @@ async function loadInbox(){
         $("messages")
             .innerHTML =
 
-
             messages.length
 
-                ? messages.map(
-                    msg => `
+            ?
+
+            messages.map(
+                message => `
+
+                <div class="msg">
 
                     <div
-                        class="msg">
+                        class="msg-bubble">
 
                         <div
-                            class="msg-bubble">
+                            class="msg-sender">
 
-                            <div
-                                class="msg-sender">
+                            ${esc(
+                                message.senderName ||
+                                message.senderId
+                            )}
 
-                                ${esc(
-                                    msg.senderName ||
-                                    msg.senderId
-                                )}
+                            ${
+                                message.type ===
+                                "all"
 
-                                ${
-                                    msg.type ===
-                                    "all"
+                                ? " • 📢 All Staff"
 
-                                        ? " • 📢 All Staff"
+                                :
 
-                                        : msg.type ===
-                                          "department"
+                                message.type ===
+                                "department"
 
-                                            ? " • 🏢 Department"
+                                ? " • 🏢 Department"
 
-                                            : ""
-                                }
+                                : ""
 
-                            </div>
+                            }
 
-
-                            <div>
-
-                                ${esc(
-                                    msg.message
-                                )}
-
-                            </div>
+                        </div>
 
 
-                            <div
-                                class="msg-time">
+                        <div>
 
-                                ${esc(
-                                    formatTimestamp(
-                                        msg.createdAt
-                                    )
-                                )}
+                            ${esc(
+                                message.message
+                            )}
 
-                            </div>
+                        </div>
+
+
+                        <div
+                            class="msg-time">
+
+                            ${esc(
+                                formatTimestamp(
+                                    message.createdAt
+                                )
+                            )}
 
                         </div>
 
                     </div>
 
-                    `
-                )
-                .join("")
-
-                :
+                </div>
 
                 `
-                <div class="empty">
+            )
+            .join("")
 
-                    No received messages.
+            :
 
-                </div>
-                `;
+            `
+            <div class="empty">
+
+                No received messages.
+
+            </div>
+            `;
 
 
         /*
-         * Mark all displayed inbox
-         * messages as read.
+         * Mark inbox messages
+         * as read.
          */
 
         for(
-            const msg of messages
+            const message
+            of messages
         ){
 
             if(
-                msg.isRead !== true
+                message.isRead !==
+                true
             ){
 
                 try{
@@ -2671,7 +3338,7 @@ async function loadInbox(){
                         doc(
                             db,
                             "staffMessages",
-                            msg.id
+                            message.id
                         ),
 
                         {
@@ -2681,9 +3348,11 @@ async function loadInbox(){
                     );
 
                 }
-                catch(e){
+                catch(error){
 
-                    console.error(e);
+                    console.error(
+                        error
+                    );
 
                 }
 
@@ -2694,7 +3363,10 @@ async function loadInbox(){
     }
     catch(error){
 
-        console.error(error);
+        console.error(
+            "INBOX ERROR:",
+            error
+        );
 
 
         $("messages")
@@ -2719,9 +3391,9 @@ async function loadInbox(){
 }
 
 
-/* =========================================================
+/* =====================================================
    SENT
-========================================================= */
+===================================================== */
 
 $("sentBtn")
     .addEventListener(
@@ -2752,21 +3424,23 @@ async function loadSent(){
 
 
         const snap =
-            await getDocs(q);
+            await getDocs(
+                q
+            );
 
 
         const messages = [];
 
 
         snap.forEach(
-            d => {
+            item => {
 
                 messages.push({
 
                     id:
-                        d.id,
+                        item.id,
 
-                    ...d.data()
+                    ...item.data()
 
                 });
 
@@ -2781,11 +3455,14 @@ async function loadSent(){
                     b.createdAt?.seconds ||
                     0
                 )
+
                 -
+
                 (
                     a.createdAt?.seconds ||
                     0
                 )
+
         );
 
 
@@ -2809,84 +3486,93 @@ async function loadSent(){
 
             messages.length
 
-                ? messages.map(
-                    msg => `
+            ?
+
+            messages.map(
+                message => `
+
+                <div
+                    class="msg mine">
 
                     <div
-                        class="msg mine">
+                        class="msg-bubble">
 
                         <div
-                            class="msg-bubble">
+                            class="msg-sender">
 
-                            <div
-                                class="msg-sender">
+                            To:
 
-                                To:
+                            ${esc(
+                                message.receiverName ||
+                                message.receiverId
+                            )}
 
-                                ${esc(
-                                    msg.receiverName ||
-                                    msg.receiverId
-                                )}
+                            ${
+                                message.type ===
+                                "all"
 
-                                ${
-                                    msg.type ===
-                                    "all"
+                                ? " • 📢 All Staff"
 
-                                        ? " • 📢 All Staff"
+                                :
 
-                                        : msg.type ===
-                                          "department"
+                                message.type ===
+                                "department"
 
-                                            ? " • 🏢 Department"
+                                ? " • 🏢 Department"
 
-                                            : ""
-                                }
+                                : ""
 
-                            </div>
+                            }
 
-
-                            <div>
-
-                                ${esc(
-                                    msg.message
-                                )}
-
-                            </div>
+                        </div>
 
 
-                            <div
-                                class="msg-time">
+                        <div>
 
-                                ${esc(
-                                    formatTimestamp(
-                                        msg.createdAt
-                                    )
-                                )}
+                            ${esc(
+                                message.message
+                            )}
 
-                            </div>
+                        </div>
+
+
+                        <div
+                            class="msg-time">
+
+                            ${esc(
+                                formatTimestamp(
+                                    message.createdAt
+                                )
+                            )}
 
                         </div>
 
                     </div>
 
-                    `
-                )
-                .join("")
-
-                :
+                </div>
 
                 `
-                <div class="empty">
+            )
+            .join("")
 
-                    No sent messages.
+            :
 
-                </div>
-                `;
+            `
+            <div class="empty">
+
+                No sent messages.
+
+            </div>
+            `;
 
     }
     catch(error){
 
-        console.error(error);
+        console.error(
+            "SENT ERROR:",
+            error
+        );
+
 
         $("messages")
             .innerHTML =
@@ -2904,17 +3590,15 @@ async function loadSent(){
 }
 
 
-/* =========================================================
-   TIME
-========================================================= */
+/* =====================================================
+   DATE FORMAT
+===================================================== */
 
 function formatTimestamp(
     timestamp
 ){
 
-    if(
-        !timestamp
-    ){
+    if(!timestamp){
 
         return "Just now";
 
@@ -2924,26 +3608,45 @@ function formatTimestamp(
     try{
 
         const date =
+
             timestamp.toDate
-                ? timestamp.toDate()
-                : new Date(
-                    timestamp.seconds * 1000
-                );
+
+            ?
+
+            timestamp.toDate()
+
+            :
+
+            new Date(
+                timestamp.seconds *
+                1000
+            );
 
 
         return date.toLocaleString(
             "en-IN",
             {
-                day:"2-digit",
-                month:"short",
-                year:"numeric",
-                hour:"2-digit",
-                minute:"2-digit"
+
+                day:
+                    "2-digit",
+
+                month:
+                    "short",
+
+                year:
+                    "numeric",
+
+                hour:
+                    "2-digit",
+
+                minute:
+                    "2-digit"
+
             }
         );
 
     }
-    catch(e){
+    catch(error){
 
         return "Just now";
 
@@ -2952,24 +3655,40 @@ function formatTimestamp(
 }
 
 
-/* =========================================================
-   START
-========================================================= */
+/* =====================================================
+   START APPLICATION
+===================================================== */
 
 async function init(){
 
-    const ok =
-        await loadCurrentStaff();
+    try{
+
+        const loggedIn =
+            await loadCurrentStaff();
 
 
-    if(!ok)
-        return;
+        if(!loggedIn)
+            return;
 
 
-    await loadStaff();
+        await loadStaff();
 
 
-    loadUnreadCounts();
+        loadUnreadCounts();
+
+    }
+    catch(error){
+
+        console.error(
+            "INITIALIZATION ERROR:",
+            error
+        );
+
+        alert(
+            "Messaging system could not be initialized."
+        );
+
+    }
 
 }
 
