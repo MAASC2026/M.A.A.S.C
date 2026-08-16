@@ -4,20 +4,22 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Staff Messages</title>
+<title>Staff Messaging</title>
 
 <style>
 *{
+    box-sizing:border-box;
     margin:0;
     padding:0;
-    box-sizing:border-box;
     font-family:Arial,Helvetica,sans-serif;
 }
 
 body{
-    background:#f4f6f9;
+    background:#f3f6fa;
     color:#222;
 }
+
+/* HEADER */
 
 .header{
     background:#17365d;
@@ -26,6 +28,8 @@ body{
     display:flex;
     justify-content:space-between;
     align-items:center;
+    flex-wrap:wrap;
+    gap:10px;
 }
 
 .header h2{
@@ -37,28 +41,40 @@ body{
     font-size:14px;
 }
 
+#loggedStaffName{
+    font-weight:bold;
+}
+
+#loggedStaffId{
+    opacity:.85;
+    margin-top:3px;
+}
+
+/* MAIN */
+
 .container{
     max-width:1100px;
     margin:25px auto;
     padding:0 15px;
 }
 
-.top-bar{
+/* TOP */
+
+.topbar{
     display:flex;
     justify-content:space-between;
     align-items:center;
-    margin-bottom:20px;
     gap:10px;
     flex-wrap:wrap;
+    margin-bottom:20px;
 }
 
 .tabs{
     display:flex;
     gap:8px;
-    flex-wrap:wrap;
 }
 
-.tab-btn{
+.tab{
     border:none;
     padding:11px 18px;
     border-radius:7px;
@@ -67,34 +83,40 @@ body{
     font-weight:bold;
 }
 
-.tab-btn.active{
+.tab.active{
     background:#17365d;
     color:white;
 }
 
-.new-btn{
+.new-message-btn{
     border:none;
-    padding:12px 20px;
     background:#198754;
     color:white;
+    padding:12px 20px;
     border-radius:7px;
     cursor:pointer;
     font-weight:bold;
 }
 
-.unread-count{
+.new-message-btn:hover{
+    background:#146c43;
+}
+
+.unread{
     background:#dc3545;
     color:white;
     border-radius:20px;
     padding:3px 8px;
     font-size:11px;
-    margin-left:4px;
+    margin-left:5px;
 }
 
-.card{
+/* MESSAGE CARD */
+
+.message-card{
     background:white;
     border-radius:10px;
-    box-shadow:0 3px 12px rgba(0,0,0,.08);
+    box-shadow:0 3px 15px rgba(0,0,0,.08);
     overflow:hidden;
 }
 
@@ -106,40 +128,40 @@ body{
 }
 
 .message-item:hover{
-    background:#f8f9fa;
+    background:#f7f9fb;
 }
 
-.message-item.unread{
-    background:#eef5ff;
+.message-item.unread-message{
+    background:#edf5ff;
     border-left:5px solid #17365d;
 }
 
-.message-row{
+.message-top{
     display:flex;
     justify-content:space-between;
-    gap:15px;
+    align-items:center;
+    gap:10px;
 }
 
-.message-name{
+.person{
     font-weight:bold;
     font-size:16px;
 }
 
-.message-time{
+.time{
     color:#777;
     font-size:12px;
-    white-space:nowrap;
 }
 
-.message-preview{
-    margin-top:7px;
+.preview{
+    margin-top:8px;
     color:#555;
     white-space:nowrap;
     overflow:hidden;
     text-overflow:ellipsis;
 }
 
-.unread-dot{
+.red-dot{
     display:inline-block;
     width:9px;
     height:9px;
@@ -149,19 +171,27 @@ body{
 }
 
 .empty{
-    padding:50px;
+    padding:55px 20px;
     text-align:center;
     color:#777;
 }
 
+.loading{
+    padding:40px;
+    text-align:center;
+    color:#777;
+}
+
+/* MODAL */
+
 .modal{
+    display:none;
     position:fixed;
     inset:0;
-    background:rgba(0,0,0,.5);
-    display:none;
+    background:rgba(0,0,0,.55);
+    z-index:9999;
     align-items:center;
     justify-content:center;
-    z-index:1000;
     padding:15px;
 }
 
@@ -172,11 +202,11 @@ body{
 .modal-box{
     width:100%;
     max-width:600px;
+    max-height:90vh;
+    overflow-y:auto;
     background:white;
     border-radius:12px;
     padding:25px;
-    max-height:90vh;
-    overflow-y:auto;
 }
 
 .modal-header{
@@ -186,28 +216,32 @@ body{
     margin-bottom:20px;
 }
 
+.modal-header h3{
+    color:#17365d;
+}
+
 .close{
     border:none;
     background:none;
-    font-size:25px;
+    font-size:28px;
     cursor:pointer;
+    color:#555;
 }
 
 label{
     display:block;
-    margin-bottom:7px;
     font-weight:bold;
+    margin-bottom:7px;
 }
 
-input,
 select,
 textarea{
     width:100%;
-    padding:12px;
     border:1px solid #ccc;
     border-radius:7px;
-    margin-bottom:18px;
+    padding:12px;
     font-size:14px;
+    margin-bottom:18px;
 }
 
 textarea{
@@ -217,28 +251,39 @@ textarea{
 
 .send-btn{
     width:100%;
-    padding:13px;
     border:none;
     background:#198754;
     color:white;
+    padding:13px;
     border-radius:7px;
-    cursor:pointer;
     font-weight:bold;
+    cursor:pointer;
 }
 
-.detail-message{
-    background:#f5f6f8;
-    padding:18px;
-    border-radius:8px;
-    white-space:pre-wrap;
-    line-height:1.6;
-    margin:15px 0;
+.send-btn:hover{
+    background:#146c43;
 }
 
-.detail-info{
+/* VIEW */
+
+.detail{
+    margin-bottom:10px;
     color:#666;
-    font-size:13px;
-    margin-bottom:8px;
+    font-size:14px;
+}
+
+.message-body{
+    background:#f4f6f8;
+    border-radius:8px;
+    padding:18px;
+    line-height:1.6;
+    white-space:pre-wrap;
+    margin:18px 0;
+}
+
+.action-row{
+    display:flex;
+    gap:8px;
 }
 
 .reply-btn{
@@ -257,22 +302,26 @@ textarea{
     padding:11px 18px;
     border-radius:7px;
     cursor:pointer;
-    margin-left:8px;
 }
 
-.loading{
-    padding:30px;
-    text-align:center;
-}
-
-.back-btn{
-    border:none;
-    background:#6c757d;
-    color:white;
-    padding:10px 16px;
-    border-radius:7px;
-    cursor:pointer;
+.status{
     margin-bottom:15px;
+    padding:10px 13px;
+    border-radius:7px;
+    display:none;
+    font-size:14px;
+}
+
+.status.error{
+    display:block;
+    background:#f8d7da;
+    color:#842029;
+}
+
+.status.success{
+    display:block;
+    background:#d1e7dd;
+    color:#0f5132;
 }
 
 @media(max-width:600px){
@@ -281,23 +330,37 @@ textarea{
         padding:15px;
     }
 
-    .header h2{
-        font-size:18px;
+    .staff-info{
+        text-align:left;
     }
 
-    .message-row{
+    .topbar{
+        align-items:stretch;
+    }
+
+    .tabs{
+        width:100%;
+    }
+
+    .tab{
+        flex:1;
+    }
+
+    .new-message-btn{
+        width:100%;
+    }
+
+    .message-top{
+        align-items:flex-start;
         flex-direction:column;
-        gap:5px;
-    }
-
-    .message-time{
-        white-space:normal;
     }
 }
 </style>
 </head>
 
 <body>
+
+<!-- HEADER -->
 
 <div class="header">
 
@@ -315,42 +378,58 @@ textarea{
 
 <div class="container">
 
-    <div class="top-bar">
+    <div id="statusBox" class="status"></div>
+
+
+    <!-- TOP BAR -->
+
+    <div class="topbar">
 
         <div class="tabs">
 
             <button
-                class="tab-btn active"
-                id="inboxBtn"
+                id="inboxTab"
+                class="tab active"
                 onclick="showInbox()">
+
                 📥 Inbox
+
                 <span
-                    class="unread-count"
                     id="unreadCount"
+                    class="unread"
                     style="display:none;">
                     0
                 </span>
+
             </button>
 
+
             <button
-                class="tab-btn"
-                id="sentBtn"
+                id="sentTab"
+                class="tab"
                 onclick="showSent()">
+
                 📤 Sent
+
             </button>
 
         </div>
 
+
         <button
-            class="new-btn"
+            class="new-message-btn"
             onclick="openCompose()">
+
             ✍ New Message
+
         </button>
 
     </div>
 
 
-    <div class="card">
+    <!-- MESSAGE LIST -->
+
+    <div class="message-card">
 
         <div id="messageList">
 
@@ -368,8 +447,8 @@ textarea{
 <!-- COMPOSE MODAL -->
 
 <div
-    class="modal"
-    id="composeModal">
+    id="composeModal"
+    class="modal">
 
     <div class="modal-box">
 
@@ -380,44 +459,39 @@ textarea{
             <button
                 class="close"
                 onclick="closeCompose()">
+
                 ×
+
             </button>
 
         </div>
 
 
-        <form onsubmit="sendMessage(event)">
+        <label>Select Staff</label>
 
-            <label>Select Staff</label>
+        <select id="receiverSelect">
 
-            <select
-                id="receiverSelect"
-                required>
+            <option value="">
+                Loading staff...
+            </option>
 
-                <option value="">
-                    Loading staff...
-                </option>
-
-            </select>
+        </select>
 
 
-            <label>Message</label>
+        <label>Message</label>
 
-            <textarea
-                id="messageText"
-                placeholder="Type your message..."
-                required></textarea>
+        <textarea
+            id="messageText"
+            placeholder="Type your message here..."></textarea>
 
 
-            <button
-                class="send-btn"
-                type="submit">
+        <button
+            class="send-btn"
+            onclick="sendMessage()">
 
-                Send Message
+            Send Message
 
-            </button>
-
-        </form>
+        </button>
 
     </div>
 
@@ -427,8 +501,8 @@ textarea{
 <!-- VIEW MESSAGE MODAL -->
 
 <div
-    class="modal"
-    id="viewModal">
+    id="viewModal"
+    class="modal">
 
     <div class="modal-box">
 
@@ -439,7 +513,9 @@ textarea{
             <button
                 class="close"
                 onclick="closeView()">
+
                 ×
+
             </button>
 
         </div>
@@ -454,195 +530,480 @@ textarea{
 
 <script type="module">
 
+/* =========================================================
+   FIREBASE
+========================================================= */
+
 import {
     initializeApp
-} from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
+}
+from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
+
 
 import {
     getAuth,
     onAuthStateChanged
-} from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
+}
+from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
+
 
 import {
     getFirestore,
     collection,
-    addDoc,
-    doc,
+    getDocs,
     getDoc,
-    setDoc,
+    doc,
+    addDoc,
     updateDoc,
-    deleteDoc,
+    onSnapshot,
     query,
     where,
-    orderBy,
-    onSnapshot,
-    getDocs,
     serverTimestamp
-} from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
+}
+from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
 
-
-/* =====================================================
-   FIREBASE CONFIG
-   ===================================================== */
 
 const firebaseConfig = {
 
-   apiKey: "AIzaSyAIv3091VM-gkmdwEAn7OhXWd9Cm2zh2bo",
-  authDomain: "maasc-2026.firebaseapp.com",
-  projectId: "maasc-2026",
-  storageBucket: "maasc-2026.appspot.com",
-  messagingSenderId: "585813001586",
-  appId: "1:585813001586:web:664e0e90ff0725d2e849eb"
+    apiKey:
+        "AIzaSyAIv3091VM-gkmdwEAn7OhXWd9Cm2zh2bo",
+
+    authDomain:
+        "maasc-2026.firebaseapp.com",
+
+    projectId:
+        "maasc-2026",
+
+    storageBucket:
+        "maasc-2026.appspot.com",
+
+    messagingSenderId:
+        "585813001586",
+
+    appId:
+        "1:585813001586:web:664e0e90ff0725d2e849eb"
+
 };
 
 
-const app = initializeApp(firebaseConfig);
-
-const auth = getAuth(app);
-
-const db = getFirestore(app);
+const app =
+    initializeApp(firebaseConfig);
 
 
-/* =====================================================
-   GLOBAL VARIABLES
-   ===================================================== */
+const auth =
+    getAuth(app);
 
-let currentUser = null;
+
+const db =
+    getFirestore(app);
+
+
+/* =========================================================
+   VARIABLES
+========================================================= */
 
 let currentStaff = null;
 
-let currentMode = "inbox";
-
-let unsubscribeInbox = null;
-
-let unsubscribeSent = null;
+let currentUser = null;
 
 let allStaff = [];
 
+let currentMode = "inbox";
 
-/* =====================================================
-   AUTH
-   ===================================================== */
+let inboxUnsubscribe = null;
 
-onAuthStateChanged(auth, async (user) => {
+let sentUnsubscribe = null;
 
-    if (!user) {
 
-        alert("Please login first.");
+/* =========================================================
+   START
+========================================================= */
 
-        return;
+/*
+ * IMPORTANT:
+ *
+ * We do NOT immediately reject the user when
+ * Firebase Auth returns null.
+ *
+ * First we try the staff information already
+ * stored by your existing dashboard/login.
+ */
+
+startMessaging();
+
+
+async function startMessaging(){
+
+    showLoading(
+        "Loading your staff details..."
+    );
+
+
+    /*
+     * Try existing dashboard/session information
+     * FIRST.
+     */
+
+    const localStaff =
+        getStaffFromLocalStorage();
+
+
+    if(localStaff){
+
+        console.log(
+            "STAFF FOUND FROM SESSION:",
+            localStaff
+        );
+
+
+        currentStaff =
+            localStaff;
+
+
+        displayCurrentStaff();
+
+
+        await loadAllStaff();
+
+        showInbox();
 
     }
 
-    currentUser = user;
 
-    await loadCurrentStaff();
+    /*
+     * Also listen for Firebase Auth.
+     *
+     * This is useful when your existing login
+     * uses Firebase Authentication.
+     */
 
-    await loadAllStaff();
+    onAuthStateChanged(
+        auth,
+        async(user) => {
 
-    showInbox();
-
-});
-
-
-/* =====================================================
-   LOAD CURRENT STAFF
-   ===================================================== */
-
-async function loadCurrentStaff(){
-
-    try{
-
-        let staffId = "";
-
-        /*
-         * First try localStorage values used by
-         * existing staff dashboards.
-         */
-
-        staffId =
-            localStorage.getItem("staffId") ||
-            localStorage.getItem("staffID") ||
-            localStorage.getItem("staff_id") ||
-            "";
+            currentUser = user;
 
 
-        /*
-         * If no staff ID is stored, use Firebase UID.
-         */
+            console.log(
+                "FIREBASE AUTH USER:",
+                user
+            );
 
-        if(!staffId){
 
-            staffId = currentUser.uid;
+            if(user){
+
+                /*
+                 * If staff was not found from localStorage,
+                 * try Firestore using the authenticated user.
+                 */
+
+                if(!currentStaff){
+
+                    await findStaffFromFirebaseUser(
+                        user
+                    );
+
+                }
+
+
+                if(currentStaff){
+
+                    displayCurrentStaff();
+
+                    await loadAllStaff();
+
+                    showInbox();
+
+                }
+
+            }
+
+        }
+    );
+
+
+    /*
+     * If localStorage had nothing and Firebase auth
+     * is also not active, wait briefly before showing
+     * the error.
+     */
+
+    setTimeout(() => {
+
+        if(!currentStaff){
+
+            showError(
+                "Staff details could not be identified. " +
+                "Please open this page from your logged-in staff dashboard."
+            );
 
         }
 
+    },2500);
 
-        staffId = String(staffId)
-            .trim()
-            .toUpperCase();
+}
 
+
+/* =========================================================
+   GET STAFF FROM EXISTING LOGIN SESSION
+========================================================= */
+
+function getStaffFromLocalStorage(){
+
+    const possibleIds = [
+
+        "staffId",
+        "staffID",
+        "staff_id",
+        "employeeId",
+        "employeeID",
+        "employee_id"
+
+    ];
+
+
+    let staffId = "";
+
+
+    for(
+        const key of possibleIds
+    ){
+
+        const value =
+            localStorage.getItem(key);
+
+
+        if(
+            value &&
+            value.trim()
+        ){
+
+            staffId =
+                value.trim();
+
+            break;
+
+        }
+
+    }
+
+
+    /*
+     * Sometimes the entire staff object
+     * is stored in localStorage.
+     */
+
+    const possibleObjects = [
+
+        "staffData",
+        "staffDetails",
+        "currentStaff",
+        "loggedStaff",
+        "userData",
+        "user"
+
+    ];
+
+
+    for(
+        const key of possibleObjects
+    ){
+
+        try{
+
+            const raw =
+                localStorage.getItem(key);
+
+
+            if(!raw) continue;
+
+
+            const data =
+                JSON.parse(raw);
+
+
+            if(
+                data &&
+                (
+                    data.staffId ||
+                    data.staffID ||
+                    data.staff_id ||
+                    data.employeeId
+                )
+            ){
+
+                const id =
+                    String(
+                        data.staffId ||
+                        data.staffID ||
+                        data.staff_id ||
+                        data.employeeId
+                    )
+                    .trim()
+                    .toUpperCase();
+
+
+                return {
+
+                    staffId:id,
+
+                    name:
+                        data.name ||
+                        data.staffName ||
+                        data.fullName ||
+                        data.displayName ||
+                        data.employeeName ||
+                        id,
+
+                    email:
+                        data.email ||
+                        data.officialEmail ||
+                        data.personalEmail ||
+                        ""
+
+                };
+
+            }
+
+        }
+        catch(e){
+
+            /*
+             * Ignore non-JSON localStorage values.
+             */
+
+        }
+
+    }
+
+
+    if(staffId){
+
+        return {
+
+            staffId:
+                staffId.toUpperCase(),
+
+            name:
+                localStorage.getItem("staffName") ||
+                localStorage.getItem("name") ||
+                localStorage.getItem("fullName") ||
+                staffId,
+
+            email:
+                localStorage.getItem("staffEmail") ||
+                localStorage.getItem("email") ||
+                ""
+
+        };
+
+    }
+
+
+    return null;
+
+}
+
+
+/* =========================================================
+   FIND STAFF FROM FIREBASE AUTH
+========================================================= */
+
+async function findStaffFromFirebaseUser(user){
+
+    try{
 
         /*
-         * Find staff document.
+         * First search UID.
          */
 
-        const staffRef =
-            doc(db, "staff", staffId);
+        let q =
+            query(
+                collection(db,"staff"),
+                where(
+                    "uid",
+                    "==",
+                    user.uid
+                )
+            );
 
-        const staffSnap =
-            await getDoc(staffRef);
+
+        let snapshot =
+            await getDocs(q);
 
 
-        if(staffSnap.exists()){
+        if(!snapshot.empty){
 
-            const data = staffSnap.data();
+            const staffDoc =
+                snapshot.docs[0];
+
+
+            const data =
+                staffDoc.data();
+
 
             currentStaff = {
 
-                staffId: staffId,
+                staffId:
+                    String(
+                        data.staffId ||
+                        data.staffID ||
+                        staffDoc.id
+                    )
+                    .trim()
+                    .toUpperCase(),
 
                 name:
                     data.name ||
                     data.staffName ||
                     data.fullName ||
-                    currentUser.displayName ||
-                    staffId,
+                    data.displayName ||
+                    staffDoc.id,
 
                 email:
                     data.email ||
-                    data.personalEmail ||
                     data.officialEmail ||
-                    currentUser.email ||
+                    data.personalEmail ||
+                    user.email ||
                     ""
 
             };
 
+
+            return;
+
         }
-        else{
 
-            /*
-             * Fallback: search by Firebase UID/email.
-             */
 
-            const staffQuery =
+        /*
+         * Try email.
+         */
+
+        if(user.email){
+
+            q =
                 query(
                     collection(db,"staff"),
-                    where("uid","==",currentUser.uid)
+                    where(
+                        "email",
+                        "==",
+                        user.email
+                    )
                 );
 
 
-            const result =
-                await getDocs(staffQuery);
+            snapshot =
+                await getDocs(q);
 
 
-            if(!result.empty){
+            if(!snapshot.empty){
 
-                const d =
-                    result.docs[0];
+                const staffDoc =
+                    snapshot.docs[0];
+
 
                 const data =
-                    d.data();
+                    staffDoc.data();
 
 
                 currentStaff = {
@@ -650,38 +1011,21 @@ async function loadCurrentStaff(){
                     staffId:
                         String(
                             data.staffId ||
-                            d.id
-                        ).toUpperCase(),
+                            data.staffID ||
+                            staffDoc.id
+                        )
+                        .trim()
+                        .toUpperCase(),
 
                     name:
                         data.name ||
                         data.staffName ||
                         data.fullName ||
-                        currentUser.displayName ||
-                        d.id,
+                        staffDoc.id,
 
                     email:
                         data.email ||
-                        data.personalEmail ||
-                        data.officialEmail ||
-                        currentUser.email ||
-                        ""
-
-                };
-
-            }
-            else{
-
-                currentStaff = {
-
-                    staffId: staffId,
-
-                    name:
-                        currentUser.displayName ||
-                        staffId,
-
-                    email:
-                        currentUser.email ||
+                        user.email ||
                         ""
 
                 };
@@ -690,29 +1034,12 @@ async function loadCurrentStaff(){
 
         }
 
-
-        document.getElementById(
-            "loggedStaffName"
-        ).textContent =
-            currentStaff.name;
-
-
-        document.getElementById(
-            "loggedStaffId"
-        ).textContent =
-            currentStaff.staffId;
-
-
     }
     catch(error){
 
         console.error(
-            "Staff loading error:",
+            "Firebase staff search error:",
             error
-        );
-
-        alert(
-            "Unable to load staff details."
         );
 
     }
@@ -720,13 +1047,45 @@ async function loadCurrentStaff(){
 }
 
 
-/* =====================================================
+/* =========================================================
+   DISPLAY CURRENT STAFF
+========================================================= */
+
+function displayCurrentStaff(){
+
+    if(!currentStaff) return;
+
+
+    document
+        .getElementById(
+            "loggedStaffName"
+        )
+        .textContent =
+            currentStaff.name;
+
+
+    document
+        .getElementById(
+            "loggedStaffId"
+        )
+        .textContent =
+            currentStaff.staffId;
+
+}
+
+
+/* =========================================================
    LOAD ALL STAFF
-   ===================================================== */
+========================================================= */
 
 async function loadAllStaff(){
 
     try{
+
+        console.log(
+            "Loading staff collection..."
+        );
+
 
         const snapshot =
             await getDocs(
@@ -734,76 +1093,149 @@ async function loadAllStaff(){
             );
 
 
-        allStaff = [];
-
-
-        snapshot.forEach((staffDoc) => {
-
-            const data =
-                staffDoc.data();
-
-
-            const staffId =
-                String(
-                    data.staffId ||
-                    staffDoc.id ||
-                    ""
-                )
-                .trim()
-                .toUpperCase();
-
-
-            if(!staffId) return;
-
-
-            /*
-             * Do not show current staff
-             * in recipient list.
-             */
-
-            if(
-                currentStaff &&
-                staffId === currentStaff.staffId
-            ){
-
-                return;
-
-            }
-
-
-            allStaff.push({
-
-                staffId: staffId,
-
-                name:
-                    data.name ||
-                    data.staffName ||
-                    data.fullName ||
-                    staffId,
-
-                department:
-                    data.department ||
-                    ""
-
-            });
-
-        });
-
-
-        allStaff.sort(
-            (a,b) =>
-                a.name.localeCompare(b.name)
+        console.log(
+            "STAFF DOCUMENT COUNT:",
+            snapshot.size
         );
 
 
-        populateStaffSelect();
+        allStaff = [];
+
+
+        snapshot.forEach(
+            staffDoc => {
+
+                const data =
+                    staffDoc.data();
+
+
+                /*
+                 * Support several possible field names.
+                 */
+
+                const staffId =
+                    String(
+
+                        data.staffId ||
+
+                        data.staffID ||
+
+                        data.staff_id ||
+
+                        data.employeeId ||
+
+                        data.employeeID ||
+
+                        staffDoc.id ||
+
+                        ""
+
+                    )
+                    .trim()
+                    .toUpperCase();
+
+
+                if(!staffId){
+
+                    return;
+
+                }
+
+
+                /*
+                 * Do not show the logged-in staff
+                 * as their own recipient.
+                 */
+
+                if(
+                    currentStaff &&
+                    staffId ===
+                    currentStaff.staffId
+                ){
+
+                    return;
+
+                }
+
+
+                const name =
+                    data.name ||
+
+                    data.staffName ||
+
+                    data.fullName ||
+
+                    data.displayName ||
+
+                    data.employeeName ||
+
+                    data.NAME ||
+
+                    staffId;
+
+
+                const department =
+                    data.department ||
+
+                    data.Department ||
+
+                    data.dept ||
+
+                    data.DEPT ||
+
+                    "";
+
+
+                allStaff.push({
+
+                    staffId:
+                        staffId,
+
+                    name:
+                        String(name),
+
+                    department:
+                        String(department)
+
+                });
+
+            }
+        );
+
+
+        /*
+         * Sort alphabetically.
+         */
+
+        allStaff.sort(
+            (a,b) =>
+                a.name.localeCompare(
+                    b.name
+                )
+        );
+
+
+        console.log(
+            "STAFF AVAILABLE:",
+            allStaff
+        );
+
+
+        populateStaffList();
+
 
     }
     catch(error){
 
         console.error(
-            "Staff list error:",
+            "STAFF LOAD ERROR:",
             error
+        );
+
+
+        showError(
+            "Staff list could not be loaded: " +
+            error.message
         );
 
     }
@@ -811,11 +1243,11 @@ async function loadAllStaff(){
 }
 
 
-/* =====================================================
-   POPULATE STAFF SELECT
-   ===================================================== */
+/* =========================================================
+   POPULATE STAFF DROPDOWN
+========================================================= */
 
-function populateStaffSelect(){
+function populateStaffList(){
 
     const select =
         document.getElementById(
@@ -824,105 +1256,144 @@ function populateStaffSelect(){
 
 
     select.innerHTML =
-        '<option value="">Select staff</option>';
+        "";
 
 
-    allStaff.forEach(staff => {
+    if(allStaff.length === 0){
 
-        const option =
-            document.createElement("option");
+        select.innerHTML =
+            `
+            <option value="">
+                No other staff found
+            </option>
+            `;
+
+        return;
+
+    }
 
 
-        option.value =
-            staff.staffId;
+    select.innerHTML =
+        `
+        <option value="">
+            Select staff member
+        </option>
+        `;
 
 
-        option.textContent =
-            staff.name +
-            " (" +
-            staff.staffId +
-            ")" +
-            (
-                staff.department
-                    ? " - " + staff.department
-                    : ""
+    allStaff.forEach(
+        staff => {
+
+            const option =
+                document.createElement(
+                    "option"
+                );
+
+
+            option.value =
+                staff.staffId;
+
+
+            option.textContent =
+                staff.name +
+                " (" +
+                staff.staffId +
+                ")" +
+                (
+                    staff.department
+                        ? " - " +
+                          staff.department
+                        : ""
+                );
+
+
+            select.appendChild(
+                option
             );
 
-
-        select.appendChild(option);
-
-    });
+        }
+    );
 
 }
 
 
-/* =====================================================
-   INBOX
-   ===================================================== */
+/* =========================================================
+   SHOW INBOX
+========================================================= */
 
 window.showInbox = function(){
 
-    currentMode = "inbox";
+    currentMode =
+        "inbox";
 
 
     document
-        .getElementById("inboxBtn")
+        .getElementById("inboxTab")
         .classList.add("active");
 
 
     document
-        .getElementById("sentBtn")
+        .getElementById("sentTab")
         .classList.remove("active");
 
 
-    if(unsubscribeSent){
+    if(sentUnsubscribe){
 
-        unsubscribeSent();
+        sentUnsubscribe();
 
-        unsubscribeSent = null;
+        sentUnsubscribe =
+            null;
 
     }
 
 
-    if(!currentStaff) return;
+    if(!currentStaff){
 
-
-    const messageList =
-        document.getElementById(
-            "messageList"
+        showError(
+            "Your staff details are not available."
         );
 
+        return;
 
-    messageList.innerHTML =
-        '<div class="loading">Loading inbox...</div>';
+    }
 
+
+    showLoading(
+        "Loading inbox..."
+    );
+
+
+    if(inboxUnsubscribe){
+
+        inboxUnsubscribe();
+
+    }
+
+
+    /*
+     * IMPORTANT:
+     * No orderBy() here.
+     * This avoids composite index problems.
+     */
 
     const q =
         query(
-            collection(db,"messages"),
+            collection(
+                db,
+                "messages"
+            ),
             where(
                 "receiverId",
                 "==",
                 currentStaff.staffId
-            ),
-            orderBy(
-                "timestamp",
-                "desc"
             )
         );
 
 
-    if(unsubscribeInbox){
-
-        unsubscribeInbox();
-
-    }
-
-
-    unsubscribeInbox =
+    inboxUnsubscribe =
         onSnapshot(
             q,
-            (snapshot) => {
+            snapshot => {
 
                 const messages = [];
 
@@ -935,7 +1406,8 @@ window.showInbox = function(){
 
 
                         if(
-                            data.deletedByReceiver === true
+                            data.deletedByReceiver ===
+                            true
                         ){
 
                             return;
@@ -956,25 +1428,33 @@ window.showInbox = function(){
                 );
 
 
-                renderMessages(messages);
+                sortMessages(
+                    messages
+                );
 
-                updateUnreadCount(messages);
+
+                renderMessages(
+                    messages
+                );
+
+
+                updateUnreadCount(
+                    messages
+                );
 
             },
-            (error) => {
+            error => {
 
                 console.error(
-                    "Inbox error:",
+                    "INBOX ERROR:",
                     error
                 );
 
 
-                messageList.innerHTML = `
-                    <div class="empty">
-                        Unable to load messages.<br><br>
-                        ${error.message}
-                    </div>
-                `;
+                showError(
+                    "Inbox error: " +
+                    error.message
+                );
 
             }
         );
@@ -982,73 +1462,77 @@ window.showInbox = function(){
 };
 
 
-/* =====================================================
-   SENT
-   ===================================================== */
+/* =========================================================
+   SHOW SENT
+========================================================= */
 
 window.showSent = function(){
 
-    currentMode = "sent";
+    currentMode =
+        "sent";
 
 
     document
-        .getElementById("sentBtn")
+        .getElementById("sentTab")
         .classList.add("active");
 
 
     document
-        .getElementById("inboxBtn")
+        .getElementById("inboxTab")
         .classList.remove("active");
 
 
-    if(unsubscribeInbox){
+    if(inboxUnsubscribe){
 
-        unsubscribeInbox();
+        inboxUnsubscribe();
 
-        unsubscribeInbox = null;
+        inboxUnsubscribe =
+            null;
 
     }
 
 
-    if(!currentStaff) return;
+    if(!currentStaff){
 
-
-    const messageList =
-        document.getElementById(
-            "messageList"
+        showError(
+            "Your staff details are not available."
         );
 
+        return;
 
-    messageList.innerHTML =
-        '<div class="loading">Loading sent messages...</div>';
+    }
+
+
+    showLoading(
+        "Loading sent messages..."
+    );
+
+
+    if(sentUnsubscribe){
+
+        sentUnsubscribe();
+
+    }
 
 
     const q =
         query(
-            collection(db,"messages"),
+            collection(
+                db,
+                "messages"
+            ),
             where(
                 "senderId",
                 "==",
                 currentStaff.staffId
-            ),
-            orderBy(
-                "timestamp",
-                "desc"
             )
         );
 
 
-    if(unsubscribeSent){
-
-        unsubscribeSent();
-
-    }
-
-
-    unsubscribeSent =
+    sentUnsubscribe =
         onSnapshot(
             q,
-            (snapshot) => {
+            snapshot => {
 
                 const messages = [];
 
@@ -1061,7 +1545,8 @@ window.showSent = function(){
 
 
                         if(
-                            data.deletedBySender === true
+                            data.deletedBySender ===
+                            true
                         ){
 
                             return;
@@ -1082,23 +1567,28 @@ window.showSent = function(){
                 );
 
 
-                renderMessages(messages);
+                sortMessages(
+                    messages
+                );
+
+
+                renderMessages(
+                    messages
+                );
 
             },
-            (error) => {
+            error => {
 
                 console.error(
-                    "Sent messages error:",
+                    "SENT ERROR:",
                     error
                 );
 
 
-                messageList.innerHTML = `
-                    <div class="empty">
-                        Unable to load sent messages.<br><br>
-                        ${error.message}
-                    </div>
-                `;
+                showError(
+                    "Sent messages error: " +
+                    error.message
+                );
 
             }
         );
@@ -1106,9 +1596,77 @@ window.showSent = function(){
 };
 
 
-/* =====================================================
-   RENDER MESSAGES
-   ===================================================== */
+/* =========================================================
+   SORT NEWEST FIRST
+========================================================= */
+
+function sortMessages(messages){
+
+    messages.sort(
+        (a,b) => {
+
+            const aTime =
+                getTime(
+                    a.timestamp
+                );
+
+
+            const bTime =
+                getTime(
+                    b.timestamp
+                );
+
+
+            return bTime - aTime;
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   GET TIME
+========================================================= */
+
+function getTime(timestamp){
+
+    if(!timestamp){
+
+        return 0;
+
+    }
+
+
+    if(
+        typeof timestamp.toMillis ===
+        "function"
+    ){
+
+        return timestamp.toMillis();
+
+    }
+
+
+    if(
+        typeof timestamp.toDate ===
+        "function"
+    ){
+
+        return timestamp.toDate()
+            .getTime();
+
+    }
+
+
+    return 0;
+
+}
+
+
+/* =========================================================
+   RENDER
+========================================================= */
 
 function renderMessages(messages){
 
@@ -1120,158 +1678,161 @@ function renderMessages(messages){
 
     if(messages.length === 0){
 
-        list.innerHTML = `
+        list.innerHTML =
+            `
             <div class="empty">
+
                 ${
                     currentMode === "inbox"
+
                     ? "📭 No messages received."
+
                     : "📤 No sent messages."
+
                 }
+
             </div>
-        `;
+            `;
 
         return;
 
     }
 
 
-    /*
-     * Always newest first.
-     */
+    list.innerHTML =
+        "";
 
-    messages.sort(
-        (a,b) => {
 
-            const ta =
-                a.timestamp?.toMillis
-                    ? a.timestamp.toMillis()
-                    : 0;
+    messages.forEach(
+        message => {
 
-            const tb =
-                b.timestamp?.toMillis
-                    ? b.timestamp.toMillis()
-                    : 0;
+            const item =
+                document.createElement(
+                    "div"
+                );
 
-            return tb - ta;
+
+            const isUnread =
+                currentMode === "inbox" &&
+                message.read !== true;
+
+
+            item.className =
+                "message-item " +
+                (
+                    isUnread
+                        ? "unread-message"
+                        : ""
+                );
+
+
+            const person =
+                currentMode === "inbox"
+
+                    ? (
+                        message.senderName ||
+                        message.senderId ||
+                        "Unknown"
+                    )
+
+                    : (
+                        message.receiverName ||
+                        message.receiverId ||
+                        "Unknown"
+                    );
+
+
+            item.innerHTML =
+                `
+
+                <div class="message-top">
+
+                    <div class="person">
+
+                        ${
+                            isUnread
+                                ? '<span class="red-dot"></span>'
+                                : ''
+                        }
+
+                        ${escapeHTML(person)}
+
+                    </div>
+
+
+                    <div class="time">
+
+                        ${formatTime(
+                            message.timestamp
+                        )}
+
+                    </div>
+
+                </div>
+
+
+                <div class="preview">
+
+                    ${escapeHTML(
+                        message.message ||
+                        ""
+                    )}
+
+                </div>
+
+                `;
+
+
+            item.onclick =
+                () => openMessage(
+                    message
+                );
+
+
+            list.appendChild(
+                item
+            );
 
         }
     );
 
-
-    list.innerHTML = "";
-
-
-    messages.forEach(message => {
-
-        const item =
-            document.createElement("div");
-
-
-        item.className =
-            "message-item " +
-            (
-                currentMode === "inbox" &&
-                message.read !== true
-                    ? "unread"
-                    : ""
-            );
-
-
-        const personName =
-            currentMode === "inbox"
-                ? message.senderName
-                : message.receiverName;
-
-
-        const time =
-            formatTimestamp(
-                message.timestamp
-            );
-
-
-        item.innerHTML = `
-
-            <div class="message-row">
-
-                <div class="message-name">
-
-                    ${
-                        currentMode === "inbox" &&
-                        message.read !== true
-                            ? '<span class="unread-dot"></span>'
-                            : ''
-                    }
-
-                    ${escapeHTML(personName || "")}
-
-                </div>
-
-                <div class="message-time">
-                    ${time}
-                </div>
-
-            </div>
-
-
-            <div class="message-preview">
-
-                ${escapeHTML(
-                    message.message || ""
-                )}
-
-            </div>
-
-        `;
-
-
-        item.onclick = () => {
-
-            openMessage(message);
-
-        };
-
-
-        list.appendChild(item);
-
-    });
-
 }
 
 
-/* =====================================================
+/* =========================================================
    UNREAD COUNT
-   ===================================================== */
+========================================================= */
 
 function updateUnreadCount(messages){
 
-    const unread =
+    const count =
         messages.filter(
             message =>
                 message.read !== true
         ).length;
 
 
-    const count =
+    const element =
         document.getElementById(
             "unreadCount"
         );
 
 
-    count.textContent =
-        unread;
+    element.textContent =
+        count;
 
 
-    count.style.display =
-        unread > 0
+    element.style.display =
+        count > 0
             ? "inline-block"
             : "none";
 
 }
 
 
-/* =====================================================
+/* =========================================================
    OPEN MESSAGE
-   ===================================================== */
+========================================================= */
 
 async function openMessage(message){
 
@@ -1293,8 +1854,12 @@ async function openMessage(message){
                     message.id
                 ),
                 {
-                    read: true,
-                    readAt: serverTimestamp()
+
+                    read:true,
+
+                    readAt:
+                        serverTimestamp()
+
                 }
             );
 
@@ -1302,7 +1867,7 @@ async function openMessage(message){
         catch(error){
 
             console.error(
-                "Read update error:",
+                "READ ERROR:",
                 error
             );
 
@@ -1311,75 +1876,99 @@ async function openMessage(message){
     }
 
 
-    const viewContent =
-        document.getElementById(
-            "viewContent"
-        );
-
-
-    const personLabel =
+    const person =
         currentMode === "inbox"
-            ? "From"
-            : "To";
+
+            ? message.senderName
+
+            : message.receiverName;
 
 
-    viewContent.innerHTML = `
+    const personId =
+        currentMode === "inbox"
 
-        <div class="detail-info">
-            <strong>${personLabel}:</strong>
+            ? message.senderId
+
+            : message.receiverId;
+
+
+    const html =
+        `
+
+        <div class="detail">
+
+            <strong>
+                ${
+                    currentMode === "inbox"
+                        ? "From"
+                        : "To"
+                }:
+            </strong>
+
             ${escapeHTML(
-                currentMode === "inbox"
-                    ? message.senderName || ""
-                    : message.receiverName || ""
+                person || ""
             )}
+
         </div>
 
-        <div class="detail-info">
+
+        <div class="detail">
+
             <strong>Staff ID:</strong>
+
             ${escapeHTML(
-                currentMode === "inbox"
-                    ? message.senderId || ""
-                    : message.receiverId || ""
+                personId || ""
             )}
+
         </div>
 
-        <div class="detail-info">
+
+        <div class="detail">
+
             <strong>Time:</strong>
-            ${formatTimestamp(message.timestamp)}
+
+            ${formatTime(
+                message.timestamp
+            )}
+
         </div>
 
-        <div class="detail-message">
-            ${escapeHTML(message.message || "")}
+
+        <div class="message-body">
+
+            ${escapeHTML(
+                message.message || ""
+            )}
+
         </div>
 
-        <div>
+
+        <div class="action-row">
 
             ${
                 currentMode === "inbox"
-                ? `
-                    <button
-                        class="reply-btn"
-                        onclick='replyToMessage(
-                            ${JSON.stringify(
-                                message.senderId
-                            )},
-                            ${JSON.stringify(
-                                message.senderName
-                            )}
-                        )'>
 
-                        ↩ Reply
+                ?
 
-                    </button>
                 `
-                : ""
+                <button
+                    class="reply-btn"
+                    id="replyButton">
+
+                    ↩ Reply
+
+                </button>
+                `
+
+                :
+
+                ""
             }
+
 
             <button
                 class="delete-btn"
-                onclick='deleteMessage(
-                    ${JSON.stringify(message.id)}
-                )'>
+                id="deleteButton">
 
                 🗑 Delete
 
@@ -1387,99 +1976,92 @@ async function openMessage(message){
 
         </div>
 
-    `;
+        `;
 
 
     document
-        .getElementById("viewModal")
-        .classList.add("show");
+        .getElementById(
+            "viewContent"
+        )
+        .innerHTML =
+            html;
+
+
+    if(
+        currentMode === "inbox"
+    ){
+
+        document
+            .getElementById(
+                "replyButton"
+            )
+            .onclick =
+                () => {
+
+                    closeView();
+
+                    openCompose();
+
+                    setTimeout(
+                        () => {
+
+                            const select =
+                                document
+                                .getElementById(
+                                    "receiverSelect"
+                                );
+
+
+                            select.value =
+                                message.senderId;
+
+
+                            document
+                                .getElementById(
+                                    "messageText"
+                                )
+                                .focus();
+
+                        },
+                        100
+                    );
+
+                };
+
+    }
+
+
+    document
+        .getElementById(
+            "deleteButton"
+        )
+        .onclick =
+            () => deleteMessage(
+                message.id
+            );
+
+
+    document
+        .getElementById(
+            "viewModal"
+        )
+        .classList.add(
+            "show"
+        );
 
 }
 
 
-/* =====================================================
-   REPLY
-   ===================================================== */
-
-window.replyToMessage = function(
-    staffId,
-    staffName
-){
-
-    closeView();
-
-    openCompose();
-
-
-    setTimeout(() => {
-
-        const select =
-            document.getElementById(
-                "receiverSelect"
-            );
-
-
-        select.value =
-            staffId;
-
-
-        /*
-         * If the staff was not found in
-         * the current list, create it.
-         */
-
-        if(!select.value){
-
-            const option =
-                document.createElement(
-                    "option"
-                );
-
-
-            option.value =
-                staffId;
-
-
-            option.textContent =
-                staffName +
-                " (" +
-                staffId +
-                ")";
-
-
-            select.appendChild(option);
-
-
-            select.value =
-                staffId;
-
-        }
-
-
-        document
-            .getElementById(
-                "messageText"
-            )
-            .focus();
-
-    },100);
-
-};
-
-
-/* =====================================================
+/* =========================================================
    SEND MESSAGE
-   ===================================================== */
+========================================================= */
 
-window.sendMessage = async function(event){
-
-    event.preventDefault();
-
+window.sendMessage = async function(){
 
     if(!currentStaff){
 
         alert(
-            "Staff details are not loaded."
+            "Your staff details are not loaded."
         );
 
         return;
@@ -1495,7 +2077,7 @@ window.sendMessage = async function(event){
             .value;
 
 
-    const message =
+    const text =
         document
             .getElementById(
                 "messageText"
@@ -1515,7 +2097,7 @@ window.sendMessage = async function(event){
     }
 
 
-    if(!message){
+    if(!text){
 
         alert(
             "Please type a message."
@@ -1529,7 +2111,8 @@ window.sendMessage = async function(event){
     const receiver =
         allStaff.find(
             staff =>
-                staff.staffId === receiverId
+                staff.staffId ===
+                receiverId
         );
 
 
@@ -1549,7 +2132,7 @@ window.sendMessage = async function(event){
                     currentStaff.name,
 
                 senderEmail:
-                    currentStaff.email,
+                    currentStaff.email || "",
 
                 receiverId:
                     receiverId,
@@ -1560,13 +2143,16 @@ window.sendMessage = async function(event){
                         : receiverId,
 
                 message:
-                    message,
+                    text,
 
                 timestamp:
                     serverTimestamp(),
 
                 read:
                     false,
+
+                readAt:
+                    null,
 
                 deletedBySender:
                     false,
@@ -1578,39 +2164,40 @@ window.sendMessage = async function(event){
         );
 
 
-        alert(
-            "Message sent successfully."
-        );
-
-
         document
             .getElementById(
                 "messageText"
             )
-            .value = "";
+            .value =
+                "";
 
 
         document
             .getElementById(
                 "receiverSelect"
             )
-            .value = "";
+            .value =
+                "";
 
 
         closeCompose();
 
 
+        showSuccess(
+            "Message sent successfully."
+        );
+
     }
     catch(error){
 
         console.error(
-            "Send message error:",
+            "SEND MESSAGE ERROR:",
             error
         );
 
 
-        alert(
-            "Message could not be sent.\n\n" +
+        showError(
+            "Message could not be sent: " +
             error.message
         );
 
@@ -1619,13 +2206,11 @@ window.sendMessage = async function(event){
 };
 
 
-/* =====================================================
-   DELETE MESSAGE
-   ===================================================== */
+/* =========================================================
+   DELETE
+========================================================= */
 
-window.deleteMessage = async function(
-    messageId
-){
+async function deleteMessage(messageId){
 
     if(
         !confirm(
@@ -1648,23 +2233,6 @@ window.deleteMessage = async function(
             );
 
 
-        const snapshot =
-            await getDoc(
-                messageRef
-            );
-
-
-        if(!snapshot.exists()){
-
-            return;
-
-        }
-
-
-        const data =
-            snapshot.data();
-
-
         if(
             currentMode === "inbox"
         ){
@@ -1672,8 +2240,7 @@ window.deleteMessage = async function(
             await updateDoc(
                 messageRef,
                 {
-                    deletedByReceiver:
-                        true
+                    deletedByReceiver:true
                 }
             );
 
@@ -1683,8 +2250,7 @@ window.deleteMessage = async function(
             await updateDoc(
                 messageRef,
                 {
-                    deletedBySender:
-                        true
+                    deletedBySender:true
                 }
             );
 
@@ -1697,23 +2263,24 @@ window.deleteMessage = async function(
     catch(error){
 
         console.error(
-            "Delete error:",
+            "DELETE ERROR:",
             error
         );
 
 
-        alert(
-            "Unable to delete message."
+        showError(
+            "Unable to delete message: " +
+            error.message
         );
 
     }
 
-};
+}
 
 
-/* =====================================================
-   COMPOSE MODAL
-   ===================================================== */
+/* =========================================================
+   MODALS
+========================================================= */
 
 window.openCompose = function(){
 
@@ -1721,7 +2288,9 @@ window.openCompose = function(){
         .getElementById(
             "composeModal"
         )
-        .classList.add("show");
+        .classList.add(
+            "show"
+        );
 
 };
 
@@ -1732,7 +2301,9 @@ window.closeCompose = function(){
         .getElementById(
             "composeModal"
         )
-        .classList.remove("show");
+        .classList.remove(
+            "show"
+        );
 
 };
 
@@ -1743,16 +2314,18 @@ window.closeView = function(){
         .getElementById(
             "viewModal"
         )
-        .classList.remove("show");
+        .classList.remove(
+            "show"
+        );
 
 };
 
 
-/* =====================================================
-   FORMAT TIME
-   ===================================================== */
+/* =========================================================
+   TIME
+========================================================= */
 
-function formatTimestamp(timestamp){
+function formatTime(timestamp){
 
     if(!timestamp){
 
@@ -1764,23 +2337,37 @@ function formatTimestamp(timestamp){
     let date;
 
 
+    try{
+
+        if(
+            typeof timestamp.toDate ===
+            "function"
+        ){
+
+            date =
+                timestamp.toDate();
+
+        }
+        else{
+
+            date =
+                new Date(timestamp);
+
+        }
+
+    }
+    catch(e){
+
+        return "Just now";
+
+    }
+
+
     if(
-        typeof timestamp.toDate === "function"
+        isNaN(
+            date.getTime()
+        )
     ){
-
-        date =
-            timestamp.toDate();
-
-    }
-    else{
-
-        date =
-            new Date(timestamp);
-
-    }
-
-
-    if(isNaN(date.getTime())){
 
         return "Just now";
 
@@ -1790,40 +2377,129 @@ function formatTimestamp(timestamp){
     return date.toLocaleString(
         "en-IN",
         {
+
             day:"2-digit",
+
             month:"short",
+
             year:"numeric",
+
             hour:"2-digit",
+
             minute:"2-digit"
+
         }
     );
 
 }
 
 
-/* =====================================================
-   HTML ESCAPE
-   ===================================================== */
+/* =========================================================
+   UI HELPERS
+========================================================= */
+
+function showLoading(text){
+
+    document
+        .getElementById(
+            "messageList"
+        )
+        .innerHTML =
+            `
+            <div class="loading">
+                ${escapeHTML(text)}
+            </div>
+            `;
+
+}
+
+
+function showError(text){
+
+    const box =
+        document.getElementById(
+            "statusBox"
+        );
+
+
+    box.className =
+        "status error";
+
+
+    box.textContent =
+        text;
+
+
+    setTimeout(
+        () => {
+
+            box.className =
+                "status";
+
+        },
+        7000
+    );
+
+}
+
+
+function showSuccess(text){
+
+    const box =
+        document.getElementById(
+            "statusBox"
+        );
+
+
+    box.className =
+        "status success";
+
+
+    box.textContent =
+        text;
+
+
+    setTimeout(
+        () => {
+
+            box.className =
+                "status";
+
+        },
+        4000
+    );
+
+}
+
+
+/* =========================================================
+   HTML SECURITY
+========================================================= */
 
 function escapeHTML(value){
 
     return String(value || "")
+
         .replace(
             /&/g,
             "&amp;"
         )
+
         .replace(
             /</g,
             "&lt;"
         )
+
         .replace(
             />/g,
             "&gt;"
         )
+
         .replace(
             /"/g,
             "&quot;"
         )
+
         .replace(
             /'/g,
             "&#039;"
