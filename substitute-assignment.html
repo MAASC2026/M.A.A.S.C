@@ -538,58 +538,175 @@ function getSessionObject(){
 /* =========================================================
    POPULATE CURRENT STAFF
    ========================================================= */
-function populateCurrentStaff(){
-  const session =
-    getSessionObject();
-  if(!session){
-    show(
-      "loginMessage",
-      "Logged-in staff session was not found. Please log in through your Staff Login page first.",
-      "err"
-    );
-    return;
-  }
-  const sid =
-    clean(
-      session.staffId ??
-      session.staffID ??
-      session.staff ??
-      session.staff_id ??
-      session.id
-    );
-  const sname =
-    clean(
-      session.staffName ??
-      session.name ??
-      session.displayName ??
-      session.staff_name
-    );
-  const dept =
-    clean(
-      session.department ??
-      session.dept ??
-      session.departmentName
-    );
+async function populateCurrentStaff(){
+  const session = getSessionObject();
+
+  /*
+     The login page normally stores only the Staff ID in sessionStorage.
+     Therefore we MUST fetch the complete staff record from Firestore.
+  */
+  let sid = clean(
+    session?.staffId ??
+    session?.staffID ??
+    session?.staff ??
+    session?.staff_id ??
+    session?.id ??
+    sessionStorage.getItem("staffId") ??
+    sessionStorage.getItem("staffID") ??
+    localStorage.getItem("staffId") ??
+    localStorage.getItem("staffID")
+  );
+
+  /* Support direct URL: substitute-assignment.html?staffId=SHT001 */
   if(!sid){
+    try{
+      const params = new URLSearchParams(window.location.search);
+      sid = clean(
+        params.get("staffId") ||
+        params.get("staffID") ||
+        params.get("id") || ""
+      );
+    }catch(e){
+      console.warn("URL STAFF ID ERROR:", e);
+    }
+  }
+
+  if(!sid){
+    currentStaff = null;
+    $("requesterId").value = "";
+    $("requesterName").value = "";
+    $("requesterDepartment").value = "";
     show(
       "loginMessage",
-      "Staff ID is missing from the login session.",
+      "Staff ID was not found. Please login again.",
       "err"
     );
-    return;
+    return false;
   }
-  currentStaff = {
-    staffId :sid,
-    staffName :sname,
-    department :dept
-  };
-  $("requesterId").value =
-    sid;
-  $("requesterName").value =
-    sname || "Loading...";
-  $("requesterDepartment").value =
-    dept || "Loading...";
-  hide("loginMessage");
+
+  sid = upper(sid);
+  console.log("LOADING LOGGED-IN STAFF:", sid);
+
+  try{
+    let staffData = null;
+
+    /* 1. Normal Firestore field: staffId */
+    let q1 = query(
+      collection(db, "staff"),
+      where("staffId", "==", sid)
+    );
+    let snap = await getDocs(q1);
+
+    if(!snap.empty){
+      staffData = snap.docs[0].data();
+    }
+
+    /* 2. Support staffID if the database uses that spelling */
+    if(!staffData){
+      let q2 = query(
+        collection(db, "staff"),
+        where("staffID", "==", sid)
+      );
+      let snap2 = await getDocs(q2);
+      if(!snap2.empty){
+        staffData = snap2.docs[0].data();
+      }
+    }
+
+    /* 3. Support staff ID stored as document ID */
+    if(!staffData){
+      try{
+        const directSnap = await getDocs(
+          query(
+            collection(db, "staff"),
+            where("staffId", "==", sid)
+          )
+        );
+        if(!directSnap.empty){
+          staffData = directSnap.docs[0].data();
+        }
+      }catch(e){
+        console.warn("STAFF FALLBACK ERROR:", e);
+      }
+    }
+
+    if(!staffData){
+      /* If the session already contains the full verified details,
+         use them as a fallback instead of displaying blank fields. */
+      const sessionName = clean(
+        session?.staffName ??
+        session?.name ??
+        session?.displayName ??
+        session?.staff_name
+      );
+      const sessionDept = clean(
+        session?.department ??
+        session?.dept ??
+        session?.departmentName
+      );
+
+      if(sessionName){
+        currentStaff = {
+          staffId: sid,
+          staffName: sessionName,
+          department: sessionDept
+        };
+      }else{
+        throw new Error("Staff record not found for Staff ID: " + sid);
+      }
+    }else{
+      currentStaff = {
+        staffId: clean(
+          staffData.staffId ??
+          staffData.staffID ??
+          sid
+        ) || sid,
+        staffName: clean(
+          staffData.staffName ??
+          staffData.name ??
+          staffData.fullName ??
+          staffData.displayName ??
+          staffData.staff_name
+        ),
+        department: clean(
+          staffData.department ??
+          staffData.dept ??
+          staffData.departmentName
+        )
+      };
+    }
+
+    /* Keep the verified staff identity for the rest of the portal. */
+    sessionStorage.setItem("staffId", currentStaff.staffId);
+    sessionStorage.setItem("staffName", currentStaff.staffName || "");
+    sessionStorage.setItem("department", currentStaff.department || "");
+    sessionStorage.setItem("currentStaff", JSON.stringify(currentStaff));
+
+    localStorage.setItem("staffId", currentStaff.staffId);
+    localStorage.setItem("currentStaff", JSON.stringify(currentStaff));
+
+    $("requesterId").value = currentStaff.staffId || sid;
+    $("requesterName").value = currentStaff.staffName || "-";
+    $("requesterDepartment").value = currentStaff.department || "-";
+
+    hide("loginMessage");
+
+    console.log("CURRENT LOGGED-IN STAFF:", currentStaff);
+    return true;
+  }
+  catch(err){
+    console.error("STAFF DETAILS LOAD ERROR:", err);
+    currentStaff = null;
+    $("requesterId").value = sid;
+    $("requesterName").value = "";
+    $("requesterDepartment").value = "";
+    show(
+      "loginMessage",
+      "Unable to load staff details for " + sid + ". " + err.message,
+      "err"
+    );
+    return false;
+  }
 }
 /* =========================================================
    LOAD TIMETABLE
@@ -1440,8 +1557,8 @@ function clearForm(){
    INITIALIZE
    ========================================================= */
 async function init(){
-  populateCurrentStaff();
-  if(!currentStaff){
+  const staffLoaded = await populateCurrentStaff();
+  if(!staffLoaded || !currentStaff){
     return;
   }
   /*
