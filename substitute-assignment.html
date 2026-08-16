@@ -635,7 +635,6 @@ button:disabled{
 
 <script type="module">
 
-
 /* =========================================================
    FIREBASE
 ========================================================= */
@@ -689,7 +688,6 @@ const db =
     getFirestore(app);
 
 
-
 /* =========================================================
    VARIABLES
 ========================================================= */
@@ -703,15 +701,12 @@ let selectedSubstitute = null;
 let currentStaff = null;
 
 
-
 /* =========================================================
-   HELPER
+   HELPERS
 ========================================================= */
 
 const $ =
-    id =>
-        document.getElementById(id);
-
+    id => document.getElementById(id);
 
 
 function clean(v){
@@ -730,9 +725,8 @@ function upper(v){
 }
 
 
-
 /* =========================================================
-   NORMALIZE DAY ORDER
+   NORMALIZE DAY
 ========================================================= */
 
 function normalizeDay(value){
@@ -800,19 +794,20 @@ function normalizeSession(v){
 }
 
 
-
 /* =========================================================
    STAFF FIELD HELPERS
 ========================================================= */
 
-function getStaffId(d){
+function getStaffId(d, documentId = ""){
 
     return clean(
 
         d.staffId ??
         d.staffID ??
+        d.staff_id ??
         d.staff ??
-        d.staff_id
+        d.id ??
+        documentId
 
     );
 
@@ -825,7 +820,9 @@ function getStaffName(d){
 
         d.staffName ??
         d.name ??
-        d.staff_name
+        d.staff_name ??
+        d.displayName ??
+        d.fullName
 
     );
 
@@ -888,28 +885,20 @@ function getSubject(d){
 }
 
 
-
 /* =========================================================
-   MESSAGE
+   MESSAGES
 ========================================================= */
 
-function show(
-    id,
-    text,
-    type
-){
+function show(id,text,type){
 
     const e =
         $(id);
 
-
     e.textContent =
         text;
 
-
     e.className =
-        "message show " +
-        type;
+        "message show " + type;
 
 }
 
@@ -922,211 +911,261 @@ function hide(id){
 }
 
 
-
 /* =========================================================
-   GET EXISTING STAFF SESSION
+   GET CURRENT STAFF ID
 ========================================================= */
 
-function getSessionObject(){
+/*
+   IMPORTANT:
 
-    const keys = [
+   We ONLY use STAFF ID from the browser session.
 
-        "staffSession",
+   We DO NOT use staffName from localStorage.
 
-        "staff_session",
+   The name and department are fetched fresh
+   from Firestore using this Staff ID.
+*/
 
-        "loggedInStaff",
+function getCurrentStaffId(){
 
-        "currentStaff",
-
-        "staffData",
-
-        "userData",
-
-        "user"
-
-    ];
+    let staffId =
+        clean(
+            sessionStorage.getItem("staffId")
+        );
 
 
-    for(
-        const key of keys
-    ){
+    if(!staffId){
 
-        try{
-
-            const raw =
-                localStorage.getItem(key) ||
-                sessionStorage.getItem(key);
-
-
-            if(!raw)
-                continue;
-
-
-            const obj =
-                JSON.parse(raw);
-
-
-            if(
-                obj &&
-                typeof obj === "object"
-            ){
-
-                return obj;
-
-            }
-
-        }
-        catch(e){
-
-        }
+        staffId =
+            clean(
+                sessionStorage.getItem("staffID")
+            );
 
     }
 
 
-    const idKeys = [
+    if(!staffId){
 
-        "staffId",
-
-        "staffID",
-
-        "loggedInStaffId",
-
-        "currentStaffId",
-
-        "userStaffId"
-
-    ];
-
-
-    for(
-        const key of idKeys
-    ){
-
-        const id =
-            localStorage.getItem(key) ||
-            sessionStorage.getItem(key);
-
-
-        if(id){
-
-            return {
-                staffId:id
-            };
-
-        }
+        staffId =
+            clean(
+                localStorage.getItem("staffId")
+            );
 
     }
 
 
-    return null;
+    if(!staffId){
+
+        staffId =
+            clean(
+                localStorage.getItem("staffID")
+            );
+
+    }
+
+
+    return staffId;
 
 }
 
 
-
 /* =========================================================
-   POPULATE CURRENT STAFF
+   LOAD CURRENT STAFF FROM FIRESTORE
 ========================================================= */
 
-function populateCurrentStaff(){
+async function loadCurrentStaff(){
 
-    const session =
-        getSessionObject();
-
-
-    if(!session){
-
-        show(
-            "loginMessage",
-
-            "Logged-in staff session was not found. Please log in through your Staff Login page first.",
-
-            "err"
-        );
-
-        return;
-
-    }
+    const staffId =
+        getCurrentStaffId();
 
 
-    const sid =
-        clean(
-
-            session.staffId ??
-            session.staffID ??
-            session.staff ??
-            session.staff_id ??
-            session.id
-
-        );
-
-
-    const sname =
-        clean(
-
-            session.staffName ??
-            session.name ??
-            session.displayName ??
-            session.staff_name
-
-        );
-
-
-    const dept =
-        clean(
-
-            session.department ??
-            session.dept ??
-            session.departmentName
-
-        );
-
-
-    if(!sid){
-
-        show(
-            "loginMessage",
-
-            "Staff ID is missing from the login session.",
-
-            "err"
-        );
-
-        return;
-
-    }
-
-
-    currentStaff = {
-
-        staffId:sid,
-
-        staffName:sname,
-
-        department:dept
-
-    };
-
-
-    $("requesterId").value =
-        sid;
-
-
-    $("requesterName").value =
-        sname || "Loading...";
-
-
-    $("requesterDepartment").value =
-        dept || "Loading...";
-
-
-    hide(
-        "loginMessage"
+    console.log(
+        "LOGIN STAFF ID:",
+        staffId
     );
 
-}
 
+    if(!staffId){
+
+        show(
+            "loginMessage",
+
+            "Staff ID was not found. Please login again.",
+
+            "err"
+        );
+
+        return false;
+
+    }
+
+
+    try{
+
+        const staffSnap =
+            await getDocs(
+                collection(
+                    db,
+                    "staff"
+                )
+            );
+
+
+        let found =
+            null;
+
+
+        staffSnap.forEach(
+            docSnap => {
+
+                const d =
+                    docSnap.data();
+
+
+                const dbStaffId =
+                    getStaffId(
+                        d,
+                        docSnap.id
+                    );
+
+
+                console.log(
+                    "CHECK STAFF:",
+                    dbStaffId
+                );
+
+
+                if(
+                    upper(dbStaffId) ===
+                    upper(staffId)
+                ){
+
+                    found = {
+
+                        firestoreId:
+                            docSnap.id,
+
+                        staffId:
+                            dbStaffId,
+
+                        staffName:
+                            getStaffName(d),
+
+                        department:
+                            getDepartment(d)
+
+                    };
+
+                }
+
+            }
+        );
+
+
+        if(!found){
+
+            console.error(
+                "STAFF ID NOT FOUND IN FIRESTORE:",
+                staffId
+            );
+
+
+            show(
+                "loginMessage",
+
+                "Staff ID " +
+                staffId +
+                " was not found in the staff collection.",
+
+                "err"
+            );
+
+
+            return false;
+
+        }
+
+
+        /*
+         * THIS IS NOW THE REAL CURRENT STAFF.
+         */
+
+        currentStaff =
+            found;
+
+
+        console.log(
+            "CURRENT STAFF LOADED:",
+            currentStaff
+        );
+
+
+        $("requesterId").value =
+            currentStaff.staffId;
+
+
+        $("requesterName").value =
+            currentStaff.staffName;
+
+
+        $("requesterDepartment").value =
+            currentStaff.department;
+
+
+        /*
+         * Update session with the correct values.
+         *
+         * This does NOT decide identity.
+         * Staff ID already decided identity.
+         */
+
+        sessionStorage.setItem(
+            "staffId",
+            currentStaff.staffId
+        );
+
+        sessionStorage.setItem(
+            "staffName",
+            currentStaff.staffName
+        );
+
+        sessionStorage.setItem(
+            "department",
+            currentStaff.department
+        );
+
+
+        hide(
+            "loginMessage"
+        );
+
+
+        return true;
+
+    }
+    catch(err){
+
+        console.error(
+            "CURRENT STAFF ERROR:",
+            err
+        );
+
+
+        show(
+            "loginMessage",
+
+            "Unable to load staff details: " +
+            err.message,
+
+            "err"
+        );
+
+
+        return false;
+
+    }
+
+}
 
 
 /* =========================================================
@@ -1210,7 +1249,6 @@ async function loadTimetable(){
         );
 
 
-
         /*
          * LOAD ALL STAFF
          */
@@ -1236,7 +1274,10 @@ async function loadTimetable(){
 
 
                 const sid =
-                    getStaffId(d);
+                    getStaffId(
+                        d,
+                        staffDoc.id
+                    );
 
 
                 if(!sid)
@@ -1263,10 +1304,9 @@ async function loadTimetable(){
         );
 
 
-
         /*
-         * ALSO INCLUDE STAFF
-         * FOUND IN TIMETABLE
+         * ALSO INCLUDE STAFF FOUND
+         * IN TIMETABLE
          */
 
         timetableData.forEach(
@@ -1332,7 +1372,6 @@ async function loadTimetable(){
         );
 
 
-
         /*
          * REMOVE CURRENT STAFF
          */
@@ -1342,14 +1381,16 @@ async function loadTimetable(){
                 map.values()
             ).filter(
                 s =>
+
                     upper(
                         s.staffId
                     ) !==
-                    upper(
-                        currentStaff?.staffId
-                    )
-            );
 
+                    upper(
+                        currentStaff.staffId
+                    )
+
+            );
 
 
         /*
@@ -1373,46 +1414,15 @@ async function loadTimetable(){
         );
 
 
-
         /*
-         * FILL CURRENT STAFF DETAILS
-         * FROM FIRESTORE
+         * IMPORTANT:
+         *
+         * DO NOT change currentStaff.name
+         * using timetable data.
+         *
+         * currentStaff came directly from
+         * staff collection using Staff ID.
          */
-
-        if(currentStaff){
-
-            const me =
-                map.get(
-                    upper(
-                        currentStaff.staffId
-                    )
-                );
-
-
-            if(me){
-
-                currentStaff.staffName =
-                    currentStaff.staffName ||
-                    me.staffName;
-
-
-                currentStaff.department =
-                    currentStaff.department ||
-                    me.department;
-
-
-                $("requesterName").value =
-                    currentStaff.staffName ||
-                    "";
-
-
-                $("requesterDepartment").value =
-                    currentStaff.department ||
-                    "";
-
-            }
-
-        }
 
     }
     catch(err){
@@ -1435,7 +1445,6 @@ async function loadTimetable(){
     }
 
 }
-
 
 
 /* =========================================================
@@ -1509,18 +1518,17 @@ async function loadExistingRequests(){
         );
 
 
-        /*
-         * NEWEST DATE FIRST
-         */
-
         arr.sort(
             (a,b) =>
+
                 String(
                     b.date || ""
                 ).localeCompare(
+
                     String(
                         a.date || ""
                     )
+
                 )
         );
 
@@ -1635,7 +1643,10 @@ async function loadExistingRequests(){
     }
     catch(err){
 
-        console.error(err);
+        console.error(
+            "REQUEST HISTORY ERROR:",
+            err
+        );
 
 
         box.innerHTML =
@@ -1648,7 +1659,6 @@ async function loadExistingRequests(){
     }
 
 }
-
 
 
 /* =========================================================
@@ -1689,31 +1699,8 @@ function esc(v){
 }
 
 
-
 /* =========================================================
-   IMPORTANT:
-   DATE AND DAY ORDER ARE COMPLETELY INDEPENDENT
-========================================================= */
-
-/*
- * THERE IS NO DATE CHANGE HANDLER.
- *
- * THERE IS NO DAY ORDER CHANGE HANDLER.
- *
- * Therefore:
- *
- * DATE → does NOT modify DAY ORDER
- *
- * DAY ORDER → does NOT modify DATE
- *
- * Both values are simply read when
- * "Find Free Staff" is clicked.
- */
-
-
-
-/* =========================================================
-   FIND FREE STAFF BUTTON
+   FIND BUTTON
 ========================================================= */
 
 $("findBtn")
@@ -1728,7 +1715,6 @@ $("clearBtn")
         "click",
         clearForm
     );
-
 
 
 /* =========================================================
@@ -1767,18 +1753,12 @@ async function findFreeStaff(){
 
 
     /*
-     * READ THE DATE AS SELECTED.
-     * DO NOT MODIFY DAY ORDER.
+     * DATE AND DAY ARE INDEPENDENT.
      */
 
     const date =
         $("requestDate").value;
 
-
-    /*
-     * READ THE DAY ORDER AS SELECTED.
-     * DO NOT MODIFY DATE.
-     */
 
     const day =
         normalizeDay(
@@ -1898,23 +1878,19 @@ async function findFreeStaff(){
 
                 if(
 
-                    status ===
-                    "APPROVED"
+                    status === "APPROVED"
 
                     ||
 
-                    status ===
-                    "PENDING_APPROVAL"
+                    status === "PENDING_APPROVAL"
 
                     ||
 
-                    status ===
-                    "ALLOTTED"
+                    status === "ALLOTTED"
 
                     ||
 
-                    status ===
-                    "PENDING"
+                    status === "PENDING"
 
                 ){
 
@@ -1960,7 +1936,6 @@ async function findFreeStaff(){
         );
 
 
-
         /*
          * TIMETABLE BUSY STAFF
          */
@@ -1989,7 +1964,6 @@ async function findFreeStaff(){
                     )
 
             );
-
 
 
         /*
@@ -2031,7 +2005,6 @@ async function findFreeStaff(){
             );
 
 
-
         if(
             !free.length
         ){
@@ -2051,7 +2024,6 @@ async function findFreeStaff(){
             return;
 
         }
-
 
 
         /*
@@ -2131,9 +2103,8 @@ async function findFreeStaff(){
                 .join("");
 
 
-
         /*
-         * SELECT STAFF BUTTONS
+         * SELECT BUTTONS
          */
 
         $("staffList")
@@ -2178,11 +2149,6 @@ async function findFreeStaff(){
                                 "ok"
                             );
 
-
-                            /*
-                             * Remove any old
-                             * submit button first.
-                             */
 
                             const oldBtn =
                                 $("submitBtn");
@@ -2260,7 +2226,6 @@ async function findFreeStaff(){
 }
 
 
-
 /* =========================================================
    SUBMIT REQUEST
 ========================================================= */
@@ -2284,11 +2249,6 @@ async function submitRequest(){
 
     }
 
-
-    /*
-     * IMPORTANT:
-     * Store exactly what the user selected.
-     */
 
     const date =
         $("requestDate").value;
@@ -2345,7 +2305,7 @@ async function submitRequest(){
     try{
 
         /*
-         * RECHECK SUBSTITUTE AVAILABILITY
+         * RECHECK AVAILABILITY
          */
 
         const snap =
@@ -2374,23 +2334,19 @@ async function submitRequest(){
                     return (
 
                         (
-                            status ===
-                            "APPROVED"
+                            status === "APPROVED"
 
                             ||
 
-                            status ===
-                            "PENDING_APPROVAL"
+                            status === "PENDING_APPROVAL"
 
                             ||
 
-                            status ===
-                            "ALLOTTED"
+                            status === "ALLOTTED"
 
                             ||
 
-                            status ===
-                            "PENDING"
+                            status === "PENDING"
                         )
 
                         &&
@@ -2427,7 +2383,6 @@ async function submitRequest(){
             );
 
 
-
         const timetableBusy =
             timetableData.some(
                 r =>
@@ -2447,7 +2402,6 @@ async function submitRequest(){
                     )
 
             );
-
 
 
         if(
@@ -2481,7 +2435,6 @@ async function submitRequest(){
         }
 
 
-
         /*
          * CREATE REQUEST
          */
@@ -2499,106 +2452,63 @@ async function submitRequest(){
             {
 
                 requestId:
-
                     requestId,
 
-
                 date:
-
                     date,
 
-
                 day:
-
                     day,
 
-
                 session:
-
                     session,
 
-
                 hour:
-
                     hour,
 
-
                 className:
-
                     className,
 
-
                 subject:
-
                     subject,
 
-
                 remarks:
-
                     remarks,
 
-
                 requestingStaffId:
-
                     currentStaff.staffId,
 
-
                 requestingStaffName:
-
-                    currentStaff.staffName ||
-                    "",
-
+                    currentStaff.staffName,
 
                 requestingDepartment:
-
-                    currentStaff.department ||
-                    "",
-
+                    currentStaff.department,
 
                 substituteStaffId:
-
                     selectedSubstitute.staffId,
 
-
                 substituteStaffName:
-
-                    selectedSubstitute.staffName ||
-                    "",
-
+                    selectedSubstitute.staffName || "",
 
                 substituteDepartment:
-
-                    selectedSubstitute.department ||
-                    "",
-
+                    selectedSubstitute.department || "",
 
                 status:
-
                     "PENDING_APPROVAL",
 
-
                 requestedAt:
-
                     serverTimestamp(),
 
-
                 approvedBy:
-
                     null,
-
 
                 approvedByName:
-
                     null,
-
 
                 approvedAt:
-
                     null,
 
-
                 rejectionReason:
-
                     null
 
             }
@@ -2660,7 +2570,6 @@ async function submitRequest(){
 }
 
 
-
 /* =========================================================
    CLEAR FIELDS
 ========================================================= */
@@ -2700,7 +2609,6 @@ function clearFieldsOnly(){
 }
 
 
-
 /* =========================================================
    CLEAR FORM
 ========================================================= */
@@ -2708,7 +2616,7 @@ function clearFieldsOnly(){
 function clearForm(){
 
     /*
-     * Clear DATE
+     * DATE
      */
 
     $("requestDate")
@@ -2717,7 +2625,7 @@ function clearForm(){
 
 
     /*
-     * Clear DAY ORDER
+     * DAY ORDER
      */
 
     $("day")
@@ -2740,7 +2648,6 @@ function clearForm(){
 }
 
 
-
 /* =========================================================
    INIT
 ========================================================= */
@@ -2748,13 +2655,17 @@ function clearForm(){
 async function init(){
 
     /*
-     * Load current staff.
+     * IMPORTANT:
+     *
+     * First identify the staff using Staff ID.
+     * Then load name/department from Firestore.
      */
 
-    populateCurrentStaff();
+    const loaded =
+        await loadCurrentStaff();
 
 
-    if(!currentStaff){
+    if(!loaded){
 
         return;
 
@@ -2762,18 +2673,9 @@ async function init(){
 
 
     /*
-     * IMPORTANT:
-     *
-     * DO NOT set today's date.
-     *
-     * DO NOT calculate Day Order.
-     *
-     * DO NOT calculate Date from Day Order.
-     *
-     * Both fields remain completely
-     * under the user's control.
+     * DATE AND DAY ORDER REMAIN COMPLETELY
+     * INDEPENDENT.
      */
-
 
     $("requestDate")
         .value =
@@ -2786,14 +2688,14 @@ async function init(){
 
 
     /*
-     * Load timetable and staff.
+     * LOAD TIMETABLE AND STAFF
      */
 
     await loadTimetable();
 
 
     /*
-     * Load request history.
+     * LOAD CURRENT STAFF REQUESTS
      */
 
     await loadExistingRequests();
