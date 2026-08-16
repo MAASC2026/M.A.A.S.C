@@ -348,7 +348,7 @@ import {
   initializeApp
 }
 from
-"https ://www\.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+"https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import {
   getFirestore,
   collection,
@@ -359,7 +359,7 @@ import {
   serverTimestamp
 }
 from
-"https ://www\.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+"https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 const firebaseConfig = {
   apiKey:
     "AIzaSyAIv3091VM-gkmdwEAn7OhXWd9Cm2zh2bo",
@@ -372,7 +372,7 @@ const firebaseConfig = {
   messagingSenderId:
     "585813001586",
   appId:
-    "1:585813001586 :web:664e0e90ff0725d2e849eb"
+    "1:585813001586:web:664e0e90ff0725d2e849eb"
 };
 const app =
   initializeApp(firebaseConfig);
@@ -676,15 +676,35 @@ async function loadTimetable(){
         }
       }
     });
-    staffList =
-      Array.from(
-        map.values()
-      )
-      .filter(
-        s =>
-          upper(s.staffId) !==
-          upper(currentStaff?.staffId)
-      );
+    // Build the staff list from the STAFF collection, not only from timetable assignments.
+    // This ensures staff with no timetable entry (therefore free) are also available.
+    const staffSnap = await getDocs(collection(db, "staff"));
+    const allStaff = new Map();
+
+    staffSnap.forEach(doc => {
+      const d = doc.data();
+      const sid = getStaffId(d);
+      if (!sid) return;
+      allStaff.set(upper(sid), {
+        staffId: sid,
+        staffName: getStaffName(d),
+        department: getDepartment(d)
+      });
+    });
+
+    // Timetable records can supply missing name/department information.
+    map.forEach((x, key) => {
+      if (!allStaff.has(key)) {
+        allStaff.set(key, x);
+      } else {
+        const x = allStaff.get(key);
+        if (!x.staffName) x.staffName = map.get(key).staffName || "";
+        if (!x.department) x.department = map.get(key).department || "";
+      }
+    });
+
+    staffList = Array.from(allStaff.values())
+      .filter(s => upper(s.staffId) !== upper(currentStaff?.staffId));
     staffList.sort(
       (a,b)=>
         String(
@@ -1018,9 +1038,9 @@ async function findFreeStaff(){
         timetableData
           .filter(
             r =>
-              r.day === day &&
-              r.session === session &&
-              r.hour === hour
+              normalizeDay(r.day) === day &&
+              normalizeSession(r.session) === session &&
+              Number(r.hour) === hour
           )
           .map(
             r =>
@@ -1272,9 +1292,9 @@ async function submitRequest(){
     const timetableBusy =
       timetableData.some(
         r =>
-          r.day === day &&
-          r.session === session &&
-          r.hour === hour &&
+          normalizeDay(r.day) === day &&
+          normalizeSession(r.session) === session &&
+          Number(r.hour) === hour &&
           upper(r.staffId) ===
           upper(
             selectedSubstitute.staffId
