@@ -1323,6 +1323,70 @@ function listenConversations(){
 }
 
 
+
+/* =====================================================
+   GET CORRECT INDIVIDUAL CONVERSATION NAME
+   The conversation document is shared by both staff.
+   Therefore chat.title cannot be used for individual
+   conversations because it may contain the sender's name.
+   Always resolve the other participant from participantIds.
+===================================================== */
+function getConversationDisplayName(chat){
+
+    if(!chat){
+        return "Staff";
+    }
+
+    if(chat.type === "all"){
+        return "All Staff";
+    }
+
+    if(chat.type === "department"){
+        return safe(chat.department)
+            ? safe(chat.department) + " Staff"
+            : (chat.title || "Department Staff");
+    }
+
+    const participants =
+        Array.isArray(chat.participantIds)
+            ? chat.participantIds
+            : [];
+
+    const myId =
+        safe(staffId).trim().toUpperCase();
+
+    const otherId =
+        participants.find(
+            id =>
+                safe(id).trim().toUpperCase() !== myId
+        );
+
+    if(otherId){
+
+        const otherStaff =
+            findStaff(otherId);
+
+        if(
+            otherStaff &&
+            safe(otherStaff.name).trim()
+        ){
+            return otherStaff.name.trim();
+        }
+    }
+
+    /* Fallback for older conversation records */
+    if(
+        safe(chat.lastSenderId).trim() &&
+        safe(chat.lastSenderId).trim().toUpperCase() !== myId &&
+        safe(chat.lastSenderName).trim()
+    ){
+        return chat.lastSenderName.trim();
+    }
+
+    return safe(chat.title).trim() || "Staff";
+}
+
+
 /* =====================================================
    RENDER CONVERSATIONS
 ===================================================== */
@@ -1349,9 +1413,12 @@ function renderConversations(){
                 }
 
 
+                const displayName =
+                    getConversationDisplayName(chat);
+
                 return (
 
-                    safe(chat.title)
+                    safe(displayName)
                         .toLowerCase()
                         .includes(search)
 
@@ -1432,9 +1499,12 @@ function renderConversations(){
                 );
 
 
+            const displayName =
+                getConversationDisplayName(chat);
+
             let avatar =
                 initial(
-                    chat.title
+                    displayName
                 );
 
 
@@ -1476,8 +1546,7 @@ function renderConversations(){
                         <div class="conversation-name">
 
                             ${escapeHtml(
-                                chat.title ||
-                                "Staff"
+                                displayName
                             )}
 
                         </div>
@@ -1591,11 +1660,13 @@ async function openConversation(id){
         "flex";
 
 
+    const displayName =
+        getConversationDisplayName(chat);
+
     document.getElementById(
         "chatName"
     ).textContent =
-        chat.title ||
-        "Staff";
+        displayName;
 
 
     if(
@@ -1641,7 +1712,7 @@ async function openConversation(id){
             ? "D"
             :
             initial(
-                chat.title
+                displayName
             );
 
 
