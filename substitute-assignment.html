@@ -204,8 +204,7 @@ margin-bottom:4px
 
 .staff-card p{
 font-size:13px;
-color:#6b7280;
-margin-top:3px
+color:#6b7280
 }
 
 .badge{
@@ -249,7 +248,7 @@ color:#6b7280
 
 .req{
 border-left:4px solid #2563eb;
-padding:14px;
+padding:12px;
 margin-top:10px;
 background:#f8fafc;
 border-radius:6px;
@@ -274,11 +273,6 @@ border-radius:7px;
 font-size:13px;
 margin-bottom:16px
 }
-
-
-/* =========================================================
-   STAFF DAY TIMETABLE PREVIEW
-========================================================= */
 
 .timetable-card{
 background:#fff;
@@ -313,7 +307,7 @@ overflow-x:auto
 .timetable-table{
 width:100%;
 border-collapse:collapse;
-min-width:1000px
+min-width:1050px
 }
 
 .timetable-table th,
@@ -369,20 +363,6 @@ font-size:11px;
 font-weight:bold
 }
 
-.details-box{
-background:#f8fafc;
-border:1px solid #e5e7eb;
-border-radius:8px;
-padding:12px;
-font-size:13px;
-line-height:1.7
-}
-
-.detail-label{
-font-weight:bold;
-color:#374151
-}
-
 #findBtn{
 display:none
 }
@@ -410,7 +390,6 @@ flex-direction:column
 
 <body>
 
-
 <div class="header">
 
 <h1>
@@ -428,7 +407,7 @@ Request a substitute, find free staff and submit the assignment for Head approva
 
 
 <!-- =====================================================
-     REQUESTING STAFF
+REQUESTING STAFF
 ===================================================== -->
 
 <div class="card">
@@ -487,9 +466,8 @@ class="message">
 </div>
 
 
-
 <!-- =====================================================
-     SUBSTITUTE DETAILS
+SUBSTITUTE DETAILS
 ===================================================== -->
 
 <div class="card">
@@ -552,29 +530,12 @@ Day Order
 Select Day Order
 </option>
 
-<option value="DAY 01">
-DAY 01
-</option>
-
-<option value="DAY 02">
-DAY 02
-</option>
-
-<option value="DAY 03">
-DAY 03
-</option>
-
-<option value="DAY 04">
-DAY 04
-</option>
-
-<option value="DAY 05">
-DAY 05
-</option>
-
-<option value="DAY 06">
-DAY 06
-</option>
+<option value="DAY 01">DAY 01</option>
+<option value="DAY 02">DAY 02</option>
+<option value="DAY 03">DAY 03</option>
+<option value="DAY 04">DAY 04</option>
+<option value="DAY 05">DAY 05</option>
+<option value="DAY 06">DAY 06</option>
 
 </select>
 
@@ -595,13 +556,8 @@ Session
 Select Session
 </option>
 
-<option value="FN">
-FN
-</option>
-
-<option value="AN">
-AN
-</option>
+<option value="FN">FN</option>
+<option value="AN">AN</option>
 
 </select>
 
@@ -736,7 +692,7 @@ Click the required period and the available same-department FREE staff will load
 
 
 <!-- =====================================================
-     MY TIMETABLE
+MY TIMETABLE
 ===================================================== -->
 
 <div
@@ -801,9 +757,8 @@ class="message">
 </div>
 
 
-
 <!-- =====================================================
-     FREE STAFF
+FREE STAFF
 ===================================================== -->
 
 <div
@@ -842,9 +797,8 @@ class="message">
 </div>
 
 
-
 <!-- =====================================================
-     REQUEST HISTORY
+REQUEST HISTORY
 ===================================================== -->
 
 <div class="card">
@@ -867,17 +821,14 @@ Loading requests...
 </div>
 
 
-
 <script type="module">
 
 
 /* =========================================================
-   FIREBASE
+FIREBASE
 ========================================================= */
 
-import {
-initializeApp
-}
+import { initializeApp }
 from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
 
@@ -891,12 +842,6 @@ where,
 serverTimestamp
 }
 from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-
-import {
-getAuth
-}
-from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 
 const firebaseConfig = {
@@ -930,13 +875,18 @@ const db =
 getFirestore(app);
 
 
+import {
+getAuth
+}
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+
 const auth =
 getAuth(app);
 
 
-
 /* =========================================================
-   VARIABLES
+VARIABLES
 ========================================================= */
 
 let timetableData = [];
@@ -948,9 +898,8 @@ let selectedSubstitute = null;
 let currentStaff = null;
 
 
-
 /* =========================================================
-   HELPER
+HELPERS
 ========================================================= */
 
 const $ =
@@ -973,9 +922,8 @@ return clean(v).toUpperCase();
 }
 
 
-
 /* =========================================================
-   NORMALIZE DAY
+NORMALIZE DAY
 ========================================================= */
 
 function normalizeDay(value){
@@ -1017,15 +965,10 @@ v.padStart(2,"0")
 const old = {
 
 MONDAY:"DAY 01",
-
 TUESDAY:"DAY 02",
-
 WEDNESDAY:"DAY 03",
-
 THURSDAY:"DAY 04",
-
 FRIDAY:"DAY 05",
-
 SATURDAY:"DAY 06"
 
 };
@@ -1036,11 +979,6 @@ return old[v] || v;
 }
 
 
-
-/* =========================================================
-   NORMALIZE SESSION
-========================================================= */
-
 function normalizeSession(v){
 
 return upper(v);
@@ -1048,92 +986,50 @@ return upper(v);
 }
 
 
-
 /* =========================================================
-   STAFF ID
+STAFF FIELD HELPERS
 ========================================================= */
 
-function getStaffId(
-d,
-documentId = ""
-){
+function getStaffId(d, documentId = ""){
 
 return clean(
-
-d.staffId ??
-d.staffID ??
-d.staff_id ??
-d.staffCode ??
-d.staff_code ??
-d.employeeId ??
-d.employeeID ??
-d.empId ??
-d.employeeCode ??
-d.employee_code ??
-d.code ??
-d.staff ??
-d.id ??
-documentId
-
+d.staffId ?? d.staffID ?? d.staff_id ?? d.staffCode ??
+d.staff_code ?? d.employeeId ?? d.employeeID ?? d.empId ??
+d.employeeCode ?? d.employee_code ?? d.code ?? d.staff ??
+d.id ?? documentId
 );
 
 }
 
-
-
-/* =========================================================
-   STAFF NAME
-========================================================= */
 
 function getStaffName(d){
 
 return clean(
-
-d.staffName ??
-d.staff_name ??
-d.name ??
-d.displayName ??
-d.fullName ??
-d.employeeName ??
-d.employee_name
-
+d.staffName ?? d.staff_name ?? d.name ?? d.displayName ??
+d.fullName ?? d.employeeName ?? d.employee_name
 );
 
 }
 
-
-
-/* =========================================================
-   DEPARTMENT
-========================================================= */
 
 function getDepartment(d){
 
 return clean(
-
-d.department ??
-d.departmentName ??
-d.department_name ??
-d.dept ??
-d.deptName ??
-d.dept_name ??
-d.Department ??
+d.department ?? d.departmentName ?? d.department_name ??
+d.dept ?? d.deptName ?? d.dept_name ?? d.Department ??
 d.departmentId
-
 );
 
 }
 
 
-
 /* =========================================================
-   YEAR
+ONLY NEW FIELD HELPERS
 ========================================================= */
 
 function getYear(d){
 
 return clean(
-
 d.year ??
 d.Year ??
 d.academicYear ??
@@ -1142,21 +1038,14 @@ d.classYear ??
 d.studyYear ??
 d.yearName ??
 d.year_name
-
 );
 
 }
 
 
-
-/* =========================================================
-   SECTION
-========================================================= */
-
 function getSection(d){
 
 return clean(
-
 d.section ??
 d.Section ??
 d.sectionName ??
@@ -1164,41 +1053,14 @@ d.section_name ??
 d.sec ??
 d.secName ??
 d.classSection
-
 );
 
 }
 
-
-
-/* =========================================================
-   SUBJECT
-========================================================= */
-
-function getSubject(d){
-
-return clean(
-
-d.subject ??
-d.subjectName ??
-d.subject_name ??
-d.subjectCode ??
-d.subject_code
-
-);
-
-}
-
-
-
-/* =========================================================
-   ROOM
-========================================================= */
 
 function getRoom(d){
 
 return clean(
-
 d.roomNo ??
 d.room ??
 d.roomNumber ??
@@ -1207,16 +1069,10 @@ d.room_name ??
 d.roomName ??
 d.roomID ??
 d.roomId
-
 );
 
 }
 
-
-
-/* =========================================================
-   HOUR
-========================================================= */
 
 function getHour(d){
 
@@ -1226,8 +1082,6 @@ d.hour ??
 d.period ??
 d.hourNo ??
 d.periodNo ??
-d.hourNumber ??
-d.periodNumber ??
 0
 
 );
@@ -1235,16 +1089,24 @@ d.periodNumber ??
 }
 
 
+function getSubject(d){
+
+return clean(
+
+d.subject ??
+d.subjectName ??
+d.subject_name
+
+);
+
+}
+
 
 /* =========================================================
-   MESSAGE
+MESSAGES
 ========================================================= */
 
-function show(
-id,
-text,
-type
-){
+function show(id,text,type){
 
 const e =
 $(id);
@@ -1253,11 +1115,9 @@ e.textContent =
 text;
 
 e.className =
-"message show " +
-type;
+"message show " + type;
 
 }
-
 
 
 function hide(id){
@@ -1268,54 +1128,24 @@ $(id).className =
 }
 
 
-
 /* =========================================================
-   GET CURRENT STAFF ID
+GET CURRENT STAFF ID
 ========================================================= */
 
 function getCurrentStaffId(){
 
 const idKeys = [
-
-"staffId",
-"staffID",
-"staff_id",
-"staffCode",
-"staff_code",
-"employeeId",
-"employeeID",
-"empId",
-"employeeCode",
-"employee_code",
-"currentStaffId",
-"currentStaffID",
-"loggedInStaffId",
-"loggedInStaffID",
-"userStaffId",
-"currentUserId",
-"loginStaffId",
-"loginStaffID",
-"staffNo",
-"staffNumber",
-"employeeNo",
-"employeeNumber"
-
+"staffId","staffID","staff_id","staffCode","staff_code",
+"employeeId","employeeID","empId","employeeCode","employee_code",
+"currentStaffId","currentStaffID","loggedInStaffId","loggedInStaffID",
+"userStaffId","currentUserId","loginStaffId","loginStaffID",
+"staffNo","staffNumber","employeeNo","employeeNumber"
 ];
 
 
 const objectKeys = [
-
-"currentStaff",
-"loggedInStaff",
-"currentUser",
-"loggedInUser",
-"staff",
-"staffData",
-"user",
-"userData",
-"profile",
-"loginUser"
-
+"currentStaff","loggedInStaff","currentUser","loggedInUser",
+"staff","staffData","user","userData","profile","loginUser"
 ];
 
 
@@ -1379,30 +1209,16 @@ try{
 const obj =
 JSON.parse(raw);
 
-
 const value =
 clean(
-
-obj.staffId ??
-obj.staffID ??
-obj.staff_id ??
-obj.staffCode ??
-obj.staff_code ??
-obj.employeeId ??
-obj.employeeID ??
-obj.empId ??
-obj.employeeCode ??
-obj.employee_code ??
-obj.staffNo ??
-obj.staffNumber ??
-obj.employeeNo ??
-obj.employeeNumber ??
-obj.userStaffId ??
-obj.userId ??
-obj.id ??
-obj.code ??
-obj.uid ??
-
+obj.staffId ?? obj.staffID ?? obj.staff_id ??
+obj.staffCode ?? obj.staff_code ??
+obj.employeeId ?? obj.employeeID ??
+obj.empId ?? obj.employeeCode ??
+obj.employee_code ?? obj.staffNo ??
+obj.staffNumber ?? obj.employeeNo ??
+obj.employeeNumber ?? obj.userStaffId ??
+obj.userId ?? obj.id ?? obj.code ?? obj.uid ??
 (
 obj.staff &&
 (
@@ -1413,9 +1229,7 @@ obj.staff.employeeId ??
 obj.staff.id
 )
 )
-
 );
-
 
 if(value)
 return value;
@@ -1428,20 +1242,18 @@ catch(e){}
 }
 
 
-/* =====================================================
-   GLOBAL STAFF ID
-===================================================== */
+/* =========================================================
+GLOBAL STAFF ID
+========================================================= */
 
 try{
 
 const globals = [
-
 window.staffId,
 window.staffID,
 window.currentStaffId,
 window.loggedInStaffId,
 window.employeeId
-
 ];
 
 
@@ -1449,13 +1261,8 @@ for(
 const value of globals
 ){
 
-if(
-clean(value)
-){
-
+if(clean(value))
 return clean(value);
-
-}
 
 }
 
@@ -1468,9 +1275,8 @@ return "";
 }
 
 
-
 /* =========================================================
-   LOAD CURRENT STAFF
+LOAD CURRENT STAFF
 ========================================================= */
 
 async function loadCurrentStaff(){
@@ -1496,10 +1302,7 @@ try{
 
 const staffSnap =
 await getDocs(
-collection(
-db,
-"staff"
-)
+collection(db,"staff")
 );
 
 
@@ -1527,34 +1330,20 @@ docSnap.id
 
 const dbEmail =
 clean(
-
-d.email ??
-d.emailId ??
-d.emailID ??
-d.mail ??
-d.mailId ??
-d.officialEmail ??
-d.officialMail ??
-d.officialMailId ??
-d.officialMailID ??
-d.staffEmail ??
+d.email ?? d.emailId ?? d.emailID ??
+d.mail ?? d.mailId ?? d.officialEmail ??
+d.officialMail ?? d.officialMailId ??
+d.officialMailID ?? d.staffEmail ??
 d.staff_email
-
 );
 
 
 const dbUid =
 clean(
-
-d.uid ??
-d.userId ??
-d.userID ??
-d.authUid ??
-d.firebaseUid ??
-d.firebaseUID ??
-d.authUserId ??
+d.uid ?? d.userId ?? d.userID ??
+d.authUid ?? d.firebaseUid ??
+d.firebaseUID ?? d.authUserId ??
 d.authUID
-
 );
 
 
@@ -1633,7 +1422,6 @@ show(
 "err"
 );
 
-
 return false;
 
 }
@@ -1652,10 +1440,8 @@ currentStaff
 $("requesterId").value =
 currentStaff.staffId;
 
-
 $("requesterName").value =
 currentStaff.staffName;
-
 
 $("requesterDepartment").value =
 currentStaff.department;
@@ -1666,12 +1452,10 @@ sessionStorage.setItem(
 currentStaff.staffId
 );
 
-
 sessionStorage.setItem(
 "staffName",
 currentStaff.staffName
 );
-
 
 sessionStorage.setItem(
 "department",
@@ -1679,49 +1463,20 @@ currentStaff.department
 );
 
 
-hide(
-"loginMessage"
-);
-
+hide("loginMessage");
 
 return true;
 
 }
-catch(err){
-
-console.error(
-"LOAD CURRENT STAFF ERROR:",
-err
-);
-
-
-show(
-"loginMessage",
-"Unable to load current staff: " +
-err.message,
-"err"
-);
-
-
-return false;
-
-}
-
-}
-
 
 
 /* =========================================================
-   LOAD TIMETABLE + STAFF
+LOAD TIMETABLE + STAFF
 ========================================================= */
 
 async function loadTimetable(){
 
 try{
-
-/* =====================================================
-   LOAD TIMETABLE ASSIGNMENTS
-===================================================== */
 
 const snap =
 await getDocs(
@@ -1739,7 +1494,7 @@ snap.forEach(
 timetableDoc => {
 
 const d =
-timetableDoc.data() || {};
+timetableDoc.data();
 
 
 const r = {
@@ -1753,14 +1508,12 @@ day:
 normalizeDay(
 d.day ??
 d.dayName ??
-d.dayNo ??
-d.dayOrder
+d.dayNo
 ),
 
 session:
 normalizeSession(
-d.session ??
-d.sessionName
+d.session
 ),
 
 hour:
@@ -1775,24 +1528,25 @@ getStaffName(d),
 department:
 getDepartment(d),
 
+/* NEW */
 year:
 getYear(d),
 
+/* NEW */
 section:
 getSection(d),
 
 subject:
 getSubject(d),
 
+/* NEW */
 roomNo:
 getRoom(d)
 
 };
 
 
-if(
-r.staffId
-){
+if(r.staffId){
 
 timetableData.push(r);
 
@@ -1802,15 +1556,8 @@ timetableData.push(r);
 );
 
 
-console.log(
-"TIMETABLE DATA:",
-timetableData
-);
-
-
-
 /* =====================================================
-   LOAD ALL STAFF
+LOAD ALL STAFF
 ===================================================== */
 
 const staffSnap =
@@ -1830,7 +1577,7 @@ staffSnap.forEach(
 staffDoc => {
 
 const d =
-staffDoc.data() || {};
+staffDoc.data();
 
 
 const sid =
@@ -1865,21 +1612,20 @@ getDepartment(d)
 );
 
 
-
 /* =====================================================
-   ALSO INCLUDE STAFF FROM TIMETABLE
+ALSO INCLUDE STAFF FROM TIMETABLE
 ===================================================== */
 
 timetableData.forEach(
 r => {
 
 const key =
-upper(r.staffId);
+upper(
+r.staffId
+);
 
 
-if(
-!map.has(key)
-){
+if(!map.has(key)){
 
 map.set(
 key,
@@ -1895,7 +1641,6 @@ department:
 r.department
 
 }
-
 );
 
 }
@@ -1932,9 +1677,8 @@ r.department;
 );
 
 
-
 /* =====================================================
-   SAME DEPARTMENT ONLY
+SAME DEPARTMENT ONLY
 ===================================================== */
 
 const currentDepartment =
@@ -1950,45 +1694,40 @@ map.values()
 s => {
 
 const sameStaff =
-upper(s.staffId) ===
-upper(currentStaff.staffId);
+upper(
+s.staffId
+) ===
+upper(
+currentStaff.staffId
+);
 
 
 const sameDepartment =
-upper(s.department) ===
+upper(
+s.department
+) ===
 currentDepartment;
 
 
 return (
-
 !sameStaff &&
 sameDepartment
-
 );
 
 }
 );
 
 
-
-/* =====================================================
-   SORT STAFF
-===================================================== */
-
 staffList.sort(
 (a,b) =>
-
 String(
 a.staffName ||
 a.staffId
 ).localeCompare(
-
 String(
 b.staffName ||
 b.staffId
-
 )
-
 )
 );
 
@@ -2019,9 +1758,8 @@ err.message,
 }
 
 
-
 /* =========================================================
-   LOAD EXISTING REQUESTS
+LOAD EXISTING REQUESTS
 ========================================================= */
 
 async function loadExistingRequests(){
@@ -2042,18 +1780,15 @@ try{
 
 const q =
 query(
-
 collection(
 db,
 "substituteRequests"
 ),
-
 where(
 "requestingStaffId",
 "==",
 currentStaff.staffId
 )
-
 );
 
 
@@ -2061,9 +1796,7 @@ const snap =
 await getDocs(q);
 
 
-if(
-snap.empty
-){
+if(snap.empty){
 
 box.innerHTML =
 `
@@ -2082,36 +1815,26 @@ const arr = [];
 
 snap.forEach(
 d =>
-
 arr.push({
-
-id:
-d.id,
-
+id:d.id,
 ...d.data()
-
 })
-
 );
 
 
 arr.sort(
 (a,b) =>
-
 String(
 b.date || ""
 ).localeCompare(
-
 String(
 a.date || ""
 )
-
 )
 );
 
 
 box.innerHTML =
-
 arr
 .slice(0,20)
 .map(
@@ -2125,19 +1848,10 @@ r.status ||
 
 
 const color =
-
-status ===
-"APPROVED"
-
+status === "APPROVED"
 ? "ok"
-
-:
-
-status ===
-"REJECTED"
-
+: status === "REJECTED"
 ? "err"
-
 : "warn";
 
 
@@ -2152,62 +1866,41 @@ ${esc(r.day || "")}
 —
 ${esc(r.session || "")}
 —
-Hour
-${esc(r.hour || "")}
+Hour ${esc(r.hour || "")}
 </b>
 
 <br>
 
 Department:
-<b>
-${esc(
+<b>${esc(
 r.department ||
 r.requestingDepartment ||
-r.classDepartment ||
 "-"
-)}
-</b>
+)}</b>
 
 <br>
 
 Year:
-<b>
-${esc(
-r.year ||
-"-"
-)}
-</b>
+<b>${esc(r.year || "-")}</b>
 
 <br>
 
 Section:
-<b>
-${esc(
-r.section ||
-"-"
-)}
-</b>
+<b>${esc(r.section || "-")}</b>
 
 <br>
 
 Subject:
-<b>
-${esc(
-r.subject ||
-"-"
-)}
-</b>
+<b>${esc(r.subject || "-")}</b>
 
 <br>
 
-Room:
-<b>
-${esc(
+Room No:
+<b>${esc(
 r.roomNo ||
 r.room ||
 "-"
-)}
-</b>
+)}</b>
 
 <br>
 
@@ -2261,9 +1954,8 @@ Unable to load request history.
 }
 
 
-
 /* =========================================================
-   ESCAPE HTML
+ESCAPE HTML
 ========================================================= */
 
 function esc(v){
@@ -2271,38 +1963,17 @@ function esc(v){
 return String(
 v ?? ""
 )
-
-.replace(
-/&/g,
-"&amp;"
-)
-
-.replace(
-/</g,
-"&lt;"
-)
-
-.replace(
-/>/g,
-"&gt;"
-)
-
-.replace(
-/"/g,
-"&quot;"
-)
-
-.replace(
-/'/g,
-"&#039;"
-);
+.replace(/&/g,"&amp;")
+.replace(/</g,"&lt;")
+.replace(/>/g,"&gt;")
+.replace(/"/g,"&quot;")
+.replace(/'/g,"&#039;");
 
 }
 
 
-
 /* =========================================================
-   BUTTON EVENTS
+BUTTON EVENTS
 ========================================================= */
 
 $("findBtn")
@@ -2318,11 +1989,6 @@ $("clearBtn")
 clearForm
 );
 
-
-
-/* =========================================================
-   DATE / DAY / SESSION EVENTS
-========================================================= */
 
 [
 "requestDate",
@@ -2341,9 +2007,8 @@ autoLoadStaffTimetable
 );
 
 
-
 /* =========================================================
-   GET TIME
+TIME
 ========================================================= */
 
 function getTimeForSession(
@@ -2353,40 +2018,32 @@ hour
 
 const times = {
 
-FN: {
-
+FN:{
 1:"8:30 - 9:20",
 2:"9:20 - 10:10",
 3:"10:10 - 11:00",
 4:"11:30 - 12:20",
 5:"12:20 - 1:10"
-
 },
 
-AN: {
-
+AN:{
 1:"1:30 - 2:20",
 2:"2:20 - 3:10",
 3:"3:30 - 4:20",
 4:"4:20 - 5:10",
 5:"5:10 - 6:00"
-
 }
 
 };
 
 
-return (
-times[session]?.[Number(hour)] ||
-""
-);
+return times[session]?.[Number(hour)] || "";
 
 }
 
 
-
 /* =========================================================
-   AUTO LOAD CURRENT STAFF TIMETABLE
+AUTO LOAD STAFF TIMETABLE
 ========================================================= */
 
 function autoLoadStaffTimetable(){
@@ -2413,46 +2070,27 @@ $("session").value
 );
 
 
-/* =====================================================
-   CLEAR OLD SELECTION
-===================================================== */
+/* ONLY CLEAR SELECTED DETAILS */
 
-$("hour").value =
-"";
+$("hour").value = "";
 
-$("department").value =
-"";
+$("department").value = "";
 
-$("year").value =
-"";
+$("year").value = "";
 
-$("section").value =
-"";
+$("section").value = "";
 
-$("subject").value =
-"";
+$("subject").value = "";
 
-$("roomNo").value =
-"";
+$("roomNo").value = "";
 
+selectedSubstitute = null;
 
-selectedSubstitute =
-null;
-
-
-$("freeCard")
-.style
-.display =
-"none";
-
+$("freeCard").style.display = "none";
 
 hide("formMessage");
 hide("selectionMessage");
 
-
-/* =====================================================
-   CURRENT STAFF CHECK
-===================================================== */
 
 if(!currentStaff){
 
@@ -2468,14 +2106,7 @@ return;
 }
 
 
-/* =====================================================
-   DAY / SESSION CHECK
-===================================================== */
-
-if(
-!day ||
-!session
-){
+if(!day || !session){
 
 box.innerHTML =
 `
@@ -2489,10 +2120,6 @@ return;
 }
 
 
-/* =====================================================
-   FIND CURRENT STAFF TIMETABLE
-===================================================== */
-
 const myId =
 upper(
 currentStaff.staffId
@@ -2501,21 +2128,16 @@ currentStaff.staffId
 
 const rows =
 timetableData
-
 .filter(
 r =>
 
-upper(r.staffId) ===
-myId &&
+upper(r.staffId) === myId &&
 
-normalizeDay(r.day) ===
-day &&
+normalizeDay(r.day) === day &&
 
-normalizeSession(r.session) ===
-session
+normalizeSession(r.session) === session
 
 )
-
 .sort(
 (a,b) =>
 Number(a.hour) -
@@ -2523,14 +2145,7 @@ Number(b.hour)
 );
 
 
-
-/* =====================================================
-   NO TIMETABLE
-===================================================== */
-
-if(
-!rows.length
-){
+if(!rows.length){
 
 box.innerHTML =
 `
@@ -2545,13 +2160,9 @@ currentStaff.staffId
 </b>
 
 for
-<b>
-${esc(day)}
-</b>
+<b>${esc(day)}</b>
 -
-<b>
-${esc(session)}
-</b>.
+<b>${esc(session)}</b>.
 
 </div>
 `;
@@ -2561,14 +2172,11 @@ return;
 }
 
 
-
 /* =====================================================
-   DISPLAY TIMETABLE
+TIMETABLE TABLE
 ===================================================== */
 
-box.innerHTML =
-
-`
+box.innerHTML = `
 
 <div class="timetable-wrap">
 
@@ -2578,48 +2186,22 @@ box.innerHTML =
 
 <tr>
 
-<th>
-Hour
-</th>
-
-<th>
-Time
-</th>
-
-<th>
-Department
-</th>
-
-<th>
-Year
-</th>
-
-<th>
-Section
-</th>
-
-<th>
-Subject
-</th>
-
-<th>
-Room No
-</th>
-
-<th>
-Action
-</th>
+<th>Hour</th>
+<th>Time</th>
+<th>Department</th>
+<th>Year</th>
+<th>Section</th>
+<th>Subject</th>
+<th>Room No</th>
+<th>Action</th>
 
 </tr>
 
 </thead>
 
-
 <tbody>
 
-${
-rows
-.map(
+${rows.map(
 (r,i) => `
 
 <tr
@@ -2628,15 +2210,13 @@ data-index="${i}">
 
 <td>
 
-<span
-class="slot-chip">
+<span class="slot-chip">
 
 Hour ${esc(r.hour)}
 
 </span>
 
 </td>
-
 
 <td>
 
@@ -2649,16 +2229,15 @@ r.hour
 
 </td>
 
-
 <td>
 
 ${esc(
 r.department ||
+currentStaff.department ||
 "-"
 )}
 
 </td>
-
 
 <td>
 
@@ -2669,7 +2248,6 @@ r.year ||
 
 </td>
 
-
 <td>
 
 ${esc(
@@ -2678,7 +2256,6 @@ r.section ||
 )}
 
 </td>
-
 
 <td>
 
@@ -2689,7 +2266,6 @@ r.subject ||
 
 </td>
 
-
 <td>
 
 ${esc(
@@ -2698,7 +2274,6 @@ r.roomNo ||
 )}
 
 </td>
-
 
 <td
 class="timetable-click">
@@ -2710,9 +2285,7 @@ CLICK TO SELECT
 </tr>
 
 `
-)
-.join("")
-}
+).join("")}
 
 </tbody>
 
@@ -2723,9 +2296,8 @@ CLICK TO SELECT
 `;
 
 
-
 /* =====================================================
-   CLICK PERIOD
+CLICK TIMETABLE PERIOD
 ===================================================== */
 
 box
@@ -2760,9 +2332,7 @@ const r =
 rows[index];
 
 
-/* =================================================
-   FILL SELECTED DETAILS
-================================================= */
+/* ONLY NEW DETAILS */
 
 $("hour").value =
 r.hour || "";
@@ -2794,9 +2364,7 @@ r.roomNo ||
 "";
 
 
-/* =================================================
-   LOAD FREE STAFF IMMEDIATELY
-================================================= */
+/* EXISTING BEHAVIOUR */
 
 findFreeStaff();
 
@@ -2806,28 +2374,22 @@ findFreeStaff();
 
 }
 
+);
+
 }
 
 
-
 /* =========================================================
-   FIND FREE STAFF
+FIND FREE STAFF
 ========================================================= */
 
 async function findFreeStaff(){
 
-hide(
-"formMessage"
-);
+hide("formMessage");
 
+hide("selectionMessage");
 
-hide(
-"selectionMessage"
-);
-
-
-selectedSubstitute =
-null;
+selectedSubstitute = null;
 
 
 if(!currentStaff){
@@ -2843,18 +2405,9 @@ return;
 }
 
 
-
-/* =====================================================
-   DATE
-===================================================== */
-
 const date =
 $("requestDate").value;
 
-
-/* =====================================================
-   DAY
-===================================================== */
 
 const day =
 normalizeDay(
@@ -2862,25 +2415,16 @@ $("day").value
 );
 
 
-/* =====================================================
-   SESSION
-===================================================== */
-
 const session =
 normalizeSession(
 $("session").value
 );
 
 
-/* =====================================================
-   HOUR
-===================================================== */
-
 const hour =
 Number(
 $("hour").value
 );
-
 
 
 if(
@@ -2901,35 +2445,13 @@ return;
 }
 
 
-
-/* =====================================================
-   SELECTED DETAILS CHECK
-===================================================== */
+/* NEW DETAILS VALIDATION */
 
 if(
-
-!$("department")
-.value
-.trim()
-
-||
-
-!$("year")
-.value
-.trim()
-
-||
-
-!$("section")
-.value
-.trim()
-
-||
-
-!$("subject")
-.value
-.trim()
-
+!$("department").value.trim() ||
+!$("year").value.trim() ||
+!$("section").value.trim() ||
+!$("subject").value.trim()
 ){
 
 show(
@@ -2943,11 +2465,6 @@ return;
 }
 
 
-
-/* =====================================================
-   SHOW FREE CARD
-===================================================== */
-
 $("freeCard")
 .style
 .display =
@@ -2956,35 +2473,32 @@ $("freeCard")
 
 $("slotText")
 .textContent =
-
 `${date} | ${day} | ${session} | Hour ${hour}`;
 
 
 $("departmentText")
 .textContent =
-
 `Showing FREE staff only from ${currentStaff.department}`;
 
 
 $("staffList")
 .innerHTML =
-
 `
 <div class="loading">
 
-Checking
-${esc(currentStaff.department)}
+Checking ${esc(
+currentStaff.department
+)}
 department staff...
 
 </div>
 `;
 
 
-
 try{
 
 /* =====================================================
-   LOAD SUBSTITUTE REQUESTS
+EXISTING SUBSTITUTE REQUESTS
 ===================================================== */
 
 const reqSnap =
@@ -3004,7 +2518,7 @@ reqSnap.forEach(
 requestDoc => {
 
 const r =
-requestDoc.data() || {};
+requestDoc.data();
 
 
 const status =
@@ -3015,46 +2529,19 @@ r.status
 
 if(
 
-status ===
-"APPROVED"
-
-||
-
-status ===
-"PENDING_APPROVAL"
-
-||
-
-status ===
-"ALLOTTED"
-
-||
-
-status ===
-"PENDING"
+status === "APPROVED" ||
+status === "PENDING_APPROVAL" ||
+status === "ALLOTTED" ||
+status === "PENDING"
 
 ){
 
 if(
 
-normalizeDay(r.day) ===
-day
-
-&&
-
-normalizeSession(r.session) ===
-session
-
-&&
-
-Number(r.hour) ===
-hour
-
-&&
-
-clean(
-r.substituteStaffId
-)
+normalizeDay(r.day) === day &&
+normalizeSession(r.session) === session &&
+Number(r.hour) === hour &&
+clean(r.substituteStaffId)
 
 ){
 
@@ -3072,34 +2559,21 @@ r.substituteStaffId
 );
 
 
-
 /* =====================================================
-   FIND BUSY STAFF FROM TIMETABLE
+TIMETABLE BUSY STAFF
 ===================================================== */
 
 const busy =
 new Set(
 
 timetableData
-
 .filter(
 r =>
 
-normalizeDay(r.day) ===
-day
-
-&&
-
-normalizeSession(r.session) ===
-session
-
-&&
-
-Number(r.hour) ===
-hour
-
+normalizeDay(r.day) === day &&
+normalizeSession(r.session) === session &&
+Number(r.hour) === hour
 )
-
 .map(
 r =>
 upper(
@@ -3110,9 +2584,8 @@ r.staffId
 );
 
 
-
 /* =====================================================
-   CURRENT DEPARTMENT
+CURRENT DEPARTMENT
 ===================================================== */
 
 const currentDepartment =
@@ -3121,9 +2594,8 @@ currentStaff.department
 );
 
 
-
 /* =====================================================
-   FIND FREE SAME-DEPARTMENT STAFF
+FREE STAFF
 ===================================================== */
 
 const free =
@@ -3142,33 +2614,19 @@ s.department
 );
 
 
-const sameDepartment =
-staffDepartment ===
-currentDepartment;
-
-
 return (
 
 sid !==
 upper(
 currentStaff.staffId
-)
+) &&
 
-&&
+staffDepartment ===
+currentDepartment &&
 
-sameDepartment
+!busy.has(sid) &&
 
-&&
-
-!busy.has(
-sid
-)
-
-&&
-
-!reserved.has(
-sid
-)
+!reserved.has(sid)
 
 );
 
@@ -3176,19 +2634,15 @@ sid
 );
 
 
-
 /* =====================================================
-   NO FREE STAFF
+NO FREE STAFF
 ===================================================== */
 
-if(
-!free.length
-){
+if(!free.length){
 
 $("staffList")
 .innerHTML =
 `
-
 <div class="empty">
 
 No free staff are available inside the
@@ -3199,7 +2653,6 @@ department for the selected
 Day Order, Session and Hour.
 
 </div>
-
 `;
 
 return;
@@ -3207,9 +2660,8 @@ return;
 }
 
 
-
 /* =====================================================
-   DISPLAY FREE STAFF
+DISPLAY FREE STAFF
 ===================================================== */
 
 $("staffList")
@@ -3232,19 +2684,15 @@ s.staffName ||
 
 </h3>
 
-
 <p>
 
-Staff ID:
 ${esc(
 s.staffId
 )}
 
 </p>
 
-
-<span
-class="department-badge">
+<span class="department-badge">
 
 ${esc(
 s.department
@@ -3254,23 +2702,17 @@ s.department
 
 </div>
 
-
 <div>
 
-<span
-class="badge">
+<span class="badge">
 
 FREE
 
 </span>
 
-
 <button
-
 class="success"
-
 data-index="${i}"
-
 style="margin-left:8px">
 
 Select
@@ -3286,15 +2728,12 @@ Select
 .join("");
 
 
-
 /* =====================================================
-   SELECT SUBSTITUTE
+SELECT STAFF
 ===================================================== */
 
 $("staffList")
-.querySelectorAll(
-"button"
-)
+.querySelectorAll("button")
 .forEach(
 btn => {
 
@@ -3311,18 +2750,14 @@ btn.dataset.index
 
 
 $("staffList")
-.querySelectorAll(
-"button"
-)
+.querySelectorAll("button")
 .forEach(
 b =>
-b.disabled =
-true
+b.disabled = true
 );
 
 
-btn.disabled =
-false;
+btn.disabled = false;
 
 
 show(
@@ -3334,11 +2769,6 @@ show(
 );
 
 
-
-/* =================================================
-   REMOVE OLD SUBMIT BUTTON
-================================================= */
-
 const oldBtn =
 $("submitBtn");
 
@@ -3348,27 +2778,18 @@ if(oldBtn){
 const parent =
 oldBtn.parentElement;
 
-
 if(parent)
 parent.remove();
 
 }
 
 
-
-/* =================================================
-   ADD SUBMIT BUTTON
-================================================= */
-
 $("selectionMessage")
 .insertAdjacentHTML(
-
 "afterend",
 
 `
-
-<div
-class="actions">
+<div class="actions">
 
 <button
 id="submitBtn"
@@ -3379,9 +2800,7 @@ Submit Substitute Request
 </button>
 
 </div>
-
 `
-
 );
 
 
@@ -3392,11 +2811,9 @@ submitRequest
 );
 
 }
-
 );
 
 }
-
 );
 
 }
@@ -3408,9 +2825,7 @@ err
 );
 
 
-$("staffList")
-.innerHTML =
-"";
+$("staffList").innerHTML = "";
 
 
 show(
@@ -3425,9 +2840,8 @@ err.message,
 }
 
 
-
 /* =========================================================
-   SUBMIT REQUEST
+SUBMIT REQUEST
 ========================================================= */
 
 async function submitRequest(){
@@ -3447,11 +2861,6 @@ return;
 
 }
 
-
-
-/* =====================================================
-   GET FORM VALUES
-===================================================== */
 
 const date =
 $("requestDate").value;
@@ -3515,52 +2924,12 @@ const btn =
 $("submitBtn");
 
 
-if(btn){
-
-btn.disabled =
-true;
-
-}
-
-
-
-/* =====================================================
-   VALIDATION
-===================================================== */
-
-if(
-
-!date ||
-!day ||
-!session ||
-!hour ||
-!department ||
-!year ||
-!section ||
-!subject
-
-){
-
-show(
-"selectionMessage",
-"Please select a complete timetable period before submitting.",
-"err"
-);
-
-
 if(btn)
-btn.disabled =
-false;
-
-
-return;
-
-}
-
+btn.disabled = true;
 
 
 /* =====================================================
-   FINAL DEPARTMENT SECURITY CHECK
+DEPARTMENT SECURITY
 ===================================================== */
 
 const requesterDepartment =
@@ -3592,11 +2961,8 @@ show(
 "err"
 );
 
-
 if(btn)
-btn.disabled =
-false;
-
+btn.disabled = false;
 
 return;
 
@@ -3614,30 +2980,20 @@ show(
 "err"
 );
 
-
 if(btn)
-btn.disabled =
-false;
+btn.disabled = false;
 
-
-selectedSubstitute =
-null;
-
+selectedSubstitute = null;
 
 return;
 
 }
 
 
-
-/* =====================================================
-   SAVE
-===================================================== */
-
 try{
 
 /* =====================================================
-   RECHECK REQUESTS
+RECHECK REQUESTS
 ===================================================== */
 
 const snap =
@@ -3654,7 +3010,7 @@ snap.docs.some(
 d => {
 
 const r =
-d.data() || {};
+d.data();
 
 
 const status =
@@ -3666,51 +3022,28 @@ r.status
 return (
 
 (
-
-status ===
-"APPROVED"
-
-||
-
-status ===
-"PENDING_APPROVAL"
-
-||
-
-status ===
-"ALLOTTED"
-
-||
-
-status ===
-"PENDING"
-
+status === "APPROVED" ||
+status === "PENDING_APPROVAL" ||
+status === "ALLOTTED" ||
+status === "PENDING"
 )
 
 &&
 
-normalizeDay(r.day) ===
-day
+normalizeDay(r.day) === day
 
 &&
 
-normalizeSession(r.session) ===
-session
+normalizeSession(r.session) === session
 
 &&
 
-Number(r.hour) ===
-hour
+Number(r.hour) === hour
 
 &&
 
-upper(
-r.substituteStaffId
-) ===
-
-upper(
-selectedSubstitute.staffId
-)
+upper(r.substituteStaffId) ===
+upper(selectedSubstitute.staffId)
 
 );
 
@@ -3718,40 +3051,24 @@ selectedSubstitute.staffId
 );
 
 
-
 /* =====================================================
-   RECHECK TIMETABLE
+RECHECK TIMETABLE
 ===================================================== */
 
 const timetableBusy =
 timetableData.some(
 r =>
 
-normalizeDay(r.day) ===
-day
+normalizeDay(r.day) === day &&
 
-&&
+normalizeSession(r.session) === session &&
 
-normalizeSession(r.session) ===
-session
+Number(r.hour) === hour &&
 
-&&
-
-Number(r.hour) ===
-hour
-
-&&
-
-upper(
-r.staffId
-) ===
-
-upper(
-selectedSubstitute.staffId
-)
+upper(r.staffId) ===
+upper(selectedSubstitute.staffId)
 
 );
-
 
 
 if(
@@ -3765,35 +3082,24 @@ show(
 "err"
 );
 
-
 if(btn)
-btn.disabled =
-false;
+btn.disabled = false;
 
-
-selectedSubstitute =
-null;
-
+selectedSubstitute = null;
 
 return;
 
 }
 
 
-
 /* =====================================================
-   CREATE REQUEST ID
+CREATE REQUEST
 ===================================================== */
 
 const requestId =
 "SR-" +
 Date.now();
 
-
-
-/* =====================================================
-   ADD FIRESTORE DOCUMENT
-===================================================== */
 
 await addDoc(
 collection(
@@ -3806,148 +3112,116 @@ requestId:
 
 requestId,
 
-
 date:
 
 date,
-
 
 day:
 
 day,
 
-
 session:
 
 session,
-
 
 hour:
 
 hour,
 
 
-/* =================================================
-   NEW CLASS DETAILS
-================================================= */
+/* NEW DETAILS */
 
 department:
 
 department,
 
-
 year:
 
 year,
-
 
 section:
 
 section,
 
-
 subject:
 
 subject,
-
 
 roomNo:
 
 roomNo,
 
-
-/* Keep aliases also for compatibility */
 room:
 
 roomNo,
 
 
-/* =================================================
-   REQUEST DETAILS
-================================================= */
+/* REQUEST DETAILS */
 
 remarks:
 
 remarks,
 
-
 requestingStaffId:
 
 currentStaff.staffId,
 
-
 requestingStaffName:
 
 currentStaff.staffName,
-
 
 requestingDepartment:
 
 currentStaff.department,
 
 
-/* =================================================
-   SUBSTITUTE
-================================================= */
+/* SUBSTITUTE */
 
 substituteStaffId:
 
 selectedSubstitute.staffId,
 
-
 substituteStaffName:
 
-selectedSubstitute.staffName ||
-"",
-
+selectedSubstitute.staffName || "",
 
 substituteDepartment:
 
-selectedSubstitute.department ||
-"",
+selectedSubstitute.department || "",
 
 
-/* =================================================
-   STATUS
-================================================= */
+/* STATUS */
 
 status:
 
 "PENDING_APPROVAL",
 
-
 requestedAt:
 
 serverTimestamp(),
-
 
 approvedBy:
 
 null,
 
-
 approvedByName:
 
 null,
 
-
 approvedAt:
 
 null,
-
 
 rejectionReason:
 
 null
 
 }
-
 );
 
 
-
 /* =====================================================
-   SUCCESS
+SUCCESS
 ===================================================== */
 
 show(
@@ -3957,8 +3231,7 @@ show(
 );
 
 
-selectedSubstitute =
-null;
+selectedSubstitute = null;
 
 
 $("freeCard")
@@ -3990,67 +3263,39 @@ err.message,
 
 
 if(btn)
-btn.disabled =
-false;
+btn.disabled = false;
 
 }
 
 }
-
 
 
 /* =========================================================
-   CLEAR FIELDS ONLY
+CLEAR FIELDS ONLY
 ========================================================= */
 
 function clearFieldsOnly(){
 
-$("hour").value =
-"";
+$("hour").value = "";
 
+$("department").value = "";
 
-$("department").value =
-"";
+$("year").value = "";
 
+$("section").value = "";
 
-$("year").value =
-"";
+$("subject").value = "";
 
+$("roomNo").value = "";
 
-$("section").value =
-"";
+$("remarks").value = "";
 
+$("session").value = "";
 
-$("subject").value =
-"";
+$("freeCard").style.display = "none";
 
+selectedSubstitute = null;
 
-$("roomNo").value =
-"";
-
-
-$("remarks").value =
-"";
-
-
-$("session").value =
-"";
-
-
-$("freeCard")
-.style
-.display =
-"none";
-
-
-selectedSubstitute =
-null;
-
-
-
-/* =====================================================
-   REMOVE SUBMIT BUTTON
-===================================================== */
 
 const submit =
 $("submitBtn");
@@ -4069,51 +3314,32 @@ parent.remove();
 }
 
 
-
 /* =========================================================
-   CLEAR FORM
+CLEAR FORM
 ========================================================= */
 
 function clearForm(){
 
-$("requestDate")
-.value =
-"";
+$("requestDate").value = "";
 
-
-$("day")
-.value =
-"";
-
+$("day").value = "";
 
 clearFieldsOnly();
 
+hide("formMessage");
 
-hide(
-"formMessage"
-);
-
-
-hide(
-"selectionMessage"
-);
-
+hide("selectionMessage");
 
 autoLoadStaffTimetable();
 
 }
 
 
-
 /* =========================================================
-   INIT
+INIT
 ========================================================= */
 
 async function init(){
-
-/* =====================================================
-   WAIT FOR FIREBASE AUTH
-===================================================== */
 
 let user =
 auth.currentUser;
@@ -4124,9 +3350,7 @@ if(!user){
 await new Promise(
 resolve => {
 
-let done =
-false;
-
+let done = false;
 
 const timer =
 setTimeout(
@@ -4134,8 +3358,7 @@ setTimeout(
 
 if(!done){
 
-done =
-true;
+done = true;
 
 resolve();
 
@@ -4152,12 +3375,9 @@ u => {
 
 if(!done){
 
-done =
-true;
+done = true;
 
-clearTimeout(
-timer
-);
+clearTimeout(timer);
 
 unsubscribe();
 
@@ -4179,23 +3399,15 @@ console.log(
 auth.currentUser
 ?
 {
-
 uid:
 auth.currentUser.uid,
-
 email:
 auth.currentUser.email
-
 }
 :
 null
 );
 
-
-
-/* =====================================================
-   LOAD CURRENT STAFF
-===================================================== */
 
 const loaded =
 await loadCurrentStaff();
@@ -4208,43 +3420,29 @@ return;
 }
 
 
+/* DATE AND DAY INDEPENDENT */
 
-/* =====================================================
-   DATE AND DAY ARE INDEPENDENT
-===================================================== */
+$("requestDate").value = "";
 
-$("requestDate")
-.value =
-"";
+$("day").value = "";
 
 
-$("day")
-.value =
-"";
-
-
-/* =====================================================
-   LOAD TIMETABLE
-===================================================== */
+/* LOAD TIMETABLE */
 
 await loadTimetable();
-
 
 autoLoadStaffTimetable();
 
 
-/* =====================================================
-   LOAD REQUEST HISTORY
-===================================================== */
+/* LOAD REQUEST HISTORY */
 
 await loadExistingRequests();
 
 }
 
 
-
 /* =========================================================
-   START
+START
 ========================================================= */
 
 init();
