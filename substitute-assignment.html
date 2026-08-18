@@ -402,9 +402,7 @@ Request a substitute, find free staff and submit the assignment for Head approva
 
 </div>
 
-
 <div class="container">
-
 
 <!-- =====================================================
 REQUESTING STAFF
@@ -430,7 +428,6 @@ readonly>
 
 </div>
 
-
 <div class="group">
 
 <label>
@@ -442,7 +439,6 @@ id="requesterName"
 readonly>
 
 </div>
-
 
 <div class="group">
 
@@ -476,7 +472,6 @@ SUBSTITUTE DETAILS
 Substitute Details
 </div>
 
-
 <div class="independent-note">
 
 <b>Important:</b>
@@ -485,7 +480,6 @@ Changing the Date will NOT change the Day Order,
 and changing the Day Order will NOT change the Date.
 
 </div>
-
 
 <div class="same-department-note">
 
@@ -497,9 +491,7 @@ Staff from other departments will not be shown.
 
 </div>
 
-
 <div class="grid">
-
 
 <!-- DATE -->
 
@@ -770,24 +762,20 @@ style="display:none">
 Free Staff
 </div>
 
-
 <p
 id="slotText"
 style="font-size:13px;color:#6b7280">
 </p>
-
 
 <p
 id="departmentText"
 style="font-size:13px;color:#166534;margin-top:6px;font-weight:bold">
 </p>
 
-
 <div
 id="staffList"
 class="staff-list">
 </div>
-
 
 <div
 id="selectionMessage"
@@ -817,19 +805,20 @@ Loading requests...
 
 </div>
 
-
 </div>
 
 
 <script type="module">
 
-
 /* =========================================================
 FIREBASE
 ========================================================= */
 
-import { initializeApp }
-from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {
+initializeApp
+}
+from
+"https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
 
 import {
@@ -841,7 +830,15 @@ query,
 where,
 serverTimestamp
 }
-from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+from
+"https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+
+import {
+getAuth
+}
+from
+"https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 
 const firebaseConfig = {
@@ -873,12 +870,6 @@ initializeApp(firebaseConfig);
 
 const db =
 getFirestore(app);
-
-
-import {
-getAuth
-}
-from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 
 const auth =
@@ -931,12 +922,10 @@ function normalizeDay(value){
 const v =
 upper(value);
 
-
 const m =
 v.match(
 /DAY\s*0?([1-6])/
 );
-
 
 if(m){
 
@@ -949,7 +938,6 @@ Number(m[1])
 
 }
 
-
 if(
 /^[1-6]$/.test(v)
 ){
@@ -961,7 +949,6 @@ v.padStart(2,"0")
 
 }
 
-
 const old = {
 
 MONDAY:"DAY 01",
@@ -972,7 +959,6 @@ FRIDAY:"DAY 05",
 SATURDAY:"DAY 06"
 
 };
-
 
 return old[v] || v;
 
@@ -990,13 +976,28 @@ return upper(v);
 STAFF FIELD HELPERS
 ========================================================= */
 
-function getStaffId(d, documentId = ""){
+function getStaffId(
+d,
+documentId = ""
+){
 
 return clean(
-d.staffId ?? d.staffID ?? d.staff_id ?? d.staffCode ??
-d.staff_code ?? d.employeeId ?? d.employeeID ?? d.empId ??
-d.employeeCode ?? d.employee_code ?? d.code ?? d.staff ??
-d.id ?? documentId
+
+d.staffId ??
+d.staffID ??
+d.staff_id ??
+d.staffCode ??
+d.staff_code ??
+d.employeeId ??
+d.employeeID ??
+d.empId ??
+d.employeeCode ??
+d.employee_code ??
+d.code ??
+d.staff ??
+d.id ??
+documentId
+
 );
 
 }
@@ -1005,8 +1006,15 @@ d.id ?? documentId
 function getStaffName(d){
 
 return clean(
-d.staffName ?? d.staff_name ?? d.name ?? d.displayName ??
-d.fullName ?? d.employeeName ?? d.employee_name
+
+d.staffName ??
+d.staff_name ??
+d.name ??
+d.displayName ??
+d.fullName ??
+d.employeeName ??
+d.employee_name
+
 );
 
 }
@@ -1015,73 +1023,111 @@ d.fullName ?? d.employeeName ?? d.employee_name
 function getDepartment(d){
 
 return clean(
-d.department ?? d.departmentName ?? d.department_name ??
-d.dept ?? d.deptName ?? d.dept_name ?? d.Department ??
+
+d.department ??
+d.departmentName ??
+d.department_name ??
+d.dept ??
+d.deptName ??
+d.dept_name ??
+d.Department ??
+d.DEPARTMENT ??
 d.departmentId
+
 );
 
 }
 
 
 /* =========================================================
-ONLY NEW FIELD HELPERS
+YEAR
 ========================================================= */
 
 function getYear(d){
 
 return clean(
+
 d.year ??
 d.Year ??
+d.YEAR ??
 d.academicYear ??
 d.academic_year ??
 d.classYear ??
+d.class_year ??
 d.studyYear ??
+d.study_year ??
 d.yearName ??
 d.year_name
+
 );
 
 }
 
+
+/* =========================================================
+SECTION
+========================================================= */
 
 function getSection(d){
 
 return clean(
+
 d.section ??
 d.Section ??
+d.SECTION ??
 d.sectionName ??
 d.section_name ??
 d.sec ??
 d.secName ??
-d.classSection
+d.sec_name ??
+d.classSection ??
+d.class_section
+
 );
 
 }
 
+
+/* =========================================================
+ROOM NO
+========================================================= */
 
 function getRoom(d){
 
 return clean(
+
 d.roomNo ??
-d.room ??
+d.roomNO ??
 d.roomNumber ??
 d.room_number ??
+d.room ??
+d.Room ??
+d.ROOM ??
 d.room_name ??
 d.roomName ??
 d.roomID ??
 d.roomId
+
 );
 
 }
 
+
+/* =========================================================
+HOUR
+========================================================= */
 
 function getHour(d){
 
 return Number(
 
 d.hour ??
+d.Hour ??
 d.period ??
-d.hourNo ??
 d.periodNo ??
+d.periodNumber ??
+d.hourNo ??
+d.hourNumber ??
 0
 
 );
@@ -1089,13 +1135,21 @@ d.periodNo ??
 }
 
 
+/* =========================================================
+SUBJECT
+========================================================= */
+
 function getSubject(d){
 
 return clean(
 
 d.subject ??
+d.Subject ??
+d.SUBJECT ??
 d.subjectName ??
-d.subject_name
+d.subject_name ??
+d.paper ??
+d.paperName
 
 );
 
@@ -1106,7 +1160,11 @@ d.subject_name
 MESSAGES
 ========================================================= */
 
-function show(id,text,type){
+function show(
+id,
+text,
+type
+){
 
 const e =
 $(id);
@@ -1135,17 +1193,46 @@ GET CURRENT STAFF ID
 function getCurrentStaffId(){
 
 const idKeys = [
-"staffId","staffID","staff_id","staffCode","staff_code",
-"employeeId","employeeID","empId","employeeCode","employee_code",
-"currentStaffId","currentStaffID","loggedInStaffId","loggedInStaffID",
-"userStaffId","currentUserId","loginStaffId","loginStaffID",
-"staffNo","staffNumber","employeeNo","employeeNumber"
+
+"staffId",
+"staffID",
+"staff_id",
+"staffCode",
+"staff_code",
+"employeeId",
+"employeeID",
+"empId",
+"employeeCode",
+"employee_code",
+"currentStaffId",
+"currentStaffID",
+"loggedInStaffId",
+"loggedInStaffID",
+"userStaffId",
+"currentUserId",
+"loginStaffId",
+"loginStaffID",
+"staffNo",
+"staffNumber",
+"employeeNo",
+"employeeNumber"
+
 ];
 
 
 const objectKeys = [
-"currentStaff","loggedInStaff","currentUser","loggedInUser",
-"staff","staffData","user","userData","profile","loginUser"
+
+"currentStaff",
+"loggedInStaff",
+"currentUser",
+"loggedInUser",
+"staff",
+"staffData",
+"user",
+"userData",
+"profile",
+"loginUser"
+
 ];
 
 
@@ -1209,16 +1296,29 @@ try{
 const obj =
 JSON.parse(raw);
 
+
 const value =
 clean(
-obj.staffId ?? obj.staffID ?? obj.staff_id ??
-obj.staffCode ?? obj.staff_code ??
-obj.employeeId ?? obj.employeeID ??
-obj.empId ?? obj.employeeCode ??
-obj.employee_code ?? obj.staffNo ??
-obj.staffNumber ?? obj.employeeNo ??
-obj.employeeNumber ?? obj.userStaffId ??
-obj.userId ?? obj.id ?? obj.code ?? obj.uid ??
+
+obj.staffId ??
+obj.staffID ??
+obj.staff_id ??
+obj.staffCode ??
+obj.staff_code ??
+obj.employeeId ??
+obj.employeeID ??
+obj.empId ??
+obj.employeeCode ??
+obj.employee_code ??
+obj.staffNo ??
+obj.staffNumber ??
+obj.employeeNo ??
+obj.employeeNumber ??
+obj.userStaffId ??
+obj.userId ??
+obj.id ??
+obj.code ??
+obj.uid ??
 (
 obj.staff &&
 (
@@ -1229,7 +1329,9 @@ obj.staff.employeeId ??
 obj.staff.id
 )
 )
+
 );
+
 
 if(value)
 return value;
@@ -1249,16 +1351,19 @@ GLOBAL STAFF ID
 try{
 
 const globals = [
+
 window.staffId,
 window.staffID,
 window.currentStaffId,
 window.loggedInStaffId,
 window.employeeId
+
 ];
 
 
 for(
-const value of globals
+const value of
+globals
 ){
 
 if(clean(value))
@@ -1302,7 +1407,10 @@ try{
 
 const staffSnap =
 await getDocs(
-collection(db,"staff")
+collection(
+db,
+"staff"
+)
 );
 
 
@@ -1330,20 +1438,34 @@ docSnap.id
 
 const dbEmail =
 clean(
-d.email ?? d.emailId ?? d.emailID ??
-d.mail ?? d.mailId ?? d.officialEmail ??
-d.officialMail ?? d.officialMailId ??
-d.officialMailID ?? d.staffEmail ??
+
+d.email ??
+d.emailId ??
+d.emailID ??
+d.mail ??
+d.mailId ??
+d.officialEmail ??
+d.officialMail ??
+d.officialMailId ??
+d.officialMailID ??
+d.staffEmail ??
 d.staff_email
+
 );
 
 
 const dbUid =
 clean(
-d.uid ?? d.userId ?? d.userID ??
-d.authUid ?? d.firebaseUid ??
-d.firebaseUID ?? d.authUserId ??
+
+d.uid ??
+d.userId ??
+d.userID ??
+d.authUid ??
+d.firebaseUid ??
+d.firebaseUID ??
+d.authUserId ??
 d.authUID
+
 );
 
 
@@ -1440,8 +1562,10 @@ currentStaff
 $("requesterId").value =
 currentStaff.staffId;
 
+
 $("requesterName").value =
 currentStaff.staffName;
+
 
 $("requesterDepartment").value =
 currentStaff.department;
@@ -1452,10 +1576,12 @@ sessionStorage.setItem(
 currentStaff.staffId
 );
 
+
 sessionStorage.setItem(
 "staffName",
 currentStaff.staffName
 );
+
 
 sessionStorage.setItem(
 "department",
@@ -1494,7 +1620,7 @@ snap.forEach(
 timetableDoc => {
 
 const d =
-timetableDoc.data();
+timetableDoc.data() || {};
 
 
 const r = {
@@ -1528,18 +1654,18 @@ getStaffName(d),
 department:
 getDepartment(d),
 
-/* NEW */
+/* IMPORTANT */
 year:
 getYear(d),
 
-/* NEW */
+/* IMPORTANT */
 section:
 getSection(d),
 
 subject:
 getSubject(d),
 
-/* NEW */
+/* IMPORTANT */
 roomNo:
 getRoom(d)
 
@@ -1577,7 +1703,7 @@ staffSnap.forEach(
 staffDoc => {
 
 const d =
-staffDoc.data();
+staffDoc.data() || {};
 
 
 const sid =
@@ -1641,6 +1767,7 @@ department:
 r.department
 
 }
+
 );
 
 }
@@ -1780,15 +1907,18 @@ try{
 
 const q =
 query(
+
 collection(
 db,
 "substituteRequests"
 ),
+
 where(
 "requestingStaffId",
 "==",
 currentStaff.staffId
 )
+
 );
 
 
@@ -1872,35 +2002,45 @@ Hour ${esc(r.hour || "")}
 <br>
 
 Department:
-<b>${esc(
+<b>
+${esc(
 r.department ||
 r.requestingDepartment ||
 "-"
-)}</b>
+)}
+</b>
 
 <br>
 
 Year:
-<b>${esc(r.year || "-")}</b>
+<b>
+${esc(r.year || "-")}
+</b>
 
 <br>
 
 Section:
-<b>${esc(r.section || "-")}</b>
+<b>
+${esc(r.section || "-")}
+</b>
 
 <br>
 
 Subject:
-<b>${esc(r.subject || "-")}</b>
+<b>
+${esc(r.subject || "-")}
+</b>
 
 <br>
 
 Room No:
-<b>${esc(
+<b>
+${esc(
 r.roomNo ||
 r.room ||
 "-"
-)}</b>
+)}
+</b>
 
 <br>
 
@@ -2037,7 +2177,8 @@ AN:{
 };
 
 
-return times[session]?.[Number(hour)] || "";
+return
+times[session]?.[Number(hour)] || "";
 
 }
 
@@ -2070,7 +2211,7 @@ $("session").value
 );
 
 
-/* ONLY CLEAR SELECTED DETAILS */
+/* CLEAR SELECTED DETAILS */
 
 $("hour").value = "";
 
@@ -2086,9 +2227,11 @@ $("roomNo").value = "";
 
 selectedSubstitute = null;
 
-$("freeCard").style.display = "none";
+$("freeCard").style.display =
+"none";
 
 hide("formMessage");
+
 hide("selectionMessage");
 
 
@@ -2187,12 +2330,19 @@ box.innerHTML = `
 <tr>
 
 <th>Hour</th>
+
 <th>Time</th>
+
 <th>Department</th>
+
 <th>Year</th>
+
 <th>Section</th>
+
 <th>Subject</th>
+
 <th>Room No</th>
+
 <th>Action</th>
 
 </tr>
@@ -2332,11 +2482,13 @@ const r =
 rows[index];
 
 
-/* ONLY NEW DETAILS */
+/* HOUR */
 
 $("hour").value =
 r.hour || "";
 
+
+/* DEPARTMENT */
 
 $("department").value =
 r.department ||
@@ -2344,27 +2496,35 @@ currentStaff.department ||
 "";
 
 
+/* YEAR */
+
 $("year").value =
 r.year ||
 "";
 
+
+/* SECTION */
 
 $("section").value =
 r.section ||
 "";
 
 
+/* SUBJECT */
+
 $("subject").value =
 r.subject ||
 "";
 
+
+/* ROOM */
 
 $("roomNo").value =
 r.roomNo ||
 "";
 
 
-/* EXISTING BEHAVIOUR */
+/* LOAD FREE STAFF */
 
 findFreeStaff();
 
@@ -2445,7 +2605,9 @@ return;
 }
 
 
-/* NEW DETAILS VALIDATION */
+/* =====================================================
+NEW DETAILS VALIDATION
+===================================================== */
 
 if(
 !$("department").value.trim() ||
@@ -2486,9 +2648,8 @@ $("staffList")
 `
 <div class="loading">
 
-Checking ${esc(
-currentStaff.department
-)}
+Checking
+${esc(currentStaff.department)}
 department staff...
 
 </div>
@@ -2539,8 +2700,11 @@ status === "PENDING"
 if(
 
 normalizeDay(r.day) === day &&
+
 normalizeSession(r.session) === session &&
+
 Number(r.hour) === hour &&
+
 clean(r.substituteStaffId)
 
 ){
@@ -2571,8 +2735,11 @@ timetableData
 r =>
 
 normalizeDay(r.day) === day &&
+
 normalizeSession(r.session) === session &&
+
 Number(r.hour) === hour
+
 )
 .map(
 r =>
@@ -2825,7 +2992,8 @@ err
 );
 
 
-$("staffList").innerHTML = "";
+$("staffList").innerHTML =
+"";
 
 
 show(
@@ -3109,111 +3277,95 @@ db,
 {
 
 requestId:
-
 requestId,
 
 date:
-
 date,
 
 day:
-
 day,
 
 session:
-
 session,
 
 hour:
-
 hour,
 
 
-/* NEW DETAILS */
+/* =====================================================
+CLASS DETAILS
+===================================================== */
 
 department:
-
 department,
 
 year:
-
 year,
 
 section:
-
 section,
 
 subject:
-
 subject,
 
 roomNo:
-
 roomNo,
 
 room:
-
 roomNo,
 
 
-/* REQUEST DETAILS */
+/* =====================================================
+REQUEST DETAILS
+===================================================== */
 
 remarks:
-
 remarks,
 
 requestingStaffId:
-
 currentStaff.staffId,
 
 requestingStaffName:
-
 currentStaff.staffName,
 
 requestingDepartment:
-
 currentStaff.department,
 
 
-/* SUBSTITUTE */
+/* =====================================================
+SUBSTITUTE
+===================================================== */
 
 substituteStaffId:
-
 selectedSubstitute.staffId,
 
 substituteStaffName:
-
 selectedSubstitute.staffName || "",
 
 substituteDepartment:
-
 selectedSubstitute.department || "",
 
 
-/* STATUS */
+/* =====================================================
+STATUS
+===================================================== */
 
 status:
-
 "PENDING_APPROVAL",
 
 requestedAt:
-
 serverTimestamp(),
 
 approvedBy:
-
 null,
 
 approvedByName:
-
 null,
 
 approvedAt:
-
 null,
 
 rejectionReason:
-
 null
 
 }
@@ -3276,25 +3428,37 @@ CLEAR FIELDS ONLY
 
 function clearFieldsOnly(){
 
-$("hour").value = "";
+$("hour").value =
+"";
 
-$("department").value = "";
+$("department").value =
+"";
 
-$("year").value = "";
+$("year").value =
+"";
 
-$("section").value = "";
+$("section").value =
+"";
 
-$("subject").value = "";
+$("subject").value =
+"";
 
-$("roomNo").value = "";
+$("roomNo").value =
+"";
 
-$("remarks").value = "";
+$("remarks").value =
+"";
 
-$("session").value = "";
+$("session").value =
+"";
 
-$("freeCard").style.display = "none";
+$("freeCard")
+.style
+.display =
+"none";
 
-selectedSubstitute = null;
+selectedSubstitute =
+null;
 
 
 const submit =
@@ -3320,9 +3484,11 @@ CLEAR FORM
 
 function clearForm(){
 
-$("requestDate").value = "";
+$("requestDate").value =
+"";
 
-$("day").value = "";
+$("day").value =
+"";
 
 clearFieldsOnly();
 
@@ -3350,7 +3516,9 @@ if(!user){
 await new Promise(
 resolve => {
 
-let done = false;
+let done =
+false;
+
 
 const timer =
 setTimeout(
@@ -3358,7 +3526,8 @@ setTimeout(
 
 if(!done){
 
-done = true;
+done =
+true;
 
 resolve();
 
@@ -3375,7 +3544,8 @@ u => {
 
 if(!done){
 
-done = true;
+done =
+true;
 
 clearTimeout(timer);
 
@@ -3401,6 +3571,7 @@ auth.currentUser
 {
 uid:
 auth.currentUser.uid,
+
 email:
 auth.currentUser.email
 }
@@ -3420,21 +3591,30 @@ return;
 }
 
 
-/* DATE AND DAY INDEPENDENT */
+/* =====================================================
+DATE AND DAY ARE COMPLETELY INDEPENDENT
+===================================================== */
 
-$("requestDate").value = "";
+$("requestDate").value =
+"";
 
-$("day").value = "";
+$("day").value =
+"";
 
 
-/* LOAD TIMETABLE */
+/* =====================================================
+LOAD TIMETABLE
+===================================================== */
 
 await loadTimetable();
+
 
 autoLoadStaffTimetable();
 
 
-/* LOAD REQUEST HISTORY */
+/* =====================================================
+LOAD REQUEST HISTORY
+===================================================== */
 
 await loadExistingRequests();
 
