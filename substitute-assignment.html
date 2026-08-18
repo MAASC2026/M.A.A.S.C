@@ -737,10 +737,8 @@ Loading requests...
 FIREBASE
 ========================================================= */
 
-import {
-initializeApp
-}
-from "https://www\.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
 
 import {
@@ -752,7 +750,7 @@ query,
 where,
 serverTimestamp
 }
-from "https://www\.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 
 const firebaseConfig = {
@@ -784,6 +782,9 @@ initializeApp(firebaseConfig);
 
 const db =
 getFirestore(app);
+
+import { getAuth } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+const auth = getAuth(app);
 
 
 
@@ -1028,46 +1029,38 @@ GET CURRENT STAFF ID
 
 function getCurrentStaffId(){
 
-let staffId =
-clean(
-sessionStorage.getItem("staffId")
-);
+const keys = [
+"staffId",
+"staffID",
+"currentStaffId",
+"currentStaffID",
+"loggedInStaffId",
+"loggedInStaffID",
+"userStaffId",
+"staff_id"
+];
 
+for(const storage of [sessionStorage, localStorage]){
+    for(const key of keys){
+        const value = clean(storage.getItem(key));
+        if(value) return value;
+    }
 
-if(!staffId){
-
-staffId =
-clean(
-sessionStorage.getItem("staffID")
-);
-
+    for(const key of ["currentStaff","loggedInStaff","user","staff"]){
+        const raw = storage.getItem(key);
+        if(!raw) continue;
+        try{
+            const obj = JSON.parse(raw);
+            const value = clean(
+                obj.staffId ?? obj.staffID ?? obj.staff_id ?? obj.id
+            );
+            if(value) return value;
+        }catch(e){}
+    }
 }
 
-
-if(!staffId){
-
-staffId =
-clean(
-localStorage.getItem("staffId")
-);
-
+return "";
 }
-
-
-if(!staffId){
-
-staffId =
-clean(
-localStorage.getItem("staffID")
-);
-
-}
-
-
-return staffId;
-
-}
-
 
 
 /* =========================================================
@@ -1076,189 +1069,69 @@ LOAD CURRENT STAFF
 
 async function loadCurrentStaff(){
 
-const staffId =
-getCurrentStaffId();
+let staffId = getCurrentStaffId();
+const user = auth.currentUser;
 
-
-console.log(
-"LOGIN STAFF ID:",
-staffId
-);
-
-
-if(!staffId){
-
-show(
-"loginMessage",
-
-"Staff ID was not found. Please login again.",
-
-"err"
-);
-
-return false;
-
-}
-
+console.log("SESSION STAFF ID:", staffId);
+console.log("FIREBASE USER:", user ? {uid:user.uid,email:user.email} : null);
 
 try{
+    const staffSnap = await getDocs(collection(db,"staff"));
+    let found = null;
 
-const staffSnap =
-await getDocs(
-collection(
-db,
-"staff"
-)
-);
+    staffSnap.forEach(docSnap => {
+        if(found) return;
 
+        const d = docSnap.data();
+        const dbStaffId = getStaffId(d, docSnap.id);
+        const dbEmail = clean(d.email ?? d.emailId ?? d.mail ?? d.officialEmail);
+        const dbUid = clean(d.uid ?? d.userId ?? d.authUid ?? d.firebaseUid);
 
-let found =
-null;
+        const idMatch = staffId && upper(dbStaffId) === upper(staffId);
+        const uidMatch = user && dbUid && dbUid === user.uid;
+        const emailMatch = user && dbEmail && user.email && upper(dbEmail) === upper(user.email);
 
+        if(idMatch || uidMatch || emailMatch){
+            found = {
+                firestoreId: docSnap.id,
+                staffId: dbStaffId,
+                staffName: getStaffName(d),
+                department: getDepartment(d)
+            };
+        }
+    });
 
-staffSnap.forEach(
-docSnap => {
+    if(!found){
+        const authUid = user ? user.uid : "";
+        const authEmail = user ? user.email : "";
+        console.error("STAFF NOT FOUND", {staffId, authUid, authEmail});
+        show("loginMessage",
+            staffId
+                ? "Staff ID " + staffId + " was not found in the staff collection."
+                : "Current staff could not be identified. Please login through the Staff Login page again.",
+            "err");
+        return false;
+    }
 
-const d =
-docSnap.data();
+    currentStaff = found;
+    console.log("CURRENT STAFF LOADED:", currentStaff);
 
+    $("requesterId").value = currentStaff.staffId || "";
+    $("requesterName").value = currentStaff.staffName || "";
+    $("requesterDepartment").value = currentStaff.department || "";
 
-const dbStaffId =
-getStaffId(
-d,
-docSnap.id
-);
+    sessionStorage.setItem("staffId", currentStaff.staffId || "");
+    sessionStorage.setItem("staffName", currentStaff.staffName || "");
+    sessionStorage.setItem("department", currentStaff.department || "");
 
-
-console.log(
-"CHECK STAFF:",
-dbStaffId
-);
-
-
-if(
-upper(dbStaffId) ===
-upper(staffId)
-){
-
-found = {
-
-firestoreId:
-docSnap.id,
-
-staffId:
-dbStaffId,
-
-staffName:
-getStaffName(d),
-
-department:
-getDepartment(d)
-
-};
-
+    hide("loginMessage");
+    return true;
+}catch(err){
+    console.error("LOAD CURRENT STAFF ERROR:", err);
+    show("loginMessage", "Unable to load current staff: " + err.message, "err");
+    return false;
 }
-
 }
-);
-
-
-if(!found){
-
-console.error(
-"STAFF ID NOT FOUND:",
-staffId
-);
-
-
-show(
-"loginMessage",
-
-"Staff ID " +
-staffId +
-" was not found in the staff collection.",
-
-"err"
-);
-
-
-return false;
-
-}
-
-
-currentStaff =
-found;
-
-
-console.log(
-"CURRENT STAFF:",
-currentStaff
-);
-
-
-$("requesterId").value =
-currentStaff.staffId;
-
-
-$("requesterName").value =
-currentStaff.staffName;
-
-
-$("requesterDepartment").value =
-currentStaff.department;
-
-
-sessionStorage.setItem(
-"staffId",
-currentStaff.staffId
-);
-
-
-sessionStorage.setItem(
-"staffName",
-currentStaff.staffName
-);
-
-
-sessionStorage.setItem(
-"department",
-currentStaff.department
-);
-
-
-hide(
-"loginMessage"
-);
-
-
-return true;
-
-}
-catch(err){
-
-console.error(
-"CURRENT STAFF ERROR:",
-err
-);
-
-
-show(
-"loginMessage",
-
-"Unable to load staff details: " +
-err.message,
-
-"err"
-);
-
-
-return false;
-
-}
-
-}
-
 
 
 /* =========================================================
