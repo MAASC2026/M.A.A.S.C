@@ -1,15 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+<meta
+name="viewport"
+content="width=device-width, initial-scale=1.0">
+
 <title>Leave Apply</title>
 
 <style>
+
 *{
-    box-sizing:border-box;
     margin:0;
     padding:0;
+    box-sizing:border-box;
     font-family:Arial,Helvetica,sans-serif;
 }
 
@@ -19,55 +26,76 @@ body{
 }
 
 .container{
-    max-width:1100px;
+    max-width:1200px;
     margin:30px auto;
     padding:20px;
 }
 
 .header{
-    background:#fff;
+    background:#500454;
+    color:white;
     padding:22px;
-    border-radius:14px;
-    box-shadow:0 3px 15px rgba(0,0,0,.08);
+    border-radius:12px;
     margin-bottom:20px;
+    box-shadow:0 3px 12px rgba(0,0,0,.15);
 }
 
 .header h2{
-    margin-bottom:6px;
+    margin-bottom:8px;
 }
 
-.header p{
-    color:#666;
+.staff-info{
+    font-size:15px;
+    line-height:1.7;
 }
 
 .balance-grid{
     display:grid;
     grid-template-columns:repeat(2,1fr);
-    gap:18px;
+    gap:20px;
     margin-bottom:20px;
 }
 
-.balance{
-    background:#fff;
-    padding:20px;
-    border-radius:14px;
-    box-shadow:0 3px 15px rgba(0,0,0,.08);
-}
-
-.balance h3{
-    margin-bottom:10px;
-}
-
-.balance .number{
-    font-size:32px;
-    font-weight:bold;
-}
-
-.form-box{
-    background:#fff;
+.balance-card{
+    background:white;
     padding:25px;
-    border-radius:14px;
-    box-shadow:0 3px 15px rgba(0,0,0,.08);
+    border-radius:12px;
+    box-shadow:0 3px 12px rgba(0,0,0,.12);
+}
+
+.balance-card h3{
+    color:#500454;
+    margin-bottom:12px;
+}
+
+.balance-number{
+    font-size:38px;
+    font-weight:bold;
+    color:#500454;
+}
+
+.balance-label{
+    color:#666;
+    margin-top:5px;
+}
+
+.card{
+    background:white;
+    padding:25px;
+    border-radius:12px;
+    box-shadow:0 3px 12px rgba(0,0,0,.12);
+    margin-bottom:20px;
+}
+
+.card h3{
+    color:#500454;
+    margin-bottom:20px;
+}
+
+.form-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:20px;
 }
 
 .form-group{
@@ -86,8 +114,15 @@ textarea{
     width:100%;
     padding:12px;
     border:1px solid #ccc;
-    border-radius:8px;
+    border-radius:7px;
     font-size:15px;
+    outline:none;
+}
+
+input:focus,
+select:focus,
+textarea:focus{
+    border-color:#500454;
 }
 
 textarea{
@@ -95,29 +130,31 @@ textarea{
     resize:vertical;
 }
 
+.full{
+    grid-column:1/-1;
+}
+
 button{
-    border:0;
-    padding:13px 20px;
-    border-radius:8px;
-    cursor:pointer;
+    padding:13px 22px;
+    border:none;
+    border-radius:7px;
+    background:#500454;
+    color:white;
     font-size:15px;
     font-weight:bold;
+    cursor:pointer;
 }
 
-.btn{
-    background:#2563eb;
-    color:white;
-}
-
-.btn:hover{
-    background:#1d4ed8;
+button:hover{
+    background:#6e0a75;
 }
 
 .message{
-    margin-top:15px;
-    padding:12px;
-    border-radius:8px;
     display:none;
+    margin-top:15px;
+    padding:13px;
+    border-radius:7px;
+    font-weight:bold;
 }
 
 .success{
@@ -130,18 +167,14 @@ button{
     color:#991b1b;
 }
 
-.table-box{
-    margin-top:25px;
-    background:#fff;
-    padding:20px;
-    border-radius:14px;
-    box-shadow:0 3px 15px rgba(0,0,0,.08);
+.table-container{
     overflow-x:auto;
 }
 
 table{
     width:100%;
     border-collapse:collapse;
+    min-width:850px;
 }
 
 th,
@@ -152,19 +185,45 @@ td{
 }
 
 th{
-    background:#f8fafc;
+    background:#500454;
+    color:white;
 }
 
 .status{
     font-weight:bold;
 }
 
+.pending{
+    color:#b45309;
+}
+
+.approved{
+    color:#15803d;
+}
+
+.rejected{
+    color:#dc2626;
+}
+
 @media(max-width:700px){
-    .balance-grid{
+
+    .balance-grid,
+    .form-grid{
         grid-template-columns:1fr;
     }
+
+    .full{
+        grid-column:auto;
+    }
+
+    .container{
+        padding:12px;
+    }
+
 }
+
 </style>
+
 </head>
 
 <body>
@@ -172,303 +231,495 @@ th{
 <div class="container">
 
     <div class="header">
+
         <h2>Leave Apply</h2>
-        <p id="staffInfo">Loading staff details...</p>
+
+        <div class="staff-info">
+
+            <div>
+                Staff Name:
+                <b id="staffName"></b>
+            </div>
+
+            <div>
+                Staff ID:
+                <b id="staffId"></b>
+            </div>
+
+            <div>
+                Department:
+                <b id="department"></b>
+            </div>
+
+            <div>
+                Month:
+                <b id="currentMonth"></b>
+            </div>
+
+        </div>
+
     </div>
+
+
+    <!-- LEAVE BALANCE -->
 
     <div class="balance-grid">
 
-        <div class="balance">
+        <div class="balance-card">
+
             <h3>Casual Leave</h3>
-            <div class="number" id="clBalance">11</div>
-            <p>Available this month</p>
+
+            <div
+                class="balance-number"
+                id="clBalance">
+                11
+            </div>
+
+            <div class="balance-label">
+                Available this month
+            </div>
+
         </div>
 
-        <div class="balance">
+
+        <div class="balance-card">
+
             <h3>Sick Leave</h3>
-            <div class="number" id="slBalance">3</div>
-            <p>Available this month</p>
+
+            <div
+                class="balance-number"
+                id="slBalance">
+                3
+            </div>
+
+            <div class="balance-label">
+                Available this month
+            </div>
+
         </div>
 
     </div>
 
-    <div class="form-box">
+
+    <!-- APPLY -->
+
+    <div class="card">
 
         <h3>Apply Leave</h3>
 
-        <br>
-
         <form id="leaveForm">
 
-            <div class="form-group">
-                <label>Leave Type</label>
+            <div class="form-grid">
 
-                <select id="leaveType" required>
-                    <option value="">Select Leave Type</option>
-                    <option value="CASUAL">Casual Leave</option>
-                    <option value="SICK">Sick Leave</option>
-                </select>
+                <div class="form-group">
+
+                    <label>
+                        Leave Type
+                    </label>
+
+                    <select
+                        id="leaveType"
+                        required>
+
+                        <option value="">
+                            Select Leave Type
+                        </option>
+
+                        <option value="CASUAL">
+                            Casual Leave
+                        </option>
+
+                        <option value="SICK">
+                            Sick Leave
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        From Date
+                    </label>
+
+                    <input
+                        type="date"
+                        id="fromDate"
+                        required>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        To Date
+                    </label>
+
+                    <input
+                        type="date"
+                        id="toDate"
+                        required>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Number of Days
+                    </label>
+
+                    <input
+                        type="text"
+                        id="numberOfDays"
+                        readonly
+                        placeholder="Automatically calculated">
+
+                </div>
+
+
+                <div class="form-group full">
+
+                    <label>
+                        Reason
+                    </label>
+
+                    <textarea
+                        id="reason"
+                        placeholder="Enter reason for leave"
+                        required></textarea>
+
+                </div>
+
             </div>
 
-            <div class="form-group">
-                <label>From Date</label>
-                <input type="date" id="fromDate" required>
-            </div>
 
-            <div class="form-group">
-                <label>To Date</label>
-                <input type="date" id="toDate" required>
-            </div>
-
-            <div class="form-group">
-                <label>Reason</label>
-                <textarea id="reason" placeholder="Enter reason..." required></textarea>
-            </div>
-
-            <button class="btn" type="submit">
+            <button type="submit">
                 Apply Leave
             </button>
 
         </form>
 
-        <div id="message" class="message"></div>
+
+        <div
+            id="message"
+            class="message">
+        </div>
 
     </div>
 
-    <div class="table-box">
 
-        <h3>My Leave Applications</h3>
+    <!-- MY APPLICATIONS -->
 
-        <br>
+    <div class="card">
 
-        <table>
-            <thead>
-                <tr>
-                    <th>Type</th>
-                    <th>From</th>
-                    <th>To</th>
-                    <th>Days</th>
-                    <th>Status</th>
-                    <th>Reason</th>
-                </tr>
-            </thead>
+        <h3>
+            My Leave Applications
+        </h3>
 
-            <tbody id="leaveTable">
-                <tr>
-                    <td colspan="6">Loading...</td>
-                </tr>
-            </tbody>
+        <div class="table-container">
 
-        </table>
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>Leave Type</th>
+                        <th>From</th>
+                        <th>To</th>
+                        <th>Days</th>
+                        <th>Status</th>
+                        <th>Reason</th>
+                        <th>Applied On</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody id="leaveTable">
+
+                    <tr>
+                        <td colspan="7">
+                            Loading...
+                        </td>
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
 
     </div>
 
 </div>
 
+
 <script type="module">
 
-import {
-    initializeApp
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { db } from "./firebase-config.js";
 
 import {
-    getAuth,
-    onAuthStateChanged
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-
-import {
-    getFirestore,
     collection,
     addDoc,
     getDocs,
     query,
     where,
-    orderBy,
     serverTimestamp
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+}
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 
-const firebaseConfig = {
-   apiKey: "AIzaSyAIv3091VM-gkmdwEAn7OhXWd9Cm2zh2bo",
-  authDomain: "maasc-2026.firebaseapp.com",
-  projectId: "maasc-2026",
-  storageBucket: "maasc-2026.appspot.com",
-  messagingSenderId: "585813001586",
-  appId: "1:585813001586:web:664e0e90ff0725d2e849eb"
-};
+/* =========================================
+   EXISTING ERP LOGIN SYSTEM
+========================================= */
+
+const staffId =
+    sessionStorage.getItem("staffId");
+
+const staffName =
+    sessionStorage.getItem("staffName");
+
+const department =
+    sessionStorage.getItem("department");
 
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
+if(!staffId){
 
-let currentUser = null;
-let currentStaff = null;
+    alert("Please Login");
 
+    window.location.href="login.html";
 
-function daysBetween(from,to){
-
-    const start = new Date(from + "T00:00:00");
-    const end = new Date(to + "T00:00:00");
-
-    if(end < start) return 0;
-
-    return Math.floor(
-        (end-start)/(1000*60*60*24)
-    ) + 1;
 }
 
+
+/* =========================================
+   DISPLAY LOGIN DETAILS
+========================================= */
+
+document.getElementById("staffId").textContent =
+    staffId || "";
+
+document.getElementById("staffName").textContent =
+    staffName || "";
+
+document.getElementById("department").textContent =
+    department || "";
+
+
+/* =========================================
+   CURRENT MONTH
+========================================= */
+
+const today = new Date();
+
+const currentMonth =
+    today.getFullYear() +
+    "-" +
+    String(today.getMonth()+1).padStart(2,"0");
+
+document.getElementById("currentMonth").textContent =
+    currentMonth;
+
+
+/* =========================================
+   DATE CALCULATION
+========================================= */
+
+function calculateDays(){
+
+    const from =
+        document.getElementById("fromDate").value;
+
+    const to =
+        document.getElementById("toDate").value;
+
+    if(!from || !to){
+
+        document.getElementById("numberOfDays").value="";
+
+        return 0;
+
+    }
+
+    const start =
+        new Date(from + "T00:00:00");
+
+    const end =
+        new Date(to + "T00:00:00");
+
+    if(end < start){
+
+        document.getElementById("numberOfDays").value="";
+
+        return 0;
+
+    }
+
+    const days =
+        Math.floor(
+            (end-start) /
+            (1000*60*60*24)
+        ) + 1;
+
+    document.getElementById("numberOfDays").value =
+        days;
+
+    return days;
+
+}
+
+
+document
+.getElementById("fromDate")
+.addEventListener("change",calculateDays);
+
+document
+.getElementById("toDate")
+.addEventListener("change",calculateDays);
+
+
+/* =========================================
+   MESSAGE
+========================================= */
 
 function showMessage(text,type){
 
-    const box = document.getElementById("message");
+    const box =
+        document.getElementById("message");
 
     box.textContent = text;
-    box.className = "message " + type;
+
+    box.className =
+        "message " + type;
+
     box.style.display = "block";
+
 }
 
 
-async function loadStaff(){
+/* =========================================
+   GET MONTH USED BALANCE
+========================================= */
 
-    if(!currentUser) return;
+async function getMonthlyUsage(){
 
-    let staff = null;
-
-    /*
-       First try UID.
-    */
-
-    const uidQuery = query(
-        collection(db,"staff"),
-        where("uid","==",currentUser.uid)
-    );
-
-    const uidSnap = await getDocs(uidQuery);
-
-    if(!uidSnap.empty){
-
-        staff = {
-            id:uidSnap.docs[0].id,
-            ...uidSnap.docs[0].data()
-        };
-
-    }else{
-
-        /*
-           Fallback to email.
-        */
-
-        const emailQuery = query(
-            collection(db,"staff"),
-            where("email","==",currentUser.email)
-        );
-
-        const emailSnap = await getDocs(emailQuery);
-
-        if(!emailSnap.empty){
-
-            staff = {
-                id:emailSnap.docs[0].id,
-                ...emailSnap.docs[0].data()
-            };
-
-        }
-
-    }
-
-    if(!staff){
-
-        showMessage(
-            "Staff profile not found.",
-            "error"
-        );
-
-        return;
-    }
-
-    currentStaff = staff;
-
-    const name =
-        staff.name ||
-        staff.staffName ||
-        staff.displayName ||
-        currentUser.email;
-
-    const staffId =
-        staff.staffId ||
-        staff.id ||
-        "";
-
-    const department =
-        staff.department ||
-        staff.dep ||
-        "";
-
-    document.getElementById("staffInfo").textContent =
-        `${name} | ${staffId} | ${department}`;
-
-    await loadBalance();
-    await loadLeaves();
-}
-
-
-async function loadBalance(){
-
-    if(!currentStaff) return;
-
-    const now = new Date();
-
-    const month =
-        now.getFullYear() +
-        "-" +
-        String(now.getMonth()+1).padStart(2,"0");
+    const result = {
+        casual:0,
+        sick:0
+    };
 
     const q = query(
+
         collection(db,"leave_requests"),
-        where("applicantUid","==",currentUser.uid),
-        where("month","==",month)
+
+        where(
+            "applicantUid",
+            "==",
+            staffId
+        ),
+
+        where(
+            "month",
+            "==",
+            currentMonth
+        )
+
     );
 
-    const snap = await getDocs(q);
+    const snap =
+        await getDocs(q);
 
-    let clUsed = 0;
-    let slUsed = 0;
 
     snap.forEach(doc => {
 
         const data = doc.data();
 
         /*
-           Pending and approved leaves are counted
-           to prevent multiple applications exceeding
-           the monthly balance.
+           Rejected leaves do not consume balance.
         */
 
         if(
-            data.status !== "REJECTED" &&
-            data.status !== "CANCELLED"
+            data.status === "REJECTED_BY_HEAD" ||
+            data.status === "REJECTED_BY_HR" ||
+            data.status === "CANCELLED"
         ){
 
-            if(data.leaveType === "CASUAL"){
-                clUsed += Number(data.days || 0);
-            }
+            return;
 
-            if(data.leaveType === "SICK"){
-                slUsed += Number(data.days || 0);
-            }
+        }
+
+
+        if(data.leaveType === "CASUAL"){
+
+            result.casual +=
+                Number(data.days || 0);
+
+        }
+
+
+        if(data.leaveType === "SICK"){
+
+            result.sick +=
+                Number(data.days || 0);
 
         }
 
     });
 
-    document.getElementById("clBalance").textContent =
-        Math.max(0,11-clUsed);
 
-    document.getElementById("slBalance").textContent =
-        Math.max(0,3-slUsed);
+    return result;
+
 }
 
+
+/* =========================================
+   LOAD BALANCE
+========================================= */
+
+async function loadBalance(){
+
+    try{
+
+        const usage =
+            await getMonthlyUsage();
+
+
+        document.getElementById("clBalance")
+        .textContent =
+            Math.max(
+                0,
+                11 - usage.casual
+            );
+
+
+        document.getElementById("slBalance")
+        .textContent =
+            Math.max(
+                0,
+                3 - usage.sick
+            );
+
+
+    }catch(error){
+
+        console.error(
+            "Balance error:",
+            error
+        );
+
+    }
+
+}
+
+
+/* =========================================
+   LOAD MY LEAVES
+========================================= */
 
 async function loadLeaves(){
 
@@ -476,264 +727,435 @@ async function loadLeaves(){
         document.getElementById("leaveTable");
 
     table.innerHTML =
-        `<tr><td colspan="6">Loading...</td></tr>`;
+        `<tr>
+            <td colspan="7">
+                Loading...
+            </td>
+        </tr>`;
 
-    const q = query(
-        collection(db,"leave_requests"),
-        where("applicantUid","==",currentUser.uid)
-    );
 
-    const snap = await getDocs(q);
+    try{
 
-    if(snap.empty){
+        const q = query(
 
-        table.innerHTML =
-            `<tr><td colspan="6">No leave applications</td></tr>`;
+            collection(db,"leave_requests"),
 
-        return;
-    }
+            where(
+                "applicantUid",
+                "==",
+                staffId
+            )
 
-    const rows = [];
+        );
 
-    snap.forEach(doc => {
 
-        const d = doc.data();
+        const snap =
+            await getDocs(q);
 
-        rows.push({
-            ...d,
-            id:doc.id
+
+        const records=[];
+
+
+        snap.forEach(doc => {
+
+            records.push({
+                id:doc.id,
+                ...doc.data()
+            });
+
         });
 
-    });
 
-    rows.sort(
-        (a,b) =>
-        String(b.createdAt?.seconds || 0)
-        .localeCompare(
-            String(a.createdAt?.seconds || 0)
-        )
-    );
+        records.sort((a,b) =>
+            String(
+                b.fromDate || ""
+            ).localeCompare(
+                String(
+                    a.fromDate || ""
+                )
+            )
+        );
 
-    table.innerHTML = "";
 
-    rows.forEach(d => {
+        table.innerHTML="";
 
-        const tr = document.createElement("tr");
 
-        tr.innerHTML = `
-            <td>${d.leaveType || ""}</td>
-            <td>${d.fromDate || ""}</td>
-            <td>${d.toDate || ""}</td>
-            <td>${d.days || ""}</td>
-            <td class="status">${d.status || ""}</td>
-            <td>${d.reason || ""}</td>
-        `;
+        if(records.length === 0){
 
-        table.appendChild(tr);
+            table.innerHTML =
+                `<tr>
+                    <td colspan="7">
+                        No leave applications found.
+                    </td>
+                </tr>`;
 
-    });
+            return;
+
+        }
+
+
+        records.forEach(data => {
+
+            let statusClass="";
+
+            if(
+                String(data.status || "")
+                .includes("PENDING")
+            ){
+
+                statusClass="pending";
+
+            }
+
+            if(
+                String(data.status || "")
+                .includes("APPROVED")
+            ){
+
+                statusClass="approved";
+
+            }
+
+            if(
+                String(data.status || "")
+                .includes("REJECTED")
+            ){
+
+                statusClass="rejected";
+
+            }
+
+
+            let appliedOn="";
+
+            if(
+                data.createdAt &&
+                data.createdAt.toDate
+            ){
+
+                appliedOn =
+                    data.createdAt
+                    .toDate()
+                    .toLocaleDateString();
+
+            }
+
+
+            const row =
+                document.createElement("tr");
+
+
+            row.innerHTML = `
+
+                <td>
+                    ${data.leaveType || ""}
+                </td>
+
+                <td>
+                    ${data.fromDate || ""}
+                </td>
+
+                <td>
+                    ${data.toDate || ""}
+                </td>
+
+                <td>
+                    ${data.days || ""}
+                </td>
+
+                <td class="${statusClass}">
+                    ${data.status || ""}
+                </td>
+
+                <td>
+                    ${data.reason || ""}
+                </td>
+
+                <td>
+                    ${appliedOn}
+                </td>
+
+            `;
+
+
+            table.appendChild(row);
+
+        });
+
+
+    }catch(error){
+
+        console.error(error);
+
+        table.innerHTML =
+            `<tr>
+                <td colspan="7">
+                    Unable to load leave applications.
+                </td>
+            </tr>`;
+
+    }
 
 }
 
 
+/* =========================================
+   APPLY LEAVE
+========================================= */
+
 document
 .getElementById("leaveForm")
-.addEventListener("submit",async e => {
+.addEventListener(
+    "submit",
+    async function(e){
 
-    e.preventDefault();
+        e.preventDefault();
 
-    if(!currentUser || !currentStaff){
 
-        showMessage(
-            "Staff details are not loaded.",
-            "error"
-        );
+        const leaveType =
+            document
+            .getElementById("leaveType")
+            .value;
 
-        return;
-    }
 
-    const leaveType =
-        document.getElementById("leaveType").value;
+        const fromDate =
+            document
+            .getElementById("fromDate")
+            .value;
 
-    const fromDate =
-        document.getElementById("fromDate").value;
 
-    const toDate =
-        document.getElementById("toDate").value;
+        const toDate =
+            document
+            .getElementById("toDate")
+            .value;
 
-    const reason =
-        document.getElementById("reason").value.trim();
 
-    const days =
-        daysBetween(fromDate,toDate);
+        const reason =
+            document
+            .getElementById("reason")
+            .value
+            .trim();
 
-    if(days <= 0){
 
-        showMessage(
-            "Invalid date selection.",
-            "error"
-        );
+        const days =
+            calculateDays();
 
-        return;
-    }
 
-    /*
-       This portal intentionally prevents a leave
-       application from crossing months.
-    */
+        if(!leaveType){
 
-    const fromMonth = fromDate.substring(0,7);
-    const toMonth = toDate.substring(0,7);
+            showMessage(
+                "Please select leave type.",
+                "error"
+            );
 
-    if(fromMonth !== toMonth){
-
-        showMessage(
-            "Leave application cannot cross different months. Apply separately for each month.",
-            "error"
-        );
-
-        return;
-    }
-
-    const q = query(
-        collection(db,"leave_requests"),
-        where("applicantUid","==",currentUser.uid),
-        where("month","==",fromMonth)
-    );
-
-    const snap = await getDocs(q);
-
-    let usedCL = 0;
-    let usedSL = 0;
-
-    snap.forEach(doc => {
-
-        const d = doc.data();
-
-        if(
-            d.status !== "REJECTED" &&
-            d.status !== "CANCELLED"
-        ){
-
-            if(d.leaveType === "CASUAL"){
-                usedCL += Number(d.days || 0);
-            }
-
-            if(d.leaveType === "SICK"){
-                usedSL += Number(d.days || 0);
-            }
+            return;
 
         }
 
-    });
 
-    const limit =
-        leaveType === "CASUAL" ? 11 : 3;
+        if(days <= 0){
 
-    const used =
-        leaveType === "CASUAL" ? usedCL : usedSL;
+            showMessage(
+                "Please select valid dates.",
+                "error"
+            );
 
-    if(used + days > limit){
-
-        showMessage(
-            `${leaveType === "CASUAL" ? "Casual" : "Sick"} Leave balance exceeded. Available: ${Math.max(0,limit-used)} day(s).`,
-            "error"
-        );
-
-        return;
-    }
-
-    const name =
-        currentStaff.name ||
-        currentStaff.staffName ||
-        currentUser.email;
-
-    const staffId =
-        currentStaff.staffId ||
-        currentStaff.id ||
-        "";
-
-    const department =
-        currentStaff.department ||
-        currentStaff.dep ||
-        "";
-
-    await addDoc(
-        collection(db,"leave_requests"),
-        {
-
-            applicantUid:currentUser.uid,
-
-            applicantEmail:
-                currentUser.email || "",
-
-            applicantName:name,
-
-            staffId:staffId,
-
-            department:department,
-
-            applicantRole:"STAFF",
-
-            leaveType:leaveType,
-
-            fromDate:fromDate,
-
-            toDate:toDate,
-
-            days:days,
-
-            month:fromMonth,
-
-            reason:reason,
-
-            status:"PENDING_HEAD",
-
-            headAction:"",
-            headActionBy:"",
-            headActionAt:null,
-
-            hrAction:"",
-            hrActionBy:"",
-            hrActionAt:null,
-
-            createdAt:serverTimestamp()
+            return;
 
         }
-    );
-
-    showMessage(
-        "Leave applied successfully. It has been sent to your Department Head.",
-        "success"
-    );
-
-    document.getElementById("leaveForm").reset();
-
-    await loadBalance();
-    await loadLeaves();
-
-});
 
 
-onAuthStateChanged(auth,async user => {
+        /*
+           Leave cannot cross months.
+        */
 
-    if(!user){
+        const fromMonth =
+            fromDate.substring(0,7);
 
-        showMessage(
-            "Please login first.",
-            "error"
-        );
+        const toMonth =
+            toDate.substring(0,7);
 
-        return;
+
+        if(fromMonth !== toMonth){
+
+            showMessage(
+                "Leave cannot cross two different months. Please apply separately for each month.",
+                "error"
+            );
+
+            return;
+
+        }
+
+
+        const usage =
+            await getMonthlyUsage();
+
+
+        let used=0;
+        let limit=0;
+
+
+        if(leaveType === "CASUAL"){
+
+            used=usage.casual;
+            limit=11;
+
+        }
+
+
+        if(leaveType === "SICK"){
+
+            used=usage.sick;
+            limit=3;
+
+        }
+
+
+        const available =
+            Math.max(
+                0,
+                limit-used
+            );
+
+
+        if(days > available){
+
+            showMessage(
+                `You have only ${available} day(s) available for this leave type this month.`,
+                "error"
+            );
+
+            return;
+
+        }
+
+
+        try{
+
+            await addDoc(
+                collection(
+                    db,
+                    "leave_requests"
+                ),
+                {
+
+                    applicantUid:
+                        staffId,
+
+                    applicantName:
+                        staffName || "",
+
+                    staffId:
+                        staffId,
+
+                    department:
+                        department || "",
+
+                    applicantRole:
+                        "STAFF",
+
+                    applicantEmail:
+                        "",
+
+                    leaveType:
+                        leaveType,
+
+                    fromDate:
+                        fromDate,
+
+                    toDate:
+                        toDate,
+
+                    days:
+                        days,
+
+                    month:
+                        fromMonth,
+
+                    reason:
+                        reason,
+
+                    /*
+                       Staff leave first goes
+                       to Department Head.
+                    */
+
+                    status:
+                        "PENDING_HEAD",
+
+                    headAction:
+                        "",
+
+                    headActionBy:
+                        "",
+
+                    headActionAt:
+                        null,
+
+                    hrAction:
+                        "",
+
+                    hrActionBy:
+                        "",
+
+                    hrActionAt:
+                        null,
+
+                    createdAt:
+                        serverTimestamp()
+
+                }
+            );
+
+
+            showMessage(
+                "Leave applied successfully. It has been sent to your Department Head for approval.",
+                "success"
+            );
+
+
+            document
+            .getElementById("leaveForm")
+            .reset();
+
+
+            document
+            .getElementById("numberOfDays")
+            .value="";
+
+
+            await loadBalance();
+
+            await loadLeaves();
+
+
+        }catch(error){
+
+            console.error(error);
+
+            showMessage(
+                "Unable to apply leave: " +
+                error.message,
+                "error"
+            );
+
+        }
+
     }
+);
 
-    currentUser = user;
 
-    await loadStaff();
+/* =========================================
+   INITIAL LOAD
+========================================= */
 
-});
+loadBalance();
+
+loadLeaves();
 
 </script>
 
 </body>
+
 </html>
