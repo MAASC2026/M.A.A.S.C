@@ -5,11 +5,10 @@
 
 <meta charset="UTF-8">
 
-<meta
-name="viewport"
+<meta name="viewport"
 content="width=device-width, initial-scale=1.0">
 
-<title>Leave Reports - HR</title>
+<title>Leave Report - HR</title>
 
 <style>
 
@@ -22,64 +21,112 @@ content="width=device-width, initial-scale=1.0">
 
 body{
     background:#f4f6f9;
-}
-
-.container{
-    max-width:1600px;
-    margin:30px auto;
-    padding:20px;
+    min-height:100vh;
 }
 
 .header{
+    height:70px;
     background:#500454;
     color:white;
-    padding:22px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 25px;
+    box-shadow:0 2px 10px rgba(0,0,0,.25);
+}
+
+.header h2{
+    font-size:23px;
+}
+
+.user{
+    font-size:15px;
+}
+
+.container{
+    max-width:1450px;
+    margin:30px auto;
+    padding:0 20px;
+}
+
+.card{
+    background:white;
     border-radius:12px;
+    padding:25px;
+    margin-bottom:25px;
+    box-shadow:0 3px 12px rgba(0,0,0,.12);
+}
+
+.card h2{
+    color:#500454;
     margin-bottom:20px;
 }
 
-.summary{
+.details-grid{
     display:grid;
     grid-template-columns:
-        repeat(4,1fr);
-    gap:18px;
-    margin-bottom:20px;
+    repeat(auto-fit,minmax(220px,1fr));
+    gap:15px;
 }
 
-.summary-card{
+.detail-box{
+    background:#f8f8f8;
+    border:1px solid #e2e2e2;
+    border-radius:8px;
+    padding:15px;
+}
+
+.detail-box label{
+    display:block;
+    font-size:13px;
+    color:#777;
+    margin-bottom:6px;
+}
+
+.detail-box strong{
+    font-size:16px;
+    color:#333;
+}
+
+.stats{
+    display:grid;
+    grid-template-columns:
+    repeat(auto-fit,minmax(190px,1fr));
+    gap:20px;
+}
+
+.stat{
     background:white;
+    border-radius:10px;
     padding:22px;
-    border-radius:12px;
-    box-shadow:0 3px 12px rgba(0,0,0,.12);
+    text-align:center;
+    border:1px solid #e5e5e5;
 }
 
-.summary-card h2{
+.stat h1{
+    font-size:35px;
     color:#500454;
-    margin-top:8px;
+    margin-bottom:7px;
 }
 
-.filter-card,
-.table-card{
-    background:white;
-    padding:22px;
-    border-radius:12px;
-    box-shadow:0 3px 12px rgba(0,0,0,.12);
-    margin-bottom:20px;
+.stat p{
+    font-weight:bold;
+    color:#555;
 }
 
 .filter-grid{
     display:grid;
     grid-template-columns:
-        repeat(4,1fr);
-    gap:18px;
+    repeat(auto-fit,minmax(210px,1fr));
+    gap:15px;
 }
 
-.form-group{
-    margin-bottom:10px;
+.filter-group{
+    display:flex;
+    flex-direction:column;
 }
 
-label{
-    display:block;
+.filter-group label{
     font-weight:bold;
     margin-bottom:7px;
 }
@@ -90,20 +137,34 @@ select{
     padding:11px;
     border:1px solid #ccc;
     border-radius:7px;
+    font-size:14px;
+    outline:none;
+}
+
+input:focus,
+select:focus{
+    border-color:#500454;
 }
 
 button{
-    margin-top:15px;
-    padding:12px 20px;
-    background:#500454;
-    color:white;
     border:none;
     border-radius:7px;
+    padding:11px 18px;
+    font-size:13px;
     font-weight:bold;
     cursor:pointer;
 }
 
-.table-container{
+.refresh-btn{
+    background:#500454;
+    color:white;
+}
+
+.refresh-btn:hover{
+    background:#6d0873;
+}
+
+.table-wrapper{
     overflow-x:auto;
 }
 
@@ -118,51 +179,107 @@ td{
     padding:12px;
     border-bottom:1px solid #eee;
     text-align:left;
+    vertical-align:middle;
 }
 
 th{
     background:#500454;
     color:white;
+    white-space:nowrap;
+}
+
+tbody tr:hover{
+    background:#fafafa;
+}
+
+.badge{
+    display:inline-block;
+    padding:6px 10px;
+    border-radius:15px;
+    font-size:12px;
+    font-weight:bold;
+    white-space:nowrap;
 }
 
 .pending{
-    color:#b45309;
-    font-weight:bold;
+    background:#fff3cd;
+    color:#856404;
 }
 
 .approved{
-    color:#15803d;
-    font-weight:bold;
+    background:#d4edda;
+    color:#155724;
 }
 
 .rejected{
-    color:#dc2626;
-    font-weight:bold;
+    background:#f8d7da;
+    color:#721c24;
+}
+
+.forwarded{
+    background:#d1ecf1;
+    color:#0c5460;
+}
+
+.head-leave{
+    background:#e2d9f3;
+    color:#4b287d;
 }
 
 .empty{
     text-align:center;
-    padding:25px;
-    color:#666;
+    padding:35px;
+    color:#777;
+    font-weight:bold;
 }
 
-@media(max-width:900px){
-
-    .summary{
-        grid-template-columns:1fr 1fr;
-    }
-
-    .filter-grid{
-        grid-template-columns:1fr 1fr;
-    }
-
+.loading{
+    text-align:center;
+    padding:35px;
+    color:#777;
 }
 
-@media(max-width:600px){
+#message{
+    display:none;
+    padding:14px;
+    margin-bottom:20px;
+    border-radius:7px;
+    font-weight:bold;
+}
 
-    .summary,
-    .filter-grid{
-        grid-template-columns:1fr;
+.section-title{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:15px;
+    margin-bottom:15px;
+}
+
+.section-title h2{
+    margin-bottom:0;
+}
+
+@media(max-width:700px){
+
+    .header{
+        padding:0 15px;
+    }
+
+    .header h2{
+        font-size:18px;
+    }
+
+    .header .user{
+        font-size:12px;
+    }
+
+    .container{
+        padding:0 10px;
+        margin-top:20px;
+    }
+
+    .card{
+        padding:18px;
     }
 
 }
@@ -173,134 +290,216 @@ th{
 
 <body>
 
-<div class="container">
 
+<!-- =================================
+     HEADER
+================================= -->
 
 <div class="header">
 
     <h2>
-        Leave Reports - HR
+        HR LEAVE REPORT
     </h2>
 
-    <p>
-        Staff and Head Staff Leave Report
-    </p>
+    <div class="user">
 
-</div>
+        Welcome,
 
-
-<div class="summary">
-
-    <div class="summary-card">
-
-        <p>
-            Total Records
-        </p>
-
-        <h2 id="total">
-            0
-        </h2>
-
-    </div>
-
-
-    <div class="summary-card">
-
-        <p>
-            Pending HR
-        </p>
-
-        <h2 id="pending">
-            0
-        </h2>
-
-    </div>
-
-
-    <div class="summary-card">
-
-        <p>
-            Approved
-        </p>
-
-        <h2 id="approved">
-            0
-        </h2>
-
-    </div>
-
-
-    <div class="summary-card">
-
-        <p>
-            Rejected
-        </p>
-
-        <h2 id="rejected">
-            0
-        </h2>
+        <span id="headerStaffName">
+            HR
+        </span>
 
     </div>
 
 </div>
 
 
-<div class="filter-card">
 
-    <h3>
-        Report Filters
-    </h3>
-
-    <br>
-
-    <div class="filter-grid">
+<div class="container">
 
 
-        <div class="form-group">
+<!-- =================================
+     HR DETAILS
+================================= -->
 
-            <label>
-                Department
-            </label>
+<div class="card">
 
-            <input
-                type="text"
-                id="department"
-                placeholder="Enter department">
+    <h2>
+        HR Details
+    </h2>
 
-        </div>
+    <div class="details-grid">
 
-
-        <div class="form-group">
+        <div class="detail-box">
 
             <label>
                 Staff ID
             </label>
 
-            <input
-                type="text"
-                id="staffId"
-                placeholder="Enter staff ID">
+            <strong id="staffId">
+                -
+            </strong>
 
         </div>
 
 
-        <div class="form-group">
+        <div class="detail-box">
+
+            <label>
+                Staff Name
+            </label>
+
+            <strong id="staffName">
+                -
+            </strong>
+
+        </div>
+
+
+        <div class="detail-box">
+
+            <label>
+                Department
+            </label>
+
+            <strong id="department">
+                -
+            </strong>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<!-- =================================
+     MESSAGE
+================================= -->
+
+<div id="message"></div>
+
+
+
+<!-- =================================
+     STATISTICS
+================================= -->
+
+<div class="card">
+
+    <h2>
+        Leave Summary
+    </h2>
+
+    <div class="stats">
+
+        <div class="stat">
+
+            <h1 id="totalCount">
+                0
+            </h1>
+
+            <p>
+                Total Leave Requests
+            </p>
+
+        </div>
+
+
+        <div class="stat">
+
+            <h1 id="pendingCount">
+                0
+            </h1>
+
+            <p>
+                Pending HR Approval
+            </p>
+
+        </div>
+
+
+        <div class="stat">
+
+            <h1 id="approvedCount">
+                0
+            </h1>
+
+            <p>
+                Approved
+            </p>
+
+        </div>
+
+
+        <div class="stat">
+
+            <h1 id="rejectedCount">
+                0
+            </h1>
+
+            <p>
+                Rejected
+            </p>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<!-- =================================
+     FILTER
+================================= -->
+
+<div class="card">
+
+    <h2>
+        Search / Filter
+    </h2>
+
+
+    <div class="filter-grid">
+
+
+        <div class="filter-group">
+
+            <label>
+                Department
+            </label>
+
+            <select id="departmentFilter">
+
+                <option value="ALL">
+                    All Departments
+                </option>
+
+            </select>
+
+        </div>
+
+
+
+        <div class="filter-group">
 
             <label>
                 Leave Type
             </label>
 
-            <select id="leaveType">
+            <select id="leaveTypeFilter">
 
-                <option value="">
-                    All
+                <option value="ALL">
+                    All Leave Types
                 </option>
 
-                <option value="CASUAL">
+                <option value="Casual Leave">
                     Casual Leave
                 </option>
 
-                <option value="SICK">
+                <option value="Sick Leave">
                     Sick Leave
                 </option>
 
@@ -309,24 +508,29 @@ th{
         </div>
 
 
-        <div class="form-group">
+
+        <div class="filter-group">
 
             <label>
-                Role
+                Status
             </label>
 
-            <select id="role">
+            <select id="statusFilter">
 
-                <option value="">
-                    All
+                <option value="ALL">
+                    All Status
                 </option>
 
-                <option value="STAFF">
-                    Staff / Worker
+                <option value="Pending HR Approval">
+                    Pending HR Approval
                 </option>
 
-                <option value="HEAD">
-                    Head Staff
+                <option value="Approved">
+                    Approved
+                </option>
+
+                <option value="Rejected">
+                    Rejected
                 </option>
 
             </select>
@@ -334,53 +538,55 @@ th{
         </div>
 
 
-        <div class="form-group">
+
+        <div class="filter-group">
 
             <label>
-                From Date
+                Staff Search
             </label>
 
             <input
-                type="date"
-                id="fromDate">
+                type="text"
+                id="staffSearch"
+                placeholder="Staff name or ID">
 
         </div>
 
-
-        <div class="form-group">
-
-            <label>
-                To Date
-            </label>
-
-            <input
-                type="date"
-                id="toDate">
-
-        </div>
 
     </div>
 
 
-    <button
-        onclick="loadReport()">
+    <br>
 
-        Generate Report
+
+    <button
+        class="refresh-btn"
+        onclick="loadLeaveReport()">
+
+        🔄 REFRESH REPORT
 
     </button>
 
 </div>
 
 
-<div class="table-card">
 
-    <h3>
-        Leave Records
-    </h3>
+<!-- =================================
+     REPORT
+================================= -->
 
-    <br>
+<div class="card">
 
-    <div class="table-container">
+    <div class="section-title">
+
+        <h2>
+            Leave Report
+        </h2>
+
+    </div>
+
+
+    <div class="table-wrapper">
 
         <table>
 
@@ -388,27 +594,71 @@ th{
 
                 <tr>
 
-                    <th>Applicant</th>
-                    <th>Staff ID</th>
-                    <th>Department</th>
-                    <th>Role</th>
-                    <th>Leave Type</th>
-                    <th>From</th>
-                    <th>To</th>
-                    <th>Days</th>
-                    <th>Status</th>
-                    <th>Reason</th>
+                    <th>
+                        Staff ID
+                    </th>
+
+                    <th>
+                        Staff Name
+                    </th>
+
+                    <th>
+                        Department
+                    </th>
+
+                    <th>
+                        Applicant
+                    </th>
+
+                    <th>
+                        Leave Type
+                    </th>
+
+                    <th>
+                        From
+                    </th>
+
+                    <th>
+                        To
+                    </th>
+
+                    <th>
+                        Days
+                    </th>
+
+                    <th>
+                        Reason
+                    </th>
+
+                    <th>
+                        Head Approval
+                    </th>
+
+                    <th>
+                        Applied Date
+                    </th>
+
+                    <th>
+                        Status
+                    </th>
 
                 </tr>
 
             </thead>
 
-            <tbody id="table">
+
+            <tbody id="leaveTable">
 
                 <tr>
-                    <td colspan="10">
-                        Loading...
+
+                    <td
+                        colspan="12"
+                        class="loading">
+
+                        Loading leave report...
+
                     </td>
+
                 </tr>
 
             </tbody>
@@ -419,426 +669,1391 @@ th{
 
 </div>
 
+
 </div>
+
 
 
 <script type="module">
 
-import { db } from "./firebase-config.js";
+
+/* =========================================
+   FIREBASE
+========================================= */
 
 import {
-    collection,
-    getDocs
+
+    initializeApp
+
 }
-from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+from
+"https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
 
-/* ======================================
-   HR REPORT
-====================================== */
+import {
 
-window.loadReport = async function(){
+    getFirestore,
+
+    collection,
+
+    getDocs,
+
+    query,
+
+    where
+
+}
+from
+"https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+
+
+/* =========================================
+   FIREBASE CONFIG
+========================================= */
+
+const firebaseConfig = {
+
+    apiKey:
+    "AIzaSyAIv3091VM-gkmdwEAn7OhXWd9Cm2zh2bo",
+
+    authDomain:
+    "maasc-2026.firebaseapp.com",
+
+    projectId:
+    "maasc-2026",
+
+    storageBucket:
+    "maasc-2026.appspot.com",
+
+    messagingSenderId:
+    "585813001586",
+
+    appId:
+    "1:585813001586:web:664e0e90ff0725d2e849eb"
+
+};
+
+
+const app =
+initializeApp(
+    firebaseConfig
+);
+
+
+const db =
+getFirestore(app);
+
+
+
+/* =========================================
+   SESSION
+========================================= */
+
+const currentStaffId =
+sessionStorage.getItem(
+    "staffId"
+);
+
+
+const currentStaffName =
+sessionStorage.getItem(
+    "staffName"
+);
+
+
+const currentDepartment =
+sessionStorage.getItem(
+    "department"
+);
+
+
+
+/*
+ * Same login/session system
+ * as your dashboard.
+ */
+
+if(
+    !currentStaffId ||
+    !currentStaffName
+){
+
+    alert(
+        "Staff login session not found. Please login again."
+    );
+
+    window.location.href =
+        "login.html";
+
+}
+
+
+
+/* =========================================
+   DISPLAY
+========================================= */
+
+document
+.getElementById(
+    "headerStaffName"
+)
+.textContent =
+currentStaffName || "HR";
+
+
+document
+.getElementById(
+    "staffId"
+)
+.textContent =
+currentStaffId || "-";
+
+
+document
+.getElementById(
+    "staffName"
+)
+.textContent =
+currentStaffName || "-";
+
+
+document
+.getElementById(
+    "department"
+)
+.textContent =
+currentDepartment || "-";
+
+
+
+/* =========================================
+   DATA
+========================================= */
+
+let allLeaveRequests = [];
+
+
+
+/* =========================================
+   LOAD REPORT
+========================================= */
+
+window.loadLeaveReport =
+async function(){
 
     const table =
-        document.getElementById("table");
+    document.getElementById(
+        "leaveTable"
+    );
 
 
-    table.innerHTML =
-        `<tr>
-            <td colspan="10">
-                Loading...
+    table.innerHTML = `
+
+        <tr>
+
+            <td
+                colspan="12"
+                class="loading">
+
+                Loading leave report...
+
             </td>
-        </tr>`;
+
+        </tr>
+
+    `;
 
 
     try{
 
-        const snap =
-            await getDocs(
-                collection(
-                    db,
-                    "leave_requests"
-                )
-            );
+        /*
+         * Load leave requests.
+         *
+         * We use separate simple queries
+         * to avoid composite-index problems.
+         */
+
+        const collectionRef =
+        collection(
+            db,
+            "leaveRequests"
+        );
 
 
-        const records=[];
+        const approvedHeadQuery =
+        query(
 
+            collectionRef,
 
-        snap.forEach(doc=>{
-
-            const data =
-                doc.data();
-
-
-            /*
-               HR report should contain:
-
-               APPROVED_BY_HEAD
-               PENDING_HR
-               APPROVED_BY_HR
-               REJECTED_BY_HR
-               REJECTED_BY_HEAD
-            */
-
-            const validStatus = [
-
-                "APPROVED_BY_HEAD",
-                "PENDING_HR",
-                "APPROVED_BY_HR",
-                "REJECTED_BY_HR",
-                "REJECTED_BY_HEAD"
-
-            ];
-
-
-            if(
-                !validStatus.includes(
-                    data.status
-                )
-            ){
-
-                return;
-
-            }
-
-
-            /* FILTERS */
-
-            const department =
-                document
-                .getElementById(
-                    "department"
-                )
-                .value
-                .trim()
-                .toUpperCase();
-
-
-            const staffId =
-                document
-                .getElementById(
-                    "staffId"
-                )
-                .value
-                .trim()
-                .toUpperCase();
-
-
-            const leaveType =
-                document
-                .getElementById(
-                    "leaveType"
-                )
-                .value;
-
-
-            const role =
-                document
-                .getElementById(
-                    "role"
-                )
-                .value;
-
-
-            const fromDate =
-                document
-                .getElementById(
-                    "fromDate"
-                )
-                .value;
-
-
-            const toDate =
-                document
-                .getElementById(
-                    "toDate"
-                )
-                .value;
-
-
-            if(
-                department &&
-                String(
-                    data.department || ""
-                )
-                .toUpperCase() !==
-                department
-            ){
-
-                return;
-
-            }
-
-
-            if(
-                staffId &&
-                String(
-                    data.staffId || ""
-                )
-                .toUpperCase() !==
-                staffId
-            ){
-
-                return;
-
-            }
-
-
-            if(
-                leaveType &&
-                data.leaveType !==
-                leaveType
-            ){
-
-                return;
-
-            }
-
-
-            if(
-                role &&
-                data.applicantRole !==
-                role
-            ){
-
-                return;
-
-            }
-
-
-            if(
-                fromDate &&
-                String(
-                    data.fromDate || ""
-                ) < fromDate
-            ){
-
-                return;
-
-            }
-
-
-            if(
-                toDate &&
-                String(
-                    data.toDate || ""
-                ) > toDate
-            ){
-
-                return;
-
-            }
-
-
-            records.push(data);
-
-        });
-
-
-        records.sort((a,b)=>
-
-            String(
-                b.fromDate || ""
-            )
-            .localeCompare(
-                String(
-                    a.fromDate || ""
-                )
+            where(
+                "status",
+                "==",
+                "Pending HR Approval"
             )
 
         );
 
 
-        table.innerHTML="";
+        const approvedQuery =
+        query(
+
+            collectionRef,
+
+            where(
+                "status",
+                "==",
+                "Approved"
+            )
+
+        );
 
 
-        let pending=0;
-        let approved=0;
-        let rejected=0;
+        const rejectedQuery =
+        query(
+
+            collectionRef,
+
+            where(
+                "status",
+                "==",
+                "Rejected"
+            )
+
+        );
 
 
-        records.forEach(data=>{
+        const [
+            pendingSnap,
+            approvedSnap,
+            rejectedSnap
+        ] =
+        await Promise.all([
+
+            getDocs(
+                approvedHeadQuery
+            ),
+
+            getDocs(
+                approvedQuery
+            ),
+
+            getDocs(
+                rejectedQuery
+            )
+
+        ]);
 
 
-            if(
-                data.status ===
-                "PENDING_HR"
-            ){
 
-                pending++;
-
-            }
+        allLeaveRequests = [];
 
 
-            if(
-                data.status ===
-                "APPROVED_BY_HEAD" ||
-                data.status ===
-                "APPROVED_BY_HR"
-            ){
 
-                approved++;
+        /* ==============================
+           PENDING HR
+        ============================== */
 
-            }
+        pendingSnap.forEach(
+            item => {
 
-
-            if(
-                data.status ===
-                "REJECTED_BY_HEAD" ||
-                data.status ===
-                "REJECTED_BY_HR"
-            ){
-
-                rejected++;
-
-            }
+                const data =
+                item.data();
 
 
-            let statusClass="";
+                allLeaveRequests.push({
 
+                    id:
+                    item.id,
 
-            if(
-                data.status.includes(
-                    "PENDING"
-                )
-            ){
+                    ...data
 
-                statusClass="pending";
-
-            }
-
-
-            if(
-                data.status.includes(
-                    "APPROVED"
-                )
-            ){
-
-                statusClass="approved";
-
-            }
-
-
-            if(
-                data.status.includes(
-                    "REJECTED"
-                )
-            ){
-
-                statusClass="rejected";
+                });
 
             }
+        );
 
 
-            const row =
-                document.createElement("tr");
+
+        /* ==============================
+           APPROVED
+        ============================== */
+
+        approvedSnap.forEach(
+            item => {
+
+                const data =
+                item.data();
 
 
-            row.innerHTML=`
+                /*
+                 * Avoid duplicate document.
+                 */
 
-                <td>
-                    ${data.applicantName || ""}
-                </td>
+                if(
+                    !allLeaveRequests.some(
+                        x =>
+                        x.id === item.id
+                    )
+                ){
 
-                <td>
-                    ${data.staffId || ""}
-                </td>
+                    allLeaveRequests.push({
 
-                <td>
-                    ${data.department || ""}
-                </td>
+                        id:
+                        item.id,
 
-                <td>
-                    ${data.applicantRole || ""}
-                </td>
+                        ...data
 
-                <td>
-                    ${data.leaveType || ""}
-                </td>
+                    });
 
-                <td>
-                    ${data.fromDate || ""}
-                </td>
+                }
 
-                <td>
-                    ${data.toDate || ""}
-                </td>
-
-                <td>
-                    ${data.days || ""}
-                </td>
-
-                <td class="${statusClass}">
-                    ${data.status || ""}
-                </td>
-
-                <td>
-                    ${data.reason || ""}
-                </td>
-
-            `;
+            }
+        );
 
 
-            table.appendChild(row);
 
-        });
+        /* ==============================
+           REJECTED
+        ============================== */
 
+        rejectedSnap.forEach(
+            item => {
 
-        if(records.length===0){
-
-            table.innerHTML =
-                `<tr>
-                    <td
-                        colspan="10"
-                        class="empty">
-                        No leave records found.
-                    </td>
-                </tr>`;
-
-        }
+                const data =
+                item.data();
 
 
-        document.getElementById("total")
-        .textContent =
-            records.length;
+                if(
+                    !allLeaveRequests.some(
+                        x =>
+                        x.id === item.id
+                    )
+                ){
+
+                    allLeaveRequests.push({
+
+                        id:
+                        item.id,
+
+                        ...data
+
+                    });
+
+                }
+
+            }
+        );
 
 
-        document.getElementById("pending")
-        .textContent =
-            pending;
+
+        /*
+         * Newest first.
+         */
+
+        allLeaveRequests.sort(
+            (a,b) => {
+
+                const aTime =
+                a.createdAt?.seconds ||
+                0;
 
 
-        document.getElementById("approved")
-        .textContent =
-            approved;
+                const bTime =
+                b.createdAt?.seconds ||
+                0;
 
 
-        document.getElementById("rejected")
-        .textContent =
-            rejected;
+                return (
+                    Number(bTime) -
+                    Number(aTime)
+                );
+
+            }
+        );
+
+
+
+        /*
+         * Create department filter.
+         */
+
+        createDepartmentFilter();
+
+
+
+        /*
+         * Update statistics.
+         */
+
+        updateStatistics();
+
+
+
+        /*
+         * Render.
+         */
+
+        renderReport();
 
 
     }catch(error){
 
-        console.error(error);
+        console.error(
+            "LEAVE REPORT ERROR:",
+            error
+        );
 
-        table.innerHTML =
-            `<tr>
+
+        table.innerHTML = `
+
+            <tr>
+
                 <td
-                    colspan="10"
+                    colspan="12"
                     class="empty">
-                    Error loading report:
-                    ${error.message}
+
+                    Unable to load leave report.
+
                 </td>
-            </tr>`;
+
+            </tr>
+
+        `;
+
+
+        showMessage(
+
+            "Unable to load leave report. Check Firestore permissions.",
+
+            "error"
+
+        );
 
     }
 
 };
 
 
-loadReport();
+
+/* =========================================
+   DEPARTMENT FILTER
+========================================= */
+
+function createDepartmentFilter(){
+
+    const select =
+    document.getElementById(
+        "departmentFilter"
+    );
+
+
+    const departments =
+    new Set();
+
+
+    allLeaveRequests.forEach(
+        leave => {
+
+            if(
+                leave.department
+            ){
+
+                departments.add(
+                    String(
+                        leave.department
+                    ).trim()
+                );
+
+            }
+
+        }
+    );
+
+
+    select.innerHTML = `
+
+        <option value="ALL">
+            All Departments
+        </option>
+
+    `;
+
+
+    Array.from(
+        departments
+    )
+    .sort()
+    .forEach(
+        department => {
+
+            const option =
+            document.createElement(
+                "option"
+            );
+
+
+            option.value =
+                department;
+
+
+            option.textContent =
+                department;
+
+
+            select.appendChild(
+                option
+            );
+
+        }
+    );
+
+}
+
+
+
+/* =========================================
+   STATISTICS
+========================================= */
+
+function updateStatistics(){
+
+    const total =
+    allLeaveRequests.length;
+
+
+    const pending =
+    allLeaveRequests.filter(
+        leave =>
+        leave.status ===
+        "Pending HR Approval"
+    ).length;
+
+
+    const approved =
+    allLeaveRequests.filter(
+        leave =>
+        leave.status ===
+        "Approved"
+    ).length;
+
+
+    const rejected =
+    allLeaveRequests.filter(
+        leave =>
+        leave.status ===
+        "Rejected"
+    ).length;
+
+
+    document
+    .getElementById(
+        "totalCount"
+    )
+    .textContent =
+    total;
+
+
+    document
+    .getElementById(
+        "pendingCount"
+    )
+    .textContent =
+    pending;
+
+
+    document
+    .getElementById(
+        "approvedCount"
+    )
+    .textContent =
+    approved;
+
+
+    document
+    .getElementById(
+        "rejectedCount"
+    )
+    .textContent =
+    rejected;
+
+}
+
+
+
+/* =========================================
+   RENDER
+========================================= */
+
+function renderReport(){
+
+    const table =
+    document.getElementById(
+        "leaveTable"
+    );
+
+
+    const department =
+    document
+    .getElementById(
+        "departmentFilter"
+    )
+    .value;
+
+
+    const leaveType =
+    document
+    .getElementById(
+        "leaveTypeFilter"
+    )
+    .value;
+
+
+    const status =
+    document
+    .getElementById(
+        "statusFilter"
+    )
+    .value;
+
+
+    const search =
+    document
+    .getElementById(
+        "staffSearch"
+    )
+    .value
+    .trim()
+    .toLowerCase();
+
+
+
+    let filtered =
+    allLeaveRequests.filter(
+        leave => {
+
+
+            /* ==========================
+               DEPARTMENT
+            ========================== */
+
+            if(
+                department !==
+                "ALL"
+            ){
+
+                if(
+                    String(
+                        leave.department ||
+                        ""
+                    )
+                    .toLowerCase()
+                    !==
+                    department.toLowerCase()
+                ){
+
+                    return false;
+
+                }
+
+            }
+
+
+
+            /* ==========================
+               LEAVE TYPE
+            ========================== */
+
+            if(
+                leaveType !==
+                "ALL"
+            ){
+
+                if(
+                    String(
+                        leave.leaveType ||
+                        ""
+                    )
+                    !==
+                    leaveType
+                ){
+
+                    return false;
+
+                }
+
+            }
+
+
+
+            /* ==========================
+               STATUS
+            ========================== */
+
+            if(
+                status !==
+                "ALL"
+            ){
+
+                if(
+                    String(
+                        leave.status ||
+                        ""
+                    )
+                    !==
+                    status
+                ){
+
+                    return false;
+
+                }
+
+            }
+
+
+
+            /* ==========================
+               SEARCH
+            ========================== */
+
+            if(search){
+
+                const staffName =
+                String(
+                    leave.staffName ||
+                    ""
+                )
+                .toLowerCase();
+
+
+                const staffId =
+                String(
+                    leave.staffId ||
+                    ""
+                )
+                .toLowerCase();
+
+
+                if(
+                    !staffName.includes(
+                        search
+                    )
+                    &&
+                    !staffId.includes(
+                        search
+                    )
+                ){
+
+                    return false;
+
+                }
+
+            }
+
+
+            return true;
+
+        }
+    );
+
+
+
+    table.innerHTML = "";
+
+
+
+    if(
+        filtered.length === 0
+    ){
+
+        table.innerHTML = `
+
+            <tr>
+
+                <td
+                    colspan="12"
+                    class="empty">
+
+                    No leave records found.
+
+                </td>
+
+            </tr>
+
+        `;
+
+        return;
+
+    }
+
+
+
+    filtered.forEach(
+        leave => {
+
+            const tr =
+            document.createElement(
+                "tr"
+            );
+
+
+            tr.innerHTML = `
+
+                <td>
+
+                    ${escapeHtml(
+                        leave.staffId
+                    )}
+
+                </td>
+
+
+                <td>
+
+                    ${escapeHtml(
+                        leave.staffName
+                    )}
+
+                </td>
+
+
+                <td>
+
+                    ${escapeHtml(
+                        leave.department
+                    )}
+
+                </td>
+
+
+                <td>
+
+                    ${applicantBadge(
+                        leave.applicantType
+                    )}
+
+                </td>
+
+
+                <td>
+
+                    ${escapeHtml(
+                        leave.leaveType
+                    )}
+
+                </td>
+
+
+                <td>
+
+                    ${formatDate(
+                        leave.fromDate
+                    )}
+
+                </td>
+
+
+                <td>
+
+                    ${formatDate(
+                        leave.toDate
+                    )}
+
+                </td>
+
+
+                <td>
+
+                    <b>
+
+                        ${Number(
+                            leave.numberOfDays ||
+                            0
+                        )}
+
+                    </b>
+
+                </td>
+
+
+                <td>
+
+                    ${escapeHtml(
+                        leave.reason
+                    )}
+
+                </td>
+
+
+                <td>
+
+                    ${headApprovalText(
+                        leave
+                    )}
+
+                </td>
+
+
+                <td>
+
+                    ${formatTimestamp(
+                        leave.createdAt
+                    )}
+
+                </td>
+
+
+                <td>
+
+                    ${statusBadge(
+                        leave.status
+                    )}
+
+                </td>
+
+            `;
+
+
+            table.appendChild(
+                tr
+            );
+
+        }
+    );
+
+}
+
+
+
+/* =========================================
+   HEAD APPROVAL DISPLAY
+========================================= */
+
+function headApprovalText(
+    leave
+){
+
+    /*
+     * Head's own leave does not
+     * require Head approval.
+     */
+
+    if(
+        String(
+            leave.applicantType ||
+            ""
+        )
+        .toLowerCase()
+        ===
+        "head"
+    ){
+
+        return `
+
+            <span class="badge head-leave">
+
+                Head Leave
+
+            </span>
+
+        `;
+
+    }
+
+
+
+    if(
+        leave.headStatus ===
+        "Approved"
+    ){
+
+        return `
+
+            <span class="badge approved">
+
+                Approved
+
+            </span>
+
+        `;
+
+    }
+
+
+    if(
+        leave.headStatus ===
+        "Rejected"
+    ){
+
+        return `
+
+            <span class="badge rejected">
+
+                Rejected
+
+            </span>
+
+        `;
+
+    }
+
+
+    return `
+
+        <span class="badge pending">
+
+            Pending
+
+        </span>
+
+    `;
+
+}
+
+
+
+/* =========================================
+   APPLICANT BADGE
+========================================= */
+
+function applicantBadge(
+    type
+){
+
+    const value =
+    String(
+        type ||
+        "Staff"
+    );
+
+
+    if(
+        value.toLowerCase()
+        ===
+        "head"
+    ){
+
+        return `
+
+            <span class="badge head-leave">
+
+                HEAD
+
+            </span>
+
+        `;
+
+    }
+
+
+    return `
+
+        <span class="badge forwarded">
+
+            STAFF / WORKER
+
+        </span>
+
+    `;
+
+}
+
+
+
+/* =========================================
+   STATUS BADGE
+========================================= */
+
+function statusBadge(
+    status
+){
+
+    const value =
+    String(
+        status ||
+        "Pending"
+    );
+
+
+    let cls =
+        "pending";
+
+
+    if(
+        value ===
+        "Approved"
+    ){
+
+        cls =
+            "approved";
+
+    }
+
+
+    if(
+        value ===
+        "Rejected"
+    ){
+
+        cls =
+            "rejected";
+
+    }
+
+
+    if(
+        value.includes(
+            "HR"
+        )
+    ){
+
+        cls =
+            "forwarded";
+
+    }
+
+
+    return `
+
+        <span class="badge ${cls}">
+
+            ${escapeHtml(
+                value
+            )}
+
+        </span>
+
+    `;
+
+}
+
+
+
+/* =========================================
+   FILTER EVENTS
+========================================= */
+
+document
+.getElementById(
+    "departmentFilter"
+)
+.addEventListener(
+    "change",
+    renderReport
+);
+
+
+document
+.getElementById(
+    "leaveTypeFilter"
+)
+.addEventListener(
+    "change",
+    renderReport
+);
+
+
+document
+.getElementById(
+    "statusFilter"
+)
+.addEventListener(
+    "change",
+    renderReport
+);
+
+
+document
+.getElementById(
+    "staffSearch"
+)
+.addEventListener(
+    "input",
+    renderReport
+);
+
+
+
+/* =========================================
+   MESSAGE
+========================================= */
+
+function showMessage(
+    text,
+    type
+){
+
+    const message =
+    document.getElementById(
+        "message"
+    );
+
+
+    message.style.display =
+        "block";
+
+
+    message.textContent =
+        text;
+
+
+    if(
+        type ===
+        "success"
+    ){
+
+        message.style.background =
+            "#d4edda";
+
+        message.style.color =
+            "#155724";
+
+    }else{
+
+        message.style.background =
+            "#f8d7da";
+
+        message.style.color =
+            "#721c24";
+
+    }
+
+
+    setTimeout(
+        () => {
+
+            message.style.display =
+                "none";
+
+        },
+        5000
+    );
+
+}
+
+
+
+/* =========================================
+   FORMAT DATE
+========================================= */
+
+function formatDate(
+    value
+){
+
+    if(!value){
+
+        return "-";
+
+    }
+
+
+    const parts =
+    String(value)
+    .split("-");
+
+
+    if(
+        parts.length !== 3
+    ){
+
+        return escapeHtml(
+            value
+        );
+
+    }
+
+
+    return (
+
+        parts[2] +
+        "-" +
+        parts[1] +
+        "-" +
+        parts[0]
+
+    );
+
+}
+
+
+
+/* =========================================
+   FORMAT TIMESTAMP
+========================================= */
+
+function formatTimestamp(
+    timestamp
+){
+
+    if(
+        !timestamp ||
+        !timestamp.seconds
+    ){
+
+        return "-";
+
+    }
+
+
+    return new Date(
+        timestamp.seconds * 1000
+    )
+    .toLocaleDateString(
+        "en-IN"
+    );
+
+}
+
+
+
+/* =========================================
+   ESCAPE HTML
+========================================= */
+
+function escapeHtml(
+    value
+){
+
+    return String(
+        value || ""
+    )
+
+    .replace(
+        /&/g,
+        "&amp;"
+    )
+
+    .replace(
+        /</g,
+        "&lt;"
+    )
+
+    .replace(
+        />/g,
+        "&gt;"
+    )
+
+    .replace(
+        /"/g,
+        "&quot;"
+    )
+
+    .replace(
+        /'/g,
+        "&#039;"
+    );
+
+}
+
+
+
+/* =========================================
+   INITIAL LOAD
+========================================= */
+
+loadLeaveReport();
+
 
 </script>
 
