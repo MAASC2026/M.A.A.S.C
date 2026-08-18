@@ -641,6 +641,18 @@ placeholder="Enter reason for requesting substitute">
 <div class="timetable-note" style="margin-top:16px;margin-bottom:0">
 <b>How to assign:</b> Select Date + Day Order + Session. Your timetable will appear above. Click the required period and the available same-department FREE staff will load automatically.
 </div>
+<div class="timetable-card" id="timetableContainer" style="margin-top:20px">
+    <div class="timetable-head">
+        <div class="title" style="margin-bottom:0">My Timetable</div>
+        <div style="font-size:13px;color:#6b7280">
+            Click a period to load FREE staff
+        </div>
+    </div>
+    <div class="timetable-empty">
+        Select Day Order and Session to view your timetable.
+    </div>
+</div>
+
 
 <div class="actions">
 
@@ -1624,8 +1636,6 @@ r.hour || ""
 
 </b>
 
-\
-
 Class:
 
 ${esc(
@@ -1640,8 +1650,6 @@ ${esc(
 r.subject || "-"
 )}
 
-\
-
 Substitute:
 
 <b>
@@ -1653,8 +1661,6 @@ r.substituteStaffId ||
 )}
 
 </b>
-
-\
 
 Status:
 
@@ -1759,6 +1765,130 @@ clearForm
 $(id).addEventListener("change",autoLoadStaffTimetable);
 });
 
+
+
+
+/* =========================================================
+   AUTO LOAD CURRENT STAFF TIMETABLE
+   Date, Day Order and Session are independent.
+   Selecting them shows ONLY this staff's timetable for
+   the selected Day Order + Session.
+========================================================= */
+
+function getTimeForSession(session, hour){
+    const times = {
+        FN: {
+            1:"8:30 - 9:20",
+            2:"9:20 - 10:10",
+            3:"10:10 - 11:00",
+            4:"11:30 - 12:20",
+            5:"12:20 - 1:10"
+        },
+        AN: {
+            1:"1:30 - 2:20",
+            2:"2:20 - 3:10",
+            3:"3:30 - 4:20",
+            4:"4:20 - 5:10",
+            5:"5:10 - 6:00"
+        }
+    };
+    return times[session]?.[Number(hour)] || "";
+}
+
+function autoLoadStaffTimetable(){
+    const box = document.getElementById("timetableContainer");
+    if(!box) return;
+
+    const day = normalizeDay($("day").value);
+    const session = normalizeSession($("session").value);
+
+    // Clear selected period whenever the timetable selection changes.
+    $("hour").value = "";
+    $("className").value = "";
+    $("subject").value = "";
+    selectedSubstitute = null;
+
+    $("freeCard").style.display = "none";
+    hide("formMessage");
+    hide("selectionMessage");
+
+    if(!currentStaff){
+        box.innerHTML = '<div class="timetable-empty">Current staff is not loaded yet.</div>';
+        return;
+    }
+
+    if(!day || !session){
+        box.innerHTML = '<div class="timetable-empty">Select Day Order and Session to view your timetable.</div>';
+        return;
+    }
+
+    const myId = upper(currentStaff.staffId);
+
+    const rows = timetableData
+        .filter(r =>
+            upper(r.staffId) === myId &&
+            normalizeDay(r.day) === day &&
+            normalizeSession(r.session) === session
+        )
+        .sort((a,b) => Number(a.hour) - Number(b.hour));
+
+    if(!rows.length){
+        box.innerHTML =
+            `<div class="timetable-empty">
+                No timetable assigned to <b>${esc(currentStaff.staffName || currentStaff.staffId)}</b>
+                for <b>${esc(day)}</b> - <b>${esc(session)}</b>.
+             </div>`;
+        return;
+    }
+
+    box.innerHTML = `
+        <div class="timetable-wrap">
+            <table class="timetable-table">
+                <thead>
+                    <tr>
+                        <th>Hour</th>
+                        <th>Time</th>
+                        <th>Class</th>
+                        <th>Subject</th>
+                        <th>Room</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${rows.map((r, i) => `
+                        <tr class="timetable-row" data-index="${i}">
+                            <td><span class="slot-chip">Hour ${esc(r.hour)}</span></td>
+                            <td>${esc(getTimeForSession(session, r.hour))}</td>
+                            <td>${esc(r.className || "-")}</td>
+                            <td>${esc(r.subject || "-")}</td>
+                            <td>${esc(
+                                r.roomNo ?? r.room ?? r.roomNumber ??
+                                r.room_name ?? r.roomName ?? "-"
+                            )}</td>
+                            <td class="timetable-click">CLICK TO SELECT</td>
+                        </tr>
+                    `).join("")}
+                </tbody>
+            </table>
+        </div>
+    `;
+
+    box.querySelectorAll(".timetable-row").forEach((row, index) => {
+        row.addEventListener("click", () => {
+            box.querySelectorAll(".timetable-row").forEach(x => x.classList.remove("selected"));
+            row.classList.add("selected");
+
+            const r = rows[index];
+
+            $("hour").value = r.hour || "";
+            $("className").value = r.className || "";
+            $("subject").value = r.subject || "";
+
+            // Immediately load free staff for the clicked period.
+            findFreeStaff();
+        });
+    });
+}
 
 
 /* =========================================================
