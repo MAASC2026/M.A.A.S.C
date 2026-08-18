@@ -217,6 +217,17 @@ button:disabled{
     color:#166534
 }
 
+.department-badge{
+    display:inline-block;
+    padding:5px 10px;
+    border-radius:20px;
+    font-size:11px;
+    font-weight:bold;
+    background:#dbeafe;
+    color:#1e40af;
+    margin-top:5px
+}
+
 .staff-list{
     margin-top:18px
 }
@@ -253,6 +264,15 @@ button:disabled{
     margin-bottom:16px
 }
 
+.same-department-note{
+    background:#ecfdf5;
+    color:#166534;
+    padding:10px 12px;
+    border-radius:7px;
+    font-size:13px;
+    margin-bottom:16px
+}
+
 @media(max-width:800px){
 
     .grid{
@@ -275,7 +295,6 @@ button:disabled{
 </head>
 
 <body>
-
 
 <div class="header">
 
@@ -367,6 +386,17 @@ button:disabled{
             Date and Day Order are independent.
             Changing the Date will NOT change the Day Order,
             and changing the Day Order will NOT change the Date.
+
+        </div>
+
+
+        <div class="same-department-note">
+
+            <b>Department Rule:</b>
+            Substitute assignment is allowed
+            <b>ONLY inside the requesting staff's department.</b>
+
+            Staff from other departments will not be shown.
 
         </div>
 
@@ -595,6 +625,12 @@ button:disabled{
         </p>
 
 
+        <p
+            id="departmentText"
+            style="font-size:13px;color:#166534;margin-top:6px;font-weight:bold">
+        </p>
+
+
         <div
             id="staffList"
             class="staff-list">
@@ -634,6 +670,7 @@ button:disabled{
 
 
 <script type="module">
+
 
 /* =========================================================
    FIREBASE
@@ -688,6 +725,7 @@ const db =
     getFirestore(app);
 
 
+
 /* =========================================================
    VARIABLES
 ========================================================= */
@@ -699,6 +737,7 @@ let staffList = [];
 let selectedSubstitute = null;
 
 let currentStaff = null;
+
 
 
 /* =========================================================
@@ -723,6 +762,7 @@ function upper(v){
     return clean(v).toUpperCase();
 
 }
+
 
 
 /* =========================================================
@@ -787,11 +827,13 @@ function normalizeDay(value){
 }
 
 
+
 function normalizeSession(v){
 
     return upper(v);
 
 }
+
 
 
 /* =========================================================
@@ -814,6 +856,7 @@ function getStaffId(d, documentId = ""){
 }
 
 
+
 function getStaffName(d){
 
     return clean(
@@ -829,6 +872,7 @@ function getStaffName(d){
 }
 
 
+
 function getDepartment(d){
 
     return clean(
@@ -840,6 +884,7 @@ function getDepartment(d){
     );
 
 }
+
 
 
 function getHour(d){
@@ -857,6 +902,7 @@ function getHour(d){
 }
 
 
+
 function getClass(d){
 
     return clean(
@@ -872,6 +918,7 @@ function getClass(d){
 }
 
 
+
 function getSubject(d){
 
     return clean(
@@ -883,6 +930,7 @@ function getSubject(d){
     );
 
 }
+
 
 
 /* =========================================================
@@ -903,6 +951,7 @@ function show(id,text,type){
 }
 
 
+
 function hide(id){
 
     $(id).className =
@@ -911,20 +960,10 @@ function hide(id){
 }
 
 
+
 /* =========================================================
    GET CURRENT STAFF ID
 ========================================================= */
-
-/*
-   IMPORTANT:
-
-   We ONLY use STAFF ID from the browser session.
-
-   We DO NOT use staffName from localStorage.
-
-   The name and department are fetched fresh
-   from Firestore using this Staff ID.
-*/
 
 function getCurrentStaffId(){
 
@@ -969,8 +1008,9 @@ function getCurrentStaffId(){
 }
 
 
+
 /* =========================================================
-   LOAD CURRENT STAFF FROM FIRESTORE
+   LOAD CURRENT STAFF
 ========================================================= */
 
 async function loadCurrentStaff(){
@@ -1065,7 +1105,7 @@ async function loadCurrentStaff(){
         if(!found){
 
             console.error(
-                "STAFF ID NOT FOUND IN FIRESTORE:",
+                "STAFF ID NOT FOUND:",
                 staffId
             );
 
@@ -1086,16 +1126,12 @@ async function loadCurrentStaff(){
         }
 
 
-        /*
-         * THIS IS NOW THE REAL CURRENT STAFF.
-         */
-
         currentStaff =
             found;
 
 
         console.log(
-            "CURRENT STAFF LOADED:",
+            "CURRENT STAFF:",
             currentStaff
         );
 
@@ -1112,22 +1148,17 @@ async function loadCurrentStaff(){
             currentStaff.department;
 
 
-        /*
-         * Update session with the correct values.
-         *
-         * This does NOT decide identity.
-         * Staff ID already decided identity.
-         */
-
         sessionStorage.setItem(
             "staffId",
             currentStaff.staffId
         );
 
+
         sessionStorage.setItem(
             "staffName",
             currentStaff.staffName
         );
+
 
         sessionStorage.setItem(
             "department",
@@ -1168,6 +1199,7 @@ async function loadCurrentStaff(){
 }
 
 
+
 /* =========================================================
    LOAD TIMETABLE + STAFF
 ========================================================= */
@@ -1176,9 +1208,9 @@ async function loadTimetable(){
 
     try{
 
-        /*
-         * LOAD TIMETABLE
-         */
+        /* =====================================================
+           LOAD TIMETABLE
+        ===================================================== */
 
         const snap =
             await getDocs(
@@ -1249,9 +1281,10 @@ async function loadTimetable(){
         );
 
 
-        /*
-         * LOAD ALL STAFF
-         */
+
+        /* =====================================================
+           LOAD ALL STAFF
+        ===================================================== */
 
         const staffSnap =
             await getDocs(
@@ -1304,10 +1337,10 @@ async function loadTimetable(){
         );
 
 
-        /*
-         * ALSO INCLUDE STAFF FOUND
-         * IN TIMETABLE
-         */
+
+        /* =====================================================
+           ALSO INCLUDE STAFF FROM TIMETABLE
+        ===================================================== */
 
         timetableData.forEach(
             r => {
@@ -1372,30 +1405,71 @@ async function loadTimetable(){
         );
 
 
-        /*
-         * REMOVE CURRENT STAFF
-         */
+
+        /* =====================================================
+           IMPORTANT
+           
+           SUBSTITUTE ASSIGNMENT IS ONLY
+           INSIDE CURRENT STAFF DEPARTMENT.
+        ===================================================== */
+
+        const currentDepartment =
+            upper(
+                currentStaff.department
+            );
+
+
+        console.log(
+            "CURRENT DEPARTMENT:",
+            currentDepartment
+        );
+
 
         staffList =
             Array.from(
                 map.values()
             ).filter(
-                s =>
+                s => {
 
-                    upper(
-                        s.staffId
-                    ) !==
+                    const sameStaff =
+                        upper(
+                            s.staffId
+                        ) ===
+                        upper(
+                            currentStaff.staffId
+                        );
 
-                    upper(
-                        currentStaff.staffId
-                    )
 
+                    const sameDepartment =
+                        upper(
+                            s.department
+                        ) ===
+                        currentDepartment;
+
+
+                    /*
+                     * Exclude:
+                     *
+                     * 1. Current staff
+                     * 2. Staff from another department
+                     */
+
+                    return (
+
+                        !sameStaff &&
+
+                        sameDepartment
+
+                    );
+
+                }
             );
 
 
-        /*
-         * SORT STAFF
-         */
+
+        /* =====================================================
+           SORT STAFF
+        ===================================================== */
 
         staffList.sort(
             (a,b) =>
@@ -1414,15 +1488,10 @@ async function loadTimetable(){
         );
 
 
-        /*
-         * IMPORTANT:
-         *
-         * DO NOT change currentStaff.name
-         * using timetable data.
-         *
-         * currentStaff came directly from
-         * staff collection using Staff ID.
-         */
+        console.log(
+            "SAME DEPARTMENT STAFF:",
+            staffList
+        );
 
     }
     catch(err){
@@ -1445,6 +1514,7 @@ async function loadTimetable(){
     }
 
 }
+
 
 
 /* =========================================================
@@ -1661,6 +1731,7 @@ async function loadExistingRequests(){
 }
 
 
+
 /* =========================================================
    ESCAPE HTML
 ========================================================= */
@@ -1699,8 +1770,9 @@ function esc(v){
 }
 
 
+
 /* =========================================================
-   FIND BUTTON
+   BUTTON EVENTS
 ========================================================= */
 
 $("findBtn")
@@ -1715,6 +1787,7 @@ $("clearBtn")
         "click",
         clearForm
     );
+
 
 
 /* =========================================================
@@ -1752,9 +1825,10 @@ async function findFreeStaff(){
     }
 
 
-    /*
-     * DATE AND DAY ARE INDEPENDENT.
-     */
+
+    /* =====================================================
+       DATE AND DAY ARE COMPLETELY INDEPENDENT
+    ===================================================== */
 
     const date =
         $("requestDate").value;
@@ -1821,6 +1895,7 @@ async function findFreeStaff(){
     }
 
 
+
     $("freeCard")
         .style
         .display =
@@ -1832,23 +1907,29 @@ async function findFreeStaff(){
             `${date} | ${day} | ${session} | Hour ${hour}`;
 
 
+    $("departmentText")
+        .textContent =
+            `Showing FREE staff only from ${currentStaff.department}`;
+
+
     $("staffList")
         .innerHTML =
             `
             <div class="loading">
 
-                Checking timetable and existing
-                substitute assignments...
+                Checking ${esc(currentStaff.department)}
+                department staff...
 
             </div>
             `;
 
 
+
     try{
 
-        /*
-         * LOAD EXISTING SUBSTITUTE REQUESTS
-         */
+        /* =====================================================
+           LOAD EXISTING SUBSTITUTE REQUESTS
+        ===================================================== */
 
         const reqSnap =
             await getDocs(
@@ -1936,9 +2017,10 @@ async function findFreeStaff(){
         );
 
 
-        /*
-         * TIMETABLE BUSY STAFF
-         */
+
+        /* =====================================================
+           FIND TIMETABLE BUSY STAFF
+        ===================================================== */
 
         const busy =
             new Set(
@@ -1966,9 +2048,23 @@ async function findFreeStaff(){
             );
 
 
-        /*
-         * FIND FREE STAFF
-         */
+
+        /* =====================================================
+           CURRENT DEPARTMENT
+        ===================================================== */
+
+        const currentDepartment =
+            upper(
+                currentStaff.department
+            );
+
+
+
+        /* =====================================================
+           FIND FREE STAFF
+           
+           ONLY SAME DEPARTMENT
+        ===================================================== */
 
         const free =
             staffList.filter(
@@ -1980,12 +2076,27 @@ async function findFreeStaff(){
                         );
 
 
+                    const staffDepartment =
+                        upper(
+                            s.department
+                        );
+
+
+                    const sameDepartment =
+                        staffDepartment ===
+                        currentDepartment;
+
+
                     return (
 
                         sid !==
                         upper(
                             currentStaff.staffId
                         )
+
+                        &&
+
+                        sameDepartment
 
                         &&
 
@@ -2005,6 +2116,11 @@ async function findFreeStaff(){
             );
 
 
+
+        /* =====================================================
+           NO FREE STAFF
+        ===================================================== */
+
         if(
             !free.length
         ){
@@ -2015,8 +2131,10 @@ async function findFreeStaff(){
                     <div class="empty">
 
                         No free staff are available
-                        for the selected Day Order,
-                        Session and Hour.
+                        inside the
+                        <b>${esc(currentStaff.department)}</b>
+                        department for the selected
+                        Day Order, Session and Hour.
 
                     </div>
                     `;
@@ -2026,9 +2144,10 @@ async function findFreeStaff(){
         }
 
 
-        /*
-         * DISPLAY FREE STAFF
-         */
+
+        /* =====================================================
+           DISPLAY FREE STAFF
+        ===================================================== */
 
         $("staffList")
             .innerHTML =
@@ -2057,18 +2176,16 @@ async function findFreeStaff(){
                                     s.staffId
                                 )}
 
-                                ${
-                                    s.department
-
-                                        ? " • " +
-                                          esc(
-                                              s.department
-                                          )
-
-                                        : ""
-                                }
-
                             </p>
+
+
+                            <span class="department-badge">
+
+                                ${esc(
+                                    s.department
+                                )}
+
+                            </span>
 
                         </div>
 
@@ -2103,9 +2220,10 @@ async function findFreeStaff(){
                 .join("");
 
 
-        /*
-         * SELECT BUTTONS
-         */
+
+        /* =====================================================
+           SELECT BUTTONS
+        ===================================================== */
 
         $("staffList")
             .querySelectorAll(
@@ -2144,7 +2262,7 @@ async function findFreeStaff(){
                             show(
                                 "selectionMessage",
 
-                                `${selectedSubstitute.staffName || selectedSubstitute.staffId} selected. Click SUBMIT REQUEST below.`,
+                                `${selectedSubstitute.staffName || selectedSubstitute.staffId} selected from ${selectedSubstitute.department}. Click SUBMIT REQUEST below.`,
 
                                 "ok"
                             );
@@ -2226,6 +2344,7 @@ async function findFreeStaff(){
 }
 
 
+
 /* =========================================================
    SUBMIT REQUEST
 ========================================================= */
@@ -2248,6 +2367,7 @@ async function submitRequest(){
         return;
 
     }
+
 
 
     const date =
@@ -2302,11 +2422,60 @@ async function submitRequest(){
     }
 
 
+
+    /* =====================================================
+       FINAL DEPARTMENT SECURITY CHECK
+    ===================================================== */
+
+    const requesterDepartment =
+        upper(
+            currentStaff.department
+        );
+
+
+    const substituteDepartment =
+        upper(
+            selectedSubstitute.department
+        );
+
+
+    if(
+        requesterDepartment !==
+        substituteDepartment
+    ){
+
+        show(
+            "selectionMessage",
+
+            "Invalid substitute. Substitute staff must belong to the same department.",
+
+            "err"
+        );
+
+
+        if(btn){
+
+            btn.disabled =
+                false;
+
+        }
+
+
+        selectedSubstitute =
+            null;
+
+
+        return;
+
+    }
+
+
+
     try{
 
-        /*
-         * RECHECK AVAILABILITY
-         */
+        /* =====================================================
+           RECHECK EXISTING REQUESTS
+        ===================================================== */
 
         const snap =
             await getDocs(
@@ -2334,6 +2503,7 @@ async function submitRequest(){
                     return (
 
                         (
+
                             status === "APPROVED"
 
                             ||
@@ -2347,6 +2517,7 @@ async function submitRequest(){
                             ||
 
                             status === "PENDING"
+
                         )
 
                         &&
@@ -2383,6 +2554,11 @@ async function submitRequest(){
             );
 
 
+
+        /* =====================================================
+           RECHECK TIMETABLE
+        ===================================================== */
+
         const timetableBusy =
             timetableData.some(
                 r =>
@@ -2402,6 +2578,7 @@ async function submitRequest(){
                     )
 
             );
+
 
 
         if(
@@ -2435,9 +2612,10 @@ async function submitRequest(){
         }
 
 
-        /*
-         * CREATE REQUEST
-         */
+
+        /* =====================================================
+           CREATE REQUEST
+        ===================================================== */
 
         const requestId =
             "SR-" +
@@ -2515,6 +2693,11 @@ async function submitRequest(){
         );
 
 
+
+        /* =====================================================
+           SUCCESS
+        ===================================================== */
+
         show(
             "selectionMessage",
 
@@ -2570,8 +2753,9 @@ async function submitRequest(){
 }
 
 
+
 /* =========================================================
-   CLEAR FIELDS
+   CLEAR FIELDS ONLY
 ========================================================= */
 
 function clearFieldsOnly(){
@@ -2607,6 +2791,7 @@ function clearFieldsOnly(){
             "none";
 
 }
+
 
 
 /* =========================================================
@@ -2648,6 +2833,7 @@ function clearForm(){
 }
 
 
+
 /* =========================================================
    INIT
 ========================================================= */
@@ -2655,10 +2841,8 @@ function clearForm(){
 async function init(){
 
     /*
-     * IMPORTANT:
-     *
-     * First identify the staff using Staff ID.
-     * Then load name/department from Firestore.
+     * FIRST:
+     * Identify staff using Staff ID.
      */
 
     const loaded =
@@ -2673,8 +2857,8 @@ async function init(){
 
 
     /*
-     * DATE AND DAY ORDER REMAIN COMPLETELY
-     * INDEPENDENT.
+     * DATE AND DAY ORDER
+     * ARE COMPLETELY INDEPENDENT.
      */
 
     $("requestDate")
@@ -2688,14 +2872,15 @@ async function init(){
 
 
     /*
-     * LOAD TIMETABLE AND STAFF
+     * LOAD TIMETABLE
+     * AND SAME-DEPARTMENT STAFF.
      */
 
     await loadTimetable();
 
 
     /*
-     * LOAD CURRENT STAFF REQUESTS
+     * LOAD REQUEST HISTORY.
      */
 
     await loadExistingRequests();
