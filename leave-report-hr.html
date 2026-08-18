@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>Leave Reports - HR</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial,Helvetica,sans-serif;
+}
+
+body{
+    background:#f4f6f9;
+}
+
+.container{
+    max-width:1600px;
+    margin:30px auto;
+    padding:20px;
+}
+
+.header{
+    background:#500454;
+    color:white;
+    padding:22px;
+    border-radius:12px;
+    margin-bottom:20px;
+}
+
+.summary{
+    display:grid;
+    grid-template-columns:
+        repeat(4,1fr);
+    gap:18px;
+    margin-bottom:20px;
+}
+
+.summary-card{
+    background:white;
+    padding:22px;
+    border-radius:12px;
+    box-shadow:0 3px 12px rgba(0,0,0,.12);
+}
+
+.summary-card h2{
+    color:#500454;
+    margin-top:8px;
+}
+
+.filter-card,
+.table-card{
+    background:white;
+    padding:22px;
+    border-radius:12px;
+    box-shadow:0 3px 12px rgba(0,0,0,.12);
+    margin-bottom:20px;
+}
+
+.filter-grid{
+    display:grid;
+    grid-template-columns:
+        repeat(4,1fr);
+    gap:18px;
+}
+
+.form-group{
+    margin-bottom:10px;
+}
+
+label{
+    display:block;
+    font-weight:bold;
+    margin-bottom:7px;
+}
+
+input,
+select{
+    width:100%;
+    padding:11px;
+    border:1px solid #ccc;
+    border-radius:7px;
+}
+
+button{
+    margin-top:15px;
+    padding:12px 20px;
+    background:#500454;
+    color:white;
+    border:none;
+    border-radius:7px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+.table-container{
+    overflow-x:auto;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    min-width:1300px;
+}
+
+th,
+td{
+    padding:12px;
+    border-bottom:1px solid #eee;
+    text-align:left;
+}
+
+th{
+    background:#500454;
+    color:white;
+}
+
+.pending{
+    color:#b45309;
+    font-weight:bold;
+}
+
+.approved{
+    color:#15803d;
+    font-weight:bold;
+}
+
+.rejected{
+    color:#dc2626;
+    font-weight:bold;
+}
+
+.empty{
+    text-align:center;
+    padding:25px;
+    color:#666;
+}
+
+@media(max-width:900px){
+
+    .summary{
+        grid-template-columns:1fr 1fr;
+    }
+
+    .filter-grid{
+        grid-template-columns:1fr 1fr;
+    }
+
+}
+
+@media(max-width:600px){
+
+    .summary,
+    .filter-grid{
+        grid-template-columns:1fr;
+    }
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+
+<div class="header">
+
+    <h2>
+        Leave Reports - HR
+    </h2>
+
+    <p>
+        Staff and Head Staff Leave Report
+    </p>
+
+</div>
+
+
+<div class="summary">
+
+    <div class="summary-card">
+
+        <p>
+            Total Records
+        </p>
+
+        <h2 id="total">
+            0
+        </h2>
+
+    </div>
+
+
+    <div class="summary-card">
+
+        <p>
+            Pending HR
+        </p>
+
+        <h2 id="pending">
+            0
+        </h2>
+
+    </div>
+
+
+    <div class="summary-card">
+
+        <p>
+            Approved
+        </p>
+
+        <h2 id="approved">
+            0
+        </h2>
+
+    </div>
+
+
+    <div class="summary-card">
+
+        <p>
+            Rejected
+        </p>
+
+        <h2 id="rejected">
+            0
+        </h2>
+
+    </div>
+
+</div>
+
+
+<div class="filter-card">
+
+    <h3>
+        Report Filters
+    </h3>
+
+    <br>
+
+    <div class="filter-grid">
+
+
+        <div class="form-group">
+
+            <label>
+                Department
+            </label>
+
+            <input
+                type="text"
+                id="department"
+                placeholder="Enter department">
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label>
+                Staff ID
+            </label>
+
+            <input
+                type="text"
+                id="staffId"
+                placeholder="Enter staff ID">
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label>
+                Leave Type
+            </label>
+
+            <select id="leaveType">
+
+                <option value="">
+                    All
+                </option>
+
+                <option value="CASUAL">
+                    Casual Leave
+                </option>
+
+                <option value="SICK">
+                    Sick Leave
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label>
+                Role
+            </label>
+
+            <select id="role">
+
+                <option value="">
+                    All
+                </option>
+
+                <option value="STAFF">
+                    Staff / Worker
+                </option>
+
+                <option value="HEAD">
+                    Head Staff
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label>
+                From Date
+            </label>
+
+            <input
+                type="date"
+                id="fromDate">
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label>
+                To Date
+            </label>
+
+            <input
+                type="date"
+                id="toDate">
+
+        </div>
+
+    </div>
+
+
+    <button
+        onclick="loadReport()">
+
+        Generate Report
+
+    </button>
+
+</div>
+
+
+<div class="table-card">
+
+    <h3>
+        Leave Records
+    </h3>
+
+    <br>
+
+    <div class="table-container">
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>Applicant</th>
+                    <th>Staff ID</th>
+                    <th>Department</th>
+                    <th>Role</th>
+                    <th>Leave Type</th>
+                    <th>From</th>
+                    <th>To</th>
+                    <th>Days</th>
+                    <th>Status</th>
+                    <th>Reason</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody id="table">
+
+                <tr>
+                    <td colspan="10">
+                        Loading...
+                    </td>
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+</div>
+
+
+<script type="module">
+
+import { db } from "./firebase-config.js";
+
+import {
+    collection,
+    getDocs
+}
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+
+/* ======================================
+   HR REPORT
+====================================== */
+
+window.loadReport = async function(){
+
+    const table =
+        document.getElementById("table");
+
+
+    table.innerHTML =
+        `<tr>
+            <td colspan="10">
+                Loading...
+            </td>
+        </tr>`;
+
+
+    try{
+
+        const snap =
+            await getDocs(
+                collection(
+                    db,
+                    "leave_requests"
+                )
+            );
+
+
+        const records=[];
+
+
+        snap.forEach(doc=>{
+
+            const data =
+                doc.data();
+
+
+            /*
+               HR report should contain:
+
+               APPROVED_BY_HEAD
+               PENDING_HR
+               APPROVED_BY_HR
+               REJECTED_BY_HR
+               REJECTED_BY_HEAD
+            */
+
+            const validStatus = [
+
+                "APPROVED_BY_HEAD",
+                "PENDING_HR",
+                "APPROVED_BY_HR",
+                "REJECTED_BY_HR",
+                "REJECTED_BY_HEAD"
+
+            ];
+
+
+            if(
+                !validStatus.includes(
+                    data.status
+                )
+            ){
+
+                return;
+
+            }
+
+
+            /* FILTERS */
+
+            const department =
+                document
+                .getElementById(
+                    "department"
+                )
+                .value
+                .trim()
+                .toUpperCase();
+
+
+            const staffId =
+                document
+                .getElementById(
+                    "staffId"
+                )
+                .value
+                .trim()
+                .toUpperCase();
+
+
+            const leaveType =
+                document
+                .getElementById(
+                    "leaveType"
+                )
+                .value;
+
+
+            const role =
+                document
+                .getElementById(
+                    "role"
+                )
+                .value;
+
+
+            const fromDate =
+                document
+                .getElementById(
+                    "fromDate"
+                )
+                .value;
+
+
+            const toDate =
+                document
+                .getElementById(
+                    "toDate"
+                )
+                .value;
+
+
+            if(
+                department &&
+                String(
+                    data.department || ""
+                )
+                .toUpperCase() !==
+                department
+            ){
+
+                return;
+
+            }
+
+
+            if(
+                staffId &&
+                String(
+                    data.staffId || ""
+                )
+                .toUpperCase() !==
+                staffId
+            ){
+
+                return;
+
+            }
+
+
+            if(
+                leaveType &&
+                data.leaveType !==
+                leaveType
+            ){
+
+                return;
+
+            }
+
+
+            if(
+                role &&
+                data.applicantRole !==
+                role
+            ){
+
+                return;
+
+            }
+
+
+            if(
+                fromDate &&
+                String(
+                    data.fromDate || ""
+                ) < fromDate
+            ){
+
+                return;
+
+            }
+
+
+            if(
+                toDate &&
+                String(
+                    data.toDate || ""
+                ) > toDate
+            ){
+
+                return;
+
+            }
+
+
+            records.push(data);
+
+        });
+
+
+        records.sort((a,b)=>
+
+            String(
+                b.fromDate || ""
+            )
+            .localeCompare(
+                String(
+                    a.fromDate || ""
+                )
+            )
+
+        );
+
+
+        table.innerHTML="";
+
+
+        let pending=0;
+        let approved=0;
+        let rejected=0;
+
+
+        records.forEach(data=>{
+
+
+            if(
+                data.status ===
+                "PENDING_HR"
+            ){
+
+                pending++;
+
+            }
+
+
+            if(
+                data.status ===
+                "APPROVED_BY_HEAD" ||
+                data.status ===
+                "APPROVED_BY_HR"
+            ){
+
+                approved++;
+
+            }
+
+
+            if(
+                data.status ===
+                "REJECTED_BY_HEAD" ||
+                data.status ===
+                "REJECTED_BY_HR"
+            ){
+
+                rejected++;
+
+            }
+
+
+            let statusClass="";
+
+
+            if(
+                data.status.includes(
+                    "PENDING"
+                )
+            ){
+
+                statusClass="pending";
+
+            }
+
+
+            if(
+                data.status.includes(
+                    "APPROVED"
+                )
+            ){
+
+                statusClass="approved";
+
+            }
+
+
+            if(
+                data.status.includes(
+                    "REJECTED"
+                )
+            ){
+
+                statusClass="rejected";
+
+            }
+
+
+            const row =
+                document.createElement("tr");
+
+
+            row.innerHTML=`
+
+                <td>
+                    ${data.applicantName || ""}
+                </td>
+
+                <td>
+                    ${data.staffId || ""}
+                </td>
+
+                <td>
+                    ${data.department || ""}
+                </td>
+
+                <td>
+                    ${data.applicantRole || ""}
+                </td>
+
+                <td>
+                    ${data.leaveType || ""}
+                </td>
+
+                <td>
+                    ${data.fromDate || ""}
+                </td>
+
+                <td>
+                    ${data.toDate || ""}
+                </td>
+
+                <td>
+                    ${data.days || ""}
+                </td>
+
+                <td class="${statusClass}">
+                    ${data.status || ""}
+                </td>
+
+                <td>
+                    ${data.reason || ""}
+                </td>
+
+            `;
+
+
+            table.appendChild(row);
+
+        });
+
+
+        if(records.length===0){
+
+            table.innerHTML =
+                `<tr>
+                    <td
+                        colspan="10"
+                        class="empty">
+                        No leave records found.
+                    </td>
+                </tr>`;
+
+        }
+
+
+        document.getElementById("total")
+        .textContent =
+            records.length;
+
+
+        document.getElementById("pending")
+        .textContent =
+            pending;
+
+
+        document.getElementById("approved")
+        .textContent =
+            approved;
+
+
+        document.getElementById("rejected")
+        .textContent =
+            rejected;
+
+
+    }catch(error){
+
+        console.error(error);
+
+        table.innerHTML =
+            `<tr>
+                <td
+                    colspan="10"
+                    class="empty">
+                    Error loading report:
+                    ${error.message}
+                </td>
+            </tr>`;
+
+    }
+
+};
+
+
+loadReport();
+
+</script>
+
+</body>
+
+</html>
