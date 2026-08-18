@@ -1013,33 +1013,67 @@ GET CURRENT STAFF ID
 ========================================================= */
 
 function getCurrentStaffId(){
-const keys = [
- "staffId","staffID","staff_id","staffCode","staff_code",
- "employeeId","employeeID","empId","employeeCode",
- "currentStaffId","currentStaffID","loggedInStaffId","loggedInStaffID",
- "userStaffId","currentUserId","loginStaffId"
-];
+    const idKeys = [
+        "staffId","staffID","staff_id","staffCode","staff_code",
+        "employeeId","employeeID","empId","employeeCode","employee_code",
+        "currentStaffId","currentStaffID","loggedInStaffId","loggedInStaffID",
+        "userStaffId","currentUserId","loginStaffId","loginStaffID",
+        "staffNo","staffNumber","employeeNo","employeeNumber"
+    ];
 
-for(const storage of [sessionStorage, localStorage]){
- for(const key of keys){
-  const value = clean(storage.getItem(key));
-  if(value) return value;
- }
- for(const key of ["currentStaff","loggedInStaff","currentUser","loggedInUser","staff","staffData","user","userData","profile"]){
-  const raw = storage.getItem(key);
-  if(!raw) continue;
-  try{
-   const obj = JSON.parse(raw);
-   const value = clean(
-    obj.staffId ?? obj.staffID ?? obj.staff_id ?? obj.staffCode ??
-    obj.employeeId ?? obj.employeeID ?? obj.empId ?? obj.employeeCode ??
-    obj.userStaffId ?? (obj.staff && (obj.staff.staffId ?? obj.staff.staffID))
-   );
-   if(value) return value;
-  }catch(e){}
- }
-}
-return "";
+    const objectKeys = [
+        "currentStaff","loggedInStaff","currentUser","loggedInUser",
+        "staff","staffData","user","userData","profile","loginUser"
+    ];
+
+    for(const storage of [sessionStorage, localStorage]){
+        for(const key of idKeys){
+            const value = clean(storage.getItem(key));
+            if(value) return value;
+        }
+
+        for(const key of objectKeys){
+            const raw = storage.getItem(key);
+            if(!raw) continue;
+
+            /* Some login pages store the ID directly, not as JSON. */
+            const direct = clean(raw);
+            if(direct && !direct.startsWith("{") && !direct.startsWith("[")){
+                if(/^[A-Za-z]{2,}\d{2,}$/.test(direct) || /^SHT\d+/i.test(direct)){
+                    return direct;
+                }
+            }
+
+            try{
+                const obj = JSON.parse(raw);
+                const value = clean(
+                    obj.staffId ?? obj.staffID ?? obj.staff_id ?? obj.staffCode ??
+                    obj.staff_code ?? obj.employeeId ?? obj.employeeID ?? obj.empId ??
+                    obj.employeeCode ?? obj.employee_code ?? obj.staffNo ?? obj.staffNumber ??
+                    obj.employeeNo ?? obj.employeeNumber ?? obj.userStaffId ?? obj.userId ??
+                    obj.id ?? obj.code ?? obj.uid ??
+                    (obj.staff && (
+                        obj.staff.staffId ?? obj.staff.staffID ?? obj.staff.staffCode ??
+                        obj.staff.employeeId ?? obj.staff.id
+                    ))
+                );
+                if(value) return value;
+            }catch(e){}
+        }
+    }
+
+    /* Some ERP login pages expose the staff ID globally. */
+    try{
+        const globals = [
+            window.staffId, window.staffID, window.currentStaffId,
+            window.loggedInStaffId, window.employeeId
+        ];
+        for(const value of globals){
+            if(clean(value)) return clean(value);
+        }
+    }catch(e){}
+
+    return "";
 }
 
 
@@ -1048,69 +1082,85 @@ LOAD CURRENT STAFF
 ========================================================= */
 
 async function loadCurrentStaff(){
+    const storedStaffId = getCurrentStaffId();
+    const user = auth.currentUser;
 
-let staffId = getCurrentStaffId();
-let user = auth.currentUser;
-
-console.log("SESSION STAFF ID:", staffId);
-console.log("FIREBASE USER:", user ? {uid:user.uid,email:user.email} : null);
-
-try{
-    const staffSnap = await getDocs(collection(db,"staff"));
-    let found = null;
-
-    staffSnap.forEach(docSnap => {
-        if(found) return;
-
-        const d = docSnap.data();
-        const dbStaffId = getStaffId(d, docSnap.id);
-        const dbEmail = clean(d.email ?? d.emailId ?? d.mail ?? d.officialEmail);
-        const dbUid = clean(d.uid ?? d.userId ?? d.authUid ?? d.firebaseUid);
-
-        const idMatch = staffId && upper(dbStaffId) === upper(staffId);
-        const uidMatch = user && dbUid && dbUid === user.uid;
-        const emailMatch = user && dbEmail && user.email && upper(dbEmail) === upper(user.email);
-
-        if(idMatch || uidMatch || emailMatch){
-            found = {
-                firestoreId: docSnap.id,
-                staffId: dbStaffId,
-                staffName: getStaffName(d),
-                department: getDepartment(d)
-            };
-        }
+    console.log("CURRENT STAFF SEARCH:", {
+        storedStaffId,
+        authUid: user?.uid || "",
+        authEmail: user?.email || ""
     });
 
-    if(!found){
-        const authUid = user ? user.uid : "";
-        const authEmail = user ? user.email : "";
-        console.error("STAFF NOT FOUND", {staffId, authUid, authEmail});
-        show("loginMessage",
-            staffId
-                ? "Staff ID " + staffId + " was not found in the staff collection."
-                : "Current staff could not be identified. Please login through the Staff Login page again.",
-            "err");
+    try{
+        const staffSnap = await getDocs(collection(db,"staff"));
+        let found = null;
+
+        staffSnap.forEach(docSnap => {
+            if(found) return;
+
+            const d = docSnap.data() || {};
+            const dbStaffId = getStaffId(d, docSnap.id);
+            const dbEmail = clean(
+                d.email ?? d.emailId ?? d.emailID ?? d.mail ?? d.mailId ??
+                d.officialEmail ?? d.officialMail ?? d.officialMailId ??
+                d.officialMailID ?? d.staffEmail ?? d.staff_email
+            );
+            const dbUid = clean(
+                d.uid ?? d.userId ?? d.userID ?? d.authUid ??
+                d.firebaseUid ?? d.firebaseUID ?? d.authUserId ?? d.authUID
+            );
+
+            const idMatch = storedStaffId && upper(dbStaffId) === upper(storedStaffId);
+            const uidMatch = user && user.uid && (
+                dbUid === user.uid || docSnap.id === user.uid
+            );
+            const emailMatch = user && user.email && dbEmail &&
+                upper(dbEmail) === upper(user.email);
+
+            if(idMatch || uidMatch || emailMatch){
+                found = {
+                    firestoreId: docSnap.id,
+                    staffId: dbStaffId || storedStaffId || user?.uid || "",
+                    staffName: getStaffName(d) || user?.displayName || "",
+                    department: getDepartment(d) || ""
+                };
+            }
+        });
+
+        if(!found){
+            console.error("CURRENT STAFF NOT FOUND", {
+                storedStaffId,
+                authUid: user?.uid || "",
+                authEmail: user?.email || ""
+            });
+
+            show(
+                "loginMessage",
+                "Current staff could not be matched. Please open this page from the Staff Dashboard after login.",
+                "err"
+            );
+            return false;
+        }
+
+        currentStaff = found;
+        console.log("CURRENT STAFF LOADED:", currentStaff);
+
+        $("requesterId").value = currentStaff.staffId;
+        $("requesterName").value = currentStaff.staffName;
+        $("requesterDepartment").value = currentStaff.department;
+
+        sessionStorage.setItem("staffId", currentStaff.staffId);
+        sessionStorage.setItem("staffName", currentStaff.staffName);
+        sessionStorage.setItem("department", currentStaff.department);
+
+        hide("loginMessage");
+        return true;
+    }
+    catch(err){
+        console.error("LOAD CURRENT STAFF ERROR:", err);
+        show("loginMessage", "Unable to load current staff: " + err.message, "err");
         return false;
     }
-
-    currentStaff = found;
-    console.log("CURRENT STAFF LOADED:", currentStaff);
-
-    $("requesterId").value = currentStaff.staffId || "";
-    $("requesterName").value = currentStaff.staffName || "";
-    $("requesterDepartment").value = currentStaff.department || "";
-
-    sessionStorage.setItem("staffId", currentStaff.staffId || "");
-    sessionStorage.setItem("staffName", currentStaff.staffName || "");
-    sessionStorage.setItem("department", currentStaff.department || "");
-
-    hide("loginMessage");
-    return true;
-}catch(err){
-    console.error("LOAD CURRENT STAFF ERROR:", err);
-    show("loginMessage", "Unable to load current staff: " + err.message, "err");
-    return false;
-}
 }
 
 
