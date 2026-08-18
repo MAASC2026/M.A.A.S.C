@@ -5,8 +5,7 @@
 
 <meta charset="UTF-8">
 
-<meta
-name="viewport"
+<meta name="viewport"
 content="width=device-width, initial-scale=1.0">
 
 <title>Leave Approve - HR</title>
@@ -22,139 +21,703 @@ content="width=device-width, initial-scale=1.0">
 
 body{
     background:#f4f6f9;
+    min-height:100vh;
 }
 
-.container{
-    max-width:1500px;
-    margin:30px auto;
-    padding:20px;
-}
+
+/* ==============================
+   HEADER
+============================== */
 
 .header{
+
+    height:70px;
+
     background:#500454;
+
     color:white;
-    padding:22px;
-    border-radius:12px;
-    margin-bottom:20px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    padding:0 25px;
+
+    box-shadow:
+    0 2px 10px rgba(0,0,0,.25);
+
 }
 
 .header h2{
-    margin-bottom:8px;
+    font-size:23px;
 }
+
+.user{
+    font-size:15px;
+}
+
+
+/* ==============================
+   CONTAINER
+============================== */
+
+.container{
+
+    max-width:1450px;
+
+    margin:30px auto;
+
+    padding:0 20px;
+
+}
+
+
+/* ==============================
+   CARD
+============================== */
 
 .card{
+
     background:white;
-    padding:22px;
+
     border-radius:12px;
-    box-shadow:0 3px 12px rgba(0,0,0,.12);
+
+    padding:25px;
+
+    margin-bottom:25px;
+
+    box-shadow:
+    0 3px 12px rgba(0,0,0,.12);
+
 }
 
-.card h3{
+.card h2{
+
     color:#500454;
+
     margin-bottom:20px;
+
 }
 
-.table-container{
+
+/* ==============================
+   DETAILS
+============================== */
+
+.details-grid{
+
+    display:grid;
+
+    grid-template-columns:
+    repeat(
+        auto-fit,
+        minmax(220px,1fr)
+    );
+
+    gap:15px;
+
+}
+
+.detail-box{
+
+    background:#f8f8f8;
+
+    border:1px solid #e2e2e2;
+
+    border-radius:8px;
+
+    padding:15px;
+
+}
+
+.detail-box label{
+
+    display:block;
+
+    font-size:13px;
+
+    color:#777;
+
+    margin-bottom:6px;
+
+}
+
+.detail-box strong{
+
+    font-size:16px;
+
+    color:#333;
+
+}
+
+
+/* ==============================
+   FILTER
+============================== */
+
+.filter-grid{
+
+    display:grid;
+
+    grid-template-columns:
+    repeat(
+        auto-fit,
+        minmax(220px,1fr)
+    );
+
+    gap:15px;
+
+}
+
+.filter-group{
+
+    display:flex;
+
+    flex-direction:column;
+
+}
+
+.filter-group label{
+
+    font-weight:bold;
+
+    color:#333;
+
+    margin-bottom:7px;
+
+}
+
+select,
+input{
+
+    width:100%;
+
+    padding:11px;
+
+    border:1px solid #ccc;
+
+    border-radius:7px;
+
+    font-size:14px;
+
+    outline:none;
+
+}
+
+select:focus,
+input:focus{
+
+    border-color:#500454;
+
+}
+
+
+/* ==============================
+   BUTTONS
+============================== */
+
+button{
+
+    border:none;
+
+    border-radius:7px;
+
+    padding:10px 16px;
+
+    font-size:13px;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+}
+
+.refresh-btn{
+
+    background:#500454;
+
+    color:white;
+
+}
+
+.refresh-btn:hover{
+
+    background:#6d0873;
+
+}
+
+.approve-btn{
+
+    background:#198754;
+
+    color:white;
+
+    margin-right:5px;
+
+}
+
+.approve-btn:hover{
+
+    background:#146c43;
+
+}
+
+.reject-btn{
+
+    background:#dc3545;
+
+    color:white;
+
+}
+
+.reject-btn:hover{
+
+    background:#bb2d3b;
+
+}
+
+
+/* ==============================
+   TABLE
+============================== */
+
+.table-wrapper{
+
     overflow-x:auto;
+
 }
 
 table{
+
     width:100%;
+
     border-collapse:collapse;
-    min-width:1100px;
+
+    min-width:1250px;
+
 }
 
 th,
 td{
+
     padding:12px;
+
     border-bottom:1px solid #eee;
+
     text-align:left;
-    vertical-align:top;
+
+    vertical-align:middle;
+
 }
 
 th{
+
     background:#500454;
+
     color:white;
+
+    white-space:nowrap;
+
 }
 
-button{
-    padding:9px 14px;
-    border:none;
-    border-radius:6px;
-    color:white;
+tbody tr:hover{
+
+    background:#fafafa;
+
+}
+
+
+/* ==============================
+   BADGES
+============================== */
+
+.badge{
+
+    display:inline-block;
+
+    padding:6px 10px;
+
+    border-radius:15px;
+
+    font-size:12px;
+
     font-weight:bold;
-    cursor:pointer;
-    margin:2px;
+
+    white-space:nowrap;
+
 }
 
-.approve{
-    background:#16a34a;
+.pending{
+
+    background:#fff3cd;
+
+    color:#856404;
+
 }
 
-.reject{
-    background:#dc2626;
+.approved{
+
+    background:#d4edda;
+
+    color:#155724;
+
 }
 
-.message{
+.rejected{
+
+    background:#f8d7da;
+
+    color:#721c24;
+
+}
+
+.head-leave{
+
+    background:#e2d9f3;
+
+    color:#4b287d;
+
+}
+
+.staff-leave{
+
+    background:#d1ecf1;
+
+    color:#0c5460;
+
+}
+
+
+/* ==============================
+   MESSAGE
+============================== */
+
+#message{
+
     display:none;
-    padding:12px;
-    margin-bottom:18px;
+
+    padding:14px;
+
+    margin-bottom:20px;
+
     border-radius:7px;
+
     font-weight:bold;
+
 }
 
-.success{
-    background:#dcfce7;
-    color:#166534;
-}
 
-.error{
-    background:#fee2e2;
-    color:#991b1b;
-}
+/* ==============================
+   EMPTY
+============================== */
 
 .empty{
+
     text-align:center;
-    padding:25px;
-    color:#666;
+
+    padding:35px;
+
+    color:#777;
+
+    font-weight:bold;
+
+}
+
+.loading{
+
+    text-align:center;
+
+    padding:35px;
+
+    color:#777;
+
+}
+
+
+/* ==============================
+   REASON
+============================== */
+
+.reason{
+
+    max-width:250px;
+
+    line-height:1.4;
+
+}
+
+
+/* ==============================
+   MOBILE
+============================== */
+
+@media(max-width:700px){
+
+    .header{
+
+        padding:0 15px;
+
+    }
+
+    .header h2{
+
+        font-size:18px;
+
+    }
+
+    .header .user{
+
+        font-size:12px;
+
+    }
+
+    .container{
+
+        padding:0 10px;
+
+        margin-top:20px;
+
+    }
+
+    .card{
+
+        padding:18px;
+
+    }
+
 }
 
 </style>
 
 </head>
 
+
 <body>
 
-<div class="container">
 
+<!-- =================================
+     HEADER
+================================= -->
 
 <div class="header">
 
     <h2>
-        Leave Approval - HR
+        HR LEAVE APPROVAL
     </h2>
 
-    <p>
-        Head Staff Leave Approval
-    </p>
+    <div class="user">
+
+        Welcome,
+
+        <span id="headerStaffName">
+            HR
+        </span>
+
+    </div>
 
 </div>
 
 
+
+<div class="container">
+
+
+<!-- =================================
+     HR DETAILS
+================================= -->
+
 <div class="card">
 
-    <div
-        id="message"
-        class="message">
+    <h2>
+        HR Details
+    </h2>
+
+
+    <div class="details-grid">
+
+
+        <div class="detail-box">
+
+            <label>
+                Staff ID
+            </label>
+
+            <strong id="staffId">
+                -
+            </strong>
+
+        </div>
+
+
+        <div class="detail-box">
+
+            <label>
+                Staff Name
+            </label>
+
+            <strong id="staffName">
+                -
+            </strong>
+
+        </div>
+
+
+        <div class="detail-box">
+
+            <label>
+                Department
+            </label>
+
+            <strong id="department">
+                -
+            </strong>
+
+        </div>
+
+
+    </div>
+
+</div>
+
+
+
+<!-- =================================
+     MESSAGE
+================================= -->
+
+<div id="message"></div>
+
+
+
+<!-- =================================
+     FILTER
+================================= -->
+
+<div class="card">
+
+    <h2>
+        Pending HR Approval
+    </h2>
+
+
+    <div class="filter-grid">
+
+
+        <div class="filter-group">
+
+            <label>
+                Applicant Type
+            </label>
+
+
+            <select id="applicantFilter">
+
+                <option value="ALL">
+                    All
+                </option>
+
+                <option value="Head">
+                    Head
+                </option>
+
+                <option value="Staff">
+                    Staff / Worker
+                </option>
+
+            </select>
+
+        </div>
+
+
+
+        <div class="filter-group">
+
+            <label>
+                Leave Type
+            </label>
+
+
+            <select id="leaveTypeFilter">
+
+                <option value="ALL">
+                    All Leave Types
+                </option>
+
+                <option value="Casual Leave">
+                    Casual Leave
+                </option>
+
+                <option value="Sick Leave">
+                    Sick Leave
+                </option>
+
+            </select>
+
+        </div>
+
+
+
+        <div class="filter-group">
+
+            <label>
+                Department
+            </label>
+
+
+            <select id="departmentFilter">
+
+                <option value="ALL">
+                    All Departments
+                </option>
+
+            </select>
+
+        </div>
+
+
+
+        <div class="filter-group">
+
+            <label>
+                Search Staff
+            </label>
+
+
+            <input
+                type="text"
+                id="staffSearch"
+                placeholder="Staff name or ID">
+
+        </div>
+
+
     </div>
 
 
-    <h3>
-        Pending Head Staff Leave Applications
-    </h3>
+    <br>
 
 
-    <div class="table-container">
+    <button
+        class="refresh-btn"
+        onclick="loadPendingLeaves()">
+
+        🔄 REFRESH
+
+    </button>
+
+</div>
+
+
+
+<!-- =================================
+     TABLE
+================================= -->
+
+<div class="card">
+
+    <div class="table-wrapper">
 
         <table>
 
@@ -162,26 +725,69 @@ button{
 
                 <tr>
 
-                    <th>Head Staff</th>
-                    <th>Staff ID</th>
-                    <th>Department</th>
-                    <th>Leave Type</th>
-                    <th>From</th>
-                    <th>To</th>
-                    <th>Days</th>
-                    <th>Reason</th>
-                    <th>Action</th>
+                    <th>
+                        Staff ID
+                    </th>
+
+                    <th>
+                        Staff Name
+                    </th>
+
+                    <th>
+                        Department
+                    </th>
+
+                    <th>
+                        Applicant
+                    </th>
+
+                    <th>
+                        Leave Type
+                    </th>
+
+                    <th>
+                        From
+                    </th>
+
+                    <th>
+                        To
+                    </th>
+
+                    <th>
+                        Days
+                    </th>
+
+                    <th>
+                        Reason
+                    </th>
+
+                    <th>
+                        Head Approval
+                    </th>
+
+                    <th>
+                        Applied Date
+                    </th>
+
+                    <th>
+                        Action
+                    </th>
 
                 </tr>
 
             </thead>
 
-            <tbody id="table">
+
+            <tbody id="leaveTable">
 
                 <tr>
 
-                    <td colspan="9">
-                        Loading...
+                    <td
+                        colspan="12"
+                        class="loading">
+
+                        Loading pending leave requests...
+
                     </td>
 
                 </tr>
@@ -194,192 +800,735 @@ button{
 
 </div>
 
+
 </div>
+
 
 
 <script type="module">
 
-import { db } from "./firebase-config.js";
+
+/* =========================================
+   FIREBASE
+========================================= */
 
 import {
+
+    initializeApp
+
+}
+from
+"https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+
+import {
+
+    getFirestore,
+
     collection,
+
     getDocs,
+
     query,
+
     where,
+
     doc,
+
     updateDoc,
-    serverTimestamp
-}
-from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-
-/* =====================================
-   EXISTING ERP SESSION
-===================================== */
-
-const hrId =
-    sessionStorage.getItem("staffId");
-
-const hrName =
-    sessionStorage.getItem("staffName");
-
-
-if(!hrId){
-
-    alert("Please Login");
-
-    window.location.href="login.html";
+    Timestamp
 
 }
+from
+"https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 
-/* =====================================
-   MESSAGE
-===================================== */
 
-function showMessage(text,type){
+/* =========================================
+   FIREBASE CONFIG
+========================================= */
 
-    const box =
-        document.getElementById("message");
+const firebaseConfig = {
 
-    box.textContent=text;
+    apiKey:
+    "AIzaSyAIv3091VM-gkmdwEAn7OhXWd9Cm2zh2bo",
 
-    box.className=
-        "message "+type;
+    authDomain:
+    "maasc-2026.firebaseapp.com",
 
-    box.style.display="block";
+    projectId:
+    "maasc-2026",
+
+    storageBucket:
+    "maasc-2026.appspot.com",
+
+    messagingSenderId:
+    "585813001586",
+
+    appId:
+    "1:585813001586:web:664e0e90ff0725d2e849eb"
+
+};
+
+
+const app =
+initializeApp(
+    firebaseConfig
+);
+
+
+const db =
+getFirestore(app);
+
+
+
+/* =========================================
+   SESSION
+========================================= */
+
+const currentStaffId =
+sessionStorage.getItem(
+    "staffId"
+);
+
+const currentStaffName =
+sessionStorage.getItem(
+    "staffName"
+);
+
+const currentDepartment =
+sessionStorage.getItem(
+    "department"
+);
+
+
+
+if(
+    !currentStaffId ||
+    !currentStaffName
+){
+
+    alert(
+        "Staff login session not found. Please login again."
+    );
+
+    window.location.href =
+        "login.html";
 
 }
 
 
-/* =====================================
-   LOAD HEAD LEAVES
-===================================== */
 
-async function loadRequests(){
+/* =========================================
+   DISPLAY
+========================================= */
+
+document
+.getElementById(
+    "headerStaffName"
+)
+.textContent =
+currentStaffName || "HR";
+
+
+document
+.getElementById(
+    "staffId"
+)
+.textContent =
+currentStaffId || "-";
+
+
+document
+.getElementById(
+    "staffName"
+)
+.textContent =
+currentStaffName || "-";
+
+
+document
+.getElementById(
+    "department"
+)
+.textContent =
+currentDepartment || "-";
+
+
+
+/* =========================================
+   GLOBAL DATA
+========================================= */
+
+let allPendingLeaves = [];
+
+
+
+/* =========================================
+   LOAD PENDING HR LEAVES
+========================================= */
+
+window.loadPendingLeaves =
+async function(){
 
     const table =
-        document.getElementById("table");
+    document.getElementById(
+        "leaveTable"
+    );
 
 
-    table.innerHTML =
-        `<tr>
-            <td colspan="9">
-                Loading...
+    table.innerHTML = `
+
+        <tr>
+
+            <td
+                colspan="12"
+                class="loading">
+
+                Loading pending leave requests...
+
             </td>
-        </tr>`;
+
+        </tr>
+
+    `;
 
 
     try{
 
         /*
-           Only HEAD applications that are
-           waiting for HR approval.
-        */
+         * Only requests waiting
+         * for HR approval.
+         */
 
-        const q=query(
+        const q =
+        query(
 
             collection(
                 db,
-                "leave_requests"
-            ),
-
-            where(
-                "applicantRole",
-                "==",
-                "HEAD"
+                "leaveRequests"
             ),
 
             where(
                 "status",
                 "==",
-                "PENDING_HR"
+                "Pending HR Approval"
             )
 
         );
 
 
         const snap =
-            await getDocs(q);
+        await getDocs(q);
 
 
-        table.innerHTML="";
+        allPendingLeaves = [];
 
 
-        if(snap.empty){
+        snap.forEach(
+            item => {
 
-            table.innerHTML =
-                `<tr>
-                    <td
-                        colspan="9"
-                        class="empty">
-                        No Head Staff leave applications waiting for HR approval.
-                    </td>
-                </tr>`;
-
-            return;
-
-        }
-
-
-        snap.forEach(item=>{
-
-            const data =
+                const data =
                 item.data();
 
 
-            const row =
-                document.createElement("tr");
+                allPendingLeaves.push({
+
+                    id:
+                    item.id,
+
+                    ...data
+
+                });
+
+            }
+        );
 
 
-            row.innerHTML = `
+        /*
+         * Newest first.
+         */
 
-                <td>
-                    ${data.applicantName || ""}
+        allPendingLeaves.sort(
+            (a,b) => {
+
+                const aTime =
+                a.createdAt?.seconds ||
+                0;
+
+
+                const bTime =
+                b.createdAt?.seconds ||
+                0;
+
+
+                return (
+                    Number(bTime) -
+                    Number(aTime)
+                );
+
+            }
+        );
+
+
+        createDepartmentFilter();
+
+        renderPendingLeaves();
+
+
+    }catch(error){
+
+        console.error(
+            "HR LOAD ERROR:",
+            error
+        );
+
+
+        table.innerHTML = `
+
+            <tr>
+
+                <td
+                    colspan="12"
+                    class="empty">
+
+                    Unable to load pending leave requests.
+
                 </td>
 
-                <td>
-                    ${data.staffId || ""}
+            </tr>
+
+        `;
+
+
+        showMessage(
+
+            "Unable to load leave requests. Check Firestore permissions.",
+
+            "error"
+
+        );
+
+    }
+
+};
+
+
+
+/* =========================================
+   DEPARTMENT FILTER
+========================================= */
+
+function createDepartmentFilter(){
+
+    const select =
+    document.getElementById(
+        "departmentFilter"
+    );
+
+
+    const departments =
+    new Set();
+
+
+    allPendingLeaves.forEach(
+        leave => {
+
+            if(
+                leave.department
+            ){
+
+                departments.add(
+                    String(
+                        leave.department
+                    ).trim()
+                );
+
+            }
+
+        }
+    );
+
+
+    select.innerHTML = `
+
+        <option value="ALL">
+            All Departments
+        </option>
+
+    `;
+
+
+    Array.from(
+        departments
+    )
+    .sort()
+    .forEach(
+        department => {
+
+            const option =
+            document.createElement(
+                "option"
+            );
+
+
+            option.value =
+                department;
+
+
+            option.textContent =
+                department;
+
+
+            select.appendChild(
+                option
+            );
+
+        }
+    );
+
+}
+
+
+
+/* =========================================
+   RENDER
+========================================= */
+
+function renderPendingLeaves(){
+
+    const table =
+    document.getElementById(
+        "leaveTable"
+    );
+
+
+    const applicantFilter =
+    document.getElementById(
+        "applicantFilter"
+    ).value;
+
+
+    const leaveTypeFilter =
+    document.getElementById(
+        "leaveTypeFilter"
+    ).value;
+
+
+    const departmentFilter =
+    document.getElementById(
+        "departmentFilter"
+    ).value;
+
+
+    const search =
+    document.getElementById(
+        "staffSearch"
+    )
+    .value
+    .trim()
+    .toLowerCase();
+
+
+
+    let filtered =
+    allPendingLeaves.filter(
+        leave => {
+
+
+            /* =========================
+               APPLICANT
+            ========================= */
+
+            if(
+                applicantFilter !==
+                "ALL"
+            ){
+
+                const type =
+                String(
+                    leave.applicantType ||
+                    "Staff"
+                );
+
+
+                if(
+                    type.toLowerCase()
+                    !==
+                    applicantFilter.toLowerCase()
+                ){
+
+                    return false;
+
+                }
+
+            }
+
+
+
+            /* =========================
+               LEAVE TYPE
+            ========================= */
+
+            if(
+                leaveTypeFilter !==
+                "ALL"
+            ){
+
+                if(
+                    String(
+                        leave.leaveType ||
+                        ""
+                    )
+                    !==
+                    leaveTypeFilter
+                ){
+
+                    return false;
+
+                }
+
+            }
+
+
+
+            /* =========================
+               DEPARTMENT
+            ========================= */
+
+            if(
+                departmentFilter !==
+                "ALL"
+            ){
+
+                if(
+                    String(
+                        leave.department ||
+                        ""
+                    )
+                    .toLowerCase()
+                    !==
+                    departmentFilter
+                    .toLowerCase()
+                ){
+
+                    return false;
+
+                }
+
+            }
+
+
+
+            /* =========================
+               SEARCH
+            ========================= */
+
+            if(search){
+
+                const name =
+                String(
+                    leave.staffName ||
+                    ""
+                )
+                .toLowerCase();
+
+
+                const id =
+                String(
+                    leave.staffId ||
+                    ""
+                )
+                .toLowerCase();
+
+
+                if(
+                    !name.includes(
+                        search
+                    )
+                    &&
+                    !id.includes(
+                        search
+                    )
+                ){
+
+                    return false;
+
+                }
+
+            }
+
+
+            return true;
+
+        }
+    );
+
+
+
+    table.innerHTML = "";
+
+
+
+    if(
+        filtered.length === 0
+    ){
+
+        table.innerHTML = `
+
+            <tr>
+
+                <td
+                    colspan="12"
+                    class="empty">
+
+                    No pending HR leave requests found.
+
                 </td>
 
-                <td>
-                    ${data.department || ""}
-                </td>
+            </tr>
+
+        `;
+
+        return;
+
+    }
+
+
+
+    filtered.forEach(
+        leave => {
+
+            const tr =
+            document.createElement(
+                "tr"
+            );
+
+
+            tr.innerHTML = `
 
                 <td>
-                    ${data.leaveType || ""}
+
+                    ${escapeHtml(
+                        leave.staffId
+                    )}
+
                 </td>
 
-                <td>
-                    ${data.fromDate || ""}
-                </td>
 
                 <td>
-                    ${data.toDate || ""}
+
+                    ${escapeHtml(
+                        leave.staffName
+                    )}
+
                 </td>
 
-                <td>
-                    ${data.days || ""}
-                </td>
 
                 <td>
-                    ${data.reason || ""}
+
+                    ${escapeHtml(
+                        leave.department
+                    )}
+
                 </td>
+
+
+                <td>
+
+                    ${applicantBadge(
+                        leave.applicantType
+                    )}
+
+                </td>
+
+
+                <td>
+
+                    ${escapeHtml(
+                        leave.leaveType
+                    )}
+
+                </td>
+
+
+                <td>
+
+                    ${formatDate(
+                        leave.fromDate
+                    )}
+
+                </td>
+
+
+                <td>
+
+                    ${formatDate(
+                        leave.toDate
+                    )}
+
+                </td>
+
+
+                <td>
+
+                    <b>
+
+                        ${Number(
+                            leave.numberOfDays ||
+                            0
+                        )}
+
+                    </b>
+
+                </td>
+
+
+                <td class="reason">
+
+                    ${escapeHtml(
+                        leave.reason
+                    )}
+
+                </td>
+
+
+                <td>
+
+                    ${headApproval(
+                        leave
+                    )}
+
+                </td>
+
+
+                <td>
+
+                    ${formatTimestamp(
+                        leave.createdAt
+                    )}
+
+                </td>
+
 
                 <td>
 
                     <button
-                        class="approve"
-                        data-id="${item.id}"
-                        data-action="APPROVE">
-                        Approve
+                        class="approve-btn"
+                        onclick="approveHRLeave('${leave.id}')">
+
+                        ✓ APPROVE
+
                     </button>
 
+
                     <button
-                        class="reject"
-                        data-id="${item.id}"
-                        data-action="REJECT">
-                        Reject
+                        class="reject-btn"
+                        onclick="rejectHRLeave('${leave.id}')">
+
+                        ✕ REJECT
+
                     </button>
 
                 </td>
@@ -387,160 +1536,674 @@ async function loadRequests(){
             `;
 
 
-            table.appendChild(row);
+            table.appendChild(
+                tr
+            );
 
-        });
-
-
-    }catch(error){
-
-        console.error(error);
-
-        table.innerHTML =
-            `<tr>
-                <td
-                    colspan="9"
-                    class="empty">
-                    Error loading applications:
-                    ${error.message}
-                </td>
-            </tr>`;
-
-    }
+        }
+    );
 
 }
 
 
-/* =====================================
-   ACTION
-===================================== */
 
-document
-.getElementById("table")
-.addEventListener(
-    "click",
-    async function(e){
+/* =========================================
+   APPLICANT BADGE
+========================================= */
 
-        const button =
-            e.target.closest("button");
+function applicantBadge(
+    type
+){
 
-
-        if(!button){
-            return;
-        }
+    const value =
+    String(
+        type ||
+        "Staff"
+    );
 
 
-        const id =
-            button.dataset.id;
+    if(
+        value.toLowerCase()
+        ===
+        "head"
+    ){
 
+        return `
 
-        const action =
-            button.dataset.action;
+            <span class="badge head-leave">
 
+                HEAD
 
-        const question =
-            action==="APPROVE"
-            ?
-            "Approve this Head Staff leave?"
-            :
-            "Reject this Head Staff leave?";
+            </span>
 
-
-        if(!confirm(question)){
-            return;
-        }
-
-
-        try{
-
-            const ref =
-                doc(
-                    db,
-                    "leave_requests",
-                    id
-                );
-
-
-            if(action==="APPROVE"){
-
-                await updateDoc(
-                    ref,
-                    {
-
-                        status:
-                            "APPROVED_BY_HR",
-
-                        hrAction:
-                            "APPROVED",
-
-                        hrActionBy:
-                            hrId,
-
-                        hrActionAt:
-                            serverTimestamp()
-
-                    }
-                );
-
-
-                showMessage(
-                    "Head Staff leave approved successfully.",
-                    "success"
-                );
-
-            }
-
-
-            if(action==="REJECT"){
-
-                await updateDoc(
-                    ref,
-                    {
-
-                        status:
-                            "REJECTED_BY_HR",
-
-                        hrAction:
-                            "REJECTED",
-
-                        hrActionBy:
-                            hrId,
-
-                        hrActionAt:
-                            serverTimestamp()
-
-                    }
-                );
-
-
-                showMessage(
-                    "Head Staff leave rejected.",
-                    "success"
-                );
-
-            }
-
-
-            await loadRequests();
-
-
-        }catch(error){
-
-            console.error(error);
-
-            showMessage(
-                "Unable to process leave: "+
-                error.message,
-                "error"
-            );
-
-        }
+        `;
 
     }
+
+
+    return `
+
+        <span class="badge staff-leave">
+
+            STAFF / WORKER
+
+        </span>
+
+    `;
+
+}
+
+
+
+/* =========================================
+   HEAD APPROVAL
+========================================= */
+
+function headApproval(
+    leave
+){
+
+    if(
+        String(
+            leave.applicantType ||
+            ""
+        )
+        .toLowerCase()
+        ===
+        "head"
+    ){
+
+        return `
+
+            <span class="badge head-leave">
+
+                NOT REQUIRED
+
+            </span>
+
+        `;
+
+    }
+
+
+    if(
+        leave.headStatus ===
+        "Approved"
+    ){
+
+        return `
+
+            <span class="badge approved">
+
+                APPROVED
+
+            </span>
+
+        `;
+
+    }
+
+
+    return `
+
+        <span class="badge pending">
+
+            PENDING
+
+        </span>
+
+    `;
+
+}
+
+
+
+/* =========================================
+   APPROVE
+========================================= */
+
+window.approveHRLeave =
+async function(
+    leaveId
+){
+
+    const leave =
+    allPendingLeaves.find(
+        item =>
+        item.id === leaveId
+    );
+
+
+    if(!leave){
+
+        alert(
+            "Leave request not found."
+        );
+
+        return;
+
+    }
+
+
+
+    const confirmation =
+    confirm(
+
+        "Approve this leave?\n\n" +
+
+        "Staff: " +
+        leave.staffName +
+        "\n" +
+
+        "Staff ID: " +
+        leave.staffId +
+        "\n" +
+
+        "Department: " +
+        leave.department +
+        "\n" +
+
+        "Leave Type: " +
+        leave.leaveType +
+        "\n" +
+
+        "From: " +
+        formatDate(
+            leave.fromDate
+        ) +
+        "\n" +
+
+        "To: " +
+        formatDate(
+            leave.toDate
+        ) +
+        "\n" +
+
+        "Days: " +
+        leave.numberOfDays
+
+    );
+
+
+    if(!confirmation){
+
+        return;
+
+    }
+
+
+
+    try{
+
+        const leaveRef =
+        doc(
+            db,
+            "leaveRequests",
+            leaveId
+        );
+
+
+        await updateDoc(
+
+            leaveRef,
+
+            {
+
+                status:
+                "Approved",
+
+                hrStatus:
+                "Approved",
+
+                hrApprovedBy:
+                currentStaffId,
+
+                hrApprovedByName:
+                currentStaffName,
+
+                hrApprovedAt:
+                Timestamp.now()
+
+            }
+
+        );
+
+
+        showMessage(
+
+            "Leave approved successfully.",
+
+            "success"
+
+        );
+
+
+        /*
+         * Remove from pending table.
+         */
+
+        allPendingLeaves =
+        allPendingLeaves.filter(
+            item =>
+            item.id !== leaveId
+        );
+
+
+        createDepartmentFilter();
+
+        renderPendingLeaves();
+
+
+    }catch(error){
+
+        console.error(
+            "HR APPROVE ERROR:",
+            error
+        );
+
+
+        showMessage(
+
+            "Unable to approve leave. Check Firestore permissions.",
+
+            "error"
+
+        );
+
+    }
+
+};
+
+
+
+/* =========================================
+   REJECT
+========================================= */
+
+window.rejectHRLeave =
+async function(
+    leaveId
+){
+
+    const leave =
+    allPendingLeaves.find(
+        item =>
+        item.id === leaveId
+    );
+
+
+    if(!leave){
+
+        alert(
+            "Leave request not found."
+        );
+
+        return;
+
+    }
+
+
+
+    const reason =
+    prompt(
+
+        "Enter rejection reason for " +
+        leave.staffName +
+        ":"
+
+    );
+
+
+    if(
+        reason === null
+    ){
+
+        return;
+
+    }
+
+
+    const rejectionReason =
+    reason.trim();
+
+
+    if(
+        rejectionReason === ""
+    ){
+
+        alert(
+            "Please enter a rejection reason."
+        );
+
+        return;
+
+    }
+
+
+
+    const confirmation =
+    confirm(
+
+        "Reject this leave request?"
+
+    );
+
+
+    if(!confirmation){
+
+        return;
+
+    }
+
+
+
+    try{
+
+        const leaveRef =
+        doc(
+            db,
+            "leaveRequests",
+            leaveId
+        );
+
+
+        await updateDoc(
+
+            leaveRef,
+
+            {
+
+                status:
+                "Rejected",
+
+                hrStatus:
+                "Rejected",
+
+                hrRejectedBy:
+                currentStaffId,
+
+                hrRejectedByName:
+                currentStaffName,
+
+                hrRejectedAt:
+                Timestamp.now(),
+
+                hrRejectionReason:
+                rejectionReason
+
+            }
+
+        );
+
+
+        showMessage(
+
+            "Leave request rejected.",
+
+            "success"
+
+        );
+
+
+        allPendingLeaves =
+        allPendingLeaves.filter(
+            item =>
+            item.id !== leaveId
+        );
+
+
+        createDepartmentFilter();
+
+        renderPendingLeaves();
+
+
+    }catch(error){
+
+        console.error(
+            "HR REJECT ERROR:",
+            error
+        );
+
+
+        showMessage(
+
+            "Unable to reject leave. Check Firestore permissions.",
+
+            "error"
+
+        );
+
+    }
+
+};
+
+
+
+/* =========================================
+   FILTER EVENTS
+========================================= */
+
+document
+.getElementById(
+    "applicantFilter"
+)
+.addEventListener(
+    "change",
+    renderPendingLeaves
 );
 
 
-loadRequests();
+document
+.getElementById(
+    "leaveTypeFilter"
+)
+.addEventListener(
+    "change",
+    renderPendingLeaves
+);
+
+
+document
+.getElementById(
+    "departmentFilter"
+)
+.addEventListener(
+    "change",
+    renderPendingLeaves
+);
+
+
+document
+.getElementById(
+    "staffSearch"
+)
+.addEventListener(
+    "input",
+    renderPendingLeaves
+);
+
+
+
+/* =========================================
+   MESSAGE
+========================================= */
+
+function showMessage(
+    text,
+    type
+){
+
+    const message =
+    document.getElementById(
+        "message"
+    );
+
+
+    message.style.display =
+        "block";
+
+
+    message.textContent =
+        text;
+
+
+    if(
+        type ===
+        "success"
+    ){
+
+        message.style.background =
+            "#d4edda";
+
+        message.style.color =
+            "#155724";
+
+    }else{
+
+        message.style.background =
+            "#f8d7da";
+
+        message.style.color =
+            "#721c24";
+
+    }
+
+
+    setTimeout(
+        () => {
+
+            message.style.display =
+                "none";
+
+        },
+        5000
+    );
+
+}
+
+
+
+/* =========================================
+   FORMAT DATE
+========================================= */
+
+function formatDate(
+    value
+){
+
+    if(!value){
+
+        return "-";
+
+    }
+
+
+    const parts =
+    String(value)
+    .split("-");
+
+
+    if(
+        parts.length !== 3
+    ){
+
+        return escapeHtml(
+            value
+        );
+
+    }
+
+
+    return (
+
+        parts[2] +
+        "-" +
+        parts[1] +
+        "-" +
+        parts[0]
+
+    );
+
+}
+
+
+
+/* =========================================
+   FORMAT TIMESTAMP
+========================================= */
+
+function formatTimestamp(
+    timestamp
+){
+
+    if(
+        !timestamp ||
+        !timestamp.seconds
+    ){
+
+        return "-";
+
+    }
+
+
+    return new Date(
+        timestamp.seconds * 1000
+    )
+    .toLocaleDateString(
+        "en-IN"
+    );
+
+}
+
+
+
+/* =========================================
+   ESCAPE HTML
+========================================= */
+
+function escapeHtml(
+    value
+){
+
+    return String(
+        value || ""
+    )
+
+    .replace(
+        /&/g,
+        "&amp;"
+    )
+
+    .replace(
+        /</g,
+        "&lt;"
+    )
+
+    .replace(
+        />/g,
+        "&gt;"
+    )
+
+    .replace(
+        /"/g,
+        "&quot;"
+    )
+
+    .replace(
+        /'/g,
+        "&#039;"
+    );
+
+}
+
+
+
+/* =========================================
+   INITIAL LOAD
+========================================= */
+
+loadPendingLeaves();
+
 
 </script>
 
