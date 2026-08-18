@@ -905,14 +905,10 @@ STAFF FIELD HELPERS
 function getStaffId(d, documentId = ""){
 
 return clean(
-
-d.staffId ??
-d.staffID ??
-d.staff_id ??
-d.staff ??
-d.id ??
-documentId
-
+ d.staffId ?? d.staffID ?? d.staff_id ?? d.staffCode ??
+ d.staff_code ?? d.employeeId ?? d.employeeID ?? d.empId ??
+ d.employeeCode ?? d.employee_code ?? d.code ?? d.staff ??
+ d.id ?? documentId
 );
 
 }
@@ -920,31 +916,20 @@ documentId
 
 
 function getStaffName(d){
-
 return clean(
-
-d.staffName ??
-d.name ??
-d.staff_name ??
-d.displayName ??
-d.fullName
-
+ d.staffName ?? d.staff_name ?? d.name ?? d.displayName ??
+ d.fullName ?? d.employeeName ?? d.employee_name
 );
-
 }
 
 
 
 function getDepartment(d){
-
 return clean(
-
-d.department ??
-d.dept ??
-d.departmentName
-
+ d.department ?? d.departmentName ?? d.department_name ??
+ d.dept ?? d.deptName ?? d.dept_name ?? d.Department ??
+ d.departmentId
 );
-
 }
 
 
@@ -1028,37 +1013,32 @@ GET CURRENT STAFF ID
 ========================================================= */
 
 function getCurrentStaffId(){
-
 const keys = [
-"staffId",
-"staffID",
-"currentStaffId",
-"currentStaffID",
-"loggedInStaffId",
-"loggedInStaffID",
-"userStaffId",
-"staff_id"
+ "staffId","staffID","staff_id","staffCode","staff_code",
+ "employeeId","employeeID","empId","employeeCode",
+ "currentStaffId","currentStaffID","loggedInStaffId","loggedInStaffID",
+ "userStaffId","currentUserId","loginStaffId"
 ];
 
 for(const storage of [sessionStorage, localStorage]){
-    for(const key of keys){
-        const value = clean(storage.getItem(key));
-        if(value) return value;
-    }
-
-    for(const key of ["currentStaff","loggedInStaff","user","staff"]){
-        const raw = storage.getItem(key);
-        if(!raw) continue;
-        try{
-            const obj = JSON.parse(raw);
-            const value = clean(
-                obj.staffId ?? obj.staffID ?? obj.staff_id ?? obj.id
-            );
-            if(value) return value;
-        }catch(e){}
-    }
+ for(const key of keys){
+  const value = clean(storage.getItem(key));
+  if(value) return value;
+ }
+ for(const key of ["currentStaff","loggedInStaff","currentUser","loggedInUser","staff","staffData","user","userData","profile"]){
+  const raw = storage.getItem(key);
+  if(!raw) continue;
+  try{
+   const obj = JSON.parse(raw);
+   const value = clean(
+    obj.staffId ?? obj.staffID ?? obj.staff_id ?? obj.staffCode ??
+    obj.employeeId ?? obj.employeeID ?? obj.empId ?? obj.employeeCode ??
+    obj.userStaffId ?? (obj.staff && (obj.staff.staffId ?? obj.staff.staffID))
+   );
+   if(value) return value;
+  }catch(e){}
+ }
 }
-
 return "";
 }
 
@@ -1070,7 +1050,7 @@ LOAD CURRENT STAFF
 async function loadCurrentStaff(){
 
 let staffId = getCurrentStaffId();
-const user = auth.currentUser;
+let user = auth.currentUser;
 
 console.log("SESSION STAFF ID:", staffId);
 console.log("FIREBASE USER:", user ? {uid:user.uid,email:user.email} : null);
@@ -2781,13 +2761,24 @@ INIT
 
 async function init(){
 
-/*
-* FIRST:
-* Identify staff using Staff ID.
-*/
+/* Wait until Firebase Auth has finished restoring the login session. */
+let user = auth.currentUser;
+if(!user){
+ await new Promise(resolve => {
+  let done = false;
+  const timer = setTimeout(() => { if(!done){ done=true; resolve(); } }, 5000);
+  const unsubscribe = auth.onAuthStateChanged(u => {
+   if(!done){ done=true; clearTimeout(timer); unsubscribe(); resolve(); }
+  });
+ });
+}
 
-const loaded =
-await loadCurrentStaff();
+console.log("AUTH READY:", auth.currentUser ? {
+ uid: auth.currentUser.uid,
+ email: auth.currentUser.email
+} : null);
+
+const loaded = await loadCurrentStaff();
 
 
 if(!loaded){
