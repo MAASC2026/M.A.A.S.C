@@ -1027,7 +1027,7 @@ import {
     initializeApp
 }
 from
-"https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+"https://www\.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
 
 import {
@@ -1038,7 +1038,7 @@ import {
     serverTimestamp
 }
 from
-"https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+"https://www\.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 
 /* =====================================================
@@ -2197,7 +2197,7 @@ function updateHourHeaders(session){
 
         }
 
-        headers[i].innerHTML = `
+        headers[i].innerHTML = \`
 
             <div>
                 Hour ${i}
@@ -2207,7 +2207,7 @@ function updateHourHeaders(session){
                 ${escapeHtml(times[i-1])}
             </div>
 
-        `;
+        \`;
 
     }
 
@@ -2273,7 +2273,7 @@ function renderTimetable(day,session){
     dayCell.textContent =
         normalizedDay;
 
-    row.appendChild(
+    row\.appendChild(
         dayCell
     );
 
@@ -2284,7 +2284,7 @@ function renderTimetable(day,session){
 
     for(let hour=1;hour<=5;hour++){
 
-        row.appendChild(
+        row\.appendChild(
 
             createPeriodCell(
 
@@ -2342,7 +2342,7 @@ function createPeriodCell(
 
     if(!entry){
 
-        cell.innerHTML = `
+        cell.innerHTML = \`
 
             <div class="period free">
 
@@ -2356,7 +2356,7 @@ function createPeriodCell(
 
             </div>
 
-        `;
+        \`;
 
         return cell;
 
@@ -2370,7 +2370,7 @@ function createPeriodCell(
 
     const roomHtml = room
 
-        ? `
+        ? \`
 
         <div class="room">
 
@@ -2379,9 +2379,9 @@ function createPeriodCell(
 
         </div>
 
-        `
+        \`
 
-        : `
+        : \`
 
         <div class="room missing">
 
@@ -2390,10 +2390,10 @@ function createPeriodCell(
 
         </div>
 
-        `;
+        \`;
 
 
-    cell.innerHTML = `
+    cell.innerHTML = \`
 
         <div
             class="period assigned"
@@ -2451,7 +2451,7 @@ function createPeriodCell(
 
         </div>
 
-    `;
+    \`;
 
 
     cell.querySelector(
@@ -2544,7 +2544,7 @@ async function openSubstituteSelection(entry){
         "Request Substitute";
 
 
-    selectedPeriodBox.innerHTML = `
+    selectedPeriodBox.innerHTML = \`
 
         <h3>
             Selected Period
@@ -2599,7 +2599,7 @@ async function openSubstituteSelection(entry){
 
         </div>
 
-    `;
+    \`;
 
 
     substitutePanel.style.display =
@@ -2632,7 +2632,7 @@ async function openSubstituteSelection(entry){
             error
         );
 
-        freeStaffList.innerHTML = `
+        freeStaffList.innerHTML = \`
 
             <div
                 class="message error"
@@ -2651,7 +2651,7 @@ async function openSubstituteSelection(entry){
 
             </div>
 
-        `;
+        \`;
 
     }finally{
 
@@ -2728,7 +2728,6 @@ async function findFreeStaff(){
         const current =
             allStaffData.find(
                 staff =>
-
                     normalizeText(
                         staff.staffId
                     ) ===
@@ -2757,6 +2756,42 @@ async function findFreeStaff(){
         normalizeText(
             currentDepartment
         );
+
+    const selectedSession =
+        normalizeSession(
+            selectedPeriod.session
+        );
+
+    const selectedHour =
+        Number(
+            selectedPeriod.hour
+        );
+
+    /* =====================================================
+       LAB ASSISTANT SPECIAL SUBSTITUTE RULES
+    ===================================================== */
+
+    const selectedPeriodDepartment =
+        normalizeText(
+            selectedPeriod.department ||
+            currentDepartment
+        );
+
+    const isLabAssistant =
+        selectedPeriodDepartment ===
+        "LAB ASSISTANT";
+
+    const LAB_ALLOWED_AN_45 = [
+        "RAMESHWAR",
+        "LOGESHWARRAN",
+        "MURALIKRISHNAN"
+    ];
+
+    const LAB_BLOCKED_FN_12 = [
+        "RAMESHWAR",
+        "LOGESHWARRAN",
+        "MURALIKRISHNAN"
+    ];
 
     const freeStaff = [];
 
@@ -2809,19 +2844,101 @@ async function findFreeStaff(){
 
         if(
             isStaffOccupied(
-
                 staffId,
-
                 selectedPeriod.day,
-
-                selectedPeriod.session,
-
-                selectedPeriod.hour
-
+                selectedSession,
+                selectedHour
             )
         ){
 
             return;
+
+        }
+
+        const staffName =
+            normalizeText(
+                staff.staffName
+            );
+
+        /* =================================================
+           LAB ASSISTANT - AN HOUR 4 & 5
+
+           ONLY RAMESHWAR, LOGESHWARRAN,
+           AND MURALIKRISHNAN CAN BE SHOWN.
+        ================================================= */
+
+        if(
+            isLabAssistant &&
+            selectedSession === "AN" &&
+            (
+                selectedHour === 4 ||
+                selectedHour === 5
+            )
+        ){
+
+            if(
+                !LAB_ALLOWED_AN_45.includes(
+                    staffName
+                )
+            ){
+
+                return;
+
+            }
+
+        }
+
+        /* =================================================
+           LAB ASSISTANT - FN HOUR 1 & 2
+
+           DO NOT SHOW RAMESHWAR,
+           LOGESHWARRAN, OR MURALIKRISHNAN.
+        ================================================= */
+
+        if(
+            isLabAssistant &&
+            selectedSession === "FN" &&
+            (
+                selectedHour === 1 ||
+                selectedHour === 2
+            )
+        ){
+
+            if(
+                LAB_BLOCKED_FN_12.includes(
+                    staffName
+                )
+            ){
+
+                return;
+
+            }
+
+        }
+
+        /* =================================================
+           LAB ASSISTANT - ALL OTHER FN HOURS
+
+           MURALIKRISHNAN MUST NOT BE SHOWN.
+        ================================================= */
+
+        if(
+            isLabAssistant &&
+            selectedSession === "FN" &&
+            !(
+                selectedHour === 1 ||
+                selectedHour === 2
+            )
+        ){
+
+            if(
+                staffName ===
+                "MURALIKRISHNAN"
+            ){
+
+                return;
+
+            }
 
         }
 
@@ -2842,23 +2959,18 @@ async function findFreeStaff(){
 
     });
 
-
     freeStaff.sort(
         (a,b) =>
-
             String(a.staffName || "")
             .localeCompare(
                 String(b.staffName || "")
             )
     );
 
-
     renderFreeStaff(
         freeStaff
     );
-
 }
-
 
 /* =====================================================
    RENDER FREE STAFF
@@ -2898,7 +3010,7 @@ function renderFreeStaff(staff){
 
     if(!staff.length){
 
-        freeStaffList.innerHTML = `
+        freeStaffList.innerHTML = \`
 
             <div
                 class="message error"
@@ -2942,7 +3054,7 @@ function renderFreeStaff(staff){
 
             </div>
 
-        `;
+        \`;
 
         return;
 
@@ -2957,7 +3069,7 @@ function renderFreeStaff(staff){
         div.className =
             "staff-option";
 
-        div.innerHTML = `
+        div.innerHTML = \`
 
             <div class="staff-name">
 
@@ -2994,7 +3106,7 @@ function renderFreeStaff(staff){
 
             </div>
 
-        `;
+        \`;
 
 
         div.addEventListener(
@@ -3685,7 +3797,7 @@ async function loadMyRequests(){
         requestCount.textContent =
             "Staff ID not found.";
 
-        requestsContainer.innerHTML = `
+        requestsContainer.innerHTML = \`
 
             <div class="no-requests">
 
@@ -3697,7 +3809,7 @@ async function loadMyRequests(){
 
             </div>
 
-        `;
+        \`;
 
         return;
 
@@ -3830,7 +3942,7 @@ async function loadMyRequests(){
 
         if(!requests.length){
 
-            requestsContainer.innerHTML = `
+            requestsContainer.innerHTML = \`
 
                 <div class="no-requests">
 
@@ -3842,14 +3954,14 @@ async function loadMyRequests(){
 
                 </div>
 
-            `;
+            \`;
 
             return;
 
         }
 
 
-        let html = `
+        let html = \`
 
             <div class="requests-wrapper">
 
@@ -3892,7 +4004,7 @@ async function loadMyRequests(){
                     </thead>
 
                     <tbody>
-        `;
+        \`;
 
 
         requests.forEach(request => {
@@ -4038,7 +4150,7 @@ async function loadMyRequests(){
                 );
 
 
-            html += `
+            html += \`
 
                 <tr>
 
@@ -4165,14 +4277,14 @@ async function loadMyRequests(){
 
                         ${
                             request.substituteStaffId
-                            ? `
+                            ? \`
                                 <br>
                                 <small>
                                     ${escapeHtml(
                                         request.substituteStaffId
                                     )}
                                 </small>
-                              `
+                              \`
                             : ""
                         }
 
@@ -4221,12 +4333,12 @@ async function loadMyRequests(){
 
                 </tr>
 
-            `;
+            \`;
 
         });
 
 
-        html += `
+        html += \`
 
                     </tbody>
 
@@ -4234,7 +4346,7 @@ async function loadMyRequests(){
 
             </div>
 
-        `;
+        \`;
 
 
         requestsContainer.innerHTML =
@@ -4253,7 +4365,7 @@ async function loadMyRequests(){
             "Unable to load requests";
 
 
-        requestsContainer.innerHTML = `
+        requestsContainer.innerHTML = \`
 
             <div class="message error"
                  style="display:block">
@@ -4268,7 +4380,7 @@ async function loadMyRequests(){
 
             </div>
 
-        `;
+        \`;
 
     }finally{
 
