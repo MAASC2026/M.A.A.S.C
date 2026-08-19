@@ -2707,247 +2707,333 @@
     FIND FREE STAFF
  ===================================================== */
 
- async function findFreeStaff(){
+/* =====================================================
+   FIND FREE STAFF
+===================================================== */
+async function findFreeStaff(){
 
-     if(!selectedPeriod){
+    if(!selectedPeriod){
 
-         throw new Error(
-             "No timetable period selected."
-         );
+        throw new Error(
+            "No timetable period selected."
+        );
 
-     }
+    }
 
-     if(!allStaffData.length){
+    if(!allStaffData.length){
 
-         await loadAllStaff();
+        await loadAllStaff();
 
-     }
+    }
 
-     if(!currentDepartment){
+    if(!currentDepartment){
 
-         const current =
-             allStaffData.find(
-                 staff =>
+        const current =
+            allStaffData.find(
+                staff =>
+                    normalizeText(
+                        staff.staffId
+                    ) ===
+                    normalizeText(
+                        currentStaffId
+                    )
+            );
 
-                     normalizeText(
-                         staff.staffId
-                     ) ===
-                     normalizeText(
-                         currentStaffId
-                     )
-             );
+        if(current){
 
-         if(current){
+            currentDepartment =
+                current.department || "";
 
-             currentDepartment =
-                 current.department || "";
+            sessionStorage.setItem(
+                "department",
+                currentDepartment
+            );
 
-             sessionStorage.setItem(
-                 "department",
-                 currentDepartment
-             );
+            updateCurrentStaffDisplay();
 
-             updateCurrentStaffDisplay();
+        }
 
-         }
+    }
 
-     }
+    const requestDepartment =
+        normalizeText(
+            currentDepartment
+        );
 
-     const requestDepartment =
-         normalizeText(
-             currentDepartment
-         );
+    const selectedSession =
+        normalizeSession(
+            selectedPeriod.session
+        );
 
-     const selectedSession =
-         normalizeSession(
-             selectedPeriod.session
-         );
+    const selectedHour =
+        Number(
+            selectedPeriod.hour
+        );
 
-     const selectedHour =
-         Number(
-             selectedPeriod.hour
-         );
+    const isLabAssistant =
+        requestDepartment ===
+        "LAB ASSISTANT";
 
-     const isLabAssistant =
-         requestDepartment ===
-         "LAB ASSISTANT";
+    const freeStaff = [];
 
-     const freeStaff = [];
 
+    /* =====================================================
+       SPECIAL LAB ASSISTANT STAFF NAMES
+    ===================================================== */
 
-     allStaffData.forEach(staff => {
+    const RAMESHWAR =
+        "RAMESHWAR";
 
-         const staffId =
-             String(
-                 staff.staffId || ""
-             ).trim();
+    const LOGESHWARRAN =
+        "LOGESHWARRAN";
 
-         if(!staffId){
+    const MURALIKRISHNAN =
+        "MURALIKRISHNAN";
 
-             return;
 
-         }
+    allStaffData.forEach(staff => {
 
-         if(
-             normalizeText(staffId) ===
-             normalizeText(currentStaffId)
-         ){
+        const staffId =
+            String(
+                staff.staffId || ""
+            ).trim();
 
-             return;
+        if(!staffId){
 
-         }
+            return;
 
-         const staffDepartment =
-             normalizeText(
-                 staff.department
-             );
+        }
 
-         if(requestDepartment){
 
-             if(!staffDepartment){
+        /* -------------------------------------------------
+           DO NOT SHOW CURRENT STAFF
+        ------------------------------------------------- */
 
-                 return;
+        if(
+            normalizeText(staffId) ===
+            normalizeText(currentStaffId)
+        ){
 
-             }
-
-             if(
-                 staffDepartment !==
-                 requestDepartment
-             ){
+            return;
 
-                 return;
+        }
 
-             }
 
-         }
+        const staffDepartment =
+            normalizeText(
+                staff.department
+            );
 
-         /* =================================================
-            LAB ASSISTANT SPECIAL AVAILABILITY RULES
-         ================================================= */
 
-         if(isLabAssistant){
+        /* -------------------------------------------------
+           SAME DEPARTMENT ONLY
+        ------------------------------------------------- */
 
-             const staffName =
-                 normalizeText(
-                     staff.staffName
-                 );
+        if(requestDepartment){
 
-             /*
-                MURALIKRISHNAN works only from
-                01:30 PM to 06:00 PM (AN).
-                Therefore he must never appear in FN.
-             */
-             if(
-                 staffName === "MURALIKRISHNAN" &&
-                 selectedSession !== "AN"
-             ){
+            if(!staffDepartment){
 
-                 return;
+                return;
 
-             }
+            }
 
-             /*
-                FN Hour 1 and 2:
-                RAMESHWAR and LOGESHWARRAN must not
-                be shown even when they are free.
-             */
-             if(
-                 selectedSession === "FN" &&
-                 (
-                     selectedHour === 1 ||
-                     selectedHour === 2
-                 ) &&
-                 (
-                     staffName === "RAMESHWAR" ||
-                     staffName === "LOGESHWARRAN"
-                 )
-             ){
+            if(
+                staffDepartment !==
+                requestDepartment
+            ){
 
-                 return;
+                return;
 
-             }
+            }
 
-             /*
-                AN Hour 4 and 5:
-                ONLY these three staff are eligible.
-                Busy/free checking below will decide
-                which of these actually appear.
-             */
-             if(
-                 selectedSession === "AN" &&
-                 (
-                     selectedHour === 4 ||
-                     selectedHour === 5
-                 ) &&
-                 ![
-                     "RAMESHWAR",
-                     "LOGESHWARRAN",
-                     "MURALIKRISHNAN"
-                 ].includes(staffName)
-             ){
+        }
 
-                 return;
 
-             }
+        /* -------------------------------------------------
+           CHECK ACTUAL TIMETABLE AVAILABILITY
+        ------------------------------------------------- */
 
-         }
+        if(
+            isStaffOccupied(
+                staffId,
+                selectedPeriod.day,
+                selectedSession,
+                selectedHour
+            )
+        ){
 
-         /* =================================================
-            EXISTING TIMETABLE BUSY CHECK
-         ================================================= */
-         if(
-             isStaffOccupied(
+            return;
 
-                 staffId,
+        }
 
-                 selectedPeriod.day,
 
-                 selectedSession,
+        /* -------------------------------------------------
+           STAFF NAME
+        ------------------------------------------------- */
 
-                 selectedHour
+        const staffName =
+            normalizeText(
+                staff.staffName
+            );
 
-             )
-         ){
 
-             return;
+        /* =================================================
+           LAB ASSISTANT SPECIAL RULES
+        ================================================= */
 
-         }
+        if(isLabAssistant){
 
-         freeStaff.push({
+            /* ---------------------------------------------
+               AN HOUR 4 & 5
+               
+               ONLY:
+               RAMESHWAR
+               LOGESHWARRAN
+               MURALIKRISHNAN
+            --------------------------------------------- */
 
-             staffId:
-                 staff.staffId,
+            if(
+                selectedSession === "AN" &&
+                (
+                    selectedHour === 4 ||
+                    selectedHour === 5
+                )
+            ){
 
-             staffName:
-                 staff.staffName ||
-                 staff.staffId,
+                const allowedForAN45 = [
 
-             department:
-                 staff.department ||
-                 currentDepartment
+                    RAMESHWAR,
+                    LOGESHWARRAN,
+                    MURALIKRISHNAN
 
-         });
+                ];
 
-     });
+                if(
+                    !allowedForAN45.includes(
+                        staffName
+                    )
+                ){
 
+                    return;
 
-     freeStaff.sort(
-         (a,b) =>
+                }
 
-             String(a.staffName || "")
-             .localeCompare(
-                 String(b.staffName || "")
-             )
-     );
+            }
 
 
-     renderFreeStaff(
-         freeStaff
-     );
+            /* ---------------------------------------------
+               FN HOUR 1 & 2
+               
+               DO NOT SHOW:
+               RAMESHWAR
+               LOGESHWARRAN
+               MURALIKRISHNAN
+            --------------------------------------------- */
 
- }
+            if(
+                selectedSession === "FN" &&
+                (
+                    selectedHour === 1 ||
+                    selectedHour === 2
+                )
+            ){
 
+                const blockedForFN12 = [
 
+                    RAMESHWAR,
+                    LOGESHWARRAN,
+                    MURALIKRISHNAN
+
+                ];
+
+                if(
+                    blockedForFN12.includes(
+                        staffName
+                    )
+                ){
+
+                    return;
+
+                }
+
+            }
+
+
+            /* ---------------------------------------------
+               OTHER FN HOURS
+               
+               MURALIKRISHNAN MUST NOT BE SHOWN
+            --------------------------------------------- */
+
+            if(
+                selectedSession === "FN" &&
+                !(
+                    selectedHour === 1 ||
+                    selectedHour === 2
+                )
+            ){
+
+                if(
+                    staffName ===
+                    MURALIKRISHNAN
+                ){
+
+                    return;
+
+                }
+
+            }
+
+        }
+
+
+        /* -------------------------------------------------
+           ADD FREE STAFF
+        ------------------------------------------------- */
+
+        freeStaff.push({
+
+            staffId:
+                staff.staffId,
+
+            staffName:
+                staff.staffName ||
+                staff.staffId,
+
+            department:
+                staff.department ||
+                currentDepartment
+
+        });
+
+    });
+
+
+    /* =====================================================
+       SORT STAFF BY NAME
+    ===================================================== */
+
+    freeStaff.sort(
+        (a,b) =>
+            String(
+                a.staffName || ""
+            ).localeCompare(
+                String(
+                    b.staffName || ""
+                )
+            )
+    );
+
+
+    /* =====================================================
+       DISPLAY
+    ===================================================== */
+
+    renderFreeStaff(
+        freeStaff
+    );
+
+}
  /* =====================================================
     RENDER FREE STAFF
  ===================================================== */
