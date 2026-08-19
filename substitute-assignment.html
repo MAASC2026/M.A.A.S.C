@@ -1,12 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<meta
+name="viewport"
+content="width=device-width, initial-scale=1.0">
 
 <title>Substitute Assignment</title>
 
 <style>
+
 *{
     box-sizing:border-box;
     margin:0;
@@ -15,78 +21,90 @@
 }
 
 body{
-    background:#f4f7fb;
+    background:#f4f6f9;
     color:#1f2937;
 }
 
 .header{
-    background:#1e3a8a;
+    background:#500454;
     color:white;
     padding:18px 25px;
     display:flex;
     justify-content:space-between;
     align-items:center;
+    box-shadow:0 2px 10px rgba(0,0,0,.2);
 }
 
-.header h1{
+.header h2{
     font-size:22px;
 }
 
+.header-user{
+    font-size:15px;
+}
+
 .container{
-    width:95%;
-    max-width:1400px;
+    width:96%;
+    max-width:1450px;
     margin:25px auto;
 }
 
+/* STAFF */
+
 .staff-card{
     background:white;
-    border-radius:12px;
     padding:20px;
-    box-shadow:0 3px 12px rgba(0,0,0,.08);
+    border-radius:12px;
+    box-shadow:0 2px 10px rgba(0,0,0,.12);
     margin-bottom:20px;
 }
 
-.staff-card h2{
-    font-size:18px;
-    color:#1e3a8a;
+.staff-title{
+    color:#500454;
+    font-size:19px;
+    font-weight:bold;
     margin-bottom:15px;
 }
 
 .staff-grid{
     display:grid;
-    grid-template-columns:repeat(4,1fr);
+    grid-template-columns:
+        repeat(3,1fr);
     gap:15px;
 }
 
-.info-box{
+.staff-box{
     background:#f8fafc;
     border:1px solid #e2e8f0;
-    padding:12px;
     border-radius:8px;
+    padding:13px;
 }
 
-.info-box label{
+.staff-box label{
     display:block;
     font-size:12px;
     color:#64748b;
     margin-bottom:5px;
 }
 
-.info-box strong{
+.staff-box strong{
     font-size:15px;
 }
 
-.controls{
+/* CONTROLS */
+
+.control-card{
     background:white;
     padding:20px;
     border-radius:12px;
-    box-shadow:0 3px 12px rgba(0,0,0,.08);
+    box-shadow:0 2px 10px rgba(0,0,0,.12);
     margin-bottom:20px;
 }
 
 .control-grid{
     display:grid;
-    grid-template-columns:repeat(3,1fr);
+    grid-template-columns:
+        repeat(3,1fr);
     gap:18px;
 }
 
@@ -94,37 +112,46 @@ body{
     display:block;
     font-weight:bold;
     margin-bottom:7px;
+    color:#334155;
 }
 
 .control-group input,
 .control-group select{
     width:100%;
-    padding:11px;
+    padding:12px;
     border:1px solid #cbd5e1;
     border-radius:7px;
     font-size:15px;
+    outline:none;
     background:white;
 }
+
+.control-group input:focus,
+.control-group select:focus{
+    border-color:#500454;
+}
+
+/* TIMETABLE */
 
 .timetable-card{
     background:white;
     padding:20px;
     border-radius:12px;
-    box-shadow:0 3px 12px rgba(0,0,0,.08);
+    box-shadow:0 2px 10px rgba(0,0,0,.12);
     overflow-x:auto;
 }
 
 .session-title{
     text-align:center;
-    color:#1e3a8a;
-    font-size:20px;
+    color:#500454;
+    font-size:21px;
     font-weight:bold;
     margin-bottom:18px;
 }
 
 .timetable{
     width:100%;
-    min-width:900px;
+    min-width:1000px;
     border-collapse:collapse;
     table-layout:fixed;
 }
@@ -138,78 +165,84 @@ body{
 }
 
 .timetable th{
-    background:#1e3a8a;
+    background:#500454;
     color:white;
+    height:50px;
     font-size:14px;
 }
 
 .timetable .label{
+    width:140px;
     background:#e2e8f0;
+    color:#1e293b;
     font-weight:bold;
-    width:130px;
 }
 
-.time-row td{
+.time-cell{
     background:#f8fafc;
-    font-size:12px;
     font-weight:bold;
+    font-size:12px;
+    color:#475569;
+    height:45px;
 }
 
 .period-cell{
-    min-height:100px;
-    height:110px;
+    height:125px;
     cursor:pointer;
-    background:#fff;
     transition:.2s;
+    background:white;
 }
 
 .period-cell:hover{
-    background:#eff6ff;
+    background:#faf0fb;
+    box-shadow:
+        inset 0 0 0 2px #500454;
 }
 
 .period-cell.empty{
-    color:#94a3b8;
     cursor:default;
+    color:#94a3b8;
 }
 
-.period-content{
-    line-height:1.5;
+.period-cell.empty:hover{
+    background:white;
+    box-shadow:none;
+}
+
+.period-subject{
+    font-weight:bold;
+    color:#500454;
+    margin-bottom:5px;
+}
+
+.period-class{
+    font-size:13px;
+    color:#334155;
+    margin-bottom:4px;
+}
+
+.period-room{
+    font-size:12px;
+    color:#64748b;
+}
+
+.free-cell{
+    color:#94a3b8;
     font-size:13px;
 }
 
-.period-content .subject{
-    font-weight:bold;
-    color:#1e3a8a;
-}
-
-.period-content .class-info{
-    color:#334155;
-}
-
-.period-content .room{
-    color:#64748b;
-    font-size:12px;
-}
-
-.selected-cell{
-    outline:3px solid #2563eb;
-    background:#eff6ff !important;
-}
+/* STATUS */
 
 .status{
-    padding:12px;
-    border-radius:8px;
-    margin-bottom:15px;
     display:none;
+    padding:13px 16px;
+    border-radius:8px;
+    margin-bottom:18px;
+    font-weight:bold;
 }
 
 .status.show{
     display:block;
-}
-
-.status.error{
-    background:#fee2e2;
-    color:#991b1b;
 }
 
 .status.success{
@@ -217,36 +250,49 @@ body{
     color:#166534;
 }
 
+.status.error{
+    background:#fee2e2;
+    color:#991b1b;
+}
+
 .status.info{
     background:#dbeafe;
     color:#1e40af;
 }
 
-/* Modal */
+/* LOADING */
 
-.modal-overlay{
+.loading{
+    padding:30px;
+    text-align:center;
+    color:#64748b;
+}
+
+/* MODAL */
+
+.modal-bg{
     position:fixed;
     inset:0;
-    background:rgba(15,23,42,.65);
+    background:rgba(0,0,0,.6);
     display:none;
     align-items:center;
     justify-content:center;
-    z-index:9999;
+    z-index:5000;
     padding:20px;
 }
 
-.modal-overlay.show{
+.modal-bg.show{
     display:flex;
 }
 
 .modal{
     background:white;
     width:100%;
-    max-width:600px;
-    border-radius:12px;
-    padding:22px;
+    max-width:620px;
     max-height:90vh;
     overflow-y:auto;
+    border-radius:12px;
+    padding:22px;
 }
 
 .modal-header{
@@ -257,53 +303,53 @@ body{
 }
 
 .modal-header h2{
-    color:#1e3a8a;
-    font-size:19px;
+    color:#500454;
 }
 
 .close-btn{
+    width:34px;
+    height:34px;
     border:none;
-    background:#ef4444;
-    color:white;
-    width:32px;
-    height:32px;
     border-radius:6px;
+    background:#dc2626;
+    color:white;
+    font-size:20px;
     cursor:pointer;
-    font-size:18px;
 }
 
 .selected-period{
-    background:#f1f5f9;
-    padding:12px;
+    background:#f8fafc;
+    border:1px solid #e2e8f0;
+    padding:14px;
     border-radius:8px;
     margin-bottom:18px;
     line-height:1.7;
 }
 
-.free-staff-list{
+.staff-list{
     display:flex;
     flex-direction:column;
     gap:10px;
 }
 
 .staff-option{
-    border:1px solid #cbd5e1;
-    padding:13px;
-    border-radius:8px;
-    cursor:pointer;
     display:flex;
     align-items:center;
     gap:12px;
+    border:1px solid #cbd5e1;
+    border-radius:8px;
+    padding:13px;
+    cursor:pointer;
 }
 
 .staff-option:hover{
-    background:#eff6ff;
-    border-color:#2563eb;
+    background:#faf0fb;
+    border-color:#500454;
 }
 
 .staff-option.selected{
-    background:#dbeafe;
-    border-color:#2563eb;
+    background:#f7eafa;
+    border-color:#500454;
 }
 
 .staff-option input{
@@ -311,17 +357,27 @@ body{
     height:18px;
 }
 
+.staff-option-name{
+    font-weight:bold;
+}
+
+.staff-option-info{
+    font-size:12px;
+    color:#64748b;
+    margin-top:3px;
+}
+
 .request-btn{
     width:100%;
+    margin-top:20px;
+    padding:13px;
     border:none;
+    border-radius:8px;
     background:#16a34a;
     color:white;
-    padding:13px;
-    border-radius:8px;
-    margin-top:18px;
-    cursor:pointer;
     font-size:15px;
     font-weight:bold;
+    cursor:pointer;
 }
 
 .request-btn:disabled{
@@ -330,426 +386,537 @@ body{
 }
 
 .no-staff{
-    padding:20px;
-    text-align:center;
     background:#f8fafc;
+    padding:20px;
     border-radius:8px;
-    color:#64748b;
-}
-
-.loading{
     text-align:center;
-    padding:30px;
     color:#64748b;
 }
 
-@media(max-width:900px){
-    .staff-grid{
-        grid-template-columns:repeat(2,1fr);
-    }
+@media(max-width:850px){
 
+    .staff-grid,
     .control-grid{
-        grid-template-columns:1fr;
-    }
-}
-
-@media(max-width:600px){
-    .staff-grid{
         grid-template-columns:1fr;
     }
 
     .header{
-        padding:15px;
+        flex-direction:column;
+        gap:8px;
+        align-items:flex-start;
     }
 
-    .header h1{
-        font-size:18px;
-    }
 }
+
 </style>
+
 </head>
 
 <body>
 
+
+<!-- HEADER -->
+
 <div class="header">
-    <h1>Substitute Assignment</h1>
-    <span id="loginStatus">Loading...</span>
+
+    <h2>
+        SUBSTITUTE ASSIGNMENT
+    </h2>
+
+    <div class="header-user">
+        Welcome,
+        <span id="headerStaffName">Loading...</span>
+    </div>
+
 </div>
+
 
 <div class="container">
 
-    <div id="statusBox" class="status"></div>
 
-    <!-- CURRENT STAFF -->
+<!-- STATUS -->
 
-    <div class="staff-card">
+<div
+id="statusBox"
+class="status">
+</div>
 
-        <h2>Current Staff</h2>
 
-        <div class="staff-grid">
+<!-- CURRENT STAFF -->
 
-            <div class="info-box">
-                <label>Staff ID</label>
-                <strong id="staffId">Loading...</strong>
-            </div>
+<div class="staff-card">
 
-            <div class="info-box">
-                <label>Staff Name</label>
-                <strong id="staffName">Loading...</strong>
-            </div>
+    <div class="staff-title">
+        Current Staff
+    </div>
 
-            <div class="info-box">
-                <label>Department</label>
-                <strong id="staffDepartment">Loading...</strong>
-            </div>
+    <div class="staff-grid">
 
-            <div class="info-box">
-                <label>Role</label>
-                <strong id="staffRole">Loading...</strong>
-            </div>
+        <div class="staff-box">
+
+            <label>
+                Staff ID
+            </label>
+
+            <strong id="staffId">
+                Loading...
+            </strong>
+
+        </div>
+
+
+        <div class="staff-box">
+
+            <label>
+                Staff Name
+            </label>
+
+            <strong id="staffName">
+                Loading...
+            </strong>
+
+        </div>
+
+
+        <div class="staff-box">
+
+            <label>
+                Department
+            </label>
+
+            <strong id="department">
+                Loading...
+            </strong>
 
         </div>
 
     </div>
 
+</div>
 
-    <!-- DATE / DAY ORDER / SESSION -->
 
-    <div class="controls">
+<!-- CONTROLS -->
 
-        <div class="control-grid">
+<div class="control-card">
 
-            <div class="control-group">
-                <label for="dateSelect">Date</label>
-                <input type="date" id="dateSelect">
-            </div>
+    <div class="control-grid">
 
-            <div class="control-group">
-                <label for="dayOrderSelect">Day Order</label>
 
-                <select id="dayOrderSelect">
+        <!-- DATE -->
 
-                    <option value="">Select Day Order</option>
-                    <option value="DAY 01">DAY 01</option>
-                    <option value="DAY 02">DAY 02</option>
-                    <option value="DAY 03">DAY 03</option>
-                    <option value="DAY 04">DAY 04</option>
-                    <option value="DAY 05">DAY 05</option>
-                    <option value="DAY 06">DAY 06</option>
+        <div class="control-group">
 
-                </select>
-            </div>
+            <label>
+                Date
+            </label>
 
-            <div class="control-group">
-                <label for="sessionSelect">Session</label>
+            <input
+                type="date"
+                id="dateSelect">
 
-                <select id="sessionSelect">
+        </div>
 
-                    <option value="">Select Session</option>
-                    <option value="FN">FN</option>
-                    <option value="AN">AN</option>
 
-                </select>
-            </div>
+        <!-- DAY ORDER -->
+
+        <div class="control-group">
+
+            <label>
+                Day Order
+            </label>
+
+            <select id="dayOrderSelect">
+
+                <option value="">
+                    Select Day Order
+                </option>
+
+                <option value="DAY 01">
+                    DAY 01
+                </option>
+
+                <option value="DAY 02">
+                    DAY 02
+                </option>
+
+                <option value="DAY 03">
+                    DAY 03
+                </option>
+
+                <option value="DAY 04">
+                    DAY 04
+                </option>
+
+                <option value="DAY 05">
+                    DAY 05
+                </option>
+
+                <option value="DAY 06">
+                    DAY 06
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <!-- SESSION -->
+
+        <div class="control-group">
+
+            <label>
+                Session
+            </label>
+
+            <select id="sessionSelect">
+
+                <option value="">
+                    Select Session
+                </option>
+
+                <option value="FN">
+                    FN
+                </option>
+
+                <option value="AN">
+                    AN
+                </option>
+
+            </select>
 
         </div>
 
     </div>
 
+</div>
 
-    <!-- TIMETABLE -->
 
-    <div class="timetable-card">
+<!-- TIMETABLE -->
 
-        <div id="sessionTitle" class="session-title">
-            SELECT DATE, DAY ORDER AND SESSION
-        </div>
+<div class="timetable-card">
 
-        <div id="timetableContainer">
+    <div
+        id="sessionTitle"
+        class="session-title">
 
-            <div class="loading">
-                Select Date, Day Order and Session
-            </div>
+        SELECT DATE, DAY ORDER AND SESSION
+
+    </div>
+
+
+    <div id="timetableContainer">
+
+        <div class="loading">
+
+            Select Date, Day Order and Session
 
         </div>
 
     </div>
+
+</div>
+
 
 </div>
 
 
 <!-- FREE STAFF MODAL -->
 
-<div id="staffModal" class="modal-overlay">
+<div
+id="modalBackground"
+class="modal-bg">
 
-    <div class="modal">
+<div class="modal">
 
-        <div class="modal-header">
 
-            <h2>Select Substitute Staff</h2>
+    <div class="modal-header">
 
-            <button
-                class="close-btn"
-                onclick="closeStaffModal()">
-                ×
-            </button>
-
-        </div>
-
-        <div id="selectedPeriod" class="selected-period"></div>
-
-        <div id="freeStaffList" class="free-staff-list"></div>
+        <h2>
+            Available Staff
+        </h2>
 
         <button
-            id="requestBtn"
-            class="request-btn"
-            disabled
-            onclick="requestSubstitute()">
+            class="close-btn"
+            id="closeModal">
 
-            REQUEST SUBSTITUTE
+            ×
 
         </button>
 
     </div>
 
+
+    <div
+        id="selectedPeriod"
+        class="selected-period">
+    </div>
+
+
+    <div
+        id="freeStaffList"
+        class="staff-list">
+
+    </div>
+
+
+    <button
+        id="requestBtn"
+        class="request-btn"
+        disabled>
+
+        REQUEST SUBSTITUTE
+
+    </button>
+
+
+</div>
+
 </div>
 
 
-<!-- FIREBASE -->
-
 <script type="module">
 
-import {
-    initializeApp
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+/* =====================================================
+   FIREBASE
+===================================================== */
 
 import {
-    getAuth,
-    onAuthStateChanged,
-    setPersistence,
-    browserLocalPersistence
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    db
+} from "./firebase-config.js";
+
 
 import {
-    getFirestore,
-    doc,
-    getDoc,
     collection,
     getDocs,
     query,
     where,
     addDoc,
     serverTimestamp
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+}
+from
+"https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 
-/* =========================================================
-   FIREBASE CONFIG
-========================================================= */
+/* =====================================================
+   SESSION STORAGE LOGIN
+===================================================== */
 
-const firebaseConfig = {
+const staffId =
+    sessionStorage.getItem("staffId");
 
-    apiKey:
-        "AIzaSyAIv3091VM-gkmdwEAn7OhXWd9Cm2zh2bo",
+const staffName =
+    sessionStorage.getItem("staffName");
 
-    authDomain:
-        "maasc-2026.firebaseapp.com",
-
-    projectId:
-        "maasc-2026",
-
-    storageBucket:
-        "maasc-2026.appspot.com",
-
-    messagingSenderId:
-        "585813001586",
-
-    appId:
-        "1:585813001586:web:664e0e90ff0725d2e849eb"
-
-};
+const department =
+    sessionStorage.getItem("department");
 
 
-/* =========================================================
-   FIREBASE INITIALIZE
-========================================================= */
+/* =====================================================
+   CHECK LOGIN
+===================================================== */
 
-const app = initializeApp(firebaseConfig);
+if(!staffId){
 
-const auth = getAuth(app);
-const db = getFirestore(app);
+    alert("Please Login");
 
-await setPersistence(auth, browserLocalPersistence);
+    window.location.href =
+        "login.html";
 
-/* =========================================================
-   GLOBAL VARIABLES
-========================================================= */
-
-let currentUser = null;
-
-let currentStaff = null;
-
-let currentSelectedPeriod = null;
-
-let selectedSubstituteStaff = null;
+}
 
 
-/* =========================================================
+/* =====================================================
+   DISPLAY STAFF
+===================================================== */
+
+document.getElementById(
+    "staffId"
+).textContent =
+    staffId || "-";
+
+
+document.getElementById(
+    "staffName"
+).textContent =
+    staffName || "-";
+
+
+document.getElementById(
+    "department"
+).textContent =
+    department || "-";
+
+
+document.getElementById(
+    "headerStaffName"
+).textContent =
+    staffName || "-";
+
+
+/* =====================================================
    SESSION TIMES
-========================================================= */
+===================================================== */
 
 const sessionTimes = {
 
-    FN: [
-        "8:30–9:20",
-        "9:20–10:10",
-        "10:10–11:00",
-        "11:30–12:20",
-        "12:20–1:10"
+    FN:[
+        "8:30 - 9:20",
+        "9:20 - 10:10",
+        "10:10 - 11:00",
+        "11:30 - 12:20",
+        "12:20 - 1:10"
     ],
 
-    AN: [
-        "1:30–2:20",
-        "2:20–3:10",
-        "3:30–4:20",
-        "4:20–5:10",
-        "5:10–6:00"
+    AN:[
+        "1:30 - 2:20",
+        "2:20 - 3:10",
+        "3:30 - 4:20",
+        "4:20 - 5:10",
+        "5:10 - 6:00"
     ]
 
 };
 
 
-/* =========================================================
-   AUTH STATE
-========================================================= */
+/* =====================================================
+   VARIABLES
+===================================================== */
 
-onAuthStateChanged(auth, async (user) => {
+let timetableData = [];
 
-    console.log("Firebase Auth User:", user);
+let selectedPeriod = null;
 
-    if (user) {
+let selectedSubstitute = null;
 
-        currentUser = user;
 
-        document.getElementById("loginStatus").textContent =
-            "Logged In";
+/* =====================================================
+   CONTROLS
+===================================================== */
 
-        await loadCurrentStaff(user);
+document
+.getElementById("dateSelect")
+.addEventListener(
+    "change",
+    loadTimetable
+);
 
-        return;
-    }
 
-    document.getElementById("loginStatus").textContent =
-        "Checking Login...";
+document
+.getElementById("dayOrderSelect")
+.addEventListener(
+    "change",
+    loadTimetable
+);
+
+
+document
+.getElementById("sessionSelect")
+.addEventListener(
+    "change",
+    loadTimetable
+);
+
+
+/* =====================================================
+   LOAD TIMETABLE
+===================================================== */
+
+async function loadTimetable(){
+
+    const date =
+        document.getElementById(
+            "dateSelect"
+        ).value;
+
+
+    const dayOrder =
+        document.getElementById(
+            "dayOrderSelect"
+        ).value;
+
+
+    const session =
+        document.getElementById(
+            "sessionSelect"
+        ).value;
+
 
     /*
-       Firebase sometimes needs a moment to restore
-       the persisted authentication session.
+       IMPORTANT
+
+       DATE DOES NOT CHANGE DAY ORDER.
+
+       DAY ORDER DOES NOT CHANGE DATE.
     */
 
-    setTimeout(() => {
 
-        if (!auth.currentUser) {
+    if(
+        !date ||
+        !dayOrder ||
+        !session
+    ){
 
-            console.error(
-                "NO FIREBASE USER FOUND"
-            );
-
-            showStatus(
-                "Firebase login session was not found. Please open Assign Substitute from the logged-in Staff Dashboard.",
-                "error"
-            );
-
-            document.getElementById("loginStatus").textContent =
-                "Not Logged In";
-        }
-
-    }, 1500);
-
-});
+        document.getElementById(
+            "sessionTitle"
+        ).textContent =
+            "SELECT DATE, DAY ORDER AND SESSION";
 
 
-/* =========================================================
-   LOAD CURRENT STAFF
-========================================================= */
+        document.getElementById(
+            "timetableContainer"
+        ).innerHTML =
 
-async function loadCurrentStaff(user){
+            `<div class="loading">
+                Select Date, Day Order and Session
+             </div>`;
+
+        return;
+
+    }
+
+
+    document.getElementById(
+        "sessionTitle"
+    ).textContent =
+
+        session === "FN"
+        ? "FORENOON SESSION"
+        : "AFTERNOON SESSION";
+
+
+    document.getElementById(
+        "timetableContainer"
+    ).innerHTML =
+
+        `<div class="loading">
+            Loading timetable...
+         </div>`;
+
 
     try{
 
-        /*
-         IMPORTANT:
-
-         This currently checks the staff document using
-         Firebase Auth UID.
-
-         Once your existing staff structure is provided,
-         this can be matched exactly to your system.
-        */
-
-        const staffRef =
-            doc(db, "staff", user.uid);
-
-        const staffSnap =
-            await getDoc(staffRef);
-
-
-        if(!staffSnap.exists()){
-
-            /*
-             Try staff collection using email.
-            */
-
-            const staffQuery = query(
-                collection(db, "staff"),
-                where("email", "==", user.email)
+        timetableData =
+            await getStaffTimetable(
+                date,
+                dayOrder,
+                session
             );
 
-            const staffResult =
-                await getDocs(staffQuery);
 
-
-            if(staffResult.empty){
-
-                showStatus(
-                    "Staff profile not found in Firestore.",
-                    "error"
-                );
-
-                return;
-            }
-
-
-            const staffDoc =
-                staffResult.docs[0];
-
-            currentStaff = {
-                id: staffDoc.id,
-                ...staffDoc.data()
-            };
-
-        }else{
-
-            currentStaff = {
-                id: staffSnap.id,
-                ...staffSnap.data()
-            };
-
-        }
-
-
-        displayCurrentStaff();
+        renderTimetable(
+            dayOrder,
+            session,
+            timetableData
+        );
 
 
     }catch(error){
 
-        console.error(
-            "Staff loading error:",
-            error
-        );
+        console.error(error);
 
         showStatus(
-            "Unable to load current staff details: " +
+            "Unable to load timetable: " +
             error.message,
             "error"
         );
@@ -759,174 +926,388 @@ async function loadCurrentStaff(user){
 }
 
 
-/* =========================================================
-   DISPLAY STAFF
-========================================================= */
+/* =====================================================
+   GET STAFF TIMETABLE
+===================================================== */
 
-function displayCurrentStaff(){
-
-    const staff =
-        currentStaff || {};
-
-
-    document.getElementById("staffId").textContent =
-        staff.staffId ||
-        staff.staffID ||
-        staff.id ||
-        "-";
-
-
-    document.getElementById("staffName").textContent =
-        staff.name ||
-        staff.staffName ||
-        staff.displayName ||
-        "-";
-
-
-    document.getElementById("staffDepartment").textContent =
-        staff.department ||
-        staff.dept ||
-        "-";
-
-
-    document.getElementById("staffRole").textContent =
-        staff.role ||
-        staff.serviceRole ||
-        "Staff";
-
-}
-
-
-/* =========================================================
-   CONTROL EVENTS
-========================================================= */
-
-document
-.getElementById("dateSelect")
-.addEventListener("change", loadTimetable);
-
-
-document
-.getElementById("dayOrderSelect")
-.addEventListener("change", loadTimetable);
-
-
-document
-.getElementById("sessionSelect")
-.addEventListener("change", loadTimetable);
-
-
-/* =========================================================
-   LOAD TIMETABLE
-========================================================= */
-
-async function loadTimetable(){
-
-    const date =
-        document.getElementById("dateSelect").value;
-
-    const dayOrder =
-        document.getElementById("dayOrderSelect").value;
-
-    const session =
-        document.getElementById("sessionSelect").value;
-
-
-    /*
-     DATE AND DAY ORDER ARE COMPLETELY INDEPENDENT.
-     Nothing below changes one based on the other.
-    */
-
-
-    if(!date || !dayOrder || !session){
-
-        document.getElementById("sessionTitle").textContent =
-            "SELECT DATE, DAY ORDER AND SESSION";
-
-        document.getElementById("timetableContainer").innerHTML =
-
-            `<div class="loading">
-                Select Date, Day Order and Session
-            </div>`;
-
-        return;
-    }
-
-
-    document.getElementById("sessionTitle").textContent =
-        session === "FN"
-        ? "FORENOON SESSION"
-        : "AFTERNOON SESSION";
-
-
-    /*
-      IMPORTANT:
-
-      The actual timetable Firestore query will be connected
-      to your existing timetable collection.
-
-      For now this creates the correct timetable structure.
-    */
-
-    const timetableData =
-        await getTimetableData(
-            date,
-            dayOrder,
-            session
-        );
-
-
-    renderTimetable(
-        dayOrder,
-        session,
-        timetableData
-    );
-
-}
-
-
-/* =========================================================
-   GET TIMETABLE DATA
-========================================================= */
-
-async function getTimetableData(
+async function getStaffTimetable(
     date,
     dayOrder,
     session
 ){
 
-    /*
-       PLACEHOLDER STRUCTURE.
+    const result = [];
 
-       This deliberately does NOT guess your existing
-       Firestore timetable collection.
+    try{
 
-       Once your current timetable portal code is provided,
-       this function will use its exact collection/field names.
-    */
+        /*
+         First try timetable collection
+        using staffId.
+        */
+
+        const timetableRef =
+            collection(
+                db,
+                "timetable"
+            );
 
 
-    return {
+        const q =
+            query(
+                timetableRef,
+                where(
+                    "staffId",
+                    "==",
+                    staffId
+                )
+            );
 
-        1: null,
-        2: null,
-        3: null,
-        4: null,
-        5: null
 
-    };
+        const snap =
+            await getDocs(q);
+
+
+        snap.forEach(
+            docSnap => {
+
+                const data =
+                    docSnap.data();
+
+
+                if(
+                    matchesDay(
+                        data,
+                        dayOrder
+                    ) &&
+                    matchesSession(
+                        data,
+                        session
+                    )
+                ){
+
+                    result.push({
+                        id:docSnap.id,
+                        ...data
+                    });
+
+                }
+
+            }
+        );
+
+
+    }catch(error){
+
+        console.log(
+            "staffId timetable query failed",
+            error
+        );
+
+
+        /*
+         Fallback:
+         load timetable collection and
+         filter locally.
+        */
+
+        try{
+
+            const snap =
+                await getDocs(
+                    collection(
+                        db,
+                        "timetable"
+                    )
+                );
+
+
+            snap.forEach(
+                docSnap => {
+
+                    const data =
+                        docSnap.data();
+
+
+                    if(
+                        matchesStaff(
+                            data
+                        ) &&
+                        matchesDay(
+                            data,
+                            dayOrder
+                        ) &&
+                        matchesSession(
+                            data,
+                            session
+                        )
+                    ){
+
+                        result.push({
+                            id:docSnap.id,
+                            ...data
+                        });
+
+                    }
+
+                }
+            );
+
+        }catch(secondError){
+
+            console.error(
+                secondError
+            );
+
+        }
+
+    }
+
+
+    return normalizeTimetable(
+        result,
+        session
+    );
 
 }
 
 
-/* =========================================================
-   RENDER TIMETABLE
-========================================================= */
+/* =====================================================
+   STAFF MATCH
+===================================================== */
+
+function matchesStaff(data){
+
+    const values = [
+
+        data.staffId,
+        data.staffID,
+        data.staff_id,
+        data.teacherId,
+        data.teacherID
+
+    ];
+
+    return values.some(
+        value =>
+            String(value || "")
+            .trim()
+            .toUpperCase()
+            ===
+            String(staffId)
+            .trim()
+            .toUpperCase()
+    );
+
+}
+
+
+/* =====================================================
+   DAY MATCH
+===================================================== */
+
+function matchesDay(
+    data,
+    dayOrder
+){
+
+    const values = [
+
+        data.dayOrder,
+        data.dayorder,
+        data.day,
+        data.day_order
+
+    ];
+
+
+    return values.some(
+        value =>
+
+            normalizeDay(value)
+            ===
+            normalizeDay(dayOrder)
+
+    );
+
+}
+
+
+/* =====================================================
+   SESSION MATCH
+===================================================== */
+
+function matchesSession(
+    data,
+    session
+){
+
+    const values = [
+
+        data.session,
+        data.Session,
+        data.periodSession
+
+    ];
+
+
+    return values.some(
+        value =>
+
+            String(value || "")
+            .trim()
+            .toUpperCase()
+            ===
+            session
+
+    );
+
+}
+
+
+/* =====================================================
+   DAY NORMALIZATION
+===================================================== */
+
+function normalizeDay(value){
+
+    let v =
+        String(value || "")
+        .trim()
+        .toUpperCase();
+
+
+    v =
+        v.replace(
+            "DAY",
+            ""
+        )
+        .trim();
+
+
+    v =
+        v.replace(
+            /^0+/,
+            ""
+        );
+
+
+    return v;
+
+}
+
+
+/* =====================================================
+   NORMALIZE TIMETABLE
+===================================================== */
+
+function normalizeTimetable(
+    records,
+    session
+){
+
+    const periods = {
+
+        1:null,
+        2:null,
+        3:null,
+        4:null,
+        5:null
+
+    };
+
+
+    records.forEach(
+        data => {
+
+            let hour =
+                data.hour ??
+                data.hourNo ??
+                data.period ??
+                data.periodNo;
+
+
+            /*
+             Convert "Hour 1" / "HOUR 1"
+             into number.
+            */
+
+            if(
+                typeof hour === "string"
+            ){
+
+                const match =
+                    hour.match(/\d+/);
+
+                if(match){
+
+                    hour =
+                        Number(
+                            match[0]
+                        );
+
+                }
+
+            }
+
+
+            hour =
+                Number(hour);
+
+
+            if(
+                hour >= 1 &&
+                hour <= 5
+            ){
+
+                periods[hour] = {
+
+                    subject:
+                        data.subject ||
+                        data.subjectName ||
+                        "",
+
+                    department:
+                        data.department ||
+                        data.dep ||
+                        "",
+
+                    year:
+                        data.year ||
+                        data.classYear ||
+                        "",
+
+                    section:
+                        data.section ||
+                        data.sec ||
+                        "",
+
+                    room:
+                        data.room ||
+                        data.roomNo ||
+                        data.roomNumber ||
+                        ""
+
+                };
+
+            }
+
+        }
+    );
+
+
+    return periods;
+
+}
+
+
+/* =====================================================
+   RENDER TABLE
+===================================================== */
 
 function renderTimetable(
     dayOrder,
     session,
-    timetableData
+    data
 ){
 
     const times =
@@ -935,109 +1316,131 @@ function renderTimetable(
 
     let html = `
 
-        <table class="timetable">
+    <table class="timetable">
 
-            <thead>
+        <thead>
 
-                <tr>
+            <tr>
 
-                    <th>DAY ORDER</th>
+                <th>
+                    DAY ORDER
+                </th>
 
-                    <th>HOUR 1</th>
-                    <th>HOUR 2</th>
-                    <th>HOUR 3</th>
-                    <th>HOUR 4</th>
-                    <th>HOUR 5</th>
+                <th>
+                    HOUR 1
+                </th>
 
-                </tr>
+                <th>
+                    HOUR 2
+                </th>
 
-            </thead>
+                <th>
+                    HOUR 3
+                </th>
 
-            <tbody>
+                <th>
+                    HOUR 4
+                </th>
 
-                <tr class="time-row">
+                <th>
+                    HOUR 5
+                </th>
 
-                    <td class="label">
-                        TIME
-                    </td>
+            </tr>
 
-                    <td>${times[0]}</td>
-                    <td>${times[1]}</td>
-                    <td>${times[2]}</td>
-                    <td>${times[3]}</td>
-                    <td>${times[4]}</td>
+        </thead>
 
-                </tr>
 
-                <tr>
+        <tbody>
 
-                    <td class="label">
-                        ${dayOrder}
-                    </td>
 
-                    ${createPeriodCell(
-                        timetableData[1],
-                        1
-                    )}
+            <!-- TIME -->
 
-                    ${createPeriodCell(
-                        timetableData[2],
-                        2
-                    )}
+            <tr>
 
-                    ${createPeriodCell(
-                        timetableData[3],
-                        3
-                    )}
+                <td class="label">
+                    TIME
+                </td>
 
-                    ${createPeriodCell(
-                        timetableData[4],
-                        4
-                    )}
+                <td class="time-cell">
+                    ${times[0]}
+                </td>
 
-                    ${createPeriodCell(
-                        timetableData[5],
-                        5
-                    )}
+                <td class="time-cell">
+                    ${times[1]}
+                </td>
 
-                </tr>
+                <td class="time-cell">
+                    ${times[2]}
+                </td>
 
-            </tbody>
+                <td class="time-cell">
+                    ${times[3]}
+                </td>
 
-        </table>
+                <td class="time-cell">
+                    ${times[4]}
+                </td>
+
+            </tr>
+
+
+            <!-- DAY ORDER -->
+
+            <tr>
+
+                <td class="label">
+                    ${escapeHTML(dayOrder)}
+                </td>
+
+                ${periodCell(data[1],1)}
+
+                ${periodCell(data[2],2)}
+
+                ${periodCell(data[3],3)}
+
+                ${periodCell(data[4],4)}
+
+                ${periodCell(data[5],5)}
+
+            </tr>
+
+
+        </tbody>
+
+    </table>
 
     `;
 
 
     document.getElementById(
         "timetableContainer"
-    ).innerHTML = html;
+    ).innerHTML =
+        html;
 
 }
 
 
-/* =========================================================
-   CREATE PERIOD CELL
-========================================================= */
+/* =====================================================
+   PERIOD CELL
+===================================================== */
 
-function createPeriodCell(
-    period,
+function periodCell(
+    data,
     hour
 ){
 
-    if(!period){
+    if(!data){
 
         return `
 
-            <td class="period-cell empty">
+        <td class="period-cell empty">
 
-                <div class="period-content">
+            <div class="free-cell">
+                FREE
+            </div>
 
-                    FREE
-
-                </div>
-
-            </td>
+        </td>
 
         `;
 
@@ -1046,99 +1449,91 @@ function createPeriodCell(
 
     return `
 
-        <td
-            class="period-cell"
-            onclick="openFreeStaffModal(
-                ${hour},
-                ${JSON.stringify(
-                    period
-                ).replace(/"/g,"&quot;")}
-            )"
-        >
+    <td
+        class="period-cell"
+        data-hour="${hour}"
+        onclick="openSubstitute(
+            ${hour}
+        )"
+    >
 
-            <div class="period-content">
+        <div class="period-subject">
 
-                <div class="subject">
+            ${escapeHTML(
+                data.subject ||
+                "Subject"
+            )}
 
-                    ${escapeHTML(
-                        period.subject || ""
-                    )}
+        </div>
 
-                </div>
 
-                <div class="class-info">
+        <div class="period-class">
 
-                    ${escapeHTML(
-                        period.department || ""
-                    )}
+            ${escapeHTML(
+                data.department ||
+                department ||
+                ""
+            )}
 
-                    ${period.year
-                        ? " - " +
-                          escapeHTML(period.year)
-                        : ""
-                    }
+            ${
+                data.year
+                ?
+                " - " +
+                escapeHTML(
+                    data.year
+                )
+                :
+                ""
+            }
 
-                    ${period.section
-                        ? " - " +
-                          escapeHTML(period.section)
-                        : ""
-                    }
+            ${
+                data.section
+                ?
+                " - " +
+                escapeHTML(
+                    data.section
+                )
+                :
+                ""
+            }
 
-                </div>
+        </div>
 
-                ${
-                    period.room
-                    ?
-                    `<div class="room">
-                        Room:
-                        ${escapeHTML(period.room)}
-                    </div>`
-                    :
-                    ""
-                }
+
+        ${
+            data.room
+            ?
+            `
+            <div class="period-room">
+
+                Room:
+                ${escapeHTML(data.room)}
 
             </div>
+            `
+            :
+            ""
+        }
 
-        </td>
+    </td>
 
     `;
 
 }
 
 
-/* =========================================================
-   OPEN FREE STAFF MODAL
-========================================================= */
+/* =====================================================
+   OPEN SUBSTITUTE
+===================================================== */
 
-window.openFreeStaffModal =
-async function(
-    hour,
-    period
-){
-
-    currentSelectedPeriod = {
-
-        hour,
-        ...period
-
-    };
-
-    selectedSubstituteStaff = null;
-
-    document.getElementById(
-        "requestBtn"
-    ).disabled = true;
-
-
-    const session =
-        document.getElementById(
-            "sessionSelect"
-        ).value;
+window.openSubstitute =
+async function(hour){
 
     const date =
         document.getElementById(
             "dateSelect"
         ).value;
+
 
     const dayOrder =
         document.getElementById(
@@ -1146,29 +1541,88 @@ async function(
         ).value;
 
 
+    const session =
+        document.getElementById(
+            "sessionSelect"
+        ).value;
+
+
+    const period =
+        timetableData[hour];
+
+
+    if(!period){
+
+        return;
+
+    }
+
+
+    selectedPeriod = {
+
+        date,
+        dayOrder,
+        session,
+        hour,
+
+        ...period
+
+    };
+
+
+    selectedSubstitute = null;
+
+
     document.getElementById(
         "selectedPeriod"
     ).innerHTML = `
 
-        <strong>Selected Period</strong><br>
+        <b>Selected Class</b><br>
 
-        Date: ${escapeHTML(date)}<br>
+        Date:
+        ${escapeHTML(date)}
+        <br>
 
-        Day Order: ${escapeHTML(dayOrder)}<br>
+        Day Order:
+        ${escapeHTML(dayOrder)}
+        <br>
 
-        Session: ${escapeHTML(session)}<br>
+        Session:
+        ${escapeHTML(session)}
+        <br>
 
-        Hour: ${hour}<br>
+        Hour:
+        ${hour}
+        <br>
 
         Subject:
-        ${escapeHTML(period.subject || "-")}
+        ${escapeHTML(
+            period.subject ||
+            "-"
+        )}
 
     `;
 
 
     document.getElementById(
-        "staffModal"
-    ).classList.add("show");
+        "modalBackground"
+    ).classList.add(
+        "show"
+    );
+
+
+    document.getElementById(
+        "freeStaffList"
+    ).innerHTML =
+
+        `<div class="loading">
+            Checking free staff...
+        </div>`;
+
+
+    document.getElementById(
+        "requestBtn"
+    ).disabled = true;
 
 
     await loadFreeStaff(
@@ -1181,9 +1635,9 @@ async function(
 };
 
 
-/* =========================================================
+/* =====================================================
    LOAD FREE STAFF
-========================================================= */
+===================================================== */
 
 async function loadFreeStaff(
     date,
@@ -1192,36 +1646,14 @@ async function loadFreeStaff(
     hour
 ){
 
-    const list =
-        document.getElementById(
-            "freeStaffList"
-        );
-
-
-    list.innerHTML =
-
-        `<div class="loading">
-            Checking available staff...
-        </div>`;
-
-
     try{
 
-        /*
-         The exact timetable collection is intentionally
-         not guessed here.
-
-         The final version will compare:
-
-         ALL STAFF
-             MINUS
-         STAFF BUSY IN SELECTED
-         DATE + DAY ORDER + SESSION + HOUR
-        */
+        const allStaff =
+            await getAllStaff();
 
 
-        const freeStaff =
-            await findFreeStaff(
+        const busyStaffIds =
+            await getBusyStaffIds(
                 date,
                 dayOrder,
                 session,
@@ -1229,159 +1661,108 @@ async function loadFreeStaff(
             );
 
 
-        if(!freeStaff.length){
+        const freeStaff =
+            allStaff.filter(
+                staff => {
 
-            list.innerHTML =
-
-                `<div class="no-staff">
-                    No free staff available
-                </div>`;
-
-            return;
-        }
+                    const id =
+                        getStaffId(
+                            staff
+                        );
 
 
-        list.innerHTML =
-            freeStaff.map(
-                staff => `
+                    if(
+                        normalizeStaffId(id)
+                        ===
+                        normalizeStaffId(
+                            staffId
+                        )
+                    ){
 
-                    <label
-                        class="staff-option"
-                        onclick="selectSubstituteStaff(
-                            '${escapeAttribute(
-                                staff.id
-                            )}'
-                        )"
-                    >
+                        return false;
 
-                        <input
-                            type="radio"
-                            name="substituteStaff"
-                            value="${escapeAttribute(
-                                staff.id
-                            )}"
-                        >
+                    }
 
-                        <div>
 
-                            <strong>
-                                ${escapeHTML(
-                                    staff.name ||
-                                    staff.staffName ||
-                                    "-"
-                                )}
-                            </strong>
+                    if(
+                        staff.active === false
+                    ){
 
-                            <br>
+                        return false;
 
-                            <small>
-                                ${escapeHTML(
-                                    staff.department ||
-                                    ""
-                                )}
-                                ${
-                                    staff.staffId
-                                    ?
-                                    " | " +
-                                    escapeHTML(
-                                        staff.staffId
-                                    )
-                                    :
-                                    ""
-                                }
-                            </small>
+                    }
 
-                        </div>
 
-                    </label>
+                    return !busyStaffIds.has(
+                        normalizeStaffId(id)
+                    );
 
-                `
-            ).join("");
+                }
+            );
+
+
+        displayFreeStaff(
+            freeStaff
+        );
 
 
     }catch(error){
 
         console.error(
-            "Free staff error:",
             error
         );
 
-        list.innerHTML =
+
+        document.getElementById(
+            "freeStaffList"
+        ).innerHTML =
 
             `<div class="no-staff">
+
                 Unable to load available staff.
-            </div>`;
+
+                <br><br>
+
+                ${escapeHTML(
+                    error.message
+                )}
+
+             </div>`;
 
     }
 
 }
 
 
-/* =========================================================
-   FIND FREE STAFF
-========================================================= */
+/* =====================================================
+   GET ALL STAFF
+===================================================== */
 
-async function findFreeStaff(
-    date,
-    dayOrder,
-    session,
-    hour
-){
-
-    /*
-       FINAL LOGIC:
-
-       1. Load all active staff.
-       2. Remove current requesting staff.
-       3. Check each staff's timetable.
-       4. Remove anyone having a period in:
-          date + dayOrder + session + hour.
-       5. Return remaining staff.
-
-       Exact Firestore field names will be connected
-       from your existing timetable portal.
-    */
-
-
-    const staffSnapshot =
-        await getDocs(
-            collection(db, "staff")
-        );
-
+async function getAllStaff(){
 
     const result = [];
 
 
-    staffSnapshot.forEach(
-        staffDoc => {
-
-            const staff =
-                {
-                    id: staffDoc.id,
-                    ...staffDoc.data()
-                };
-
-
-            if(
-                currentStaff &&
-                staffDoc.id === currentStaff.id
-            ){
-
-                return;
-
-            }
+    const snap =
+        await getDocs(
+            collection(
+                db,
+                "staff"
+            )
+        );
 
 
-            if(
-                staff.active === false
-            ){
+    snap.forEach(
+        docSnap => {
 
-                return;
+            result.push({
 
-            }
+                id:
+                    docSnap.id,
 
+                ...docSnap.data()
 
-            result.push(staff);
+            });
 
         }
     );
@@ -1392,214 +1773,488 @@ async function findFreeStaff(
 }
 
 
-/* =========================================================
-   SELECT SUBSTITUTE STAFF
-========================================================= */
+/* =====================================================
+   GET BUSY STAFF
+===================================================== */
 
-window.selectSubstituteStaff =
-function(staffId){
+async function getBusyStaffIds(
+    date,
+    dayOrder,
+    session,
+    hour
+){
 
-    selectedSubstituteStaff =
-        staffId;
+    const busy =
+        new Set();
 
 
-    document
-        .querySelectorAll(
-            ".staff-option"
-        )
-        .forEach(
-            option => {
+    /*
+       Load timetable records.
 
-                const radio =
-                    option.querySelector(
-                        "input"
-                    );
+       Client-side filtering is used so that
+       Firestore composite indexes are not required.
+    */
 
-                option.classList.toggle(
-                    "selected",
-                    radio &&
-                    radio.value === staffId
-                );
-
-            }
+    const snap =
+        await getDocs(
+            collection(
+                db,
+                "timetable"
+            )
         );
 
 
-    document.getElementById(
-        "requestBtn"
-    ).disabled = false;
+    snap.forEach(
+        docSnap => {
 
-};
+            const data =
+                docSnap.data();
 
 
-/* =========================================================
-   REQUEST SUBSTITUTE
-========================================================= */
+            if(
+                !matchesDay(
+                    data,
+                    dayOrder
+                )
+            ){
 
-window.requestSubstitute =
-async function(){
+                return;
+
+            }
+
+
+            if(
+                !matchesSession(
+                    data,
+                    session
+                )
+            ){
+
+                return;
+
+            }
+
+
+            let recordHour =
+                data.hour ??
+                data.hourNo ??
+                data.period ??
+                data.periodNo;
+
+
+            if(
+                typeof recordHour === "string"
+            ){
+
+                const match =
+                    recordHour.match(
+                        /\d+/
+                    );
+
+                if(match){
+
+                    recordHour =
+                        Number(
+                            match[0]
+                        );
+
+                }
+
+            }
+
+
+            if(
+                Number(recordHour)
+                !==
+                Number(hour)
+            ){
+
+                return;
+
+            }
+
+
+            const id =
+                data.staffId ||
+                data.staffID ||
+                data.staff_id ||
+                data.teacherId ||
+                data.teacherID;
+
+
+            if(id){
+
+                busy.add(
+                    normalizeStaffId(
+                        id
+                    )
+                );
+
+            }
+
+        }
+    );
+
+
+    return busy;
+
+}
+
+
+/* =====================================================
+   STAFF ID
+===================================================== */
+
+function getStaffId(staff){
+
+    return (
+
+        staff.staffId ||
+        staff.staffID ||
+        staff.staff_id ||
+        staff.id ||
+        ""
+
+    );
+
+}
+
+
+/* =====================================================
+   NORMALIZE STAFF ID
+===================================================== */
+
+function normalizeStaffId(value){
+
+    return String(
+        value || ""
+    )
+    .trim()
+    .toUpperCase();
+
+}
+
+
+/* =====================================================
+   DISPLAY FREE STAFF
+===================================================== */
+
+function displayFreeStaff(
+    staffList
+){
+
+    const container =
+        document.getElementById(
+            "freeStaffList"
+        );
+
 
     if(
-        !currentStaff ||
-        !currentSelectedPeriod ||
-        !selectedSubstituteStaff
+        !staffList.length
     ){
+
+        container.innerHTML =
+
+            `<div class="no-staff">
+
+                No free staff available
+                for this hour.
+
+             </div>`;
 
         return;
 
     }
 
 
-    const date =
-        document.getElementById(
-            "dateSelect"
-        ).value;
+    container.innerHTML =
+        staffList.map(
+            staff => {
 
-    const dayOrder =
-        document.getElementById(
-            "dayOrderSelect"
-        ).value;
-
-    const session =
-        document.getElementById(
-            "sessionSelect"
-        ).value;
+                const id =
+                    getStaffId(
+                        staff
+                    );
 
 
-    try{
-
-        /*
-          IMPORTANT:
-
-          This is the basic request structure.
-
-          Your existing Substitute Approval Portal's
-          exact collection and field names should be used
-          in the final integration.
-        */
+                const name =
+                    staff.name ||
+                    staff.staffName ||
+                    staff.displayName ||
+                    "Unknown Staff";
 
 
-        await addDoc(
-            collection(
-                db,
-                "substituteRequests"
-            ),
-            {
-
-                requesterUid:
-                    currentUser.uid,
-
-                requesterStaffId:
-                    currentStaff.staffId ||
-                    currentStaff.staffID ||
-                    currentStaff.id,
-
-                requesterName:
-                    currentStaff.name ||
-                    currentStaff.staffName ||
-                    "",
-
-                requesterDepartment:
-                    currentStaff.department ||
-                    "",
+                const dep =
+                    staff.department ||
+                    staff.dept ||
+                    "";
 
 
-                substituteStaffId:
-                    selectedSubstituteStaff,
+                return `
 
+                <label
+                    class="staff-option"
+                    data-id="${escapeHTML(id)}"
+                >
 
-                date:
-                    date,
+                    <input
+                        type="radio"
+                        name="substituteStaff"
+                        value="${escapeHTML(id)}"
+                    >
 
-                dayOrder:
-                    dayOrder,
+                    <div>
 
-                session:
-                    session,
+                        <div
+                            class="staff-option-name">
 
-                hour:
-                    currentSelectedPeriod.hour,
+                            ${escapeHTML(name)}
 
+                        </div>
 
-                subject:
-                    currentSelectedPeriod.subject ||
-                    "",
+                        <div
+                            class="staff-option-info">
 
-                department:
-                    currentSelectedPeriod.department ||
-                    "",
+                            ${escapeHTML(id)}
 
-                year:
-                    currentSelectedPeriod.year ||
-                    "",
+                            ${
+                                dep
+                                ?
+                                " | " +
+                                escapeHTML(dep)
+                                :
+                                ""
+                            }
 
-                section:
-                    currentSelectedPeriod.section ||
-                    "",
+                        </div>
 
-                room:
-                    currentSelectedPeriod.room ||
-                    "",
+                    </div>
 
+                </label>
 
-                status:
-                    "PENDING",
-
-                createdAt:
-                    serverTimestamp(),
-
-                requesterUid:
-                    currentUser.uid
+                `;
 
             }
-        );
+        )
+        .join("");
 
 
-        closeStaffModal();
+    document
+    .querySelectorAll(
+        ".staff-option"
+    )
+    .forEach(
+        option => {
+
+            option.addEventListener(
+                "click",
+                function(){
+
+                    document
+                    .querySelectorAll(
+                        ".staff-option"
+                    )
+                    .forEach(
+                        x =>
+                        x.classList.remove(
+                            "selected"
+                        )
+                    );
 
 
-        showStatus(
-            "Substitute request sent successfully to the Head for approval.",
-            "success"
-        );
+                    this.classList.add(
+                        "selected"
+                    );
 
 
-    }catch(error){
-
-        console.error(
-            "Request error:",
-            error
-        );
+                    const radio =
+                        this.querySelector(
+                            "input"
+                        );
 
 
-        showStatus(
-            "Unable to send substitute request: " +
-            error.message,
-            "error"
-        );
+                    radio.checked = true;
+
+
+                    selectedSubstitute =
+                        radio.value;
+
+
+                    document.getElementById(
+                        "requestBtn"
+                    ).disabled = false;
+
+                }
+            );
+
+        }
+    );
+
+}
+
+
+/* =====================================================
+   REQUEST SUBSTITUTE
+===================================================== */
+
+document
+.getElementById(
+    "requestBtn"
+)
+.addEventListener(
+    "click",
+    async function(){
+
+        if(
+            !selectedPeriod ||
+            !selectedSubstitute
+        ){
+
+            return;
+
+        }
+
+
+        try{
+
+            this.disabled = true;
+
+            this.textContent =
+                "SENDING REQUEST...";
+
+
+            await addDoc(
+
+                collection(
+                    db,
+                    "substituteRequests"
+                ),
+
+                {
+
+                    requesterStaffId:
+                        staffId,
+
+                    requesterName:
+                        staffName,
+
+                    requesterDepartment:
+                        department,
+
+
+                    substituteStaffId:
+                        selectedSubstitute,
+
+
+                    date:
+                        selectedPeriod.date,
+
+                    dayOrder:
+                        selectedPeriod.dayOrder,
+
+                    session:
+                        selectedPeriod.session,
+
+                    hour:
+                        selectedPeriod.hour,
+
+
+                    subject:
+                        selectedPeriod.subject ||
+                        "",
+
+                    classDepartment:
+                        selectedPeriod.department ||
+                        department,
+
+                    year:
+                        selectedPeriod.year ||
+                        "",
+
+                    section:
+                        selectedPeriod.section ||
+                        "",
+
+                    room:
+                        selectedPeriod.room ||
+                        "",
+
+
+                    status:
+                        "PENDING",
+
+                    createdAt:
+                        serverTimestamp()
+
+                }
+
+            );
+
+
+            closeModal();
+
+
+            showStatus(
+                "Substitute request sent to the Head for approval.",
+                "success"
+            );
+
+
+        }catch(error){
+
+            console.error(
+                error
+            );
+
+
+            showStatus(
+                "Request failed: " +
+                error.message,
+                "error"
+            );
+
+
+            this.disabled = false;
+
+            this.textContent =
+                "REQUEST SUBSTITUTE";
+
+        }
 
     }
+);
 
-};
 
-
-/* =========================================================
+/* =====================================================
    CLOSE MODAL
-========================================================= */
+===================================================== */
 
-window.closeStaffModal =
-function(){
+document
+.getElementById(
+    "closeModal"
+)
+.addEventListener(
+    "click",
+    closeModal
+);
 
-    document.getElementById(
-        "staffModal"
-    ).classList.remove("show");
 
-};
+function closeModal(){
+
+    document
+    .getElementById(
+        "modalBackground"
+    )
+    .classList.remove(
+        "show"
+    );
+
+}
 
 
-/* =========================================================
+/* =====================================================
    STATUS
-========================================================= */
+===================================================== */
 
 function showStatus(
     message,
@@ -1617,11 +2272,12 @@ function showStatus(
 
 
     box.className =
-        "status show " + type;
+        "status show " +
+        type;
 
 
     setTimeout(
-        () => {
+        function(){
 
             box.classList.remove(
                 "show"
@@ -1634,52 +2290,66 @@ function showStatus(
 }
 
 
-/* =========================================================
-   ESCAPE HELPERS
-========================================================= */
+/* =====================================================
+   ESCAPE HTML
+===================================================== */
 
 function escapeHTML(value){
 
-    return String(value ?? "")
-        .replaceAll("&","&amp;")
-        .replaceAll("<","&lt;")
-        .replaceAll(">","&gt;")
-        .replaceAll('"',"&quot;")
-        .replaceAll("'","&#039;");
+    return String(
+        value ?? ""
+    )
+    .replaceAll(
+        "&",
+        "&amp;"
+    )
+    .replaceAll(
+        "<",
+        "&lt;"
+    )
+    .replaceAll(
+        ">",
+        "&gt;"
+    )
+    .replaceAll(
+        '"',
+        "&quot;"
+    )
+    .replaceAll(
+        "'",
+        "&#039;"
+    );
 
 }
 
 
-function escapeAttribute(value){
-
-    return String(value ?? "")
-        .replaceAll("\\","\\\\")
-        .replaceAll("'","\\'");
-}
-
-
-/* =========================================================
-   CLOSE MODAL WHEN CLICKING OUTSIDE
-========================================================= */
+/* =====================================================
+   CLOSE WHEN CLICK OUTSIDE
+===================================================== */
 
 document
-.getElementById("staffModal")
+.getElementById(
+    "modalBackground"
+)
 .addEventListener(
     "click",
-    function(event){
+    function(e){
 
         if(
-            event.target === this
+            e.target ===
+            this
         ){
 
-            closeStaffModal();
+            closeModal();
 
         }
 
     }
 );
 
+
 </script>
 
 </body>
+
 </html>
