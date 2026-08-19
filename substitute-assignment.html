@@ -1027,7 +1027,7 @@
      initializeApp
  }
  from
- "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+ "https://www\.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
 
  import {
@@ -1038,7 +1038,7 @@
      serverTimestamp
  }
  from
- "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+ "https://www\.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 
  /* =====================================================
@@ -1324,18 +1324,18 @@
 
              data.staffId,
              data.staffID,
-             data.staff_id,
+             data.staff\_id,
 
              data.staffCode,
-             data.staff_code,
+             data.staff\_code,
 
              data.employeeId,
              data.employeeID,
-             data.employee_id,
+             data.employee\_id,
 
              data.teacherId,
              data.teacherID,
-             data.teacher_id,
+             data.teacher\_id,
 
              data.id,
              data.ID,
@@ -1358,17 +1358,17 @@
          firstValue(
 
              data.staffName,
-             data.staff_name,
+             data.staff\_name,
 
              data.name,
              data.fullName,
-             data.full_name,
+             data.full\_name,
 
              data.employeeName,
-             data.employee_name,
+             data.employee\_name,
 
              data.teacherName,
-             data.teacher_name,
+             data.teacher\_name,
 
              data.teacher
 
@@ -1391,10 +1391,10 @@
              data.dept,
 
              data.departmentName,
-             data.department_name,
+             data.department\_name,
 
              data.deptName,
-             data.dept_name,
+             data.dept\_name,
 
              data.Department,
              data.DEPT,
@@ -1464,14 +1464,14 @@
              data.subject,
 
              data.subjectTitle,
-             data.subject_title,
+             data.subject\_title,
 
              data.subjectCode,
-             data.subject_code,
+             data.subject\_code,
 
              data.subjectId,
              data.paperName,
-             data.paper_name
+             data.paper\_name
 
          )
      ).trim();
@@ -1489,12 +1489,12 @@
          firstValue(
 
              data.subjectCode,
-             data.subject_code,
+             data.subject\_code,
 
              data.code,
 
              data.subjectId,
-             data.subject_id
+             data.subject\_id
 
          )
      ).trim();
@@ -1516,10 +1516,10 @@
 
              data.year,
              data.className,
-             data.class_name,
+             data.class\_name,
 
              data.yearName,
-             data.year_name
+             data.year\_name
 
          )
      ).trim();
@@ -1558,11 +1558,11 @@
          firstValue(
 
              data.roomNo,
-             data.room_no,
+             data.room\_no,
 
              data.room,
              data.roomNumber,
-             data.room_number,
+             data.room\_number,
 
              data.RoomNo,
              data.Room,
@@ -1571,7 +1571,7 @@
              data.classroom,
 
              data.roomName,
-             data.room_name
+             data.room\_name
 
          )
      ).trim();
@@ -1608,7 +1608,7 @@
                      data.dayNumber,
 
                      data.dayOrder,
-                     data.day_order
+                     data.day\_order
 
                  )
              ),
@@ -1634,7 +1634,7 @@
              String(
                  firstValue(
                      data.subjectId,
-                     data.subject_id
+                     data.subject\_id
                  )
              ).trim(),
 
@@ -1678,7 +1678,7 @@
              String(
                  firstValue(
                      data.subjectId,
-                     data.subject_id
+                     data.subject\_id
                  )
              ).trim(),
 
@@ -2273,7 +2273,7 @@
      dayCell.textContent =
          normalizedDay;
 
-     row.appendChild(
+     row\.appendChild(
          dayCell
      );
 
@@ -2284,7 +2284,7 @@
 
      for(let hour=1;hour<=5;hour++){
 
-         row.appendChild(
+         row\.appendChild(
 
              createPeriodCell(
 
@@ -2417,7 +2417,7 @@
                      "-"
                  )}
 
-                 <br>
+                 \
 
                  <b>Year:</b>
                  ${escapeHtml(
@@ -2425,7 +2425,7 @@
                      "-"
                  )}
 
-                 <br>
+                 \
 
                  <b>Section:</b>
                  ${escapeHtml(
@@ -2643,7 +2643,7 @@
 
                  Unable to load free staff.
 
-                 <br><br>
+                 \\
 
                  ${escapeHtml(
                      error.message
@@ -2709,269 +2709,119 @@
 
  async function findFreeStaff(){
 
-     if(!selectedPeriod){
-
-         throw new Error(
-             "No timetable period selected."
-         );
-
-     }
-
-     if(!allStaffData.length){
-
-         await loadAllStaff();
-
-     }
-
-     if(!currentDepartment){
-
-         const current =
-             allStaffData.find(
-                 staff =>
-
-                     normalizeText(
-                         staff.staffId
-                     ) ===
-                     normalizeText(
-                         currentStaffId
-                     )
-             );
-
-         if(current){
-
-             currentDepartment =
-                 current.department || "";
-
-             sessionStorage.setItem(
-                 "department",
-                 currentDepartment
-             );
-
-             updateCurrentStaffDisplay();
-
-         }
-
-     }
-
-     const requestDepartment =
-         normalizeText(
-             currentDepartment
-         );
-
-     const selectedSession =
-         normalizeSession(
-             selectedPeriod.session
-         );
-
-     const selectedHour =
-         Number(
-             selectedPeriod.hour
-         );
-
-     const isLabAssistant =
-         requestDepartment ===
-         "LAB ASSISTANT";
-
-     const LAB_ALLOWED_AN_45 = [
-         "RAMESHWAR",
-         "LOGESHWARRAN",
-         "MURALIKRISHNAN"
-     ];
-
-     const LAB_BLOCKED_FN_12 = [
-         "RAMESHWAR",
-         "LOGESHWARRAN",
-         "MURALIKRISHNAN"
-     ];
-
-     const freeStaff = [];
-
-
-     allStaffData.forEach(staff => {
-
-         const staffId =
-             String(
-                 staff.staffId || ""
-             ).trim();
-
-         if(!staffId){
-
-             return;
-
-         }
-
-         if(
-             normalizeText(staffId) ===
-             normalizeText(currentStaffId)
-         ){
-
-             return;
-
-         }
-
-         const staffDepartment =
-             normalizeText(
-                 staff.department
-             );
-
-         if(requestDepartment){
-
-             if(!staffDepartment){
-
-                 return;
-
-             }
-
-             if(
-                 staffDepartment !==
-                 requestDepartment
-             ){
-
-                 return;
-
-             }
-
-         }
-
-         if(
-             isStaffOccupied(
-
-                 staffId,
-
-                 selectedPeriod.day,
-
-                 selectedSession,
-
-                 selectedHour
-
-             )
-         ){
-
-             return;
-
-         }
-
-         const staffName =
-             normalizeText(
-                 staff.staffName
-             );
-
-         /* =================================================
-            LAB ASSISTANT - AN HOUR 4 & 5
-
-            ONLY RAMESHWAR, LOGESHWARRAN,
-            AND MURALIKRISHNAN
-         ================================================= */
-
-         if(
-             isLabAssistant &&
-             selectedSession === "AN" &&
-             (
-                 selectedHour === 4 ||
-                 selectedHour === 5
-             )
-         ){
-
-             if(
-                 !LAB_ALLOWED_AN_45.includes(
-                     staffName
-                 )
-             ){
-
-                 return;
-
-             }
-
-         }
-
-         /* =================================================
-            LAB ASSISTANT - FN HOUR 1 & 2
-
-            DO NOT SHOW RAMESHWAR,
-            LOGESHWARRAN, OR MURALIKRISHNAN
-         ================================================= */
-
-         if(
-             isLabAssistant &&
-             selectedSession === "FN" &&
-             (
-                 selectedHour === 1 ||
-                 selectedHour === 2
-             )
-         ){
-
-             if(
-                 LAB_BLOCKED_FN_12.includes(
-                     staffName
-                 )
-             ){
-
-                 return;
-
-             }
-
-         }
-
-         /* =================================================
-            LAB ASSISTANT - OTHER FN HOURS
-
-            DO NOT SHOW MURALIKRISHNAN
-         ================================================= */
-
-         if(
-             isLabAssistant &&
-             selectedSession === "FN" &&
-             selectedHour !== 1 &&
-             selectedHour !== 2
-         ){
-
-             if(
-                 staffName ===
-                 "MURALIKRISHNAN"
-             ){
-
-                 return;
-
-             }
-
-         }
-
-         freeStaff.push({
-
-             staffId:
-                 staff.staffId,
-
-             staffName:
-                 staff.staffName ||
-                 staff.staffId,
-
-             department:
-                 staff.department ||
-                 currentDepartment
-
-         });
-
-     });
-
-
-     freeStaff.sort(
-         (a,b) =>
-
-             String(a.staffName || "")
-             .localeCompare(
-                 String(b.staffName || "")
-             )
-     );
-
-
-     renderFreeStaff(
-         freeStaff
-     );
-
- }
-
-
- /* =====================================================
+    if(!selectedPeriod){
+        throw new Error("No timetable period selected.");
+    }
+
+    if(!allStaffData.length){
+        await loadAllStaff();
+    }
+
+    if(!currentDepartment){
+        const current = allStaffData.find(
+            staff =>
+                normalizeText(staff.staffId) ===
+                normalizeText(currentStaffId)
+        );
+
+        if(current){
+            currentDepartment = current.department || "";
+            sessionStorage.setItem("department", currentDepartment);
+            updateCurrentStaffDisplay();
+        }
+    }
+
+    const requestDepartment = normalizeText(currentDepartment);
+    const selectedSession = normalizeText(selectedPeriod.session);
+    const selectedHour = Number(selectedPeriod.hour);
+    const isLabAssistant = requestDepartment === "LAB ASSISTANT";
+    const freeStaff = [];
+
+    allStaffData.forEach(staff => {
+
+        const staffId = String(staff.staffId || "").trim();
+
+        if(!staffId){
+            return;
+        }
+
+        if(normalizeText(staffId) === normalizeText(currentStaffId)){
+            return;
+        }
+
+        const staffDepartment = normalizeText(staff.department);
+
+        if(requestDepartment){
+            if(!staffDepartment){
+                return;
+            }
+            if(staffDepartment !== requestDepartment){
+                return;
+            }
+        }
+
+        /* =====================================================
+           LAB ASSISTANT SPECIAL AVAILABILITY RULES
+        ===================================================== */
+        if(isLabAssistant){
+
+            const staffName = normalizeText(staff.staffName);
+
+            const isRameshwar = staffName === "RAMESHWAR";
+            const isLogeshwarran = staffName === "LOGESHWARRAN";
+            const isMuralikrishnan = staffName === "MURALIKRISHNAN";
+
+            /* MURALIKRISHNAN works only from 01:30 PM to 06:00 PM. */
+            if(isMuralikrishnan && selectedSession === "FN"){
+                return;
+            }
+
+            /* FN Hour 1 and 2: RAMESHWAR and LOGESHWARRAN cannot appear. */
+            if(
+                selectedSession === "FN" &&
+                (selectedHour === 1 || selectedHour === 2) &&
+                (isRameshwar || isLogeshwarran)
+            ){
+                return;
+            }
+
+            /* AN Hour 4 and 5: ONLY these three are eligible. */
+            if(
+                selectedSession === "AN" &&
+                (selectedHour === 4 || selectedHour === 5) &&
+                !(isRameshwar || isLogeshwarran || isMuralikrishnan)
+            ){
+                return;
+            }
+        }
+
+        /* EXISTING TIMETABLE OCCUPIED CHECK */
+        if(isStaffOccupied(
+            staffId,
+            selectedPeriod.day,
+            selectedSession,
+            selectedHour
+        )){
+            return;
+        }
+
+        freeStaff.push({
+            staffId: staff.staffId,
+            staffName: staff.staffName || staff.staffId,
+            department: staff.department || currentDepartment
+        });
+    });
+
+    freeStaff.sort(
+        (a,b) => String(a.staffName || "").localeCompare(
+            String(b.staffName || "")
+        )
+    );
+
+    renderFreeStaff(freeStaff);
+}
+
+/* =====================================================
     RENDER FREE STAFF
  ===================================================== */
 
@@ -4277,7 +4127,7 @@
                          ${
                              request.substituteStaffId
                              ? `
-                                 <br>
+                                 \
                                  <small>
                                      ${escapeHtml(
                                          request.substituteStaffId
@@ -4371,7 +4221,7 @@
 
                  Unable to load your substitute requests.
 
-                 <br><br>
+                 \\
 
                  ${escapeHtml(
                      error.message
