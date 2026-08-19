@@ -1,4379 +1,4563 @@
- <!DOCTYPE html>
- <html lang="en">
-
- <head>
-
- <meta charset="UTF-8">
- <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
- <title>Substitute Assignment</title>
-
- <style>
-
- *{
-     box-sizing:border-box;
-     margin:0;
-     padding:0;
-     font-family:Arial,Helvetica,sans-serif;
- }
-
- body{
-     background:#f4f7fb;
-     color:#1f2937;
- }
-
- .header{
-     background:#500454;
-     color:white;
-     padding:18px 25px;
-     box-shadow:0 2px 8px rgba(0,0,0,.2);
- }
-
- .header h1{
-     font-size:24px;
- }
-
- .header p{
-     margin-top:5px;
-     font-size:13px;
-     opacity:.9;
- }
-
- .container{
-     max-width:1500px;
-     margin:25px auto;
-     padding:0 18px;
- }
-
- .card{
-     background:white;
-     border-radius:12px;
-     padding:22px;
-     margin-bottom:20px;
-     box-shadow:0 3px 14px rgba(0,0,0,.08);
- }
-
- .card-title{
-     font-size:20px;
-     font-weight:bold;
-     color:#500454;
-     margin-bottom:18px;
- }
-
- /* CURRENT STAFF */
-
- .staff-info{
-     display:grid;
-     grid-template-columns:repeat(3,1fr);
-     gap:15px;
- }
-
- .info-box{
-     background:#faf5ff;
-     border-left:4px solid #500454;
-     padding:15px;
-     border-radius:7px;
- }
-
- .info-label{
-     font-size:12px;
-     color:#6b7280;
-     font-weight:bold;
-     margin-bottom:5px;
- }
-
- .info-value{
-     font-size:16px;
-     font-weight:bold;
-     color:#500454;
- }
-
- /* FORM */
-
- .form-grid{
-     display:grid;
-     grid-template-columns:1fr 1fr 1fr;
-     gap:18px;
- }
-
- .form-group{
-     display:flex;
-     flex-direction:column;
- }
-
- .form-group label{
-     font-size:13px;
-     font-weight:bold;
-     margin-bottom:7px;
- }
-
- input,
- select{
-     width:100%;
-     padding:12px;
-     border:1px solid #d1d5db;
-     border-radius:7px;
-     background:white;
-     font-size:14px;
-     outline:none;
- }
-
- input:focus,
- select:focus{
-     border-color:#500454;
-     box-shadow:0 0 0 2px rgba(80,4,84,.1);
- }
-
- .note{
-     margin-top:15px;
-     padding:12px;
-     background:#fff7ed;
-     border-left:4px solid #f97316;
-     color:#9a3412;
-     border-radius:6px;
-     font-size:13px;
- }
-
- .button-row{
-     margin-top:18px;
-     display:flex;
-     gap:10px;
-     flex-wrap:wrap;
- }
-
- button{
-     border:none;
-     border-radius:7px;
-     padding:12px 20px;
-     cursor:pointer;
-     font-weight:bold;
-     font-size:14px;
- }
-
- button:disabled{
-     opacity:.55;
-     cursor:not-allowed;
- }
-
- .btn-primary{
-     background:#500454;
-     color:white;
- }
-
- .btn-primary:hover{
-     background:#6d0872;
- }
-
- .btn-secondary{
-     background:#6b7280;
-     color:white;
- }
-
- .btn-success{
-     background:#15803d;
-     color:white;
- }
-
- .btn-danger{
-     background:#dc2626;
-     color:white;
- }
-
- /* MESSAGE */
-
- .message{
-     display:none;
-     margin-top:15px;
-     padding:12px;
-     border-radius:7px;
-     font-size:14px;
-     font-weight:bold;
- }
-
- .message.success{
-     display:block;
-     background:#dcfce7;
-     color:#166534;
- }
-
- .message.error{
-     display:block;
-     background:#fee2e2;
-     color:#991b1b;
- }
-
- .message.info{
-     display:block;
-     background:#dbeafe;
-     color:#1e40af;
- }
-
- /* TIMETABLE */
-
- .timetable-card{
-     display:none;
- }
-
- .session-title{
-     text-align:center;
-     background:#500454;
-     color:white;
-     padding:13px;
-     font-size:18px;
-     font-weight:bold;
-     border-radius:8px 8px 0 0;
- }
-
- .table-wrapper{
-     width:100%;
-     overflow-x:auto;
- }
-
- .timetable{
-     width:100%;
-     min-width:1100px;
-     border-collapse:collapse;
- }
-
- .timetable th{
-     background:#6d0872;
-     color:white;
-     border:1px solid #d1d5db;
-     padding:10px 8px;
-     text-align:center;
-     font-size:12px;
-     vertical-align:middle;
- }
-
- .timetable td{
-     border:1px solid #d1d5db;
-     padding:8px;
-     text-align:center;
-     vertical-align:middle;
-     min-width:180px;
-     height:135px;
- }
-
- .timetable th:first-child{
-     min-width:110px;
- }
-
- .day-cell{
-     background:#f3e8ff;
-     color:#500454;
-     font-weight:bold;
-     min-width:105px !important;
- }
-
- .hour-time{
-     margin-top:6px;
-     padding-top:6px;
-     border-top:1px solid rgba(255,255,255,.4);
-     font-size:10px;
-     font-weight:normal;
-     line-height:1.3;
- }
-
- .period{
-     min-height:110px;
-     padding:9px;
-     border-radius:8px;
-     transition:.2s;
- }
-
- .period.assigned{
-     background:#fef3c7;
-     border-left:4px solid #d97706;
-     cursor:pointer;
- }
-
- .period.assigned:hover{
-     transform:scale(1.02);
-     box-shadow:0 3px 8px rgba(0,0,0,.1);
- }
-
- .period.free{
-     background:#f0fdf4;
-     border-left:4px solid #16a34a;
- }
-
- .period-subject{
-     font-size:12px;
-     font-weight:bold;
-     color:#111827;
-     line-height:1.4;
- }
-
- .period-details{
-     margin-top:7px;
-     font-size:11px;
-     color:#374151;
-     line-height:1.5;
- }
-
- .room{
-     display:inline-block;
-     margin-top:7px;
-     padding:5px 9px;
-     background:#dcfce7;
-     color:#166534;
-     border-radius:5px;
-     font-size:10px;
-     font-weight:bold;
- }
-
- .room.missing{
-     background:#fee2e2;
-     color:#991b1b;
- }
-
- .period-time{
-     margin-top:9px;
-     padding-top:7px;
-     border-top:1px solid #d1d5db;
-     font-size:11px;
-     font-weight:bold;
-     color:#500454;
-     text-align:center;
- }
-
- .click-note{
-     margin-top:8px;
-     font-size:10px;
-     color:#92400e;
-     font-weight:bold;
- }
-
- .free-text{
-     color:#16a34a;
-     font-weight:bold;
-     font-size:12px;
- }
-
- /* SUBSTITUTE */
-
- .substitute-panel{
-     display:none;
- }
-
- .selected-period{
-     background:#eff6ff;
-     border-left:5px solid #2563eb;
-     padding:16px;
-     border-radius:8px;
-     margin-bottom:18px;
- }
-
- .selected-period h3{
-     color:#1e3a8a;
-     margin-bottom:8px;
- }
-
- .selected-grid{
-     display:grid;
-     grid-template-columns:repeat(5,1fr);
-     gap:12px;
- }
-
- .selected-item{
-     font-size:12px;
- }
-
- .selected-item b{
-     display:block;
-     color:#1e3a8a;
-     margin-bottom:3px;
- }
-
- .staff-list{
-     display:grid;
-     grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
-     gap:15px;
- }
-
- .staff-option{
-     border:1px solid #d1d5db;
-     border-radius:9px;
-     padding:15px;
-     cursor:pointer;
-     background:white;
-     transition:.2s;
- }
-
- .staff-option:hover{
-     border-color:#500454;
-     box-shadow:0 3px 10px rgba(0,0,0,.08);
- }
-
- .staff-option.selected{
-     border:2px solid #500454;
-     background:#faf5ff;
- }
-
- .staff-name{
-     font-size:16px;
-     font-weight:bold;
-     color:#500454;
- }
-
- .staff-id{
-     margin-top:5px;
-     font-size:12px;
-     color:#6b7280;
- }
-
- .staff-dept{
-     margin-top:5px;
-     font-size:12px;
-     color:#374151;
- }
-
- .availability{
-     margin-top:10px;
-     display:inline-block;
-     padding:5px 9px;
-     background:#dcfce7;
-     color:#166534;
-     border-radius:15px;
-     font-size:10px;
-     font-weight:bold;
- }
-
- .empty{
-     text-align:center;
-     padding:40px !important;
-     color:#6b7280;
-     font-weight:bold;
- }
-
- .loading{
-     text-align:center;
-     padding:30px;
-     color:#500454;
-     font-weight:bold;
- }
-
- .staff-count{
-     margin-bottom:15px;
-     padding:12px;
-     background:#f0fdf4;
-     border-left:4px solid #16a34a;
-     border-radius:6px;
-     color:#166534;
-     font-weight:bold;
- }
-
- /* =====================================================
-    MY REQUESTS
- ===================================================== */
-
- .requests-card{
-     margin-top:20px;
- }
-
- .request-top{
-     display:flex;
-     justify-content:space-between;
-     align-items:center;
-     gap:15px;
-     flex-wrap:wrap;
-     margin-bottom:18px;
- }
-
- .request-count{
-     background:#faf5ff;
-     border-left:4px solid #500454;
-     padding:10px 14px;
-     border-radius:6px;
-     color:#500454;
-     font-weight:bold;
-     font-size:13px;
- }
-
- .requests-wrapper{
-     width:100%;
-     overflow-x:auto;
- }
-
- .requests-table{
-     width:100%;
-     min-width:1500px;
-     border-collapse:collapse;
- }
-
- .requests-table th{
-     background:#500454;
-     color:white;
-     padding:12px 9px;
-     border:1px solid #ddd;
-     font-size:12px;
-     text-align:center;
-     white-space:nowrap;
- }
-
- .requests-table td{
-     padding:11px 9px;
-     border:1px solid #ddd;
-     font-size:12px;
-     text-align:center;
-     vertical-align:middle;
- }
-
- .requests-table tr:nth-child(even){
-     background:#fafafa;
- }
-
- .requests-table tr:hover{
-     background:#f5edff;
- }
-
- .status{
-     display:inline-block;
-     padding:5px 10px;
-     border-radius:15px;
-     font-size:10px;
-     font-weight:bold;
-     white-space:nowrap;
- }
-
- .status-pending{
-     background:#fef3c7;
-     color:#92400e;
- }
-
- .status-approved{
-     background:#dcfce7;
-     color:#166534;
- }
-
- .status-rejected{
-     background:#fee2e2;
-     color:#991b1b;
- }
-
- .status-cancelled{
-     background:#e5e7eb;
-     color:#374151;
- }
-
- .status-forwarded{
-     background:#dbeafe;
-     color:#1e40af;
- }
-
- .request-id{
-     font-family:monospace;
-     font-size:10px;
-     color:#6b7280;
- }
-
- .no-requests{
-     padding:45px;
-     text-align:center;
-     color:#6b7280;
-     background:#fafafa;
-     border:1px dashed #d1d5db;
-     border-radius:8px;
- }
-
- .no-requests strong{
-     display:block;
-     color:#500454;
-     font-size:16px;
-     margin-bottom:7px;
- }
-
- .request-date{
-     font-weight:bold;
-     color:#500454;
- }
-
- .request-substitute{
-     font-weight:bold;
-     color:#166534;
- }
-
- .request-subject{
-     font-weight:bold;
-     color:#111827;
- }
-
- @media(max-width:900px){
-
-     .form-grid{
-         grid-template-columns:1fr;
-     }
-
-     .staff-info{
-         grid-template-columns:1fr;
-     }
-
-     .selected-grid{
-         grid-template-columns:repeat(2,1fr);
-     }
-
- }
-
- @media(max-width:600px){
-
-     .container{
-         padding:0 10px;
-     }
-
-     .card{
-         padding:15px;
-     }
-
-     .selected-grid{
-         grid-template-columns:1fr;
-     }
-
- }
-
- </style>
-
- </head>
-
- <body>
-
- <div class="header">
-
-     <h1>Substitute Assignment</h1>
-
-     <p>
-         Staff Substitute Request Portal
-     </p>
-
- </div>
-
-
- <div class="container">
-
-
- <!-- =====================================================
-      CURRENT STAFF
- ===================================================== -->
-
- <div class="card">
-
-     <div class="card-title">
-         Current Staff Details
-     </div>
-
-     <div class="staff-info">
-
-         <div class="info-box">
-
-             <div class="info-label">
-                 STAFF ID
-             </div>
-
-             <div class="info-value"
-                  id="currentStaffId">
-                 Loading...
-             </div>
-
-         </div>
-
-
-         <div class="info-box">
-
-             <div class="info-label">
-                 STAFF NAME
-             </div>
-
-             <div class="info-value"
-                  id="currentStaffName">
-                 Loading...
-             </div>
-
-         </div>
-
-
-         <div class="info-box">
-
-             <div class="info-label">
-                 DEPARTMENT
-             </div>
-
-             <div class="info-value"
-                  id="currentDepartment">
-                 Loading...
-             </div>
-
-         </div>
-
-     </div>
-
- </div>
-
-
- <!-- =====================================================
-      DATE / DAY / SESSION
- ===================================================== -->
-
- <div class="card">
-
-     <div class="card-title">
-         Substitute Date & Timetable Selection
-     </div>
-
-     <div class="form-grid">
-
-         <div class="form-group">
-
-             <label>Date *</label>
-
-             <input
-                 type="date"
-                 id="dateSelect">
-
-         </div>
-
-
-         <div class="form-group">
-
-             <label>Day Order *</label>
-
-             <select id="dayOrderSelect">
-
-                 <option value="">
-                     Select Day Order
-                 </option>
-
-                 <option value="DAY 01">DAY 01</option>
-                 <option value="DAY 02">DAY 02</option>
-                 <option value="DAY 03">DAY 03</option>
-                 <option value="DAY 04">DAY 04</option>
-                 <option value="DAY 05">DAY 05</option>
-                 <option value="DAY 06">DAY 06</option>
-
-             </select>
-
-         </div>
-
-
-         <div class="form-group">
-
-             <label>Session *</label>
-
-             <select id="sessionSelect">
-
-                 <option value="">
-                     Select Session
-                 </option>
-
-                 <option value="FN">
-                     FN
-                 </option>
-
-                 <option value="AN">
-                     AN
-                 </option>
-
-             </select>
-
-         </div>
-
-     </div>
-
-
-     <div class="note">
-
-         <b>Important:</b>
-         Date and Day Order are completely independent.
-         Selecting Date will NOT change Day Order.
-         Selecting Day Order will NOT change Date.
-
-     </div>
-
-
-     <div class="button-row">
-
-         <button
-             class="btn-primary"
-             id="loadBtn">
-
-             Load Timetable
-
-         </button>
-
-
-         <button
-             class="btn-secondary"
-             id="resetBtn">
-
-             Reset
-
-         </button>
-
-     </div>
-
-
-     <div
-         id="message"
-         class="message">
-     </div>
-
- </div>
-
-
- <!-- =====================================================
-      TIMETABLE
- ===================================================== -->
-
- <div
-     class="card timetable-card"
-     id="timetableCard">
-
-     <div class="card-title">
-         My Timetable
-     </div>
-
-
-     <div
-         class="session-title"
-         id="sessionTitle">
-     </div>
-
-
-     <div class="table-wrapper">
-
-         <table class="timetable">
-
-             <thead>
-
-                 <tr>
-
-                     <th>
-                         Day Order
-                     </th>
-
-                     <th>
-                         <div>Hour 1</div>
-                         <div class="hour-time">
-                             8:30 - 9:20
-                         </div>
-                     </th>
-
-                     <th>
-                         <div>Hour 2</div>
-                         <div class="hour-time">
-                             9:20 - 10:10
-                         </div>
-                     </th>
-
-                     <th>
-                         <div>Hour 3</div>
-                         <div class="hour-time">
-                             10:10 - 11:00
-                         </div>
-                     </th>
-
-                     <th>
-                         <div>Hour 4</div>
-                         <div class="hour-time">
-                             11:30 - 12:20
-                         </div>
-                     </th>
-
-                     <th>
-                         <div>Hour 5</div>
-                         <div class="hour-time">
-                             12:20 - 1:10
-                         </div>
-                     </th>
-
-                 </tr>
-
-             </thead>
-
-             <tbody id="timetableBody">
-             </tbody>
-
-         </table>
-
-     </div>
-
- </div>
-
-
- <!-- =====================================================
-      SUBSTITUTE SELECTION
- ===================================================== -->
-
- <div
-     class="card substitute-panel"
-     id="substitutePanel">
-
-     <div class="card-title">
-         Select Substitute Staff
-     </div>
-
-
-     <div
-         class="selected-period"
-         id="selectedPeriod">
-     </div>
-
-
-     <div
-         class="loading"
-         id="staffLoading"
-         style="display:none">
-
-         Checking staff availability...
-
-     </div>
-
-
-     <div
-         id="staffCount"
-         class="staff-count"
-         style="display:none">
-     </div>
-
-
-     <div
-         class="staff-list"
-         id="freeStaffList">
-     </div>
-
-
-     <div class="button-row">
-
-         <button
-             class="btn-success"
-             id="requestBtn"
-             disabled>
-
-             Request Substitute
-
-         </button>
-
-
-         <button
-             class="btn-secondary"
-             id="cancelBtn">
-
-             Cancel
-
-         </button>
-
-     </div>
-
- </div>
-
-
- <!-- =====================================================
-      MY SUBSTITUTE REQUESTS
- ===================================================== -->
-
- <div class="card requests-card">
-
-     <div class="request-top">
-
-         <div class="card-title"
-              style="margin-bottom:0">
-
-             My Substitute Requests
-
-         </div>
-
-         <button
-             class="btn-primary"
-             id="refreshRequestsBtn">
-
-             Refresh Requests
-
-         </button>
-
-     </div>
-
-
-     <div
-         id="requestCount"
-         class="request-count">
-
-         Loading your requests...
-
-     </div>
-
-
-     <div
-         id="requestsLoading"
-         class="loading"
-         style="display:none">
-
-         Loading your substitute requests...
-
-     </div>
-
-
-     <div
-         id="requestsContainer">
-
-     </div>
-
- </div>
-
-
- </div>
-
-
- <script type="module">
-
- import {
-     initializeApp
- }
- from
- "https://www\.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-
-
- import {
-     getFirestore,
-     collection,
-     getDocs,
-     addDoc,
-     serverTimestamp
- }
- from
- "https://www\.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-
- /* =====================================================
-    FIREBASE
- ===================================================== */
-
- const firebaseConfig = {
-
-     apiKey:
-         "AIzaSyAIv3091VM-gkmdwEAn7OhXWd9Cm2zh2bo",
-
-     authDomain:
-         "maasc-2026.firebaseapp.com",
-
-     projectId:
-         "maasc-2026",
-
-     storageBucket:
-         "maasc-2026.appspot.com",
-
-     messagingSenderId:
-         "585813001586",
-
-     appId:
-         "1:585813001586:web:664e0e90ff0725d2e849eb"
-
- };
-
-
- const app =
-     initializeApp(firebaseConfig);
-
- const db =
-     getFirestore(app);
-
-
- /* =====================================================
-    CURRENT STAFF
- ===================================================== */
-
- let currentStaffId =
-     String(
-         sessionStorage.getItem("staffId") || ""
-     ).trim();
-
- let currentStaffName =
-     String(
-         sessionStorage.getItem("staffName") || ""
-     ).trim();
-
- let currentDepartment =
-     String(
-         sessionStorage.getItem("department") || ""
-     ).trim();
-
-
- /* =====================================================
-    DOM
- ===================================================== */
-
- const dateSelect =
-     document.getElementById("dateSelect");
-
- const dayOrderSelect =
-     document.getElementById("dayOrderSelect");
-
- const sessionSelect =
-     document.getElementById("sessionSelect");
-
- const loadBtn =
-     document.getElementById("loadBtn");
-
- const resetBtn =
-     document.getElementById("resetBtn");
-
- const timetableCard =
-     document.getElementById("timetableCard");
-
- const timetableBody =
-     document.getElementById("timetableBody");
-
- const substitutePanel =
-     document.getElementById("substitutePanel");
-
- const selectedPeriodBox =
-     document.getElementById("selectedPeriod");
-
- const staffLoading =
-     document.getElementById("staffLoading");
-
- const freeStaffList =
-     document.getElementById("freeStaffList");
-
- const staffCount =
-     document.getElementById("staffCount");
-
- const requestBtn =
-     document.getElementById("requestBtn");
-
- const cancelBtn =
-     document.getElementById("cancelBtn");
-
- const message =
-     document.getElementById("message");
-
- const requestsContainer =
-     document.getElementById("requestsContainer");
-
- const requestsLoading =
-     document.getElementById("requestsLoading");
-
- const requestCount =
-     document.getElementById("requestCount");
-
- const refreshRequestsBtn =
-     document.getElementById("refreshRequestsBtn");
-
-
- /* =====================================================
-    DATA
- ===================================================== */
-
- let timetableData = [];
-
- let subjectAssignmentData = [];
-
- let allStaffData = [];
-
- let selectedPeriod = null;
-
- let selectedSubstitute = null;
-
-
- /* =====================================================
-    FIRST VALUE
- ===================================================== */
-
- function firstValue(...values){
-
-     for(const value of values){
-
-         if(
-             value !== undefined &&
-             value !== null &&
-             String(value).trim() !== ""
-         ){
-
-             return value;
-
-         }
-
-     }
-
-     return "";
-
- }
-
-
- /* =====================================================
-    NORMALIZE TEXT
- ===================================================== */
-
- function normalizeText(value){
-
-     return String(value ?? "")
-         .trim()
-         .replace(/\s+/g," ")
-         .toUpperCase();
-
- }
-
-
- /* =====================================================
-    ESCAPE HTML
- ===================================================== */
-
- function escapeHtml(value){
-
-     return String(value ?? "")
-         .replace(/&/g,"&amp;")
-         .replace(/</g,"&lt;")
-         .replace(/>/g,"&gt;")
-         .replace(/"/g,"&quot;")
-         .replace(/'/g,"&#039;");
-
- }
-
-
- /* =====================================================
-    NORMALIZE DAY
- ===================================================== */
-
- function normalizeDay(value){
-
-     const day =
-         normalizeText(value);
-
-     if(!day){
-
-         return "";
-
-     }
-
-     const match =
-         day.match(
-             /DAY\s*0?([1-6])/
-         );
-
-     if(match){
-
-         return "DAY " +
-             String(
-                 Number(match[1])
-             ).padStart(2,"0");
-
-     }
-
-     if(/^[1-6]$/.test(day)){
-
-         return "DAY " +
-             day.padStart(2,"0");
-
-     }
-
-     const oldDays = {
-
-         MONDAY:"DAY 01",
-         TUESDAY:"DAY 02",
-         WEDNESDAY:"DAY 03",
-         THURSDAY:"DAY 04",
-         FRIDAY:"DAY 05",
-         SATURDAY:"DAY 06"
-
-     };
-
-     return oldDays[day] || day;
-
- }
-
-
- /* =====================================================
-    NORMALIZE SESSION
- ===================================================== */
-
- function normalizeSession(value){
-
-     const session =
-         normalizeText(value);
-
-     if(
-         session === "FN" ||
-         session === "FORENOON" ||
-         session === "MORNING"
-     ){
-
-         return "FN";
-
-     }
-
-     if(
-         session === "AN" ||
-         session === "AFTERNOON" ||
-         session === "EVENING"
-     ){
-
-         return "AN";
-
-     }
-
-     return session;
-
- }
-
-
- /* =====================================================
-    STAFF ID
- ===================================================== */
-
- function getStaffId(data,docId=""){
-
-     return String(
-         firstValue(
-
-             data.staffId,
-             data.staffID,
-             data.staff\_id,
-
-             data.staffCode,
-             data.staff\_code,
-
-             data.employeeId,
-             data.employeeID,
-             data.employee\_id,
-
-             data.teacherId,
-             data.teacherID,
-             data.teacher\_id,
-
-             data.id,
-             data.ID,
-
-             docId
-
-         )
-     ).trim();
-
- }
-
-
- /* =====================================================
-    STAFF NAME
- ===================================================== */
-
- function getStaffName(data){
-
-     return String(
-         firstValue(
-
-             data.staffName,
-             data.staff\_name,
-
-             data.name,
-             data.fullName,
-             data.full\_name,
-
-             data.employeeName,
-             data.employee\_name,
-
-             data.teacherName,
-             data.teacher\_name,
-
-             data.teacher
-
-         )
-     ).trim();
-
- }
-
-
- /* =====================================================
-    DEPARTMENT
- ===================================================== */
-
- function getDepartment(data){
-
-     return String(
-         firstValue(
-
-             data.department,
-             data.dept,
-
-             data.departmentName,
-             data.department\_name,
-
-             data.deptName,
-             data.dept\_name,
-
-             data.Department,
-             data.DEPT,
-
-             data.branch,
-             data.branchName,
-
-             data.programDepartment,
-
-             data.staffDepartment
-
-         )
-     ).trim();
-
- }
-
-
- /* =====================================================
-    HOUR
- ===================================================== */
-
- function getHour(data){
-
-     const raw =
-         firstValue(
-
-             data.hour,
-             data.period,
-
-             data.hourNo,
-             data.hourNumber,
-
-             data.periodNo,
-             data.periodNumber,
-
-             data.hourIndex
-
-         );
-
-     if(typeof raw === "number"){
-
-         return raw;
-
-     }
-
-     const match =
-         String(raw ?? "")
-         .match(/\d+/);
-
-     return match
-         ? Number(match[0])
-         : 0;
-
- }
-
-
- /* =====================================================
-    SUBJECT
- ===================================================== */
-
- function getSubject(data){
-
-     return String(
-         firstValue(
-
-             data.subjectName,
-             data.subject,
-
-             data.subjectTitle,
-             data.subject\_title,
-
-             data.subjectCode,
-             data.subject\_code,
-
-             data.subjectId,
-             data.paperName,
-             data.paper\_name
-
-         )
-     ).trim();
-
- }
-
-
- /* =====================================================
-    SUBJECT CODE
- ===================================================== */
-
- function getSubjectCode(data){
-
-     return String(
-         firstValue(
-
-             data.subjectCode,
-             data.subject\_code,
-
-             data.code,
-
-             data.subjectId,
-             data.subject\_id
-
-         )
-     ).trim();
-
- }
-
-
- /* =====================================================
-    CLASS / YEAR
- ===================================================== */
-
- function getClassYear(data){
-
-     return String(
-         firstValue(
-
-             data.classYear,
-             data.class,
-
-             data.year,
-             data.className,
-             data.class\_name,
-
-             data.yearName,
-             data.year\_name
-
-         )
-     ).trim();
-
- }
-
-
- /* =====================================================
-    SECTION
- ===================================================== */
-
- function getSection(data){
-
-     return String(
-         firstValue(
-
-             data.section,
-             data.sec,
-
-             data.Section,
-             data.SECTION
-
-         )
-     ).trim();
-
- }
-
-
- /* =====================================================
-    ROOM
- ===================================================== */
-
- function getRoom(data){
-
-     return String(
-         firstValue(
-
-             data.roomNo,
-             data.room\_no,
-
-             data.room,
-             data.roomNumber,
-             data.room\_number,
-
-             data.RoomNo,
-             data.Room,
-
-             data.classRoom,
-             data.classroom,
-
-             data.roomName,
-             data.room\_name
-
-         )
-     ).trim();
-
- }
-
-
- /* =====================================================
-    NORMALIZE TIMETABLE
- ===================================================== */
-
- function normalizeTimetableRecord(id,data){
-
-     return {
-
-         id:id,
-
-         staffId:
-             getStaffId(data,id),
-
-         staffName:
-             getStaffName(data),
-
-         department:
-             getDepartment(data),
-
-         day:
-             normalizeDay(
-                 firstValue(
-
-                     data.day,
-                     data.dayName,
-                     data.dayNo,
-                     data.dayNumber,
-
-                     data.dayOrder,
-                     data.day\_order
-
-                 )
-             ),
-
-         session:
-             normalizeSession(
-                 firstValue(
-
-                     data.session,
-                     data.shift,
-                     data.sessionName
-
-                 )
-             ),
-
-         hour:
-             getHour(data),
-
-         subjectCode:
-             getSubjectCode(data),
-
-         subjectId:
-             String(
-                 firstValue(
-                     data.subjectId,
-                     data.subject\_id
-                 )
-             ).trim(),
-
-         subject:
-             getSubject(data),
-
-         classYear:
-             getClassYear(data),
-
-         section:
-             getSection(data),
-
-         room:
-             getRoom(data)
-
-     };
-
- }
-
-
- /* =====================================================
-    NORMALIZE SUBJECT ASSIGNMENT
- ===================================================== */
-
- function normalizeSubjectAssignment(id,data){
-
-     return {
-
-         id:id,
-
-         staffId:
-             getStaffId(data,id),
-
-         staffName:
-             getStaffName(data),
-
-         department:
-             getDepartment(data),
-
-         subjectId:
-             String(
-                 firstValue(
-                     data.subjectId,
-                     data.subject\_id
-                 )
-             ).trim(),
-
-         subjectCode:
-             getSubjectCode(data),
-
-         subject:
-             getSubject(data),
-
-         classYear:
-             getClassYear(data),
-
-         section:
-             getSection(data),
-
-         room:
-             getRoom(data)
-
-     };
-
- }
-
-
- /* =====================================================
-    DISPLAY CURRENT STAFF
- ===================================================== */
-
- function updateCurrentStaffDisplay(){
-
-     document.getElementById(
-         "currentStaffId"
-     ).textContent =
-         currentStaffId || "Not Found";
-
-     document.getElementById(
-         "currentStaffName"
-     ).textContent =
-         currentStaffName || "Not Found";
-
-     document.getElementById(
-         "currentDepartment"
-     ).textContent =
-         currentDepartment || "Loading...";
-
- }
-
-
- /* =====================================================
-    MESSAGE
- ===================================================== */
-
- function showMessage(text,type="info"){
-
-     if(!text){
-
-         message.textContent = "";
-
-         message.className = "message";
-
-         return;
-
-     }
-
-     message.textContent = text;
-
-     message.className =
-         "message " + type;
-
- }
-
-
- /* =====================================================
-    LOAD ALL STAFF
- ===================================================== */
-
- async function loadAllStaff(){
-
-     const snapshot =
-         await getDocs(
-             collection(
-                 db,
-                 "staff"
-             )
-         );
-
-     allStaffData = [];
-
-     snapshot.forEach(doc => {
-
-         const data =
-             doc.data() || {};
-
-         const staffId =
-             getStaffId(
-                 data,
-                 doc.id
-             );
-
-         if(!staffId){
-
-             return;
-
-         }
-
-         allStaffData.push({
-
-             docId:doc.id,
-
-             staffId:staffId,
-
-             staffName:
-                 getStaffName(data) ||
-                 staffId,
-
-             department:
-                 getDepartment(data)
-
-         });
-
-     });
-
-     if(
-         currentStaffId &&
-         !currentDepartment
-     ){
-
-         const current =
-             allStaffData.find(
-                 staff =>
-
-                     normalizeText(
-                         staff.staffId
-                     ) ===
-                     normalizeText(
-                         currentStaffId
-                     )
-             );
-
-         if(current){
-
-             currentDepartment =
-                 current.department || "";
-
-             sessionStorage.setItem(
-                 "department",
-                 currentDepartment
-             );
-
-         }
-
-     }
-
-     updateCurrentStaffDisplay();
-
- }
-
-
- /* =====================================================
-    LOAD TIMETABLE
- ===================================================== */
-
- async function loadTimetableData(){
-
-     const snapshot =
-         await getDocs(
-             collection(
-                 db,
-                 "timetableAssignments"
-             )
-         );
-
-     timetableData = [];
-
-     snapshot.forEach(doc => {
-
-         const data =
-             doc.data() || {};
-
-         const record =
-             normalizeTimetableRecord(
-                 doc.id,
-                 data
-             );
-
-         if(record.staffId){
-
-             timetableData.push(
-                 record
-             );
-
-         }
-
-     });
-
- }
-
-
- /* =====================================================
-    LOAD SUBJECT ASSIGNMENTS
- ===================================================== */
-
- async function loadSubjectAssignments(){
-
-     try{
-
-         const snapshot =
-             await getDocs(
-                 collection(
-                     db,
-                     "subjectAssignments"
-                 )
-             );
-
-         subjectAssignmentData = [];
-
-         snapshot.forEach(doc => {
-
-             const data =
-                 doc.data() || {};
-
-             subjectAssignmentData.push(
-
-                 normalizeSubjectAssignment(
-                     doc.id,
-                     data
-                 )
-
-             );
-
-         });
-
-     }catch(error){
-
-         console.warn(
-             "subjectAssignments unavailable:",
-             error
-         );
-
-         subjectAssignmentData = [];
-
-     }
-
- }
-
-
- /* =====================================================
-    FIND ROOM
- ===================================================== */
-
- function findRoomFromSubjectAssignment(entry){
-
-     if(entry.room){
-
-         return entry.room;
-
-     }
-
-     const subjectId =
-         normalizeText(
-             entry.subjectId
-         );
-
-     const subjectCode =
-         normalizeText(
-             entry.subjectCode
-         );
-
-     const staffId =
-         normalizeText(
-             entry.staffId
-         );
-
-     const subject =
-         normalizeText(
-             entry.subject
-         );
-
-     const year =
-         normalizeText(
-             entry.classYear
-         );
-
-     const section =
-         normalizeText(
-             entry.section
-         );
-
-
-     let match =
-         subjectAssignmentData.find(item =>
-
-             subjectId &&
-             normalizeText(item.subjectId) ===
-             subjectId &&
-
-             staffId &&
-             normalizeText(item.staffId) ===
-             staffId &&
-
-             item.room
-
-         );
-
-     if(match){
-
-         return match.room;
-
-     }
-
-
-     match =
-         subjectAssignmentData.find(item =>
-
-             subjectCode &&
-             normalizeText(item.subjectCode) ===
-             subjectCode &&
-
-             staffId &&
-             normalizeText(item.staffId) ===
-             staffId &&
-
-             section ===
-             normalizeText(item.section) &&
-
-             item.room
-
-         );
-
-     if(match){
-
-         return match.room;
-
-     }
-
-
-     match =
-         subjectAssignmentData.find(item =>
-
-             subject &&
-             normalizeText(item.subject) ===
-             subject &&
-
-             staffId &&
-             normalizeText(item.staffId) ===
-             staffId &&
-
-             year ===
-             normalizeText(item.classYear) &&
-
-             section ===
-             normalizeText(item.section) &&
-
-             item.room
-
-         );
-
-     if(match){
-
-         return match.room;
-
-     }
-
-
-     match =
-         subjectAssignmentData.find(item =>
-
-             subjectCode &&
-             normalizeText(item.subjectCode) ===
-             subjectCode &&
-
-             section ===
-             normalizeText(item.section) &&
-
-             item.room
-
-         );
-
-     if(match){
-
-         return match.room;
-
-     }
-
-     return "";
-
- }
-
-
- /* =====================================================
-    RESOLVE ROOM
- ===================================================== */
-
- function resolveRoom(entry){
-
-     let room =
-         getRoom(entry);
-
-     if(room){
-
-         return room;
-
-     }
-
-     return findRoomFromSubjectAssignment(
-         entry
-     );
-
- }
-
-
- /* =====================================================
-    LOAD EVERYTHING
- ===================================================== */
-
- async function loadEverything(){
-
-     try{
-
-         await Promise.all([
-
-             loadAllStaff(),
-
-             loadTimetableData(),
-
-             loadSubjectAssignments()
-
-         ]);
-
-         timetableData.forEach(entry => {
-
-             if(!entry.room){
-
-                 entry.room =
-                     resolveRoom(entry);
-
-             }
-
-         });
-
-         return true;
-
-     }catch(error){
-
-         console.error(
-             "LOAD DATA ERROR:",
-             error
-         );
-
-         showMessage(
-             "Unable to load data: " +
-             error.message,
-             "error"
-         );
-
-         return false;
-
-     }
-
- }
-
-
- /* =====================================================
-    SESSION TIMES
- ===================================================== */
-
- function getSessionTimes(session){
-
-     if(
-         normalizeSession(session) === "AN"
-     ){
-
-         return [
-
-             "1:30 - 2:20",
-             "2:20 - 3:10",
-             "3:30 - 4:20",
-             "4:20 - 5:10",
-             "5:10 - 6:00"
-
-         ];
-
-     }
-
-     return [
-
-         "8:30 - 9:20",
-         "9:20 - 10:10",
-         "10:10 - 11:00",
-         "11:30 - 12:20",
-         "12:20 - 1:10"
-
-     ];
-
- }
-
-
- /* =====================================================
-    UPDATE HEADERS
- ===================================================== */
-
- function updateHourHeaders(session){
-
-     const times =
-         getSessionTimes(session);
-
-     const headers =
-         document.querySelectorAll(
-             ".timetable thead th"
-         );
-
-     for(let i=1;i<=5;i++){
-
-         if(!headers[i]){
-
-             continue;
-
-         }
-
-         headers[i].innerHTML = `
-
-             <div>
-                 Hour ${i}
-             </div>
-
-             <div class="hour-time">
-                 ${escapeHtml(times[i-1])}
-             </div>
-
-         `;
-
-     }
-
- }
-
-
- /* =====================================================
-    RENDER TIMETABLE
- ===================================================== */
-
- function renderTimetable(day,session){
-
-     timetableBody.innerHTML = "";
-
-     const normalizedDay =
-         normalizeDay(day);
-
-     const normalizedSession =
-         normalizeSession(session);
-
-     document.getElementById(
-         "sessionTitle"
-     ).textContent =
-
-         normalizedSession === "FN"
-         ? "FORENOON SESSION (FN)"
-         : "AFTERNOON SESSION (AN)";
-
-     updateHourHeaders(
-         normalizedSession
-     );
-
-     const staffEntries =
-         timetableData.filter(item =>
-
-             normalizeText(item.staffId) ===
-             normalizeText(currentStaffId)
-
-         );
-
-     const entries =
-         staffEntries.filter(item =>
-
-             normalizeDay(item.day) ===
-             normalizedDay
-
-             &&
-
-             normalizeSession(item.session) ===
-             normalizedSession
-
-         );
-
-     const row =
-         document.createElement("tr");
-
-     const dayCell =
-         document.createElement("td");
-
-     dayCell.className =
-         "day-cell";
-
-     dayCell.textContent =
-         normalizedDay;
-
-     row\.appendChild(
-         dayCell
-     );
-
-     const times =
-         getSessionTimes(
-             normalizedSession
-         );
-
-     for(let hour=1;hour<=5;hour++){
-
-         row\.appendChild(
-
-             createPeriodCell(
-
-                 entries,
-
-                 normalizedDay,
-
-                 normalizedSession,
-
-                 hour,
-
-                 times[hour-1]
-
-             )
-
-         );
-
-     }
-
-     timetableBody.appendChild(
-         row
-     );
-
-     timetableCard.style.display =
-         "block";
-
-     substitutePanel.style.display =
-         "none";
-
- }
-
-
- /* =====================================================
-    CREATE PERIOD
- ===================================================== */
-
- function createPeriodCell(
-     entries,
-     day,
-     session,
-     hour,
-     time
- ){
-
-     const cell =
-         document.createElement("td");
-
-     const entry =
-         entries.find(item =>
-
-             Number(item.hour) ===
-             Number(hour)
-
-         );
-
-     if(!entry){
-
-         cell.innerHTML = `
-
-             <div class="period free">
-
-                 <div class="free-text">
-                     FREE
-                 </div>
-
-                 <div class="period-time">
-                     ${escapeHtml(time)}
-                 </div>
-
-             </div>
-
-         `;
-
-         return cell;
-
-     }
-
-     const room =
-         resolveRoom(entry);
-
-     entry.room =
-         room;
-
-     const roomHtml = room
-
-         ? `
-
-         <div class="room">
-
-             Room:
-             ${escapeHtml(room)}
-
-         </div>
-
-         `
-
-         : `
-
-         <div class="room missing">
-
-             Room:
-             Not Available
-
-         </div>
-
-         `;
-
-
-     cell.innerHTML = `
-
-         <div
-             class="period assigned"
-             title="Click to find substitute">
-
-             <div class="period-subject">
-
-                 ${escapeHtml(
-                     entry.subject ||
-                     "Subject"
-                 )}
-
-             </div>
-
-             <div class="period-details">
-
-                 <b>Department:</b>
-                 ${escapeHtml(
-                     entry.department ||
-                     currentDepartment ||
-                     "-"
-                 )}
-
-                 \
-
-                 <b>Year:</b>
-                 ${escapeHtml(
-                     entry.classYear ||
-                     "-"
-                 )}
-
-                 \
-
-                 <b>Section:</b>
-                 ${escapeHtml(
-                     entry.section ||
-                     "-"
-                 )}
-
-             </div>
-
-             ${roomHtml}
-
-             <div class="period-time">
-
-                 ${escapeHtml(time)}
-
-             </div>
-
-             <div class="click-note">
-
-                 CLICK TO ASSIGN SUBSTITUTE
-
-             </div>
-
-         </div>
-
-     `;
-
-
-     cell.querySelector(
-         ".period"
-     ).addEventListener(
-         "click",
-         () => {
-
-             openSubstituteSelection(
-                 entry
-             );
-
-         }
-     );
-
-
-     return cell;
-
- }
-
-
- /* =====================================================
-    OPEN SUBSTITUTE
- ===================================================== */
-
- async function openSubstituteSelection(entry){
-
-     const resolvedRoom =
-         resolveRoom(entry);
-
-     entry.room =
-         resolvedRoom;
-
-     selectedPeriod = {
-
-         date:
-             dateSelect.value,
-
-         day:
-             normalizeDay(
-                 dayOrderSelect.value
-             ),
-
-         session:
-             normalizeSession(
-                 sessionSelect.value
-             ),
-
-         hour:
-             Number(entry.hour),
-
-         subject:
-             entry.subject,
-
-         subjectCode:
-             entry.subjectCode,
-
-         subjectId:
-             entry.subjectId,
-
-         department:
-             entry.department ||
-             currentDepartment,
-
-         classYear:
-             entry.classYear,
-
-         section:
-             entry.section,
-
-         room:
-             resolvedRoom,
-
-         originalStaffId:
-             currentStaffId,
-
-         originalStaffName:
-             currentStaffName
-
-     };
-
-
-     selectedSubstitute =
-         null;
-
-     requestBtn.disabled =
-         true;
-
-     requestBtn.textContent =
-         "Request Substitute";
-
-
-     selectedPeriodBox.innerHTML = `
-
-         <h3>
-             Selected Period
-         </h3>
-
-         <div class="selected-grid">
-
-             <div class="selected-item">
-                 <b>Date</b>
-                 ${escapeHtml(selectedPeriod.date)}
-             </div>
-
-             <div class="selected-item">
-                 <b>Day Order</b>
-                 ${escapeHtml(selectedPeriod.day)}
-             </div>
-
-             <div class="selected-item">
-                 <b>Session</b>
-                 ${escapeHtml(selectedPeriod.session)}
-             </div>
-
-             <div class="selected-item">
-                 <b>Hour</b>
-                 Hour ${selectedPeriod.hour}
-             </div>
-
-             <div class="selected-item">
-                 <b>Subject</b>
-                 ${escapeHtml(selectedPeriod.subject || "-")}
-             </div>
-
-             <div class="selected-item">
-                 <b>Department</b>
-                 ${escapeHtml(selectedPeriod.department || "-")}
-             </div>
-
-             <div class="selected-item">
-                 <b>Year</b>
-                 ${escapeHtml(selectedPeriod.classYear || "-")}
-             </div>
-
-             <div class="selected-item">
-                 <b>Section</b>
-                 ${escapeHtml(selectedPeriod.section || "-")}
-             </div>
-
-             <div class="selected-item">
-                 <b>Room No</b>
-                 ${escapeHtml(selectedPeriod.room || "Not Available")}
-             </div>
-
-         </div>
-
-     `;
-
-
-     substitutePanel.style.display =
-         "block";
-
-     staffLoading.style.display =
-         "block";
-
-     staffCount.style.display =
-         "none";
-
-     freeStaffList.innerHTML =
-         "";
-
-     substitutePanel.scrollIntoView({
-         behavior:"smooth",
-         block:"start"
-     });
-
-
-     try{
-
-         await loadEverything();
-
-         await findFreeStaff();
-
-     }catch(error){
-
-         console.error(
-             error
-         );
-
-         freeStaffList.innerHTML = `
-
-             <div
-                 class="message error"
-                 style="
-                     display:block;
-                     grid-column:1/-1
-                 ">
-
-                 Unable to load free staff.
-
-                 \\
-
-                 ${escapeHtml(
-                     error.message
-                 )}
-
-             </div>
-
-         `;
-
-     }finally{
-
-         staffLoading.style.display =
-             "none";
-
-     }
-
- }
-
-
- /* =====================================================
-    STAFF OCCUPIED
- ===================================================== */
-
- function isStaffOccupied(
-     staffId,
-     day,
-     session,
-     hour
- ){
-
-     return timetableData.some(item => {
-
-         return (
-
-             normalizeText(item.staffId) ===
-             normalizeText(staffId)
-
-             &&
-
-             normalizeDay(item.day) ===
-             normalizeDay(day)
-
-             &&
-
-             normalizeSession(item.session) ===
-             normalizeSession(session)
-
-             &&
-
-             Number(item.hour) ===
-             Number(hour)
-
-         );
-
-     });
-
- }
-
-
- /* =====================================================
-    FIND FREE STAFF
- ===================================================== */
-
- async function findFreeStaff(){
-
-    if(!selectedPeriod){
-        throw new Error("No timetable period selected.");
-    }
-
-    if(!allStaffData.length){
-        await loadAllStaff();
-    }
-
-    if(!currentDepartment){
-        const current = allStaffData.find(
-            staff =>
-                normalizeText(staff.staffId) ===
-                normalizeText(currentStaffId)
-        );
-
-        if(current){
-            currentDepartment = current.department || "";
-            sessionStorage.setItem("department", currentDepartment);
-            updateCurrentStaffDisplay();
-        }
-    }
-
-    const requestDepartment = normalizeText(currentDepartment);
-    const selectedSession = normalizeText(selectedPeriod.session);
-    const selectedHour = Number(selectedPeriod.hour);
-    const isLabAssistant = requestDepartment === "LAB ASSISTANT";
-    const freeStaff = [];
-
-    allStaffData.forEach(staff => {
-
-        const staffId = String(staff.staffId || "").trim();
-
-        if(!staffId){
-            return;
-        }
-
-        if(normalizeText(staffId) === normalizeText(currentStaffId)){
-            return;
-        }
-
-        const staffDepartment = normalizeText(staff.department);
-
-        if(requestDepartment){
-            if(!staffDepartment){
-                return;
-            }
-            if(staffDepartment !== requestDepartment){
-                return;
-            }
-        }
-
-        /* =====================================================
-           LAB ASSISTANT SPECIAL AVAILABILITY RULES
-        ===================================================== */
-        if(isLabAssistant){
-
-            const staffName = normalizeText(staff.staffName);
-
-            const isRameshwar = staffName === "RAMESHWAR";
-            const isLogeshwarran = staffName === "LOGESHWARRAN";
-            const isMuralikrishnan = staffName === "MURALIKRISHNAN";
-
-            /* MURALIKRISHNAN works only from 01:30 PM to 06:00 PM. */
-            if(isMuralikrishnan && selectedSession === "FN"){
-                return;
-            }
-
-            /* FN Hour 1 and 2: RAMESHWAR and LOGESHWARRAN cannot appear. */
-            if(
-                selectedSession === "FN" &&
-                (selectedHour === 1 || selectedHour === 2) &&
-                (isRameshwar || isLogeshwarran)
-            ){
-                return;
-            }
-
-            /* AN Hour 4 and 5: ONLY these three are eligible. */
-            if(
-                selectedSession === "AN" &&
-                (selectedHour === 4 || selectedHour === 5) &&
-                !(isRameshwar || isLogeshwarran || isMuralikrishnan)
-            ){
-                return;
-            }
-        }
-
-        /* EXISTING TIMETABLE OCCUPIED CHECK */
-        if(isStaffOccupied(
-            staffId,
-            selectedPeriod.day,
-            selectedSession,
-            selectedHour
-        )){
-            return;
-        }
-
-        freeStaff.push({
-            staffId: staff.staffId,
-            staffName: staff.staffName || staff.staffId,
-            department: staff.department || currentDepartment
-        });
-    });
-
-    freeStaff.sort(
-        (a,b) => String(a.staffName || "").localeCompare(
-            String(b.staffName || "")
-        )
-    );
-
-    renderFreeStaff(freeStaff);
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Substitute Assignment</title>
+
+<style>
+
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+    font-family:Arial,Helvetica,sans-serif;
+}
+
+body{
+    background:#f4f7fb;
+    color:#1f2937;
+}
+
+.header{
+    background:#500454;
+    color:white;
+    padding:18px 25px;
+    box-shadow:0 2px 8px rgba(0,0,0,.2);
+}
+
+.header h1{
+    font-size:24px;
+}
+
+.header p{
+    margin-top:5px;
+    font-size:13px;
+    opacity:.9;
+}
+
+.container{
+    max-width:1500px;
+    margin:25px auto;
+    padding:0 18px;
+}
+
+.card{
+    background:white;
+    border-radius:12px;
+    padding:22px;
+    margin-bottom:20px;
+    box-shadow:0 3px 14px rgba(0,0,0,.08);
+}
+
+.card-title{
+    font-size:20px;
+    font-weight:bold;
+    color:#500454;
+    margin-bottom:18px;
+}
+
+/* CURRENT STAFF */
+
+.staff-info{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:15px;
+}
+
+.info-box{
+    background:#faf5ff;
+    border-left:4px solid #500454;
+    padding:15px;
+    border-radius:7px;
+}
+
+.info-label{
+    font-size:12px;
+    color:#6b7280;
+    font-weight:bold;
+    margin-bottom:5px;
+}
+
+.info-value{
+    font-size:16px;
+    font-weight:bold;
+    color:#500454;
+}
+
+/* FORM */
+
+.form-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr 1fr;
+    gap:18px;
+}
+
+.form-group{
+    display:flex;
+    flex-direction:column;
+}
+
+.form-group label{
+    font-size:13px;
+    font-weight:bold;
+    margin-bottom:7px;
+}
+
+input,
+select{
+    width:100%;
+    padding:12px;
+    border:1px solid #d1d5db;
+    border-radius:7px;
+    background:white;
+    font-size:14px;
+    outline:none;
+}
+
+input:focus,
+select:focus{
+    border-color:#500454;
+    box-shadow:0 0 0 2px rgba(80,4,84,.1);
+}
+
+.note{
+    margin-top:15px;
+    padding:12px;
+    background:#fff7ed;
+    border-left:4px solid #f97316;
+    color:#9a3412;
+    border-radius:6px;
+    font-size:13px;
+}
+
+.button-row{
+    margin-top:18px;
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+}
+
+button{
+    border:none;
+    border-radius:7px;
+    padding:12px 20px;
+    cursor:pointer;
+    font-weight:bold;
+    font-size:14px;
+}
+
+button:disabled{
+    opacity:.55;
+    cursor:not-allowed;
+}
+
+.btn-primary{
+    background:#500454;
+    color:white;
+}
+
+.btn-primary:hover{
+    background:#6d0872;
+}
+
+.btn-secondary{
+    background:#6b7280;
+    color:white;
+}
+
+.btn-success{
+    background:#15803d;
+    color:white;
+}
+
+.btn-danger{
+    background:#dc2626;
+    color:white;
+}
+
+/* MESSAGE */
+
+.message{
+    display:none;
+    margin-top:15px;
+    padding:12px;
+    border-radius:7px;
+    font-size:14px;
+    font-weight:bold;
+}
+
+.message.success{
+    display:block;
+    background:#dcfce7;
+    color:#166534;
+}
+
+.message.error{
+    display:block;
+    background:#fee2e2;
+    color:#991b1b;
+}
+
+.message.info{
+    display:block;
+    background:#dbeafe;
+    color:#1e40af;
+}
+
+/* TIMETABLE */
+
+.timetable-card{
+    display:none;
+}
+
+.session-title{
+    text-align:center;
+    background:#500454;
+    color:white;
+    padding:13px;
+    font-size:18px;
+    font-weight:bold;
+    border-radius:8px 8px 0 0;
+}
+
+.table-wrapper{
+    width:100%;
+    overflow-x:auto;
+}
+
+.timetable{
+    width:100%;
+    min-width:1100px;
+    border-collapse:collapse;
+}
+
+.timetable th{
+    background:#6d0872;
+    color:white;
+    border:1px solid #d1d5db;
+    padding:10px 8px;
+    text-align:center;
+    font-size:12px;
+    vertical-align:middle;
+}
+
+.timetable td{
+    border:1px solid #d1d5db;
+    padding:8px;
+    text-align:center;
+    vertical-align:middle;
+    min-width:180px;
+    height:135px;
+}
+
+.timetable th:first-child{
+    min-width:110px;
+}
+
+.day-cell{
+    background:#f3e8ff;
+    color:#500454;
+    font-weight:bold;
+    min-width:105px !important;
+}
+
+.hour-time{
+    margin-top:6px;
+    padding-top:6px;
+    border-top:1px solid rgba(255,255,255,.4);
+    font-size:10px;
+    font-weight:normal;
+    line-height:1.3;
+}
+
+.period{
+    min-height:110px;
+    padding:9px;
+    border-radius:8px;
+    transition:.2s;
+}
+
+.period.assigned{
+    background:#fef3c7;
+    border-left:4px solid #d97706;
+    cursor:pointer;
+}
+
+.period.assigned:hover{
+    transform:scale(1.02);
+    box-shadow:0 3px 8px rgba(0,0,0,.1);
+}
+
+.period.free{
+    background:#f0fdf4;
+    border-left:4px solid #16a34a;
+}
+
+.period-subject{
+    font-size:12px;
+    font-weight:bold;
+    color:#111827;
+    line-height:1.4;
+}
+
+.period-details{
+    margin-top:7px;
+    font-size:11px;
+    color:#374151;
+    line-height:1.5;
+}
+
+.room{
+    display:inline-block;
+    margin-top:7px;
+    padding:5px 9px;
+    background:#dcfce7;
+    color:#166534;
+    border-radius:5px;
+    font-size:10px;
+    font-weight:bold;
+}
+
+.room.missing{
+    background:#fee2e2;
+    color:#991b1b;
+}
+
+.period-time{
+    margin-top:9px;
+    padding-top:7px;
+    border-top:1px solid #d1d5db;
+    font-size:11px;
+    font-weight:bold;
+    color:#500454;
+    text-align:center;
+}
+
+.click-note{
+    margin-top:8px;
+    font-size:10px;
+    color:#92400e;
+    font-weight:bold;
+}
+
+.free-text{
+    color:#16a34a;
+    font-weight:bold;
+    font-size:12px;
+}
+
+/* SUBSTITUTE */
+
+.substitute-panel{
+    display:none;
+}
+
+.selected-period{
+    background:#eff6ff;
+    border-left:5px solid #2563eb;
+    padding:16px;
+    border-radius:8px;
+    margin-bottom:18px;
+}
+
+.selected-period h3{
+    color:#1e3a8a;
+    margin-bottom:8px;
+}
+
+.selected-grid{
+    display:grid;
+    grid-template-columns:repeat(5,1fr);
+    gap:12px;
+}
+
+.selected-item{
+    font-size:12px;
+}
+
+.selected-item b{
+    display:block;
+    color:#1e3a8a;
+    margin-bottom:3px;
+}
+
+.staff-list{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
+    gap:15px;
+}
+
+.staff-option{
+    border:1px solid #d1d5db;
+    border-radius:9px;
+    padding:15px;
+    cursor:pointer;
+    background:white;
+    transition:.2s;
+}
+
+.staff-option:hover{
+    border-color:#500454;
+    box-shadow:0 3px 10px rgba(0,0,0,.08);
+}
+
+.staff-option.selected{
+    border:2px solid #500454;
+    background:#faf5ff;
+}
+
+.staff-name{
+    font-size:16px;
+    font-weight:bold;
+    color:#500454;
+}
+
+.staff-id{
+    margin-top:5px;
+    font-size:12px;
+    color:#6b7280;
+}
+
+.staff-dept{
+    margin-top:5px;
+    font-size:12px;
+    color:#374151;
+}
+
+.availability{
+    margin-top:10px;
+    display:inline-block;
+    padding:5px 9px;
+    background:#dcfce7;
+    color:#166534;
+    border-radius:15px;
+    font-size:10px;
+    font-weight:bold;
+}
+
+.empty{
+    text-align:center;
+    padding:40px !important;
+    color:#6b7280;
+    font-weight:bold;
+}
+
+.loading{
+    text-align:center;
+    padding:30px;
+    color:#500454;
+    font-weight:bold;
+}
+
+.staff-count{
+    margin-bottom:15px;
+    padding:12px;
+    background:#f0fdf4;
+    border-left:4px solid #16a34a;
+    border-radius:6px;
+    color:#166534;
+    font-weight:bold;
 }
 
 /* =====================================================
-    RENDER FREE STAFF
- ===================================================== */
+   MY REQUESTS
+===================================================== */
+
+.requests-card{
+    margin-top:20px;
+}
+
+.request-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:15px;
+    flex-wrap:wrap;
+    margin-bottom:18px;
+}
+
+.request-count{
+    background:#faf5ff;
+    border-left:4px solid #500454;
+    padding:10px 14px;
+    border-radius:6px;
+    color:#500454;
+    font-weight:bold;
+    font-size:13px;
+}
+
+.requests-wrapper{
+    width:100%;
+    overflow-x:auto;
+}
+
+.requests-table{
+    width:100%;
+    min-width:1500px;
+    border-collapse:collapse;
+}
+
+.requests-table th{
+    background:#500454;
+    color:white;
+    padding:12px 9px;
+    border:1px solid #ddd;
+    font-size:12px;
+    text-align:center;
+    white-space:nowrap;
+}
+
+.requests-table td{
+    padding:11px 9px;
+    border:1px solid #ddd;
+    font-size:12px;
+    text-align:center;
+    vertical-align:middle;
+}
+
+.requests-table tr:nth-child(even){
+    background:#fafafa;
+}
+
+.requests-table tr:hover{
+    background:#f5edff;
+}
+
+.status{
+    display:inline-block;
+    padding:5px 10px;
+    border-radius:15px;
+    font-size:10px;
+    font-weight:bold;
+    white-space:nowrap;
+}
+
+.status-pending{
+    background:#fef3c7;
+    color:#92400e;
+}
+
+.status-approved{
+    background:#dcfce7;
+    color:#166534;
+}
+
+.status-rejected{
+    background:#fee2e2;
+    color:#991b1b;
+}
+
+.status-cancelled{
+    background:#e5e7eb;
+    color:#374151;
+}
+
+.status-forwarded{
+    background:#dbeafe;
+    color:#1e40af;
+}
+
+.request-id{
+    font-family:monospace;
+    font-size:10px;
+    color:#6b7280;
+}
 
- function renderFreeStaff(staff){
+.no-requests{
+    padding:45px;
+    text-align:center;
+    color:#6b7280;
+    background:#fafafa;
+    border:1px dashed #d1d5db;
+    border-radius:8px;
+}
 
-     freeStaffList.innerHTML =
-         "";
+.no-requests strong{
+    display:block;
+    color:#500454;
+    font-size:16px;
+    margin-bottom:7px;
+}
 
-     staffCount.style.display =
-         "block";
+.request-date{
+    font-weight:bold;
+    color:#500454;
+}
 
-     staffCount.textContent =
+.request-substitute{
+    font-weight:bold;
+    color:#166534;
+}
 
-         staff.length +
+.request-subject{
+    font-weight:bold;
+    color:#111827;
+}
 
-         " free staff found in " +
+@media(max-width:900px){
 
-         (
-             currentDepartment ||
-             "selected department"
-         ) +
+    .form-grid{
+        grid-template-columns:1fr;
+    }
 
-         " for " +
+    .staff-info{
+        grid-template-columns:1fr;
+    }
 
-         selectedPeriod.day +
+    .selected-grid{
+        grid-template-columns:repeat(2,1fr);
+    }
 
-         " / " +
+}
 
-         selectedPeriod.session +
+@media(max-width:600px){
 
-         " / Hour " +
+    .container{
+        padding:0 10px;
+    }
 
-         selectedPeriod.hour;
+    .card{
+        padding:15px;
+    }
 
+    .selected-grid{
+        grid-template-columns:1fr;
+    }
 
-     if(!staff.length){
+}
 
-         freeStaffList.innerHTML = `
+</style>
 
-             <div
-                 class="message error"
-                 style="
-                     display:block;
-                     grid-column:1/-1
-                 ">
+</head>
 
-                 No free staff found in
+<body>
 
-                 <b>
-                     ${escapeHtml(
-                         currentDepartment ||
-                         "the selected department"
-                     )}
-                 </b>
+<div class="header">
 
-                 for
+    <h1>Substitute Assignment</h1>
 
-                 <b>
-                     ${escapeHtml(
-                         selectedPeriod.day
-                     )}
-                 </b>
+    <p>
+        Staff Substitute Request Portal
+    </p>
 
-                 /
+</div>
 
-                 <b>
-                     ${escapeHtml(
-                         selectedPeriod.session
-                     )}
-                 </b>
 
-                 /
+<div class="container">
 
-                 <b>
-                     Hour ${escapeHtml(
-                         selectedPeriod.hour
-                     )}
-                 </b>.
 
-             </div>
+<!-- =====================================================
+     CURRENT STAFF
+===================================================== -->
 
-         `;
+<div class="card">
 
-         return;
+    <div class="card-title">
+        Current Staff Details
+    </div>
 
-     }
+    <div class="staff-info">
 
+        <div class="info-box">
 
-     staff.forEach(person => {
+            <div class="info-label">
+                STAFF ID
+            </div>
 
-         const div =
-             document.createElement("div");
+            <div class="info-value"
+                 id="currentStaffId">
+                Loading...
+            </div>
 
-         div.className =
-             "staff-option";
+        </div>
 
-         div.innerHTML = `
 
-             <div class="staff-name">
+        <div class="info-box">
 
-                 ${escapeHtml(
-                     person.staffName ||
-                     person.staffId
-                 )}
+            <div class="info-label">
+                STAFF NAME
+            </div>
 
-             </div>
+            <div class="info-value"
+                 id="currentStaffName">
+                Loading...
+            </div>
 
-             <div class="staff-id">
+        </div>
 
-                 Staff ID:
-                 ${escapeHtml(
-                     person.staffId
-                 )}
 
-             </div>
+        <div class="info-box">
 
-             <div class="staff-dept">
+            <div class="info-label">
+                DEPARTMENT
+            </div>
 
-                 Department:
-                 ${escapeHtml(
-                     person.department ||
-                     currentDepartment ||
-                     "-"
-                 )}
+            <div class="info-value"
+                 id="currentDepartment">
+                Loading...
+            </div>
 
-             </div>
+        </div>
 
-             <div class="availability">
+    </div>
 
-                 FREE FOR THIS PERIOD
+</div>
 
-             </div>
 
-         `;
+<!-- =====================================================
+     DATE / DAY / SESSION
+===================================================== -->
 
+<div class="card">
 
-         div.addEventListener(
-             "click",
-             function(){
+    <div class="card-title">
+        Substitute Date & Timetable Selection
+    </div>
 
-                 document
-                     .querySelectorAll(
-                         ".staff-option"
-                     )
-                     .forEach(
-                         item =>
-                             item.classList.remove(
-                                 "selected"
-                             )
-                     );
+    <div class="form-grid">
 
-                 div.classList.add(
-                     "selected"
-                 );
+        <div class="form-group">
 
-                 selectedSubstitute =
-                     person;
+            <label>Date *</label>
 
-                 requestBtn.disabled =
-                     false;
+            <input
+                type="date"
+                id="dateSelect">
 
-             }
-         );
+        </div>
 
 
-         freeStaffList.appendChild(
-             div
-         );
+        <div class="form-group">
 
-     });
+            <label>Day Order *</label>
 
- }
+            <select id="dayOrderSelect">
 
+                <option value="">
+                    Select Day Order
+                </option>
 
- /* =====================================================
-    SEND SUBSTITUTE REQUEST
- ===================================================== */
+                <option value="DAY 01">DAY 01</option>
+                <option value="DAY 02">DAY 02</option>
+                <option value="DAY 03">DAY 03</option>
+                <option value="DAY 04">DAY 04</option>
+                <option value="DAY 05">DAY 05</option>
+                <option value="DAY 06">DAY 06</option>
 
- requestBtn.addEventListener(
-     "click",
-     async function(){
+            </select>
 
-         if(!selectedPeriod){
+        </div>
 
-             showMessage(
-                 "Please select a timetable period.",
-                 "error"
-             );
 
-             return;
+        <div class="form-group">
 
-         }
+            <label>Session *</label>
 
-         if(!selectedSubstitute){
+            <select id="sessionSelect">
 
-             showMessage(
-                 "Please select a substitute staff.",
-                 "error"
-             );
+                <option value="">
+                    Select Session
+                </option>
 
-             return;
+                <option value="FN">
+                    FN
+                </option>
 
-         }
+                <option value="AN">
+                    AN
+                </option>
 
+            </select>
 
-         const confirmRequest =
-             confirm(
+        </div>
 
-                 "Send substitute request to Department Head?\n\n" +
+    </div>
 
-                 "Substitute Staff: " +
-                 selectedSubstitute.staffName +
 
-                 "\nStaff ID: " +
-                 selectedSubstitute.staffId +
+    <div class="note">
 
-                 "\n\nDate: " +
-                 selectedPeriod.date +
+        <b>Important:</b>
+        Date and Day Order are completely independent.
+        Selecting Date will NOT change Day Order.
+        Selecting Day Order will NOT change Date.
 
-                 "\nDay Order: " +
-                 selectedPeriod.day +
+    </div>
 
-                 "\nSession: " +
-                 selectedPeriod.session +
 
-                 "\nHour: " +
-                 selectedPeriod.hour +
+    <div class="button-row">
 
-                 "\nDepartment: " +
-                 selectedPeriod.department +
+        <button
+            class="btn-primary"
+            id="loadBtn">
 
-                 "\nYear: " +
-                 selectedPeriod.classYear +
+            Load Timetable
 
-                 "\nSection: " +
-                 selectedPeriod.section +
+        </button>
 
-                 "\nRoom No: " +
-                 (
-                     selectedPeriod.room ||
-                     "Not Available"
-                 )
 
-             );
+        <button
+            class="btn-secondary"
+            id="resetBtn">
 
+            Reset
 
-         if(!confirmRequest){
+        </button>
 
-             return;
+    </div>
 
-         }
 
+    <div
+        id="message"
+        class="message">
+    </div>
 
-         requestBtn.disabled =
-             true;
+</div>
 
-         requestBtn.textContent =
-             "Sending...";
 
+<!-- =====================================================
+     TIMETABLE
+===================================================== -->
 
-         try{
+<div
+    class="card timetable-card"
+    id="timetableCard">
 
-             const requestData = {
+    <div class="card-title">
+        My Timetable
+    </div>
 
-                 requestingStaffId:
-                     currentStaffId,
 
-                 requestingStaffName:
-                     currentStaffName,
+    <div
+        class="session-title"
+        id="sessionTitle">
+    </div>
 
-                 originalStaffId:
-                     currentStaffId,
 
-                 originalStaffName:
-                     currentStaffName,
+    <div class="table-wrapper">
 
-                 substituteStaffId:
-                     selectedSubstitute.staffId,
+        <table class="timetable">
 
-                 substituteStaffID:
-                     selectedSubstitute.staffId,
+            <thead>
 
-                 substituteStaffName:
-                     selectedSubstitute.staffName,
+                <tr>
 
-                 substituteName:
-                     selectedSubstitute.staffName,
+                    <th>
+                        Day Order
+                    </th>
 
-                 substituteDepartment:
-                     selectedSubstitute.department ||
-                     currentDepartment,
+                    <th>
+                        <div>Hour 1</div>
+                        <div class="hour-time">
+                            8:30 - 9:20
+                        </div>
+                    </th>
 
-                 department:
-                     currentDepartment,
+                    <th>
+                        <div>Hour 2</div>
+                        <div class="hour-time">
+                            9:20 - 10:10
+                        </div>
+                    </th>
 
-                 dept:
-                     currentDepartment,
+                    <th>
+                        <div>Hour 3</div>
+                        <div class="hour-time">
+                            10:10 - 11:00
+                        </div>
+                    </th>
 
-                 substituteDate:
-                     selectedPeriod.date,
+                    <th>
+                        <div>Hour 4</div>
+                        <div class="hour-time">
+                            11:30 - 12:20
+                        </div>
+                    </th>
 
-                 assignmentDate:
-                     selectedPeriod.date,
+                    <th>
+                        <div>Hour 5</div>
+                        <div class="hour-time">
+                            12:20 - 1:10
+                        </div>
+                    </th>
 
-                 date:
-                     selectedPeriod.date,
+                </tr>
 
-                 day:
-                     selectedPeriod.day,
+            </thead>
 
-                 dayName:
-                     selectedPeriod.day,
+            <tbody id="timetableBody">
+            </tbody>
 
-                 dayNo:
-                     selectedPeriod.day,
+        </table>
 
-                 dayOrder:
-                     selectedPeriod.day,
+    </div>
 
-                 session:
-                     selectedPeriod.session,
+</div>
 
-                 substituteSession:
-                     selectedPeriod.session,
 
-                 assignmentSession:
-                     selectedPeriod.session,
+<!-- =====================================================
+     SUBSTITUTE SELECTION
+===================================================== -->
 
-                 hour:
-                     selectedPeriod.hour,
+<div
+    class="card substitute-panel"
+    id="substitutePanel">
 
-                 period:
-                     selectedPeriod.hour,
+    <div class="card-title">
+        Select Substitute Staff
+    </div>
 
-                 hourNo:
-                     selectedPeriod.hour,
 
-                 subjectId:
-                     selectedPeriod.subjectId,
+    <div
+        class="selected-period"
+        id="selectedPeriod">
+    </div>
 
-                 subjectCode:
-                     selectedPeriod.subjectCode,
 
-                 subjectName:
-                     selectedPeriod.subject,
+    <div
+        class="loading"
+        id="staffLoading"
+        style="display:none">
 
-                 subject:
-                     selectedPeriod.subject,
+        Checking staff availability...
 
-                 classYear:
-                     selectedPeriod.classYear,
+    </div>
 
-                 class:
-                     selectedPeriod.classYear,
 
-                 year:
-                     selectedPeriod.classYear,
+    <div
+        id="staffCount"
+        class="staff-count"
+        style="display:none">
+    </div>
 
-                 section:
-                     selectedPeriod.section,
 
-                 roomNo:
-                     selectedPeriod.room,
+    <div
+        class="staff-list"
+        id="freeStaffList">
+    </div>
 
-                 room:
-                     selectedPeriod.room,
 
-                 status:
-                     "PENDING",
+    <div class="button-row">
 
-                 approvalStatus:
-                     "PENDING",
+        <button
+            class="btn-success"
+            id="requestBtn"
+            disabled>
 
-                 requestStatus:
-                     "PENDING",
+            Request Substitute
 
-                 headApprovalStatus:
-                     "PENDING",
+        </button>
 
-                 createdAt:
-                     serverTimestamp(),
 
-                 requestedAt:
-                     serverTimestamp()
+        <button
+            class="btn-secondary"
+            id="cancelBtn">
 
-             };
+            Cancel
 
+        </button>
 
-             const docRef =
-                 await addDoc(
-                     collection(
-                         db,
-                         "substituteRequests"
-                     ),
-                     requestData
-                 );
+    </div>
 
+</div>
 
-             console.log(
-                 "SUBSTITUTE REQUEST CREATED:",
-                 docRef.id
-             );
 
+<!-- =====================================================
+     MY SUBSTITUTE REQUESTS
+===================================================== -->
 
-             showMessage(
-                 "Substitute request sent successfully to Department Head.",
-                 "success"
-             );
+<div class="card requests-card">
 
+    <div class="request-top">
 
-             requestBtn.textContent =
-                 "Request Sent";
+        <div class="card-title"
+             style="margin-bottom:0">
 
+            My Substitute Requests
 
-             /*
-              * IMPORTANT:
-              * Immediately refresh My Requests.
-              */
+        </div>
 
-             await loadMyRequests();
+        <button
+            class="btn-primary"
+            id="refreshRequestsBtn">
 
+            Refresh Requests
 
-             setTimeout(
-                 () => {
+        </button>
 
-                     substitutePanel.style.display =
-                         "none";
+    </div>
 
-                     selectedPeriod =
-                         null;
 
-                     selectedSubstitute =
-                         null;
+    <div
+        id="requestCount"
+        class="request-count">
 
-                 },
-                 1500
-             );
+        Loading your requests...
 
+    </div>
 
-         }catch(error){
 
-             console.error(
-                 "SUBSTITUTE REQUEST ERROR:",
-                 error
-             );
+    <div
+        id="requestsLoading"
+        class="loading"
+        style="display:none">
 
+        Loading your substitute requests...
 
-             showMessage(
-                 "Unable to send substitute request: " +
-                 error.message,
-                 "error"
-             );
+    </div>
 
 
-             requestBtn.disabled =
-                 false;
+    <div
+        id="requestsContainer">
 
-             requestBtn.textContent =
-                 "Request Substitute";
+    </div>
 
-         }
+</div>
 
-     }
- );
 
+</div>
 
- /* =====================================================
-    CANCEL
- ===================================================== */
 
- cancelBtn.addEventListener(
-     "click",
-     function(){
+<script type="module">
 
-         substitutePanel.style.display =
-             "none";
+import {
+    initializeApp
+}
+from
+"https://www\.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
-         selectedPeriod =
-             null;
 
-         selectedSubstitute =
-             null;
+import {
+    getFirestore,
+    collection,
+    getDocs,
+    addDoc,
+    serverTimestamp
+}
+from
+"https://www\.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-         requestBtn.disabled =
-             true;
 
-         requestBtn.textContent =
-             "Request Substitute";
+/* =====================================================
+   FIREBASE
+===================================================== */
 
-         staffCount.style.display =
-             "none";
+const firebaseConfig = {
 
-     }
- );
+    apiKey:
+        "AIzaSyAIv3091VM-gkmdwEAn7OhXWd9Cm2zh2bo",
 
+    authDomain:
+        "maasc-2026.firebaseapp.com",
 
- /* =====================================================
-    RESET
- ===================================================== */
+    projectId:
+        "maasc-2026",
 
- resetBtn.addEventListener(
-     "click",
-     function(){
+    storageBucket:
+        "maasc-2026.appspot.com",
 
-         dateSelect.value =
-             "";
+    messagingSenderId:
+        "585813001586",
 
-         dayOrderSelect.value =
-             "";
+    appId:
+        "1:585813001586:web:664e0e90ff0725d2e849eb"
 
-         sessionSelect.value =
-             "";
+};
 
-         timetableCard.style.display =
-             "none";
 
-         substitutePanel.style.display =
-             "none";
+const app =
+    initializeApp(firebaseConfig);
 
-         timetableBody.innerHTML =
-             "";
+const db =
+    getFirestore(app);
 
-         freeStaffList.innerHTML =
-             "";
 
-         staffCount.style.display =
-             "none";
+/* =====================================================
+   CURRENT STAFF
+===================================================== */
 
-         selectedPeriod =
-             null;
+let currentStaffId =
+    String(
+        sessionStorage.getItem("staffId") || ""
+    ).trim();
 
-         selectedSubstitute =
-             null;
+let currentStaffName =
+    String(
+        sessionStorage.getItem("staffName") || ""
+    ).trim();
 
-         requestBtn.disabled =
-             true;
+let currentDepartment =
+    String(
+        sessionStorage.getItem("department") || ""
+    ).trim();
 
-         requestBtn.textContent =
-             "Request Substitute";
 
-         showMessage(
-             "",
-             "info"
-         );
+/* =====================================================
+   DOM
+===================================================== */
 
-     }
- );
+const dateSelect =
+    document.getElementById("dateSelect");
 
+const dayOrderSelect =
+    document.getElementById("dayOrderSelect");
 
- /* =====================================================
-    DATE / DAY INDEPENDENT
- ===================================================== */
+const sessionSelect =
+    document.getElementById("sessionSelect");
 
- dateSelect.addEventListener(
-     "change",
-     function(){
+const loadBtn =
+    document.getElementById("loadBtn");
 
-         console.log(
-             "DATE CHANGED:",
-             this.value
-         );
+const resetBtn =
+    document.getElementById("resetBtn");
 
-     }
- );
+const timetableCard =
+    document.getElementById("timetableCard");
 
+const timetableBody =
+    document.getElementById("timetableBody");
 
- dayOrderSelect.addEventListener(
-     "change",
-     function(){
+const substitutePanel =
+    document.getElementById("substitutePanel");
 
-         console.log(
-             "DAY ORDER CHANGED:",
-             this.value
-         );
+const selectedPeriodBox =
+    document.getElementById("selectedPeriod");
 
-     }
- );
+const staffLoading =
+    document.getElementById("staffLoading");
 
+const freeStaffList =
+    document.getElementById("freeStaffList");
 
- /* =====================================================
-    LOAD TIMETABLE
- ===================================================== */
+const staffCount =
+    document.getElementById("staffCount");
 
- loadBtn.addEventListener(
-     "click",
-     async function(){
+const requestBtn =
+    document.getElementById("requestBtn");
 
-         const selectedDate =
-             dateSelect.value;
+const cancelBtn =
+    document.getElementById("cancelBtn");
 
-         const selectedDay =
-             dayOrderSelect.value;
+const message =
+    document.getElementById("message");
 
-         const selectedSession =
-             sessionSelect.value;
+const requestsContainer =
+    document.getElementById("requestsContainer");
 
+const requestsLoading =
+    document.getElementById("requestsLoading");
 
-         if(!selectedDate){
+const requestCount =
+    document.getElementById("requestCount");
 
-             showMessage(
-                 "Please select Date.",
-                 "error"
-             );
+const refreshRequestsBtn =
+    document.getElementById("refreshRequestsBtn");
 
-             return;
 
-         }
+/* =====================================================
+   DATA
+===================================================== */
 
-         if(!selectedDay){
+let timetableData = [];
 
-             showMessage(
-                 "Please select Day Order.",
-                 "error"
-             );
+let subjectAssignmentData = [];
 
-             return;
+let allStaffData = [];
 
-         }
+let selectedPeriod = null;
 
-         if(!selectedSession){
+let selectedSubstitute = null;
 
-             showMessage(
-                 "Please select Session FN or AN.",
-                 "error"
-             );
 
-             return;
+/* =====================================================
+   FIRST VALUE
+===================================================== */
 
-         }
+function firstValue(...values){
 
-         if(!currentStaffId){
+    for(const value of values){
 
-             showMessage(
-                 "Current staff ID not found. Please login again.",
-                 "error"
-             );
+        if(
+            value !== undefined &&
+            value !== null &&
+            String(value).trim() !== ""
+        ){
 
-             return;
+            return value;
 
-         }
+        }
 
+    }
 
-         loadBtn.disabled =
-             true;
+    return "";
 
-         loadBtn.textContent =
-             "Loading...";
+}
 
 
-         try{
+/* =====================================================
+   NORMALIZE TEXT
+===================================================== */
 
-             const loaded =
-                 await loadEverything();
+function normalizeText(value){
 
-             if(!loaded){
+    return String(value ?? "")
+        .trim()
+        .replace(/\s+/g," ")
+        .toUpperCase();
 
-                 return;
+}
 
-             }
 
-             renderTimetable(
-                 selectedDay,
-                 selectedSession
-             );
+/* =====================================================
+   ESCAPE HTML
+===================================================== */
 
+function escapeHtml(value){
 
-             showMessage(
-                 "Timetable loaded successfully.",
-                 "success"
-             );
+    return String(value ?? "")
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
 
+}
 
-         }catch(error){
 
-             console.error(
-                 "LOAD BUTTON ERROR:",
-                 error
-             );
+/* =====================================================
+   NORMALIZE DAY
+===================================================== */
 
-             showMessage(
-                 "Unable to load timetable: " +
-                 error.message,
-                 "error"
-             );
+function normalizeDay(value){
 
+    const day =
+        normalizeText(value);
 
-         }finally{
+    if(!day){
 
-             loadBtn.disabled =
-                 false;
+        return "";
 
-             loadBtn.textContent =
-                 "Load Timetable";
+    }
 
-         }
+    const match =
+        day.match(
+            /DAY\s*0?([1-6])/
+        );
 
-     }
- );
+    if(match){
 
+        return "DAY " +
+            String(
+                Number(match[1])
+            ).padStart(2,"0");
 
- /* =====================================================
-    MY SUBSTITUTE REQUESTS
- ===================================================== */
+    }
 
- function formatTimestamp(timestamp){
+    if(/^[1-6]$/.test(day)){
 
-     if(!timestamp){
+        return "DAY " +
+            day.padStart(2,"0");
 
-         return "-";
+    }
 
-     }
+    const oldDays = {
 
+        MONDAY:"DAY 01",
+        TUESDAY:"DAY 02",
+        WEDNESDAY:"DAY 03",
+        THURSDAY:"DAY 04",
+        FRIDAY:"DAY 05",
+        SATURDAY:"DAY 06"
 
-     try{
+    };
 
-         if(
-             timestamp &&
-             typeof timestamp.toDate ===
-             "function"
-         ){
+    return oldDays[day] || day;
 
-             const date =
-                 timestamp.toDate();
+}
 
-             return date.toLocaleString(
-                 "en-IN",
-                 {
-                     day:"2-digit",
-                     month:"2-digit",
-                     year:"numeric",
-                     hour:"2-digit",
-                     minute:"2-digit"
-                 }
-             );
 
-         }
+/* =====================================================
+   NORMALIZE SESSION
+===================================================== */
 
+function normalizeSession(value){
 
-         if(
-             timestamp instanceof Date
-         ){
+    const session =
+        normalizeText(value);
 
-             return timestamp.toLocaleString(
-                 "en-IN"
-             );
+    if(
+        session === "FN" ||
+        session === "FORENOON" ||
+        session === "MORNING"
+    ){
 
-         }
+        return "FN";
 
+    }
 
-         return String(timestamp);
+    if(
+        session === "AN" ||
+        session === "AFTERNOON" ||
+        session === "EVENING"
+    ){
 
-     }catch(error){
+        return "AN";
 
-         return "-";
+    }
 
-     }
+    return session;
 
- }
+}
 
 
- /* =====================================================
-    REQUEST STATUS CLASS
- ===================================================== */
+/* =====================================================
+   STAFF ID
+===================================================== */
 
- function getStatusClass(status){
+function getStaffId(data,docId=""){
 
-     const value =
-         normalizeText(status);
+    return String(
+        firstValue(
 
+            data.staffId,
+            data.staffID,
+            data.staff_id,
 
-     if(
-         value.includes("APPROVED") ||
-         value === "ACCEPTED"
-     ){
+            data.staffCode,
+            data.staff_code,
 
-         return "status-approved";
+            data.employeeId,
+            data.employeeID,
+            data.employee_id,
 
-     }
+            data.teacherId,
+            data.teacherID,
+            data.teacher_id,
 
+            data.id,
+            data.ID,
 
-     if(
-         value.includes("REJECTED") ||
-         value === "DECLINED"
-     ){
+            docId
 
-         return "status-rejected";
+        )
+    ).trim();
 
-     }
+}
 
 
-     if(
-         value.includes("CANCEL")
-     ){
+/* =====================================================
+   STAFF NAME
+===================================================== */
 
-         return "status-cancelled";
+function getStaffName(data){
 
-     }
+    return String(
+        firstValue(
 
+            data.staffName,
+            data.staff_name,
 
-     if(
-         value.includes("FORWARD")
-     ){
+            data.name,
+            data.fullName,
+            data.full_name,
 
-         return "status-forwarded";
+            data.employeeName,
+            data.employee_name,
 
-     }
+            data.teacherName,
+            data.teacher_name,
 
+            data.teacher
 
-     return "status-pending";
+        )
+    ).trim();
 
- }
+}
 
 
- /* =====================================================
-    LOAD MY REQUESTS
- ===================================================== */
+/* =====================================================
+   DEPARTMENT
+===================================================== */
 
- async function loadMyRequests(){
+function getDepartment(data){
 
-     if(!currentStaffId){
+    return String(
+        firstValue(
 
-         requestCount.textContent =
-             "Staff ID not found.";
+            data.department,
+            data.dept,
 
-         requestsContainer.innerHTML = `
+            data.departmentName,
+            data.department_name,
 
-             <div class="no-requests">
+            data.deptName,
+            data.dept_name,
 
-                 <strong>
-                     Staff session not found
-                 </strong>
+            data.Department,
+            data.DEPT,
 
-                 Please login again.
+            data.branch,
+            data.branchName,
 
-             </div>
+            data.programDepartment,
 
-         `;
+            data.staffDepartment
 
-         return;
+        )
+    ).trim();
 
-     }
+}
 
 
-     requestsLoading.style.display =
-         "block";
+/* =====================================================
+   HOUR
+===================================================== */
 
-     requestsContainer.innerHTML =
-         "";
+function getHour(data){
 
+    const raw =
+        firstValue(
 
-     try{
+            data.hour,
+            data.period,
 
-         /*
-          * We intentionally use getDocs()
-          * and filter in JavaScript.
-          *
-          * This avoids requiring a Firestore
-          * composite index.
-          */
+            data.hourNo,
+            data.hourNumber,
 
-         const snapshot =
-             await getDocs(
-                 collection(
-                     db,
-                     "substituteRequests"
-                 )
-             );
+            data.periodNo,
+            data.periodNumber,
 
+            data.hourIndex
 
-         const requests = [];
+        );
 
+    if(typeof raw === "number"){
 
-         snapshot.forEach(doc => {
+        return raw;
 
-             const data =
-                 doc.data() || {};
+    }
 
+    const match =
+        String(raw ?? "")
+        .match(/\d+/);
 
-             const requestStaffId =
-                 String(
-                     firstValue(
+    return match
+        ? Number(match[0])
+        : 0;
 
-                         data.requestingStaffId,
+}
 
-                         data.originalStaffId,
 
-                         data.requestedByStaffId,
+/* =====================================================
+   SUBJECT
+===================================================== */
 
-                         data.staffId
+function getSubject(data){
 
-                     )
-                 ).trim();
+    return String(
+        firstValue(
 
+            data.subjectName,
+            data.subject,
 
-             /*
-              * ONLY CURRENT STAFF REQUESTS
-              */
+            data.subjectTitle,
+            data.subject_title,
 
-             if(
-                 normalizeText(
-                     requestStaffId
-                 ) !==
-                 normalizeText(
-                     currentStaffId
-                 )
-             ){
+            data.subjectCode,
+            data.subject_code,
 
-                 return;
+            data.subjectId,
+            data.paperName,
+            data.paper_name
 
-             }
+        )
+    ).trim();
 
+}
 
-             requests.push({
 
-                 id:doc.id,
+/* =====================================================
+   SUBJECT CODE
+===================================================== */
 
-                 ...data
+function getSubjectCode(data){
 
-             });
+    return String(
+        firstValue(
 
-         });
+            data.subjectCode,
+            data.subject_code,
 
+            data.code,
 
-         /*
-          * Latest request first.
-          */
+            data.subjectId,
+            data.subject_id
 
-         requests.sort(
-             (a,b) => {
+        )
+    ).trim();
 
-                 const aTime =
-                     a.createdAt &&
-                     typeof a.createdAt.toMillis ===
-                     "function"
+}
 
-                     ? a.createdAt.toMillis()
 
-                     : 0;
+/* =====================================================
+   CLASS / YEAR
+===================================================== */
 
+function getClassYear(data){
 
-                 const bTime =
-                     b.createdAt &&
-                     typeof b.createdAt.toMillis ===
-                     "function"
+    return String(
+        firstValue(
 
-                     ? b.createdAt.toMillis()
+            data.classYear,
+            data.class,
 
-                     : 0;
+            data.year,
+            data.className,
+            data.class_name,
 
+            data.yearName,
+            data.year_name
 
-                 return bTime - aTime;
+        )
+    ).trim();
 
-             }
-         );
+}
 
 
-         requestCount.textContent =
+/* =====================================================
+   SECTION
+===================================================== */
 
-             requests.length +
+function getSection(data){
 
-             (
-                 requests.length === 1
-                 ? " request found"
-                 : " requests found"
-             );
+    return String(
+        firstValue(
 
+            data.section,
+            data.sec,
 
-         if(!requests.length){
+            data.Section,
+            data.SECTION
 
-             requestsContainer.innerHTML = `
+        )
+    ).trim();
 
-                 <div class="no-requests">
+}
 
-                     <strong>
-                         No Substitute Requests
-                     </strong>
 
-                     You have not submitted any substitute requests yet.
+/* =====================================================
+   ROOM
+===================================================== */
 
-                 </div>
+function getRoom(data){
 
-             `;
+    return String(
+        firstValue(
 
-             return;
+            data.roomNo,
+            data.room_no,
 
-         }
+            data.room,
+            data.roomNumber,
+            data.room_number,
 
+            data.RoomNo,
+            data.Room,
 
-         let html = `
+            data.classRoom,
+            data.classroom,
 
-             <div class="requests-wrapper">
+            data.roomName,
+            data.room_name
 
-                 <table class="requests-table">
+        )
+    ).trim();
 
-                     <thead>
+}
 
-                         <tr>
 
-                             <th>Request ID</th>
+/* =====================================================
+   NORMALIZE TIMETABLE
+===================================================== */
 
-                             <th>Date</th>
+function normalizeTimetableRecord(id,data){
 
-                             <th>Day Order</th>
+    return {
 
-                             <th>Session</th>
+        id:id,
 
-                             <th>Hour</th>
+        staffId:
+            getStaffId(data,id),
 
-                             <th>Department</th>
+        staffName:
+            getStaffName(data),
 
-                             <th>Year</th>
+        department:
+            getDepartment(data),
 
-                             <th>Section</th>
+        day:
+            normalizeDay(
+                firstValue(
 
-                             <th>Subject</th>
+                    data.day,
+                    data.dayName,
+                    data.dayNo,
+                    data.dayNumber,
 
-                             <th>Room No</th>
+                    data.dayOrder,
+                    data.day_order
 
-                             <th>Substitute Staff</th>
+                )
+            ),
 
-                             <th>Status</th>
+        session:
+            normalizeSession(
+                firstValue(
 
-                             <th>Head Approval</th>
+                    data.session,
+                    data.shift,
+                    data.sessionName
 
-                             <th>Created At</th>
+                )
+            ),
 
-                         </tr>
+        hour:
+            getHour(data),
 
-                     </thead>
+        subjectCode:
+            getSubjectCode(data),
 
-                     <tbody>
-         `;
+        subjectId:
+            String(
+                firstValue(
+                    data.subjectId,
+                    data.subject_id
+                )
+            ).trim(),
 
+        subject:
+            getSubject(data),
 
-         requests.forEach(request => {
+        classYear:
+            getClassYear(data),
 
-             const date =
-                 firstValue(
+        section:
+            getSection(data),
 
-                     request.substituteDate,
+        room:
+            getRoom(data)
 
-                     request.assignmentDate,
+    };
 
-                     request.date
+}
 
-                 );
 
+/* =====================================================
+   NORMALIZE SUBJECT ASSIGNMENT
+===================================================== */
 
-             const day =
-                 firstValue(
+function normalizeSubjectAssignment(id,data){
 
-                     request.dayOrder,
+    return {
 
-                     request.dayName,
+        id:id,
 
-                     request.day
+        staffId:
+            getStaffId(data,id),
 
-                 );
+        staffName:
+            getStaffName(data),
 
+        department:
+            getDepartment(data),
 
-             const session =
-                 firstValue(
+        subjectId:
+            String(
+                firstValue(
+                    data.subjectId,
+                    data.subject_id
+                )
+            ).trim(),
 
-                     request.substituteSession,
+        subjectCode:
+            getSubjectCode(data),
 
-                     request.assignmentSession,
+        subject:
+            getSubject(data),
 
-                     request.session
+        classYear:
+            getClassYear(data),
 
-                 );
+        section:
+            getSection(data),
 
+        room:
+            getRoom(data)
 
-             const hour =
-                 firstValue(
+    };
 
-                     request.hour,
+}
 
-                     request.period,
 
-                     request.hourNo
+/* =====================================================
+   DISPLAY CURRENT STAFF
+===================================================== */
 
-                 );
+function updateCurrentStaffDisplay(){
 
+    document.getElementById(
+        "currentStaffId"
+    ).textContent =
+        currentStaffId || "Not Found";
 
-             const department =
-                 firstValue(
+    document.getElementById(
+        "currentStaffName"
+    ).textContent =
+        currentStaffName || "Not Found";
 
-                     request.department,
+    document.getElementById(
+        "currentDepartment"
+    ).textContent =
+        currentDepartment || "Loading...";
 
-                     request.dept
+}
 
-                 );
 
+/* =====================================================
+   MESSAGE
+===================================================== */
 
-             const year =
-                 firstValue(
+function showMessage(text,type="info"){
 
-                     request.classYear,
+    if(!text){
 
-                     request.year,
+        message.textContent = "";
 
-                     request.class
+        message.className = "message";
 
-                 );
+        return;
 
+    }
 
-             const section =
-                 firstValue(
-                     request.section
-                 );
+    message.textContent = text;
 
+    message.className =
+        "message " + type;
 
-             const subject =
-                 firstValue(
+}
 
-                     request.subjectName,
 
-                     request.subject,
+/* =====================================================
+   LOAD ALL STAFF
+===================================================== */
 
-                     request.subjectCode
+async function loadAllStaff(){
 
-                 );
+    const snapshot =
+        await getDocs(
+            collection(
+                db,
+                "staff"
+            )
+        );
 
+    allStaffData = [];
 
-             const room =
-                 firstValue(
+    snapshot.forEach(doc => {
 
-                     request.roomNo,
+        const data =
+            doc.data() || {};
 
-                     request.room
+        const staffId =
+            getStaffId(
+                data,
+                doc.id
+            );
 
-                 );
+        if(!staffId){
 
+            return;
 
-             const substituteName =
-                 firstValue(
+        }
 
-                     request.substituteStaffName,
+        allStaffData.push({
 
-                     request.substituteName,
+            docId:doc.id,
 
-                     request.substituteStaffId
+            staffId:staffId,
 
-                 );
+            staffName:
+                getStaffName(data) ||
+                staffId,
 
+            department:
+                getDepartment(data)
 
-             const status =
-                 firstValue(
+        });
 
-                     request.status,
+    });
 
-                     request.requestStatus,
+    if(
+        currentStaffId &&
+        !currentDepartment
+    ){
 
-                     request.approvalStatus
+        const current =
+            allStaffData.find(
+                staff =>
 
-                 ) || "PENDING";
+                    normalizeText(
+                        staff.staffId
+                    ) ===
+                    normalizeText(
+                        currentStaffId
+                    )
+            );
 
+        if(current){
 
-             const headStatus =
-                 firstValue(
+            currentDepartment =
+                current.department || "";
 
-                     request.headApprovalStatus,
+            sessionStorage.setItem(
+                "department",
+                currentDepartment
+            );
 
-                     request.approvalStatus,
+        }
 
-                     request.status
+    }
 
-                 ) || "PENDING";
+    updateCurrentStaffDisplay();
 
+}
 
-             const createdAt =
-                 formatTimestamp(
-                     request.createdAt ||
-                     request.requestedAt
-                 );
 
+/* =====================================================
+   LOAD TIMETABLE
+===================================================== */
 
-             html += `
+async function loadTimetableData(){
 
-                 <tr>
+    const snapshot =
+        await getDocs(
+            collection(
+                db,
+                "timetableAssignments"
+            )
+        );
 
-                     <td>
+    timetableData = [];
 
-                         <div class="request-id">
+    snapshot.forEach(doc => {
 
-                             ${escapeHtml(
-                                 request.id
-                             )}
+        const data =
+            doc.data() || {};
 
-                         </div>
+        const record =
+            normalizeTimetableRecord(
+                doc.id,
+                data
+            );
 
-                     </td>
+        if(record.staffId){
 
+            timetableData.push(
+                record
+            );
 
-                     <td>
+        }
 
-                         <span class="request-date">
+    });
 
-                             ${escapeHtml(
-                                 date || "-"
-                             )}
+}
 
-                         </span>
 
-                     </td>
+/* =====================================================
+   LOAD SUBJECT ASSIGNMENTS
+===================================================== */
 
+async function loadSubjectAssignments(){
 
-                     <td>
+    try{
 
-                         ${escapeHtml(
-                             day || "-"
-                         )}
+        const snapshot =
+            await getDocs(
+                collection(
+                    db,
+                    "subjectAssignments"
+                )
+            );
 
-                     </td>
+        subjectAssignmentData = [];
 
+        snapshot.forEach(doc => {
 
-                     <td>
+            const data =
+                doc.data() || {};
 
-                         ${escapeHtml(
-                             session || "-"
-                         )}
+            subjectAssignmentData.push(
 
-                     </td>
+                normalizeSubjectAssignment(
+                    doc.id,
+                    data
+                )
 
+            );
 
-                     <td>
+        });
 
-                         <b>
+    }catch(error){
 
-                             ${
-                                 hour
-                                 ? "Hour " +
-                                   escapeHtml(hour)
-                                 : "-"
-                             }
+        console.warn(
+            "subjectAssignments unavailable:",
+            error
+        );
 
-                         </b>
+        subjectAssignmentData = [];
 
-                     </td>
+    }
 
+}
 
-                     <td>
 
-                         ${escapeHtml(
-                             department || "-"
-                         )}
+/* =====================================================
+   FIND ROOM
+===================================================== */
 
-                     </td>
+function findRoomFromSubjectAssignment(entry){
 
+    if(entry.room){
 
-                     <td>
+        return entry.room;
 
-                         ${escapeHtml(
-                             year || "-"
-                         )}
+    }
 
-                     </td>
+    const subjectId =
+        normalizeText(
+            entry.subjectId
+        );
 
+    const subjectCode =
+        normalizeText(
+            entry.subjectCode
+        );
 
-                     <td>
+    const staffId =
+        normalizeText(
+            entry.staffId
+        );
 
-                         ${escapeHtml(
-                             section || "-"
-                         )}
+    const subject =
+        normalizeText(
+            entry.subject
+        );
 
-                     </td>
+    const year =
+        normalizeText(
+            entry.classYear
+        );
 
+    const section =
+        normalizeText(
+            entry.section
+        );
 
-                     <td>
 
-                         <span class="request-subject">
+    let match =
+        subjectAssignmentData.find(item =>
 
-                             ${escapeHtml(
-                                 subject || "-"
-                             )}
+            subjectId &&
+            normalizeText(item.subjectId) ===
+            subjectId &&
 
-                         </span>
+            staffId &&
+            normalizeText(item.staffId) ===
+            staffId &&
 
-                     </td>
+            item.room
 
+        );
 
-                     <td>
+    if(match){
 
-                         ${
-                             room
-                             ? escapeHtml(room)
-                             : "Not Available"
-                         }
+        return match.room;
 
-                     </td>
+    }
 
 
-                     <td>
+    match =
+        subjectAssignmentData.find(item =>
 
-                         <span class="request-substitute">
+            subjectCode &&
+            normalizeText(item.subjectCode) ===
+            subjectCode &&
 
-                             ${escapeHtml(
-                                 substituteName || "-"
-                             )}
+            staffId &&
+            normalizeText(item.staffId) ===
+            staffId &&
 
-                         </span>
+            section ===
+            normalizeText(item.section) &&
 
-                         ${
-                             request.substituteStaffId
-                             ? `
-                                 \
-                                 <small>
-                                     ${escapeHtml(
-                                         request.substituteStaffId
-                                     )}
-                                 </small>
-                               `
-                             : ""
-                         }
+            item.room
 
-                     </td>
+        );
 
+    if(match){
 
-                     <td>
+        return match.room;
 
-                         <span
-                             class="status
-                             ${getStatusClass(status)}">
+    }
 
-                             ${escapeHtml(
-                                 String(status)
-                                 .toUpperCase()
-                             )}
 
-                         </span>
+    match =
+        subjectAssignmentData.find(item =>
 
-                     </td>
+            subject &&
+            normalizeText(item.subject) ===
+            subject &&
 
+            staffId &&
+            normalizeText(item.staffId) ===
+            staffId &&
 
-                     <td>
+            year ===
+            normalizeText(item.classYear) &&
 
-                         <span
-                             class="status
-                             ${getStatusClass(headStatus)}">
+            section ===
+            normalizeText(item.section) &&
 
-                             ${escapeHtml(
-                                 String(headStatus)
-                                 .toUpperCase()
-                             )}
+            item.room
 
-                         </span>
+        );
 
-                     </td>
+    if(match){
 
+        return match.room;
 
-                     <td>
+    }
 
-                         ${escapeHtml(
-                             createdAt
-                         )}
 
-                     </td>
+    match =
+        subjectAssignmentData.find(item =>
 
-                 </tr>
+            subjectCode &&
+            normalizeText(item.subjectCode) ===
+            subjectCode &&
 
-             `;
+            section ===
+            normalizeText(item.section) &&
 
-         });
+            item.room
 
+        );
 
-         html += `
+    if(match){
 
-                     </tbody>
+        return match.room;
 
-                 </table>
+    }
 
-             </div>
+    return "";
 
-         `;
+}
 
 
-         requestsContainer.innerHTML =
-             html;
+/* =====================================================
+   RESOLVE ROOM
+===================================================== */
 
+function resolveRoom(entry){
 
-     }catch(error){
+    let room =
+        getRoom(entry);
 
-         console.error(
-             "LOAD MY REQUESTS ERROR:",
-             error
-         );
+    if(room){
 
+        return room;
 
-         requestCount.textContent =
-             "Unable to load requests";
+    }
 
+    return findRoomFromSubjectAssignment(
+        entry
+    );
 
-         requestsContainer.innerHTML = `
+}
 
-             <div class="message error"
-                  style="display:block">
 
-                 Unable to load your substitute requests.
+/* =====================================================
+   LOAD EVERYTHING
+===================================================== */
 
-                 \\
+async function loadEverything(){
 
-                 ${escapeHtml(
-                     error.message
-                 )}
+    try{
 
-             </div>
+        await Promise.all([
 
-         `;
+            loadAllStaff(),
 
-     }finally{
+            loadTimetableData(),
 
-         requestsLoading.style.display =
-             "none";
+            loadSubjectAssignments()
 
-     }
+        ]);
 
- }
+        timetableData.forEach(entry => {
 
+            if(!entry.room){
 
- /* =====================================================
-    REFRESH REQUESTS
- ===================================================== */
+                entry.room =
+                    resolveRoom(entry);
 
- refreshRequestsBtn.addEventListener(
-     "click",
-     async function(){
+            }
 
-         refreshRequestsBtn.disabled =
-             true;
+        });
 
-         refreshRequestsBtn.textContent =
-             "Refreshing...";
+        return true;
 
+    }catch(error){
 
-         try{
+        console.error(
+            "LOAD DATA ERROR:",
+            error
+        );
 
-             await loadMyRequests();
+        showMessage(
+            "Unable to load data: " +
+            error.message,
+            "error"
+        );
 
-         }finally{
+        return false;
 
-             refreshRequestsBtn.disabled =
-                 false;
+    }
 
-             refreshRequestsBtn.textContent =
-                 "Refresh Requests";
+}
 
-         }
 
-     }
- );
+/* =====================================================
+   SESSION TIMES
+===================================================== */
 
+function getSessionTimes(session){
 
- /* =====================================================
-    INITIAL LOAD
- ===================================================== */
+    if(
+        normalizeSession(session) === "AN"
+    ){
 
- async function start(){
+        return [
 
-     updateCurrentStaffDisplay();
+            "1:30 - 2:20",
+            "2:20 - 3:10",
+            "3:30 - 4:20",
+            "4:20 - 5:10",
+            "5:10 - 6:00"
 
+        ];
 
-     if(!currentStaffId){
+    }
 
-         showMessage(
-             "Staff session not found. Please login again.",
-             "error"
-         );
+    return [
 
-         requestCount.textContent =
-             "Staff session not found.";
+        "8:30 - 9:20",
+        "9:20 - 10:10",
+        "10:10 - 11:00",
+        "11:30 - 12:20",
+        "12:20 - 1:10"
 
-         return;
+    ];
 
-     }
+}
 
 
-     try{
+/* =====================================================
+   UPDATE HEADERS
+===================================================== */
 
-         /*
-          * Load staff/timetable data
-          */
+function updateHourHeaders(session){
 
-         await loadEverything();
+    const times =
+        getSessionTimes(session);
 
+    const headers =
+        document.querySelectorAll(
+            ".timetable thead th"
+        );
 
-         updateCurrentStaffDisplay();
+    for(let i=1;i<=5;i++){
 
+        if(!headers[i]){
 
-         /*
-          * NEW:
-          * Load current staff's requests
-          * immediately when page opens.
-          */
+            continue;
 
-         await loadMyRequests();
+        }
 
+        headers[i].innerHTML = `
 
-         console.log(
-             "================================="
-         );
+            <div>
+                Hour ${i}
+            </div>
 
-         console.log(
-             "SUBSTITUTE ASSIGNMENT READY"
-         );
+            <div class="hour-time">
+                ${escapeHtml(times[i-1])}
+            </div>
 
-         console.log(
-             "CURRENT STAFF:",
-             currentStaffId
-         );
+        `;
 
-         console.log(
-             "CURRENT DEPARTMENT:",
-             currentDepartment
-         );
+    }
 
-         console.log(
-             "TIMETABLE RECORDS:",
-             timetableData.length
-         );
+}
 
-         console.log(
-             "SUBJECT ASSIGNMENTS:",
-             subjectAssignmentData.length
-         );
 
-         console.log(
-             "================================="
-         );
+/* =====================================================
+   RENDER TIMETABLE
+===================================================== */
 
+function renderTimetable(day,session){
 
-     }catch(error){
+    timetableBody.innerHTML = "";
 
-         console.error(
-             "START ERROR:",
-             error
-         );
+    const normalizedDay =
+        normalizeDay(day);
 
+    const normalizedSession =
+        normalizeSession(session);
 
-         showMessage(
-             "Unable to load staff information: " +
-             error.message,
-             "error"
-         );
+    document.getElementById(
+        "sessionTitle"
+    ).textContent =
 
-     }
+        normalizedSession === "FN"
+        ? "FORENOON SESSION (FN)"
+        : "AFTERNOON SESSION (AN)";
 
- }
+    updateHourHeaders(
+        normalizedSession
+    );
 
+    const staffEntries =
+        timetableData.filter(item =>
 
- start();
+            normalizeText(item.staffId) ===
+            normalizeText(currentStaffId)
 
- </script>
+        );
 
- </body>
- </html>
+    const entries =
+        staffEntries.filter(item =>
+
+            normalizeDay(item.day) ===
+            normalizedDay
+
+            &&
+
+            normalizeSession(item.session) ===
+            normalizedSession
+
+        );
+
+    const row =
+        document.createElement("tr");
+
+    const dayCell =
+        document.createElement("td");
+
+    dayCell.className =
+        "day-cell";
+
+    dayCell.textContent =
+        normalizedDay;
+
+    row\.appendChild(
+        dayCell
+    );
+
+    const times =
+        getSessionTimes(
+            normalizedSession
+        );
+
+    for(let hour=1;hour<=5;hour++){
+
+        row\.appendChild(
+
+            createPeriodCell(
+
+                entries,
+
+                normalizedDay,
+
+                normalizedSession,
+
+                hour,
+
+                times[hour-1]
+
+            )
+
+        );
+
+    }
+
+    timetableBody.appendChild(
+        row
+    );
+
+    timetableCard.style.display =
+        "block";
+
+    substitutePanel.style.display =
+        "none";
+
+}
+
+
+/* =====================================================
+   CREATE PERIOD
+===================================================== */
+
+function createPeriodCell(
+    entries,
+    day,
+    session,
+    hour,
+    time
+){
+
+    const cell =
+        document.createElement("td");
+
+    const entry =
+        entries.find(item =>
+
+            Number(item.hour) ===
+            Number(hour)
+
+        );
+
+    if(!entry){
+
+        cell.innerHTML = `
+
+            <div class="period free">
+
+                <div class="free-text">
+                    FREE
+                </div>
+
+                <div class="period-time">
+                    ${escapeHtml(time)}
+                </div>
+
+            </div>
+
+        `;
+
+        return cell;
+
+    }
+
+    const room =
+        resolveRoom(entry);
+
+    entry.room =
+        room;
+
+    const roomHtml = room
+
+        ? `
+
+        <div class="room">
+
+            Room:
+            ${escapeHtml(room)}
+
+        </div>
+
+        `
+
+        : `
+
+        <div class="room missing">
+
+            Room:
+            Not Available
+
+        </div>
+
+        `;
+
+
+    cell.innerHTML = `
+
+        <div
+            class="period assigned"
+            title="Click to find substitute">
+
+            <div class="period-subject">
+
+                ${escapeHtml(
+                    entry.subject ||
+                    "Subject"
+                )}
+
+            </div>
+
+            <div class="period-details">
+
+                <b>Department:</b>
+                ${escapeHtml(
+                    entry.department ||
+                    currentDepartment ||
+                    "-"
+                )}
+
+                \
+
+                <b>Year:</b>
+                ${escapeHtml(
+                    entry.classYear ||
+                    "-"
+                )}
+
+                \
+
+                <b>Section:</b>
+                ${escapeHtml(
+                    entry.section ||
+                    "-"
+                )}
+
+            </div>
+
+            ${roomHtml}
+
+            <div class="period-time">
+
+                ${escapeHtml(time)}
+
+            </div>
+
+            <div class="click-note">
+
+                CLICK TO ASSIGN SUBSTITUTE
+
+            </div>
+
+        </div>
+
+    `;
+
+
+    cell.querySelector(
+        ".period"
+    ).addEventListener(
+        "click",
+        () => {
+
+            openSubstituteSelection(
+                entry
+            );
+
+        }
+    );
+
+
+    return cell;
+
+}
+
+
+/* =====================================================
+   OPEN SUBSTITUTE
+===================================================== */
+
+async function openSubstituteSelection(entry){
+
+    const resolvedRoom =
+        resolveRoom(entry);
+
+    entry.room =
+        resolvedRoom;
+
+    selectedPeriod = {
+
+        date:
+            dateSelect.value,
+
+        day:
+            normalizeDay(
+                dayOrderSelect.value
+            ),
+
+        session:
+            normalizeSession(
+                sessionSelect.value
+            ),
+
+        hour:
+            Number(entry.hour),
+
+        subject:
+            entry.subject,
+
+        subjectCode:
+            entry.subjectCode,
+
+        subjectId:
+            entry.subjectId,
+
+        department:
+            entry.department ||
+            currentDepartment,
+
+        classYear:
+            entry.classYear,
+
+        section:
+            entry.section,
+
+        room:
+            resolvedRoom,
+
+        originalStaffId:
+            currentStaffId,
+
+        originalStaffName:
+            currentStaffName
+
+    };
+
+
+    selectedSubstitute =
+        null;
+
+    requestBtn.disabled =
+        true;
+
+    requestBtn.textContent =
+        "Request Substitute";
+
+
+    selectedPeriodBox.innerHTML = `
+
+        <h3>
+            Selected Period
+        </h3>
+
+        <div class="selected-grid">
+
+            <div class="selected-item">
+                <b>Date</b>
+                ${escapeHtml(selectedPeriod.date)}
+            </div>
+
+            <div class="selected-item">
+                <b>Day Order</b>
+                ${escapeHtml(selectedPeriod.day)}
+            </div>
+
+            <div class="selected-item">
+                <b>Session</b>
+                ${escapeHtml(selectedPeriod.session)}
+            </div>
+
+            <div class="selected-item">
+                <b>Hour</b>
+                Hour ${selectedPeriod.hour}
+            </div>
+
+            <div class="selected-item">
+                <b>Subject</b>
+                ${escapeHtml(selectedPeriod.subject || "-")}
+            </div>
+
+            <div class="selected-item">
+                <b>Department</b>
+                ${escapeHtml(selectedPeriod.department || "-")}
+            </div>
+
+            <div class="selected-item">
+                <b>Year</b>
+                ${escapeHtml(selectedPeriod.classYear || "-")}
+            </div>
+
+            <div class="selected-item">
+                <b>Section</b>
+                ${escapeHtml(selectedPeriod.section || "-")}
+            </div>
+
+            <div class="selected-item">
+                <b>Room No</b>
+                ${escapeHtml(selectedPeriod.room || "Not Available")}
+            </div>
+
+        </div>
+
+    `;
+
+
+    substitutePanel.style.display =
+        "block";
+
+    staffLoading.style.display =
+        "block";
+
+    staffCount.style.display =
+        "none";
+
+    freeStaffList.innerHTML =
+        "";
+
+    substitutePanel.scrollIntoView({
+        behavior:"smooth",
+        block:"start"
+    });
+
+
+    try{
+
+        await loadEverything();
+
+        await findFreeStaff();
+
+    }catch(error){
+
+        console.error(
+            error
+        );
+
+        freeStaffList.innerHTML = `
+
+            <div
+                class="message error"
+                style="
+                    display:block;
+                    grid-column:1/-1
+                ">
+
+                Unable to load free staff.
+
+                \
+\
+
+                ${escapeHtml(
+                    error.message
+                )}
+
+            </div>
+
+        `;
+
+    }finally{
+
+        staffLoading.style.display =
+            "none";
+
+    }
+
+}
+
+
+/* =====================================================
+   STAFF OCCUPIED
+===================================================== */
+
+function isStaffOccupied(
+    staffId,
+    day,
+    session,
+    hour
+){
+
+    return timetableData.some(item => {
+
+        return (
+
+            normalizeText(item.staffId) ===
+            normalizeText(staffId)
+
+            &&
+
+            normalizeDay(item.day) ===
+            normalizeDay(day)
+
+            &&
+
+            normalizeSession(item.session) ===
+            normalizeSession(session)
+
+            &&
+
+            Number(item.hour) ===
+            Number(hour)
+
+        );
+
+    });
+
+}
+
+
+/* =====================================================
+   FIND FREE STAFF
+===================================================== */
+
+async function findFreeStaff(){
+
+    if(!selectedPeriod){
+
+        throw new Error(
+            "No timetable period selected."
+        );
+
+    }
+
+    if(!allStaffData.length){
+
+        await loadAllStaff();
+
+    }
+
+    /*
+     * IMPORTANT:
+     * Current staff loading is kept exactly as the
+     * existing program. Only substitute filtering is
+     * handled below.
+     */
+
+    if(!currentDepartment){
+
+        const current =
+            allStaffData.find(
+                staff =>
+                    normalizeText(
+                        staff.staffId
+                    ) ===
+                    normalizeText(
+                        currentStaffId
+                    )
+            );
+
+        if(current){
+
+            currentDepartment =
+                current.department || "";
+
+            sessionStorage.setItem(
+                "department",
+                currentDepartment
+            );
+
+            updateCurrentStaffDisplay();
+
+        }
+
+    }
+
+    const requestDepartment =
+        normalizeText(
+            currentDepartment
+        );
+
+    const selectedSession =
+        normalizeSession(
+            selectedPeriod.session
+        );
+
+    const selectedHour =
+        Number(
+            selectedPeriod.hour
+        );
+
+    const isLabAssistant =
+        requestDepartment ===
+        "LAB ASSISTANT";
+
+    const freeStaff = [];
+
+
+    allStaffData.forEach(staff => {
+
+        const staffId =
+            String(
+                staff.staffId || ""
+            ).trim();
+
+        if(!staffId){
+
+            return;
+
+        }
+
+
+        /* DO NOT SHOW CURRENT STAFF */
+
+        if(
+            normalizeText(staffId) ===
+            normalizeText(currentStaffId)
+        ){
+
+            return;
+
+        }
+
+
+        /* SAME DEPARTMENT - EXISTING RULE */
+
+        const staffDepartment =
+            normalizeText(
+                staff.department
+            );
+
+        if(requestDepartment){
+
+            if(!staffDepartment){
+
+                return;
+
+            }
+
+            if(
+                staffDepartment !==
+                requestDepartment
+            ){
+
+                return;
+
+            }
+
+        }
+
+
+        /*
+         * LAB ASSISTANT SPECIAL RULE
+         *
+         * MURALIKRISHNAN works only from
+         * 01:30 PM to 06:00 PM = AN.
+         *
+         * Therefore he must never appear in FN.
+         */
+
+        const staffName =
+            normalizeText(
+                staff.staffName
+            );
+
+
+        if(
+            isLabAssistant &&
+            staffName ===
+            "MURALIKRISHNAN" &&
+            selectedSession ===
+            "FN"
+        ){
+
+            return;
+
+        }
+
+
+        /*
+         * LAB ASSISTANT FN HOUR 1 & 2
+         *
+         * RAMESHWAR and LOGESHWARRAN must not
+         * appear even when they are free.
+         */
+
+        if(
+            isLabAssistant &&
+            selectedSession ===
+            "FN" &&
+            (
+                selectedHour === 1 ||
+                selectedHour === 2
+            ) &&
+            (
+                staffName ===
+                "RAMESHWAR" ||
+                staffName ===
+                "LOGESHWARRAN"
+            )
+        ){
+
+            return;
+
+        }
+
+
+        /*
+         * LAB ASSISTANT AN HOUR 4 & 5
+         *
+         * ONLY these three staff are eligible:
+         *
+         * 1. RAMESHWAR
+         * 2. LOGESHWARRAN
+         * 3. MURALIKRISHNAN
+         *
+         * Occupied/free checking is still done below.
+         */
+
+        if(
+            isLabAssistant &&
+            selectedSession ===
+            "AN" &&
+            (
+                selectedHour === 4 ||
+                selectedHour === 5
+            )
+        ){
+
+            if(
+                staffName !==
+                "RAMESHWAR" &&
+                staffName !==
+                "LOGESHWARRAN" &&
+                staffName !==
+                "MURALIKRISHNAN"
+            ){
+
+                return;
+
+            }
+
+        }
+
+
+        /*
+         * EXISTING TIMETABLE AVAILABILITY CHECK
+         *
+         * Do not add anyone if they are already occupied.
+         */
+
+        if(
+            isStaffOccupied(
+
+                staffId,
+
+                selectedPeriod.day,
+
+                selectedSession,
+
+                selectedHour
+
+            )
+        ){
+
+            return;
+
+        }
+
+
+        freeStaff.push({
+
+            staffId:
+                staff.staffId,
+
+            staffName:
+                staff.staffName ||
+                staff.staffId,
+
+            department:
+                staff.department ||
+                currentDepartment
+
+        });
+
+    });
+
+
+    freeStaff.sort(
+
+        (a,b) =>
+
+            String(
+                a.staffName || ""
+            ).localeCompare(
+
+                String(
+                    b.staffName || ""
+                )
+
+            )
+
+    );
+
+
+    /*
+     * renderFreeStaff() already displays
+     * "No free staff found" when the array is empty.
+     *
+     * So if AN 4/5 has all three occupied,
+     * the existing No Free Staff message is shown.
+     */
+
+    renderFreeStaff(
+        freeStaff
+    );
+
+}
+
+
+/* =====================================================
+   RENDER FREE STAFF
+===================================================== */
+
+function renderFreeStaff(staff){
+
+    freeStaffList.innerHTML =
+        "";
+
+    staffCount.style.display =
+        "block";
+
+    staffCount.textContent =
+
+        staff.length +
+
+        " free staff found in " +
+
+        (
+            currentDepartment ||
+            "selected department"
+        ) +
+
+        " for " +
+
+        selectedPeriod.day +
+
+        " / " +
+
+        selectedPeriod.session +
+
+        " / Hour " +
+
+        selectedPeriod.hour;
+
+
+    if(!staff.length){
+
+        freeStaffList.innerHTML = `
+
+            <div
+                class="message error"
+                style="
+                    display:block;
+                    grid-column:1/-1
+                ">
+
+                No free staff found in
+
+                <b>
+                    ${escapeHtml(
+                        currentDepartment ||
+                        "the selected department"
+                    )}
+                </b>
+
+                for
+
+                <b>
+                    ${escapeHtml(
+                        selectedPeriod.day
+                    )}
+                </b>
+
+                /
+
+                <b>
+                    ${escapeHtml(
+                        selectedPeriod.session
+                    )}
+                </b>
+
+                /
+
+                <b>
+                    Hour ${escapeHtml(
+                        selectedPeriod.hour
+                    )}
+                </b>.
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+    staff.forEach(person => {
+
+        const div =
+            document.createElement("div");
+
+        div.className =
+            "staff-option";
+
+        div.innerHTML = `
+
+            <div class="staff-name">
+
+                ${escapeHtml(
+                    person.staffName ||
+                    person.staffId
+                )}
+
+            </div>
+
+            <div class="staff-id">
+
+                Staff ID:
+                ${escapeHtml(
+                    person.staffId
+                )}
+
+            </div>
+
+            <div class="staff-dept">
+
+                Department:
+                ${escapeHtml(
+                    person.department ||
+                    currentDepartment ||
+                    "-"
+                )}
+
+            </div>
+
+            <div class="availability">
+
+                FREE FOR THIS PERIOD
+
+            </div>
+
+        `;
+
+
+        div.addEventListener(
+            "click",
+            function(){
+
+                document
+                    .querySelectorAll(
+                        ".staff-option"
+                    )
+                    .forEach(
+                        item =>
+                            item.classList.remove(
+                                "selected"
+                            )
+                    );
+
+                div.classList.add(
+                    "selected"
+                );
+
+                selectedSubstitute =
+                    person;
+
+                requestBtn.disabled =
+                    false;
+
+            }
+        );
+
+
+        freeStaffList.appendChild(
+            div
+        );
+
+    });
+
+}
+
+
+/* =====================================================
+   SEND SUBSTITUTE REQUEST
+===================================================== */
+
+requestBtn.addEventListener(
+    "click",
+    async function(){
+
+        if(!selectedPeriod){
+
+            showMessage(
+                "Please select a timetable period.",
+                "error"
+            );
+
+            return;
+
+        }
+
+        if(!selectedSubstitute){
+
+            showMessage(
+                "Please select a substitute staff.",
+                "error"
+            );
+
+            return;
+
+        }
+
+
+        const confirmRequest =
+            confirm(
+
+                "Send substitute request to Department Head?\n\n" +
+
+                "Substitute Staff: " +
+                selectedSubstitute.staffName +
+
+                "\nStaff ID: " +
+                selectedSubstitute.staffId +
+
+                "\n\nDate: " +
+                selectedPeriod.date +
+
+                "\nDay Order: " +
+                selectedPeriod.day +
+
+                "\nSession: " +
+                selectedPeriod.session +
+
+                "\nHour: " +
+                selectedPeriod.hour +
+
+                "\nDepartment: " +
+                selectedPeriod.department +
+
+                "\nYear: " +
+                selectedPeriod.classYear +
+
+                "\nSection: " +
+                selectedPeriod.section +
+
+                "\nRoom No: " +
+                (
+                    selectedPeriod.room ||
+                    "Not Available"
+                )
+
+            );
+
+
+        if(!confirmRequest){
+
+            return;
+
+        }
+
+
+        requestBtn.disabled =
+            true;
+
+        requestBtn.textContent =
+            "Sending...";
+
+
+        try{
+
+            const requestData = {
+
+                requestingStaffId:
+                    currentStaffId,
+
+                requestingStaffName:
+                    currentStaffName,
+
+                originalStaffId:
+                    currentStaffId,
+
+                originalStaffName:
+                    currentStaffName,
+
+                substituteStaffId:
+                    selectedSubstitute.staffId,
+
+                substituteStaffID:
+                    selectedSubstitute.staffId,
+
+                substituteStaffName:
+                    selectedSubstitute.staffName,
+
+                substituteName:
+                    selectedSubstitute.staffName,
+
+                substituteDepartment:
+                    selectedSubstitute.department ||
+                    currentDepartment,
+
+                department:
+                    currentDepartment,
+
+                dept:
+                    currentDepartment,
+
+                substituteDate:
+                    selectedPeriod.date,
+
+                assignmentDate:
+                    selectedPeriod.date,
+
+                date:
+                    selectedPeriod.date,
+
+                day:
+                    selectedPeriod.day,
+
+                dayName:
+                    selectedPeriod.day,
+
+                dayNo:
+                    selectedPeriod.day,
+
+                dayOrder:
+                    selectedPeriod.day,
+
+                session:
+                    selectedPeriod.session,
+
+                substituteSession:
+                    selectedPeriod.session,
+
+                assignmentSession:
+                    selectedPeriod.session,
+
+                hour:
+                    selectedPeriod.hour,
+
+                period:
+                    selectedPeriod.hour,
+
+                hourNo:
+                    selectedPeriod.hour,
+
+                subjectId:
+                    selectedPeriod.subjectId,
+
+                subjectCode:
+                    selectedPeriod.subjectCode,
+
+                subjectName:
+                    selectedPeriod.subject,
+
+                subject:
+                    selectedPeriod.subject,
+
+                classYear:
+                    selectedPeriod.classYear,
+
+                class:
+                    selectedPeriod.classYear,
+
+                year:
+                    selectedPeriod.classYear,
+
+                section:
+                    selectedPeriod.section,
+
+                roomNo:
+                    selectedPeriod.room,
+
+                room:
+                    selectedPeriod.room,
+
+                status:
+                    "PENDING",
+
+                approvalStatus:
+                    "PENDING",
+
+                requestStatus:
+                    "PENDING",
+
+                headApprovalStatus:
+                    "PENDING",
+
+                createdAt:
+                    serverTimestamp(),
+
+                requestedAt:
+                    serverTimestamp()
+
+            };
+
+
+            const docRef =
+                await addDoc(
+                    collection(
+                        db,
+                        "substituteRequests"
+                    ),
+                    requestData
+                );
+
+
+            console.log(
+                "SUBSTITUTE REQUEST CREATED:",
+                docRef.id
+            );
+
+
+            showMessage(
+                "Substitute request sent successfully to Department Head.",
+                "success"
+            );
+
+
+            requestBtn.textContent =
+                "Request Sent";
+
+
+            /*
+             * IMPORTANT:
+             * Immediately refresh My Requests.
+             */
+
+            await loadMyRequests();
+
+
+            setTimeout(
+                () => {
+
+                    substitutePanel.style.display =
+                        "none";
+
+                    selectedPeriod =
+                        null;
+
+                    selectedSubstitute =
+                        null;
+
+                },
+                1500
+            );
+
+
+        }catch(error){
+
+            console.error(
+                "SUBSTITUTE REQUEST ERROR:",
+                error
+            );
+
+
+            showMessage(
+                "Unable to send substitute request: " +
+                error.message,
+                "error"
+            );
+
+
+            requestBtn.disabled =
+                false;
+
+            requestBtn.textContent =
+                "Request Substitute";
+
+        }
+
+    }
+);
+
+
+/* =====================================================
+   CANCEL
+===================================================== */
+
+cancelBtn.addEventListener(
+    "click",
+    function(){
+
+        substitutePanel.style.display =
+            "none";
+
+        selectedPeriod =
+            null;
+
+        selectedSubstitute =
+            null;
+
+        requestBtn.disabled =
+            true;
+
+        requestBtn.textContent =
+            "Request Substitute";
+
+        staffCount.style.display =
+            "none";
+
+    }
+);
+
+
+/* =====================================================
+   RESET
+===================================================== */
+
+resetBtn.addEventListener(
+    "click",
+    function(){
+
+        dateSelect.value =
+            "";
+
+        dayOrderSelect.value =
+            "";
+
+        sessionSelect.value =
+            "";
+
+        timetableCard.style.display =
+            "none";
+
+        substitutePanel.style.display =
+            "none";
+
+        timetableBody.innerHTML =
+            "";
+
+        freeStaffList.innerHTML =
+            "";
+
+        staffCount.style.display =
+            "none";
+
+        selectedPeriod =
+            null;
+
+        selectedSubstitute =
+            null;
+
+        requestBtn.disabled =
+            true;
+
+        requestBtn.textContent =
+            "Request Substitute";
+
+        showMessage(
+            "",
+            "info"
+        );
+
+    }
+);
+
+
+/* =====================================================
+   DATE / DAY INDEPENDENT
+===================================================== */
+
+dateSelect.addEventListener(
+    "change",
+    function(){
+
+        console.log(
+            "DATE CHANGED:",
+            this.value
+        );
+
+    }
+);
+
+
+dayOrderSelect.addEventListener(
+    "change",
+    function(){
+
+        console.log(
+            "DAY ORDER CHANGED:",
+            this.value
+        );
+
+    }
+);
+
+
+/* =====================================================
+   LOAD TIMETABLE
+===================================================== */
+
+loadBtn.addEventListener(
+    "click",
+    async function(){
+
+        const selectedDate =
+            dateSelect.value;
+
+        const selectedDay =
+            dayOrderSelect.value;
+
+        const selectedSession =
+            sessionSelect.value;
+
+
+        if(!selectedDate){
+
+            showMessage(
+                "Please select Date.",
+                "error"
+            );
+
+            return;
+
+        }
+
+        if(!selectedDay){
+
+            showMessage(
+                "Please select Day Order.",
+                "error"
+            );
+
+            return;
+
+        }
+
+        if(!selectedSession){
+
+            showMessage(
+                "Please select Session FN or AN.",
+                "error"
+            );
+
+            return;
+
+        }
+
+        if(!currentStaffId){
+
+            showMessage(
+                "Current staff ID not found. Please login again.",
+                "error"
+            );
+
+            return;
+
+        }
+
+
+        loadBtn.disabled =
+            true;
+
+        loadBtn.textContent =
+            "Loading...";
+
+
+        try{
+
+            const loaded =
+                await loadEverything();
+
+            if(!loaded){
+
+                return;
+
+            }
+
+            renderTimetable(
+                selectedDay,
+                selectedSession
+            );
+
+
+            showMessage(
+                "Timetable loaded successfully.",
+                "success"
+            );
+
+
+        }catch(error){
+
+            console.error(
+                "LOAD BUTTON ERROR:",
+                error
+            );
+
+            showMessage(
+                "Unable to load timetable: " +
+                error.message,
+                "error"
+            );
+
+
+        }finally{
+
+            loadBtn.disabled =
+                false;
+
+            loadBtn.textContent =
+                "Load Timetable";
+
+        }
+
+    }
+);
+
+
+/* =====================================================
+   MY SUBSTITUTE REQUESTS
+===================================================== */
+
+function formatTimestamp(timestamp){
+
+    if(!timestamp){
+
+        return "-";
+
+    }
+
+
+    try{
+
+        if(
+            timestamp &&
+            typeof timestamp.toDate ===
+            "function"
+        ){
+
+            const date =
+                timestamp.toDate();
+
+            return date.toLocaleString(
+                "en-IN",
+                {
+                    day:"2-digit",
+                    month:"2-digit",
+                    year:"numeric",
+                    hour:"2-digit",
+                    minute:"2-digit"
+                }
+            );
+
+        }
+
+
+        if(
+            timestamp instanceof Date
+        ){
+
+            return timestamp.toLocaleString(
+                "en-IN"
+            );
+
+        }
+
+
+        return String(timestamp);
+
+    }catch(error){
+
+        return "-";
+
+    }
+
+}
+
+
+/* =====================================================
+   REQUEST STATUS CLASS
+===================================================== */
+
+function getStatusClass(status){
+
+    const value =
+        normalizeText(status);
+
+
+    if(
+        value.includes("APPROVED") ||
+        value === "ACCEPTED"
+    ){
+
+        return "status-approved";
+
+    }
+
+
+    if(
+        value.includes("REJECTED") ||
+        value === "DECLINED"
+    ){
+
+        return "status-rejected";
+
+    }
+
+
+    if(
+        value.includes("CANCEL")
+    ){
+
+        return "status-cancelled";
+
+    }
+
+
+    if(
+        value.includes("FORWARD")
+    ){
+
+        return "status-forwarded";
+
+    }
+
+
+    return "status-pending";
+
+}
+
+
+/* =====================================================
+   LOAD MY REQUESTS
+===================================================== */
+
+async function loadMyRequests(){
+
+    if(!currentStaffId){
+
+        requestCount.textContent =
+            "Staff ID not found.";
+
+        requestsContainer.innerHTML = `
+
+            <div class="no-requests">
+
+                <strong>
+                    Staff session not found
+                </strong>
+
+                Please login again.
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+    requestsLoading.style.display =
+        "block";
+
+    requestsContainer.innerHTML =
+        "";
+
+
+    try{
+
+        /*
+         * We intentionally use getDocs()
+         * and filter in JavaScript.
+         *
+         * This avoids requiring a Firestore
+         * composite index.
+         */
+
+        const snapshot =
+            await getDocs(
+                collection(
+                    db,
+                    "substituteRequests"
+                )
+            );
+
+
+        const requests = [];
+
+
+        snapshot.forEach(doc => {
+
+            const data =
+                doc.data() || {};
+
+
+            const requestStaffId =
+                String(
+                    firstValue(
+
+                        data.requestingStaffId,
+
+                        data.originalStaffId,
+
+                        data.requestedByStaffId,
+
+                        data.staffId
+
+                    )
+                ).trim();
+
+
+            /*
+             * ONLY CURRENT STAFF REQUESTS
+             */
+
+            if(
+                normalizeText(
+                    requestStaffId
+                ) !==
+                normalizeText(
+                    currentStaffId
+                )
+            ){
+
+                return;
+
+            }
+
+
+            requests.push({
+
+                id:doc.id,
+
+                ...data
+
+            });
+
+        });
+
+
+        /*
+         * Latest request first.
+         */
+
+        requests.sort(
+            (a,b) => {
+
+                const aTime =
+                    a.createdAt &&
+                    typeof a.createdAt.toMillis ===
+                    "function"
+
+                    ? a.createdAt.toMillis()
+
+                    : 0;
+
+
+                const bTime =
+                    b.createdAt &&
+                    typeof b.createdAt.toMillis ===
+                    "function"
+
+                    ? b.createdAt.toMillis()
+
+                    : 0;
+
+
+                return bTime - aTime;
+
+            }
+        );
+
+
+        requestCount.textContent =
+
+            requests.length +
+
+            (
+                requests.length === 1
+                ? " request found"
+                : " requests found"
+            );
+
+
+        if(!requests.length){
+
+            requestsContainer.innerHTML = `
+
+                <div class="no-requests">
+
+                    <strong>
+                        No Substitute Requests
+                    </strong>
+
+                    You have not submitted any substitute requests yet.
+
+                </div>
+
+            `;
+
+            return;
+
+        }
+
+
+        let html = `
+
+            <div class="requests-wrapper">
+
+                <table class="requests-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>Request ID</th>
+
+                            <th>Date</th>
+
+                            <th>Day Order</th>
+
+                            <th>Session</th>
+
+                            <th>Hour</th>
+
+                            <th>Department</th>
+
+                            <th>Year</th>
+
+                            <th>Section</th>
+
+                            <th>Subject</th>
+
+                            <th>Room No</th>
+
+                            <th>Substitute Staff</th>
+
+                            <th>Status</th>
+
+                            <th>Head Approval</th>
+
+                            <th>Created At</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+        `;
+
+
+        requests.forEach(request => {
+
+            const date =
+                firstValue(
+
+                    request.substituteDate,
+
+                    request.assignmentDate,
+
+                    request.date
+
+                );
+
+
+            const day =
+                firstValue(
+
+                    request.dayOrder,
+
+                    request.dayName,
+
+                    request.day
+
+                );
+
+
+            const session =
+                firstValue(
+
+                    request.substituteSession,
+
+                    request.assignmentSession,
+
+                    request.session
+
+                );
+
+
+            const hour =
+                firstValue(
+
+                    request.hour,
+
+                    request.period,
+
+                    request.hourNo
+
+                );
+
+
+            const department =
+                firstValue(
+
+                    request.department,
+
+                    request.dept
+
+                );
+
+
+            const year =
+                firstValue(
+
+                    request.classYear,
+
+                    request.year,
+
+                    request.class
+
+                );
+
+
+            const section =
+                firstValue(
+                    request.section
+                );
+
+
+            const subject =
+                firstValue(
+
+                    request.subjectName,
+
+                    request.subject,
+
+                    request.subjectCode
+
+                );
+
+
+            const room =
+                firstValue(
+
+                    request.roomNo,
+
+                    request.room
+
+                );
+
+
+            const substituteName =
+                firstValue(
+
+                    request.substituteStaffName,
+
+                    request.substituteName,
+
+                    request.substituteStaffId
+
+                );
+
+
+            const status =
+                firstValue(
+
+                    request.status,
+
+                    request.requestStatus,
+
+                    request.approvalStatus
+
+                ) || "PENDING";
+
+
+            const headStatus =
+                firstValue(
+
+                    request.headApprovalStatus,
+
+                    request.approvalStatus,
+
+                    request.status
+
+                ) || "PENDING";
+
+
+            const createdAt =
+                formatTimestamp(
+                    request.createdAt ||
+                    request.requestedAt
+                );
+
+
+            html += `
+
+                <tr>
+
+                    <td>
+
+                        <div class="request-id">
+
+                            ${escapeHtml(
+                                request.id
+                            )}
+
+                        </div>
+
+                    </td>
+
+
+                    <td>
+
+                        <span class="request-date">
+
+                            ${escapeHtml(
+                                date || "-"
+                            )}
+
+                        </span>
+
+                    </td>
+
+
+                    <td>
+
+                        ${escapeHtml(
+                            day || "-"
+                        )}
+
+                    </td>
+
+
+                    <td>
+
+                        ${escapeHtml(
+                            session || "-"
+                        )}
+
+                    </td>
+
+
+                    <td>
+
+                        <b>
+
+                            ${
+                                hour
+                                ? "Hour " +
+                                  escapeHtml(hour)
+                                : "-"
+                            }
+
+                        </b>
+
+                    </td>
+
+
+                    <td>
+
+                        ${escapeHtml(
+                            department || "-"
+                        )}
+
+                    </td>
+
+
+                    <td>
+
+                        ${escapeHtml(
+                            year || "-"
+                        )}
+
+                    </td>
+
+
+                    <td>
+
+                        ${escapeHtml(
+                            section || "-"
+                        )}
+
+                    </td>
+
+
+                    <td>
+
+                        <span class="request-subject">
+
+                            ${escapeHtml(
+                                subject || "-"
+                            )}
+
+                        </span>
+
+                    </td>
+
+
+                    <td>
+
+                        ${
+                            room
+                            ? escapeHtml(room)
+                            : "Not Available"
+                        }
+
+                    </td>
+
+
+                    <td>
+
+                        <span class="request-substitute">
+
+                            ${escapeHtml(
+                                substituteName || "-"
+                            )}
+
+                        </span>
+
+                        ${
+                            request.substituteStaffId
+                            ? `
+                                \
+                                <small>
+                                    ${escapeHtml(
+                                        request.substituteStaffId
+                                    )}
+                                </small>
+                              `
+                            : ""
+                        }
+
+                    </td>
+
+
+                    <td>
+
+                        <span
+                            class="status
+                            ${getStatusClass(status)}">
+
+                            ${escapeHtml(
+                                String(status)
+                                .toUpperCase()
+                            )}
+
+                        </span>
+
+                    </td>
+
+
+                    <td>
+
+                        <span
+                            class="status
+                            ${getStatusClass(headStatus)}">
+
+                            ${escapeHtml(
+                                String(headStatus)
+                                .toUpperCase()
+                            )}
+
+                        </span>
+
+                    </td>
+
+
+                    <td>
+
+                        ${escapeHtml(
+                            createdAt
+                        )}
+
+                    </td>
+
+                </tr>
+
+            `;
+
+        });
+
+
+        html += `
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        `;
+
+
+        requestsContainer.innerHTML =
+            html;
+
+
+    }catch(error){
+
+        console.error(
+            "LOAD MY REQUESTS ERROR:",
+            error
+        );
+
+
+        requestCount.textContent =
+            "Unable to load requests";
+
+
+        requestsContainer.innerHTML = `
+
+            <div class="message error"
+                 style="display:block">
+
+                Unable to load your substitute requests.
+
+                \
+\
+
+                ${escapeHtml(
+                    error.message
+                )}
+
+            </div>
+
+        `;
+
+    }finally{
+
+        requestsLoading.style.display =
+            "none";
+
+    }
+
+}
+
+
+/* =====================================================
+   REFRESH REQUESTS
+===================================================== */
+
+refreshRequestsBtn.addEventListener(
+    "click",
+    async function(){
+
+        refreshRequestsBtn.disabled =
+            true;
+
+        refreshRequestsBtn.textContent =
+            "Refreshing...";
+
+
+        try{
+
+            await loadMyRequests();
+
+        }finally{
+
+            refreshRequestsBtn.disabled =
+                false;
+
+            refreshRequestsBtn.textContent =
+                "Refresh Requests";
+
+        }
+
+    }
+);
+
+
+/* =====================================================
+   INITIAL LOAD
+===================================================== */
+
+async function start(){
+
+    updateCurrentStaffDisplay();
+
+
+    if(!currentStaffId){
+
+        showMessage(
+            "Staff session not found. Please login again.",
+            "error"
+        );
+
+        requestCount.textContent =
+            "Staff session not found.";
+
+        return;
+
+    }
+
+
+    try{
+
+        /*
+         * Load staff/timetable data
+         */
+
+        await loadEverything();
+
+
+        updateCurrentStaffDisplay();
+
+
+        /*
+         * NEW:
+         * Load current staff's requests
+         * immediately when page opens.
+         */
+
+        await loadMyRequests();
+
+
+        console.log(
+            "================================="
+        );
+
+        console.log(
+            "SUBSTITUTE ASSIGNMENT READY"
+        );
+
+        console.log(
+            "CURRENT STAFF:",
+            currentStaffId
+        );
+
+        console.log(
+            "CURRENT DEPARTMENT:",
+            currentDepartment
+        );
+
+        console.log(
+            "TIMETABLE RECORDS:",
+            timetableData.length
+        );
+
+        console.log(
+            "SUBJECT ASSIGNMENTS:",
+            subjectAssignmentData.length
+        );
+
+        console.log(
+            "================================="
+        );
+
+
+    }catch(error){
+
+        console.error(
+            "START ERROR:",
+            error
+        );
+
+
+        showMessage(
+            "Unable to load staff information: " +
+            error.message,
+            "error"
+        );
+
+    }
+
+}
+
+
+start();
+
+</script>
+
+</body>
+</html>
