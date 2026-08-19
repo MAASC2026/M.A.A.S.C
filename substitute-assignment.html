@@ -525,7 +525,9 @@ import {
 
 import {
     getAuth,
-    onAuthStateChanged
+    onAuthStateChanged,
+    setPersistence,
+    browserLocalPersistence
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 import {
@@ -575,9 +577,9 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 
 const auth = getAuth(app);
-
 const db = getFirestore(app);
 
+await setPersistence(auth, browserLocalPersistence);
 
 /* =========================================================
    GLOBAL VARIABLES
@@ -623,25 +625,46 @@ const sessionTimes = {
 
 onAuthStateChanged(auth, async (user) => {
 
-    if (!user) {
+    console.log("Firebase Auth User:", user);
 
-        showStatus(
-            "No logged-in Firebase user found.",
-            "error"
-        );
+    if (user) {
+
+        currentUser = user;
 
         document.getElementById("loginStatus").textContent =
-            "Not Logged In";
+            "Logged In";
+
+        await loadCurrentStaff(user);
 
         return;
     }
 
-    currentUser = user;
-
     document.getElementById("loginStatus").textContent =
-        "Logged In";
+        "Checking Login...";
 
-    await loadCurrentStaff(user);
+    /*
+       Firebase sometimes needs a moment to restore
+       the persisted authentication session.
+    */
+
+    setTimeout(() => {
+
+        if (!auth.currentUser) {
+
+            console.error(
+                "NO FIREBASE USER FOUND"
+            );
+
+            showStatus(
+                "Firebase login session was not found. Please open Assign Substitute from the logged-in Staff Dashboard.",
+                "error"
+            );
+
+            document.getElementById("loginStatus").textContent =
+                "Not Logged In";
+        }
+
+    }, 1500);
 
 });
 
