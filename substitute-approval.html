@@ -29,7 +29,7 @@ body{
 
 .header{
     background:#1e3a8a;
-    color:#fff;
+    color:white;
     padding:22px 30px;
 }
 
@@ -54,7 +54,7 @@ body{
 /* ================= CARD ================= */
 
 .card{
-    background:#fff;
+    background:white;
     border-radius:12px;
     padding:22px;
     margin-bottom:20px;
@@ -72,12 +72,7 @@ body{
 
 .filters{
     display:grid;
-    grid-template-columns:
-        1fr
-        1fr
-        1fr
-        auto;
-
+    grid-template-columns:1fr 1fr 1fr auto;
     gap:14px;
 }
 
@@ -96,6 +91,8 @@ select{
     border-radius:7px;
     background:#fff;
 }
+
+/* ================= BUTTONS ================= */
 
 button{
     border:0;
@@ -122,6 +119,7 @@ button{
 
 .secondary{
     background:#e5e7eb;
+    color:#111827;
 }
 
 button:disabled{
@@ -167,7 +165,7 @@ button:disabled{
 table{
     width:100%;
     border-collapse:collapse;
-    min-width:1450px;
+    min-width:1350px;
 }
 
 th,
@@ -258,6 +256,21 @@ th{
     font-weight:bold;
 }
 
+/* ================= HEAD INFO ================= */
+
+.head-info{
+    background:#f8fafc;
+    border:1px solid #e5e7eb;
+    border-radius:8px;
+    padding:12px 15px;
+    margin-bottom:18px;
+    font-size:13px;
+}
+
+.head-info b{
+    color:#1e3a8a;
+}
+
 /* ================= MODAL ================= */
 
 .modal{
@@ -303,7 +316,7 @@ textarea{
     margin-top:15px;
 }
 
-/* ================= RESPONSIVE ================= */
+/* ================= MOBILE ================= */
 
 @media(max-width:850px){
 
@@ -321,7 +334,7 @@ textarea{
 
 <!-- =====================================================
      HEADER
-===================================================== -->
+====================================================== -->
 
 <div class="header">
 
@@ -338,15 +351,34 @@ textarea{
 
 <div class="container">
 
+
 <!-- =====================================================
-     APPROVAL CONTROLS
-===================================================== -->
+     APPROVAL CONTROL
+====================================================== -->
 
 <div class="card">
 
     <div class="title">
         Approval Controls
     </div>
+
+    <div class="head-info">
+
+        Logged-in Head:
+        <b id="headName">Checking...</b>
+
+        &nbsp;&nbsp; | &nbsp;&nbsp;
+
+        Staff ID:
+        <b id="headId">-</b>
+
+        &nbsp;&nbsp; | &nbsp;&nbsp;
+
+        Department:
+        <b id="headDepartment">-</b>
+
+    </div>
+
 
     <div class="filters">
 
@@ -371,19 +403,19 @@ textarea{
 
             <select id="filterStatus">
 
-                <option value="Pending">
-                    Pending
+                <option value="PENDING">
+                    Pending Approval
                 </option>
 
                 <option value="ALL">
                     All
                 </option>
 
-                <option value="Approved">
+                <option value="APPROVED">
                     Approved
                 </option>
 
-                <option value="Rejected">
+                <option value="REJECTED">
                     Rejected
                 </option>
 
@@ -406,13 +438,11 @@ textarea{
 
 
         <div
-        style="
-        display:flex;
-        align-items:end">
+        style="display:flex;align-items:end">
 
             <button
-                class="primary"
-                id="refreshBtn">
+            class="primary"
+            id="refreshBtn">
 
                 Refresh
 
@@ -424,144 +454,127 @@ textarea{
 
 
     <div
-        id="message"
-        class="message">
+    id="message"
+    class="message">
+
     </div>
 
 </div>
 
 
+
 <!-- =====================================================
-     SUMMARY
-===================================================== -->
+     REQUEST TABLE
+====================================================== -->
 
 <div class="card">
 
     <div class="summary">
 
         <div class="stat">
-
             Pending:
-            <span id="pendingCount">
-                0
-            </span>
-
+            <span id="pendingCount">0</span>
         </div>
 
         <div class="stat">
-
             Approved:
-            <span id="approvedCount">
-                0
-            </span>
-
+            <span id="approvedCount">0</span>
         </div>
 
         <div class="stat">
-
             Rejected:
-            <span id="rejectedCount">
-                0
-            </span>
-
+            <span id="rejectedCount">0</span>
         </div>
 
     </div>
 
 
-<!-- =====================================================
-     TABLE
-===================================================== -->
+    <div class="table-wrap">
 
-<div class="table-wrap">
+        <table>
 
-<table>
+            <thead>
 
-<thead>
+                <tr>
 
-<tr>
+                    <th>
+                        S.No
+                    </th>
 
-<th>
-S.No
-</th>
+                    <th>
+                        Date / Day Order
+                    </th>
 
-<th>
-Date / Day
-</th>
+                    <th>
+                        Session / Hour
+                    </th>
 
-<th>
-Session / Hour
-</th>
+                    <th>
+                        Department / Year / Section
+                    </th>
 
-<th>
-Class / Section
-</th>
+                    <th>
+                        Subject / Room
+                    </th>
 
-<th>
-Subject
-</th>
+                    <th>
+                        Requesting Staff
+                    </th>
 
-<th>
-Room
-</th>
+                    <th>
+                        Substitute Staff
+                    </th>
 
-<th>
-Requesting Staff
-</th>
+                    <th>
+                        Reason
+                    </th>
 
-<th>
-Substitute Staff
-</th>
+                    <th>
+                        Status
+                    </th>
 
-<th>
-Reason
-</th>
+                    <th>
+                        Action
+                    </th>
 
-<th>
-Status
-</th>
+                </tr>
 
-<th>
-Action
-</th>
-
-</tr>
-
-</thead>
+            </thead>
 
 
-<tbody id="requestTable">
+            <tbody id="requestTable">
 
-<tr>
+                <tr>
 
-<td
-colspan="11"
-class="loading">
+                    <td
+                    colspan="10"
+                    class="loading">
 
-Loading requests...
+                        Loading requests...
 
-</td>
+                    </td>
 
-</tr>
+                </tr>
 
-</tbody>
+            </tbody>
 
-</table>
+        </table>
+
+    </div>
 
 </div>
 
 </div>
 
-</div>
 
 
 <!-- =====================================================
      REJECT MODAL
-===================================================== -->
+====================================================== -->
 
 <div
-    class="modal"
-    id="rejectModal">
+class="modal"
+id="rejectModal">
 
     <div class="modal-box">
 
@@ -570,10 +583,7 @@ Loading requests...
         </h2>
 
         <p
-            style="
-            font-size:13px;
-            color:#6b7280;
-            margin-bottom:10px">
+        style="font-size:13px;color:#6b7280;margin-bottom:10px">
 
             Enter the reason for rejection.
 
@@ -581,16 +591,15 @@ Loading requests...
 
 
         <textarea
-            id="rejectReason"
-            placeholder="Rejection reason">
-        </textarea>
+        id="rejectReason"
+        placeholder="Rejection reason"></textarea>
 
 
         <div class="modal-actions">
 
             <button
-                class="secondary"
-                id="cancelReject">
+            class="secondary"
+            id="cancelReject">
 
                 Cancel
 
@@ -598,8 +607,8 @@ Loading requests...
 
 
             <button
-                class="reject"
-                id="confirmReject">
+            class="reject"
+            id="confirmReject">
 
                 Reject Request
 
@@ -612,17 +621,16 @@ Loading requests...
 </div>
 
 
+
 <!-- =====================================================
      FIREBASE
-===================================================== -->
+====================================================== -->
 
 <script type="module">
 
 import {
     initializeApp
-}
-from
-"https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
 
 import {
@@ -632,14 +640,12 @@ import {
     doc,
     updateDoc,
     serverTimestamp
-}
-from
-"https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 
 /* =====================================================
    FIREBASE CONFIG
-===================================================== */
+====================================================== */
 
 const firebaseConfig = {
 
@@ -672,92 +678,79 @@ const db =
 getFirestore(app);
 
 
+
 /* =====================================================
-   VARIABLES
-===================================================== */
+   GLOBAL VARIABLES
+====================================================== */
 
 let requests = [];
 
+let staffList = [];
+
 let rejectId = null;
 
-let headDepartment = "";
+let currentHead = {
 
-let headId = "";
+    id:"",
+    name:"",
+    department:""
 
-let headName = "";
+};
+
 
 
 /* =====================================================
    HELPERS
-===================================================== */
+====================================================== */
 
 const $ =
-id =>
-document.getElementById(id);
+id => document.getElementById(id);
 
 
 const clean =
-v =>
-String(v ?? "").trim();
+v => String(v ?? "").trim();
 
 
 const upper =
-v =>
-clean(v).toUpperCase();
+v => clean(v).toUpperCase();
 
-
-/* =====================================================
-   ESCAPE HTML
-===================================================== */
 
 function esc(v){
 
     return String(v ?? "")
-
-    .replace(/&/g,"&amp;")
-
-    .replace(/</g,"&lt;")
-
-    .replace(/>/g,"&gt;")
-
-    .replace(/"/g,"&quot;")
-
-    .replace(/'/g,"&#039;");
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
 
 }
 
 
+
 /* =====================================================
-   NORMALIZE DAY
-===================================================== */
+   NORMALIZE DAY ORDER
+====================================================== */
 
 function normalizeDay(v){
 
     const x =
     upper(v);
 
-
     const m =
-    x.match(
-        /DAY\s*0?([1-6])/
-    );
-
+    x.match(/DAY\s*0?([1-6])/);
 
     if(m){
 
-        return
-        "DAY " +
-        String(
-            Number(m[1])
-        ).padStart(2,"0");
+        return "DAY " +
+        String(Number(m[1])).padStart(2,"0");
 
     }
 
 
     if(/^[1-6]$/.test(x)){
 
-        return
-        "DAY " +
+        return "DAY " +
         x.padStart(2,"0");
 
     }
@@ -785,9 +778,10 @@ function normalizeDay(v){
 }
 
 
+
 /* =====================================================
    NORMALIZE SESSION
-===================================================== */
+====================================================== */
 
 function normalizeSession(v){
 
@@ -796,9 +790,51 @@ function normalizeSession(v){
 }
 
 
+
+/* =====================================================
+   STATUS NORMALIZATION
+====================================================== */
+
+function normalizeStatus(v){
+
+    const s =
+    upper(v);
+
+
+    if(
+        s === "PENDING" ||
+        s === "PENDING_APPROVAL" ||
+        s === "ALLOTTED"
+    ){
+
+        return "PENDING";
+
+    }
+
+
+    if(s === "APPROVED"){
+
+        return "APPROVED";
+
+    }
+
+
+    if(s === "REJECTED"){
+
+        return "REJECTED";
+
+    }
+
+
+    return s;
+
+}
+
+
+
 /* =====================================================
    MESSAGE
-===================================================== */
+====================================================== */
 
 function show(text,type){
 
@@ -819,11 +855,12 @@ function hideMessage(){
 }
 
 
-/* =====================================================
-   GET DEPARTMENT HEAD SESSION
-===================================================== */
 
-function getHeadSession(){
+/* =====================================================
+   GET SESSION
+====================================================== */
+
+function getSession(){
 
     const keys = [
 
@@ -844,16 +881,18 @@ function getHeadSession(){
     ];
 
 
-    for(
-        const key of keys
-    ){
+    for(const key of keys){
 
         try{
 
-            const raw =
-            sessionStorage.getItem(key)
-            ||
+            const local =
             localStorage.getItem(key);
+
+            const session =
+            sessionStorage.getItem(key);
+
+            const raw =
+            local || session;
 
 
             if(!raw){
@@ -863,21 +902,23 @@ function getHeadSession(){
             }
 
 
-            const x =
-            JSON.parse(raw);
+            try{
 
+                const parsed =
+                JSON.parse(raw);
 
-            if(
-                x &&
-                typeof x === "object"
-            ){
+                if(
+                    parsed &&
+                    typeof parsed === "object"
+                ){
 
-                return x;
+                    return parsed;
 
-            }
+                }
 
-        }
-        catch(e){}
+            }catch(e){}
+
+        }catch(e){}
 
     }
 
@@ -887,210 +928,360 @@ function getHeadSession(){
 }
 
 
+
 /* =====================================================
-   LOAD HEAD SESSION
-===================================================== */
+   LOAD STAFF COLLECTION
+====================================================== */
 
-function initializeHead(){
+async function loadStaff(){
 
-    const head =
-    getHeadSession();
+    try{
 
-
-    headId =
-    clean(
-        head.staffId ??
-        head.staffID ??
-        head.staff ??
-        head.staff_id ??
-        head.id
-    );
+        const snap =
+        await getDocs(
+            collection(db,"staff")
+        );
 
 
-    headName =
-    clean(
-        head.staffName ??
-        head.name ??
-        head.displayName ??
-        head.staff_name
-    );
+        staffList = [];
 
 
-    headDepartment =
-    clean(
-        head.department ??
-        head.dept ??
-        head.departmentName ??
-        head.department_name
-    );
+        snap.forEach(d => {
+
+            staffList.push({
+
+                id:d.id,
+
+                ...d.data()
+
+            });
+
+        });
+
+
+        console.log(
+            "STAFF COLLECTION:",
+            staffList
+        );
+
+
+    }catch(err){
+
+        console.error(
+            "STAFF LOAD ERROR:",
+            err
+        );
+
+        staffList = [];
+
+    }
+
+}
+
+
+
+/* =====================================================
+   FIND DEPARTMENT HEAD
+====================================================== */
+
+function findDepartmentHead(department){
+
+    const dep =
+    upper(department);
+
+
+    if(!dep){
+
+        return null;
+
+    }
 
 
     /*
-     * Also support the dashboard-style
-     * sessionStorage fields.
-     */
+       Search staff collection.
 
-    if(!headId){
+       Supported role fields:
+       role
+       serviceRole
+       designation
+       staffRole
 
-        headId =
-        clean(
-            sessionStorage.getItem(
-                "staffId"
-            )
+       Supported staff ID fields:
+       staffId
+       staffID
+       id
+
+       Supported name fields:
+       staffName
+       name
+       displayName
+    */
+
+
+    const heads =
+    staffList.filter(staff => {
+
+        const staffDepartment =
+        upper(
+            staff.department ??
+            staff.dept ??
+            staff.departmentName
         );
 
-    }
 
-
-    if(!headName){
-
-        headName =
-        clean(
-            sessionStorage.getItem(
-                "staffName"
-            )
+        const role =
+        upper(
+            staff.role ??
+            staff.serviceRole ??
+            staff.designation ??
+            staff.staffRole
         );
 
-    }
+
+        const active =
+            staff.active !== false &&
+            staff.isActive !== false;
 
 
-    if(!headDepartment){
+        const isHead =
+            role === "DEPARTMENT HEAD" ||
+            role === "DEPT HEAD" ||
+            role === "HEAD" ||
+            role === "HOD";
 
-        headDepartment =
-        clean(
-            sessionStorage.getItem(
-                "department"
-            )
+
+        return (
+            staffDepartment === dep &&
+            isHead &&
+            active
         );
 
-    }
+    });
 
 
     console.log(
-        "HEAD SESSION:",
-        {
-            headId,
-            headName,
-            headDepartment
-        }
+        "HEADS FOUND FOR",
+        department,
+        heads
     );
+
+
+    if(heads.length){
+
+        const h =
+        heads[0];
+
+
+        return {
+
+            id:clean(
+                h.staffId ??
+                h.staffID ??
+                h.id
+            ),
+
+            name:clean(
+                h.staffName ??
+                h.name ??
+                h.displayName
+            ),
+
+            department:clean(
+                h.department ??
+                h.dept ??
+                h.departmentName
+            )
+
+        };
+
+    }
+
+
+    return null;
 
 }
 
 
-/* =====================================================
-   GET REQUEST ROOM
-===================================================== */
 
-function getRequestRoom(r){
+/* =====================================================
+   INITIALIZE HEAD
+====================================================== */
+
+async function initializeHead(){
+
+    const session =
+    getSession();
+
+
+    console.log(
+        "SESSION DATA:",
+        session
+    );
+
+
+    const sessionId =
+    clean(
+        session.staffId ??
+        session.staffID ??
+        session.staff ??
+        session.staff_id ??
+        session.id
+    );
+
+
+    const sessionName =
+    clean(
+        session.staffName ??
+        session.name ??
+        session.displayName
+    );
+
+
+    const sessionDepartment =
+    clean(
+        session.department ??
+        session.dept ??
+        session.departmentName ??
+        session.headDepartment
+    );
+
 
     /*
-     * Your requested Firestore field is roomNo.
-     *
-     * room is retained only for older
-     * substituteRequests documents.
-     */
+       Load staff records first.
+    */
 
-    return clean(
-        r.roomNo ??
-        r.room ??
-        ""
+    await loadStaff();
+
+
+    /*
+       If session has a department,
+       find the real Department Head
+       from Firestore.
+    */
+
+    let head =
+    findDepartmentHead(
+        sessionDepartment
+    );
+
+
+    /*
+       If no head found using session department,
+       try to find the staff record matching
+       the session ID and obtain department.
+    */
+
+    if(!head && sessionId){
+
+        const loggedStaff =
+        staffList.find(staff => {
+
+            const id =
+            clean(
+                staff.staffId ??
+                staff.staffID ??
+                staff.id
+            );
+
+            return upper(id) ===
+                   upper(sessionId);
+
+        });
+
+
+        if(loggedStaff){
+
+            const department =
+            clean(
+                loggedStaff.department ??
+                loggedStaff.dept ??
+                loggedStaff.departmentName
+            );
+
+
+            head =
+            findDepartmentHead(
+                department
+            );
+
+        }
+
+    }
+
+
+    /*
+       IMPORTANT:
+       Do not automatically treat the selected
+       substitute staff as the Head.
+    */
+
+
+    if(head){
+
+        currentHead = head;
+
+    }else{
+
+        /*
+           If staff collection does not contain
+           role information, retain session information
+           ONLY as fallback.
+        */
+
+        currentHead = {
+
+            id:sessionId,
+
+            name:sessionName,
+
+            department:sessionDepartment
+
+        };
+
+    }
+
+
+    $("headId").textContent =
+    currentHead.id || "-";
+
+
+    $("headName").textContent =
+    currentHead.name || "-";
+
+
+    $("headDepartment").textContent =
+    currentHead.department || "-";
+
+
+    console.log(
+        "FINAL APPROVAL HEAD:",
+        currentHead
     );
 
 }
 
-
-/* =====================================================
-   GET REQUEST DATE
-===================================================== */
-
-function getRequestDate(r){
-
-    return clean(
-        r.requestDate ??
-        r.date ??
-        ""
-    );
-
-}
-
-
-/* =====================================================
-   GET REQUEST DAY
-===================================================== */
-
-function getRequestDay(r){
-
-    return normalizeDay(
-        r.dayOrder ??
-        r.day ??
-        ""
-    );
-
-}
-
-
-/* =====================================================
-   GET REQUESTING STAFF
-===================================================== */
-
-function getRequestingStaffId(r){
-
-    return clean(
-        r.staffId ??
-        r.requestingStaffId ??
-        ""
-    );
-
-}
-
-
-function getRequestingStaffName(r){
-
-    return clean(
-        r.staffName ??
-        r.requestingStaffName ??
-        ""
-    );
-
-}
-
-
-/* =====================================================
-   GET REASON
-===================================================== */
-
-function getRequestReason(r){
-
-    return clean(
-        r.reason ??
-        r.remarks ??
-        ""
-    );
-
-}
 
 
 /* =====================================================
    LOAD REQUESTS
-===================================================== */
+====================================================== */
 
 async function loadRequests(){
 
-    $("requestTable").innerHTML =
+    $("requestTable").innerHTML = `
 
-    `
         <tr>
 
             <td
-                colspan="11"
-                class="loading">
+            colspan="10"
+            class="loading">
 
                 Loading substitute requests...
 
             </td>
 
         </tr>
+
     `;
 
 
@@ -1111,90 +1302,49 @@ async function loadRequests(){
         requests = [];
 
 
-        snap.forEach(
-            documentSnapshot => {
+        snap.forEach(x => {
 
-                const data =
-                documentSnapshot.data()
-                || {};
+            requests.push({
 
+                id:x.id,
 
-                /*
-                 * IMPORTANT:
-                 * Department Head should only see
-                 * requests from his/her department.
-                 */
+                ...x.data()
 
-                if(
-                    headDepartment &&
-                    upper(
-                        data.department
-                    ) !==
-                    upper(
-                        headDepartment
-                    )
-                ){
+            });
 
-                    return;
-
-                }
+        });
 
 
-                requests.push({
+        /*
+           Sort latest date first.
+        */
 
-                    id:
-                    documentSnapshot.id,
+        requests.sort((a,b)=>{
 
-                    ...data
+            const ad =
+            clean(a.requestDate);
 
-                });
+            const bd =
+            clean(b.requestDate);
+
+
+            if(ad !== bd){
+
+                return bd.localeCompare(ad);
 
             }
-        );
 
 
-        requests.sort(
-            (a,b) => {
+            const at =
+            a.createdAt?.seconds || 0;
 
-                const ad =
-                getRequestDate(a);
-
-                const bd =
-                getRequestDate(b);
+            const bt =
+            b.createdAt?.seconds || 0;
 
 
-                if(
-                    ad !== bd
-                ){
+            return bt - at;
 
-                    return
-                    bd.localeCompare(ad);
-
-                }
-
-
-                const aTime =
-                a.createdAt &&
-                a.createdAt.toMillis
-                ?
-                a.createdAt.toMillis()
-                :
-                0;
-
-
-                const bTime =
-                b.createdAt &&
-                b.createdAt.toMillis
-                ?
-                b.createdAt.toMillis()
-                :
-                0;
-
-
-                return bTime - aTime;
-
-            }
-        );
+        });
 
 
         updateCounts();
@@ -1202,23 +1352,21 @@ async function loadRequests(){
         render();
 
 
-    }
-    catch(err){
+    }catch(err){
 
         console.error(
-            "APPROVAL LOAD ERROR:",
+            "REQUEST LOAD ERROR:",
             err
         );
 
 
-        $("requestTable").innerHTML =
+        $("requestTable").innerHTML = `
 
-        `
             <tr>
 
                 <td
-                    colspan="11"
-                    class="empty">
+                colspan="10"
+                class="empty">
 
                     Unable to load requests:
                     ${esc(err.message)}
@@ -1226,6 +1374,7 @@ async function loadRequests(){
                 </td>
 
             </tr>
+
         `;
 
 
@@ -1239,9 +1388,10 @@ async function loadRequests(){
 }
 
 
+
 /* =====================================================
-   UPDATE COUNTS
-===================================================== */
+   COUNTS
+====================================================== */
 
 function updateCounts(){
 
@@ -1252,48 +1402,27 @@ function updateCounts(){
     let rejected = 0;
 
 
-    requests.forEach(
-        r => {
+    requests.forEach(r => {
 
-            const s =
-            upper(
-                r.status ||
-                "Pending"
-            );
+        const s =
+        normalizeStatus(r.status);
 
 
-            if(
-                s === "PENDING"
-                ||
-                s === "PENDING_APPROVAL"
-                ||
-                s === "ALLOTTED"
-            ){
+        if(s === "PENDING"){
 
-                pending++;
+            pending++;
 
-            }
+        }else if(s === "APPROVED"){
 
+            approved++;
 
-            else if(
-                s === "APPROVED"
-            ){
+        }else if(s === "REJECTED"){
 
-                approved++;
-
-            }
-
-
-            else if(
-                s === "REJECTED"
-            ){
-
-                rejected++;
-
-            }
+            rejected++;
 
         }
-    );
+
+    });
 
 
     $("pendingCount").textContent =
@@ -1310,9 +1439,10 @@ function updateCounts(){
 }
 
 
+
 /* =====================================================
    FILTER
-===================================================== */
+====================================================== */
 
 function filtered(){
 
@@ -1332,48 +1462,25 @@ function filtered(){
     );
 
 
-    return requests.filter(
-        r => {
+    return requests.filter(r => {
 
-            const s =
-            upper(
-                r.status ||
-                "Pending"
-            );
+        const s =
+        normalizeStatus(r.status);
 
 
-            /*
-             * STATUS
-             */
+        if(status !== "ALL"){
 
-            if(
-                status !== "ALL"
-            ){
+            if(status === "PENDING"){
 
-                if(
-                    status ===
-                    "PENDING"
-                ){
+                if(s !== "PENDING"){
 
-                    if(
-                        !(
-                            s === "PENDING"
-                            ||
-                            s === "PENDING_APPROVAL"
-                            ||
-                            s === "ALLOTTED"
-                        )
-                    ){
-
-                        return false;
-
-                    }
+                    return false;
 
                 }
-                else
-                if(
-                    s !== status
-                ){
+
+            }else{
+
+                if(s !== status){
 
                     return false;
 
@@ -1381,83 +1488,85 @@ function filtered(){
 
             }
 
+        }
 
-            /*
-             * DATE
-             */
 
-            if(
-                date &&
-                getRequestDate(r) !== date
-            ){
+        if(
+            date &&
+            clean(r.requestDate) !== date
+        ){
+
+            return false;
+
+        }
+
+
+        if(term){
+
+            const text =
+            upper([
+
+                r.staffId,
+
+                r.staffName,
+
+                r.substituteStaffId,
+
+                r.substituteStaffName,
+
+                r.department,
+
+                r.classYear,
+
+                r.section,
+
+                r.subject,
+
+                r.dayOrder,
+
+                r.session,
+
+                r.reason
+
+            ].join(" "));
+
+
+            if(!text.includes(term)){
 
                 return false;
 
             }
 
-
-            /*
-             * SEARCH
-             */
-
-            if(term){
-
-                const text =
-                upper(
-
-                    [
-
-                        getRequestingStaffId(r),
-
-                        getRequestingStaffName(r),
-
-                        r.substituteStaffId,
-
-                        r.substituteStaffName,
-
-                        r.classYear,
-
-                        r.year,
-
-                        r.section,
-
-                        r.subject,
-
-                        getRequestDay(r),
-
-                        r.session,
-
-                        getRequestRoom(r),
-
-                        getRequestReason(r)
-
-                    ].join(" ")
-
-                );
+        }
 
 
-                if(
-                    !text.includes(term)
-                ){
+        /*
+           Show only requests belonging
+           to the current Head's department.
+        */
 
-                    return false;
+        if(
+            currentHead.department &&
+            upper(r.department) !==
+            upper(currentHead.department)
+        ){
 
-                }
-
-            }
-
-
-            return true;
+            return false;
 
         }
-    );
+
+
+        return true;
+
+    });
 
 }
 
 
+
 /* =====================================================
    RENDER
-===================================================== */
+====================================================== */
 
 function render(){
 
@@ -1469,24 +1578,22 @@ function render(){
     $("requestTable");
 
 
-    if(
-        !data.length
-    ){
+    if(!data.length){
 
-        body.innerHTML =
+        body.innerHTML = `
 
-        `
             <tr>
 
                 <td
-                    colspan="11"
-                    class="empty">
+                colspan="10"
+                class="empty">
 
                     No substitute requests found.
 
                 </td>
 
             </tr>
+
         `;
 
         return;
@@ -1495,456 +1602,416 @@ function render(){
 
 
     body.innerHTML =
-    data.map(
-        (r,i) => {
+    data.map((r,i)=>{
 
-            const s =
-            upper(
-                r.status ||
-                "Pending"
-            );
+        const s =
+        normalizeStatus(r.status);
 
 
-            const cls =
-            s === "APPROVED"
-            ?
-            "approved"
-            :
-            s === "REJECTED"
-            ?
-            "rejected"
-            :
-            "pending";
+        const cls =
+        s === "APPROVED"
+            ? "approved"
+            : s === "REJECTED"
+                ? "rejected"
+                : "pending";
 
 
-            let actions = "";
+        let actions = "";
 
 
-            /*
-             * ONLY PENDING REQUESTS
-             * CAN BE APPROVED OR REJECTED.
-             */
+        if(s === "PENDING"){
 
-            if(
-                s === "PENDING"
-                ||
-                s === "PENDING_APPROVAL"
-                ||
-                s === "ALLOTTED"
-            ){
+            actions = `
 
-                actions =
+                <div class="actions">
 
-                `
-                    <div class="actions">
+                    <button
+                    class="approve"
+                    data-action="approve"
+                    data-id="${esc(r.id)}">
 
-                        <button
-                            class="approve"
-                            data-action="approve"
-                            data-id="${esc(r.id)}">
+                        Approve
 
-                            Approve
+                    </button>
 
-                        </button>
 
+                    <button
+                    class="reject"
+                    data-action="reject"
+                    data-id="${esc(r.id)}">
 
-                        <button
-                            class="reject"
-                            data-action="reject"
-                            data-id="${esc(r.id)}">
+                        Reject
 
-                            Reject
+                    </button>
 
-                        </button>
+                </div>
 
-                    </div>
-                `;
+            `;
 
-            }
-            else{
+        }else{
 
-                actions =
-                `
-                    <span class="small">
-                        Completed
-                    </span>
-                `;
+            actions = `
 
-            }
+                <span class="small">
 
+                    Completed
 
-            const room =
-            getRequestRoom(r);
-
-
-            const requestDate =
-            getRequestDate(r);
-
-
-            const day =
-            getRequestDay(r);
-
-
-            const requestingName =
-            getRequestingStaffName(r);
-
-
-            const requestingId =
-            getRequestingStaffId(r);
-
-
-            const classYear =
-            clean(
-                r.classYear ??
-                r.year ??
-                ""
-            );
-
-
-            return `
-
-                <tr>
-
-                    <td>
-                        ${i + 1}
-                    </td>
-
-
-                    <td>
-
-                        <b>
-                            ${esc(
-                                requestDate ||
-                                "-"
-                            )}
-                        </b>
-
-                        <div class="small">
-
-                            ${esc(
-                                day ||
-                                "-"
-                            )}
-
-                        </div>
-
-                    </td>
-
-
-                    <td>
-
-                        <b>
-
-                            ${esc(
-                                normalizeSession(
-                                    r.session
-                                ) ||
-                                "-"
-                            )}
-
-                        </b>
-
-                        <div class="small">
-
-                            Hour
-                            ${esc(
-                                r.hour ??
-                                "-"
-                            )}
-
-                        </div>
-
-                    </td>
-
-
-                    <td>
-
-                        <b>
-
-                            ${esc(
-                                classYear ||
-                                "-"
-                            )}
-
-                        </b>
-
-
-                        <div class="small">
-
-                            Section:
-                            ${esc(
-                                r.section ||
-                                "-"
-                            )}
-
-                        </div>
-
-                    </td>
-
-
-                    <td>
-
-                        ${esc(
-                            r.subject ||
-                            "-"
-                        )}
-
-                    </td>
-
-
-                    <td>
-
-                        ${esc(
-                            room ||
-                            "-"
-                        )}
-
-                    </td>
-
-
-                    <td>
-
-                        <b>
-
-                            ${esc(
-                                requestingName ||
-                                "-"
-                            )}
-
-                        </b>
-
-
-                        <div class="small">
-
-                            ${esc(
-                                requestingId ||
-                                ""
-                            )}
-
-                        </div>
-
-
-                        <div class="small">
-
-                            ${esc(
-                                r.department ||
-                                ""
-                            )}
-
-                        </div>
-
-                    </td>
-
-
-                    <td>
-
-                        <b>
-
-                            ${esc(
-                                r.substituteStaffName ||
-                                "-"
-                            )}
-
-                        </b>
-
-
-                        <div class="small">
-
-                            ${esc(
-                                r.substituteStaffId ||
-                                ""
-                            )}
-
-                        </div>
-
-
-                        <div class="small">
-
-                            ${esc(
-                                r.substituteStaffDepartment ||
-                                ""
-                            )}
-
-                        </div>
-
-                    </td>
-
-
-                    <td>
-
-                        ${esc(
-                            getRequestReason(r) ||
-                            "-"
-                        )}
-
-                    </td>
-
-
-                    <td>
-
-                        <span
-                            class="status ${cls}">
-
-                            ${esc(
-                                s
-                            )}
-
-                        </span>
-
-
-                        ${
-                            s === "REJECTED"
-                            &&
-                            r.rejectionReason
-                            ?
-
-                            `
-                                <div
-                                    class="small">
-
-                                    Reason:
-                                    ${esc(
-                                        r.rejectionReason
-                                    )}
-
-                                </div>
-                            `
-
-                            :
-
-                            ""
-                        }
-
-                    </td>
-
-
-                    <td>
-
-                        ${actions}
-
-                    </td>
-
-                </tr>
+                </span>
 
             `;
 
         }
-    ).join("");
+
+
+        return `
+
+            <tr>
+
+                <td>
+                    ${i+1}
+                </td>
+
+
+                <td>
+
+                    <b>
+                        ${esc(r.requestDate || "-")}
+                    </b>
+
+                    <div class="small">
+
+                        ${esc(
+                            normalizeDay(
+                                r.dayOrder
+                            )
+                        )}
+
+                    </div>
+
+                </td>
+
+
+                <td>
+
+                    <b>
+                        ${esc(
+                            normalizeSession(
+                                r.session
+                            ) || "-"
+                        )}
+                    </b>
+
+                    <div class="small">
+
+                        Hour
+                        ${esc(r.hour || "-")}
+
+                    </div>
+
+                </td>
+
+
+                <td>
+
+                    <b>
+                        ${esc(
+                            r.department || "-"
+                        )}
+                    </b>
+
+                    <div class="small">
+
+                        Year:
+                        ${esc(r.classYear || r.year || "-")}
+
+                        &nbsp; | &nbsp;
+
+                        Section:
+                        ${esc(r.section || "-")}
+
+                    </div>
+
+                </td>
+
+
+                <td>
+
+                    <b>
+                        ${esc(r.subject || "-")}
+                    </b>
+
+                    <div class="small">
+
+                        Room No:
+                        <b>
+                            ${esc(
+                                r.room ??
+                                r.roomNo ??
+                                "-"
+                            )}
+                        </b>
+
+                    </div>
+
+                </td>
+
+
+                <td>
+
+                    <b>
+                        ${esc(r.staffName || "-")}
+                    </b>
+
+                    <div class="small">
+
+                        ${esc(r.staffId || "")}
+
+                    </div>
+
+                </td>
+
+
+                <td>
+
+                    <b>
+                        ${esc(
+                            r.substituteStaffName ||
+                            "-"
+                        )}
+                    </b>
+
+                    <div class="small">
+
+                        ${esc(
+                            r.substituteStaffId ||
+                            ""
+                        )}
+
+                    </div>
+
+                    <div class="small">
+
+                        ${esc(
+                            r.substituteStaffDepartment ||
+                            ""
+                        )}
+
+                    </div>
+
+                </td>
+
+
+                <td>
+
+                    ${esc(
+                        r.reason ||
+                        r.remarks ||
+                        "-"
+                    )}
+
+                </td>
+
+
+                <td>
+
+                    <span
+                    class="status ${cls}">
+
+                        ${esc(s)}
+
+                    </span>
+
+
+                    ${
+                        s === "REJECTED" &&
+                        r.rejectionReason
+
+                        ?
+
+                        `
+                        <div class="small">
+
+                            Reason:
+                            ${esc(
+                                r.rejectionReason
+                            )}
+
+                        </div>
+                        `
+
+                        :
+
+                        ""
+                    }
+
+                </td>
+
+
+                <td>
+
+                    ${actions}
+
+                </td>
+
+            </tr>
+
+        `;
+
+    }).join("");
 
 
     /*
-     * APPROVE BUTTONS
-     */
+       Approve buttons
+    */
 
     body
     .querySelectorAll(
         "[data-action='approve']"
     )
-    .forEach(
-        button => {
+    .forEach(button => {
 
-            button.addEventListener(
-                "click",
-                () => {
+        button.addEventListener(
+            "click",
+            () =>
+            approveRequest(
+                button.dataset.id,
+                button
+            )
+        );
 
-                    approveRequest(
-                        button.dataset.id,
-                        button
-                    );
-
-                }
-            );
-
-        }
-    );
+    });
 
 
     /*
-     * REJECT BUTTONS
-     */
+       Reject buttons
+    */
 
     body
     .querySelectorAll(
         "[data-action='reject']"
     )
-    .forEach(
-        button => {
+    .forEach(button => {
 
-            button.addEventListener(
-                "click",
-                () => {
+        button.addEventListener(
+            "click",
+            () =>
+            openReject(
+                button.dataset.id
+            )
+        );
 
-                    openReject(
-                        button.dataset.id
-                    );
-
-                }
-            );
-
-        }
-    );
+    });
 
 }
 
 
+
 /* =====================================================
    APPROVE REQUEST
-===================================================== */
+====================================================== */
 
-async function approveRequest(id, button){
+async function approveRequest(id,button){
 
     if(!confirm(
         "Approve this substitute assignment?\n\n" +
-        "The substitute staff will become active for this slot."
+        "The selected substitute will become active for this date, day order, session and hour."
     )){
+
         return;
+
     }
+
 
     button.disabled = true;
 
+
     try{
 
-        /* ==========================================
-           GET CURRENT REQUEST
-        ========================================== */
+        /* =============================================
+           GET REQUEST
+        ============================================= */
 
-        const requestRef = doc(db, "substituteRequests", id);
-        const requestSnap = await getDocs(
-            collection(db, "substituteRequests")
+        const requestRef =
+        doc(
+            db,
+            "substituteRequests",
+            id
         );
 
-        const current = requestSnap.docs.find(
+
+        const snap =
+        await getDocs(
+            collection(
+                db,
+                "substituteRequests"
+            )
+        );
+
+
+        const current =
+        snap.docs.find(
             x => x.id === id
         );
 
+
         if(!current){
-            throw new Error("Substitute request no longer exists.");
+
+            throw new Error(
+                "Substitute request no longer exists."
+            );
+
         }
 
-        const r = current.data();
 
-        console.log("APPROVAL REQUEST DATA:", r);
+        const r =
+        current.data();
 
-        /* ==========================================
-           EXACT FIELDS FROM ASSIGNMENT PROGRAM
-        ========================================== */
 
-        const requestDate = clean(r.date);
-        const requestDay = normalizeDay(r.day);
-        const requestSession = normalizeSession(r.session);
-        const requestHour = Number(r.hour);
+        console.log(
+            "APPROVAL REQUEST DATA:",
+            r
+        );
 
-        const substituteId = clean(
+
+        /* =============================================
+           ACTUAL FIRESTORE FIELD NAMES
+        ============================================= */
+
+        const requestDate =
+        clean(r.requestDate);
+
+
+        const requestDay =
+        normalizeDay(
+            r.dayOrder
+        );
+
+
+        const requestSession =
+        normalizeSession(
+            r.session
+        );
+
+
+        const requestHour =
+        Number(r.hour);
+
+
+        const substituteId =
+        clean(
             r.substituteStaffId
         );
 
-        const substituteName = clean(
+
+        const substituteName =
+        clean(
             r.substituteStaffName
         );
 
-        /* ==========================================
-           VALIDATE REQUIRED FIELDS
-        ========================================== */
+
+        /* =============================================
+           VALIDATION
+        ============================================= */
 
         if(
             !requestDate ||
@@ -1955,31 +2022,36 @@ async function approveRequest(id, button){
         ){
 
             console.error(
-                "INVALID SUBSTITUTE REQUEST:",
+                "INVALID REQUEST:",
                 {
-                    date:r.date,
-                    day:r.day,
-                    session:r.session,
-                    hour:r.hour,
-                    substituteStaffId:r.substituteStaffId,
+                    requestDate,
+                    requestDay,
+                    requestSession,
+                    requestHour,
+                    substituteId,
                     fullRequest:r
                 }
             );
 
+
             throw new Error(
                 "Request is missing Date, Day Order, Session, Hour or Substitute Staff."
             );
+
         }
 
-        /* ==========================================
-           ONLY PENDING REQUEST CAN BE APPROVED
-        ========================================== */
 
-        const currentStatus = upper(
-            r.status || "PENDING_APPROVAL"
+        /* =============================================
+           STATUS
+        ============================================= */
+
+        const status =
+        normalizeStatus(
+            r.status
         );
 
-        if(currentStatus === "APPROVED"){
+
+        if(status === "APPROVED"){
 
             show(
                 "This request is already approved.",
@@ -1987,10 +2059,13 @@ async function approveRequest(id, button){
             );
 
             await loadRequests();
+
             return;
+
         }
 
-        if(currentStatus === "REJECTED"){
+
+        if(status === "REJECTED"){
 
             show(
                 "This request has already been rejected.",
@@ -1998,65 +2073,144 @@ async function approveRequest(id, button){
             );
 
             await loadRequests();
+
             return;
+
         }
 
-        /* ==========================================
-           CHECK TIMETABLE CONFLICT
-        ========================================== */
 
-        const timetableSnap = await getDocs(
-            collection(db, "timetableAssignments")
+        /* =============================================
+           VERIFY DEPARTMENT HEAD
+        ============================================= */
+
+        const requestDepartment =
+        clean(r.department);
+
+
+        const actualHead =
+        findDepartmentHead(
+            requestDepartment
         );
 
+
+        if(actualHead){
+
+            currentHead =
+            actualHead;
+
+
+            $("headId").textContent =
+            currentHead.id;
+
+
+            $("headName").textContent =
+            currentHead.name;
+
+
+            $("headDepartment").textContent =
+            currentHead.department;
+
+        }
+
+
+        /*
+           If we have a valid Department Head,
+           store THAT person as approver.
+
+           NEVER store substituteStaffId as approvedBy.
+        */
+
+
+        const approverId =
+        clean(
+            currentHead.id
+        );
+
+
+        const approverName =
+        clean(
+            currentHead.name
+        );
+
+
+        /* =============================================
+           CHECK TIMETABLE CONFLICT
+        ============================================= */
+
+        const timetableSnap =
+        await getDocs(
+            collection(
+                db,
+                "timetableAssignments"
+            )
+        );
+
+
         const timetableConflict =
-            timetableSnap.docs.some(x => {
+        timetableSnap.docs.some(x => {
 
-                const t = x.data();
+            const t =
+            x.data();
 
-                const staffId = clean(
-                    t.staffId ??
-                    t.staffID ??
-                    t.staff ??
-                    t.staff_id
-                );
 
-                const day = normalizeDay(
-                    t.day ??
-                    t.dayName ??
-                    t.dayNo ??
-                    t.dayOrder
-                );
+            const staffId =
+            clean(
+                t.staffId ??
+                t.staffID ??
+                t.staff ??
+                t.staff_id
+            );
 
-                const session = normalizeSession(
-                    t.session
-                );
 
-                const hour = Number(
-                    t.hour ??
-                    t.period ??
-                    t.hourNo ??
-                    t.periodNo
-                );
+            const day =
+            normalizeDay(
+                t.day ??
+                t.dayOrder ??
+                t.dayName ??
+                t.dayNo
+            );
 
-                return (
-                    upper(staffId) ===
-                    upper(substituteId)
 
-                    &&
+            const session =
+            normalizeSession(
+                t.session
+            );
 
-                    day === requestDay
 
-                    &&
+            const hour =
+            Number(
+                t.hour ??
+                t.period ??
+                t.hourNo ??
+                t.periodNo
+            );
 
-                    session === requestSession
 
-                    &&
+            /*
+               Timetable conflict is checked against
+               SUBSTITUTE STAFF, not requesting staff.
+            */
 
-                    hour === requestHour
-                );
+            return (
 
-            });
+                upper(staffId) ===
+                upper(substituteId)
+
+                &&
+
+                day === requestDay
+
+                &&
+
+                session === requestSession
+
+                &&
+
+                hour === requestHour
+
+            );
+
+        });
 
 
         if(timetableConflict){
@@ -2068,69 +2222,104 @@ async function approveRequest(id, button){
                 "err"
             );
 
+
             await loadRequests();
+
             return;
+
         }
 
 
-        /* ==========================================
-           CHECK OTHER SUBSTITUTE REQUEST CONFLICT
-        ========================================== */
+
+        /* =============================================
+           CHECK SUBSTITUTE REQUEST CONFLICT
+        ============================================= */
 
         const requestConflict =
-            requestSnap.docs.some(x => {
+        snap.docs.some(x => {
 
-                if(x.id === id){
-                    return false;
-                }
+            if(x.id === id){
 
-                const q = x.data();
+                return false;
 
-                const status = upper(
-                    q.status || ""
-                );
+            }
 
-                const active =
-                    status === "APPROVED" ||
-                    status === "PENDING_APPROVAL" ||
-                    status === "PENDING" ||
-                    status === "ALLOTTED";
 
-                if(!active){
-                    return false;
-                }
+            const q =
+            x.data();
 
-                const qDate = clean(q.date);
-                const qDay = normalizeDay(q.day);
-                const qSession = normalizeSession(q.session);
-                const qHour = Number(q.hour);
-                const qSubstitute = clean(
-                    q.substituteStaffId
-                );
 
-                return (
+            const qs =
+            normalizeStatus(
+                q.status
+            );
 
-                    upper(qSubstitute) ===
-                    upper(substituteId)
 
-                    &&
+            if(
+                qs !== "APPROVED" &&
+                qs !== "PENDING"
+            ){
 
-                    qDate === requestDate
+                return false;
 
-                    &&
+            }
 
-                    qDay === requestDay
 
-                    &&
+            return (
 
-                    qSession === requestSession
+                upper(
+                    clean(
+                        q.substituteStaffId
+                    )
+                )
 
-                    &&
+                ===
 
-                    qHour === requestHour
-                );
+                upper(
+                    substituteId
+                )
 
-            });
+                &&
+
+                clean(
+                    q.requestDate
+                )
+
+                ===
+
+                requestDate
+
+                &&
+
+                normalizeDay(
+                    q.dayOrder
+                )
+
+                ===
+
+                requestDay
+
+                &&
+
+                normalizeSession(
+                    q.session
+                )
+
+                ===
+
+                requestSession
+
+                &&
+
+                Number(q.hour)
+
+                ===
+
+                requestHour
+
+            );
+
+        });
 
 
         if(requestConflict){
@@ -2142,44 +2331,57 @@ async function approveRequest(id, button){
                 "err"
             );
 
+
             await loadRequests();
+
             return;
+
         }
 
 
-        /* ==========================================
-           APPROVE REQUEST
-        ========================================== */
+
+        /* =============================================
+           APPROVE
+        ============================================= */
 
         await updateDoc(
             requestRef,
             {
 
-                status:"APPROVED",
+                status:
+                    "APPROVED",
+
 
                 approvedBy:
-                    headId || "HEAD",
+                    approverId ||
+                    "DEPARTMENT_HEAD",
+
 
                 approvedByName:
-                    headName || "Department Head",
+                    approverName ||
+                    "Department Head",
+
 
                 approvedAt:
                     serverTimestamp(),
 
-                rejectionReason:null
+
+                rejectionReason:
+                    null
 
             }
         );
 
 
-        /* ==========================================
+        /* =============================================
            SUCCESS
-        ========================================== */
+        ============================================= */
 
         show(
             "Substitute request approved successfully.",
             "ok"
         );
+
 
         await loadRequests();
 
@@ -2191,19 +2393,25 @@ async function approveRequest(id, button){
             err
         );
 
+
         show(
-            "Approval failed: " + err.message,
+            "Approval failed: " +
+            err.message,
             "err"
         );
+
 
         button.disabled = false;
 
     }
 
 }
+
+
+
 /* =====================================================
    OPEN REJECT
-===================================================== */
+====================================================== */
 
 function openReject(id){
 
@@ -2226,14 +2434,15 @@ function openReject(id){
 }
 
 
+
 /* =====================================================
    CANCEL REJECT
-===================================================== */
+====================================================== */
 
 $("cancelReject")
 .addEventListener(
     "click",
-    () => {
+    ()=>{
 
         rejectId =
         null;
@@ -2247,9 +2456,10 @@ $("cancelReject")
 );
 
 
+
 /* =====================================================
    CONFIRM REJECT
-===================================================== */
+====================================================== */
 
 $("confirmReject")
 .addEventListener(
@@ -2258,9 +2468,10 @@ $("confirmReject")
 );
 
 
+
 /* =====================================================
    REJECT REQUEST
-===================================================== */
+====================================================== */
 
 async function rejectRequest(){
 
@@ -2293,15 +2504,22 @@ async function rejectRequest(){
 
 
     $("confirmReject")
-    .disabled =
-    true;
+    .disabled = true;
 
 
     try{
 
+        const requestRef =
+        doc(
+            db,
+            "substituteRequests",
+            id
+        );
+
+
         /*
-         * Check request exists.
-         */
+           Make sure this request still exists.
+        */
 
         const snap =
         await getDocs(
@@ -2314,8 +2532,7 @@ async function rejectRequest(){
 
         const current =
         snap.docs.find(
-            x =>
-            x.id === id
+            x => x.id === id
         );
 
 
@@ -2332,38 +2549,13 @@ async function rejectRequest(){
         current.data();
 
 
-        /*
-         * Department protection.
-         */
-
-        if(
-            headDepartment &&
-            upper(
-                r.department
-            ) !==
-            upper(
-                headDepartment
-            )
-        ){
-
-            throw new Error(
-                "This request does not belong to your department."
-            );
-
-        }
-
-
         const status =
-        upper(
-            r.status ||
-            "Pending"
+        normalizeStatus(
+            r.status
         );
 
 
-        if(
-            status ===
-            "APPROVED"
-        ){
+        if(status === "APPROVED"){
 
             throw new Error(
                 "This request is already approved."
@@ -2372,55 +2564,32 @@ async function rejectRequest(){
         }
 
 
-        if(
-            status ===
-            "REJECTED"
-        ){
-
-            throw new Error(
-                "This request is already rejected."
-            );
-
-        }
-
-
         await updateDoc(
-
-            doc(
-                db,
-                "substituteRequests",
-                id
-            ),
-
+            requestRef,
             {
 
                 status:
-                "Rejected",
+                    "REJECTED",
+
 
                 approvedBy:
-                headId ||
-                "HEAD",
+                    currentHead.id ||
+                    "DEPARTMENT_HEAD",
+
 
                 approvedByName:
-                headName ||
-                "Department Head",
+                    currentHead.name ||
+                    "Department Head",
 
-                approvedByDepartment:
-                headDepartment ||
-                r.department ||
-                "",
 
                 approvedAt:
-                serverTimestamp(),
+                    serverTimestamp(),
+
 
                 rejectionReason:
-                reason,
-
-                updatedAt:
-                serverTimestamp()
+                    reason
 
             }
-
         );
 
 
@@ -2441,8 +2610,8 @@ async function rejectRequest(){
 
         await loadRequests();
 
-    }
-    catch(err){
+
+    }catch(err){
 
         console.error(
             "REJECT ERROR:",
@@ -2456,26 +2625,32 @@ async function rejectRequest(){
             "err"
         );
 
-    }
-    finally{
+
+    }finally{
 
         $("confirmReject")
-        .disabled =
-        false;
+        .disabled = false;
 
     }
 
 }
 
 
+
 /* =====================================================
-   FILTER EVENTS
-===================================================== */
+   EVENT LISTENERS
+====================================================== */
 
 $("refreshBtn")
 .addEventListener(
     "click",
-    loadRequests
+    async ()=>{
+
+        await initializeHead();
+
+        await loadRequests();
+
+    }
 );
 
 
@@ -2500,14 +2675,35 @@ $("searchBox")
 );
 
 
+
 /* =====================================================
-   INITIALIZE
-===================================================== */
+   START
+====================================================== */
 
-initializeHead();
+(async function(){
 
+    try{
 
-loadRequests();
+        await initializeHead();
+
+        await loadRequests();
+
+    }catch(err){
+
+        console.error(
+            "STARTUP ERROR:",
+            err
+        );
+
+        show(
+            "Unable to initialize approval page: " +
+            err.message,
+            "err"
+        );
+
+    }
+
+})();
 
 </script>
 
