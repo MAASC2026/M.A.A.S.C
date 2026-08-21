@@ -1,404 +1,652 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<meta
+name="viewport"
+content="width=device-width, initial-scale=1.0">
 
 <title>Substitute Assignment Request</title>
 
 <style>
+
 *{
-    box-sizing:border-box;
     margin:0;
     padding:0;
+    box-sizing:border-box;
     font-family:Arial,Helvetica,sans-serif;
 }
 
 body{
-    background:#f4f7fb;
-    color:#1f2937;
+    background:#f4f6f9;
+    color:#333;
 }
 
 /* ================= HEADER ================= */
 
 .header{
-    background:#1e3a8a;
-    color:white;
-    padding:18px 30px;
+
+    height:70px;
+
+    background:#500454;
+
     display:flex;
+
     justify-content:space-between;
+
     align-items:center;
-    box-shadow:0 3px 10px rgba(0,0,0,.15);
-}
 
-.header-left h1{
-    font-size:22px;
-    margin-bottom:5px;
-}
+    padding:0 30px;
 
-.header-left p{
-    font-size:13px;
-    opacity:.9;
-}
-
-.header-right{
-    display:flex;
-    align-items:center;
-    gap:15px;
-}
-
-.staff-badge{
-    background:rgba(255,255,255,.15);
-    padding:9px 14px;
-    border-radius:8px;
-    font-size:13px;
-}
-
-.logout-btn{
-    border:none;
-    background:#dc2626;
     color:white;
-    padding:9px 15px;
-    border-radius:7px;
-    cursor:pointer;
-    font-weight:bold;
+
+    box-shadow:0 2px 10px rgba(0,0,0,.25);
+
 }
 
-.logout-btn:hover{
-    background:#b91c1c;
+.header h2{
+    font-size:23px;
 }
 
-/* ================= PAGE ================= */
-
-.container{
-    max-width:1100px;
-    margin:30px auto;
-    padding:0 20px;
+.user{
+    font-size:15px;
 }
+
+.user b{
+    margin-left:5px;
+}
+
+/* ================= MAIN ================= */
+
+.main{
+
+    width:100%;
+
+    max-width:1250px;
+
+    margin:0 auto;
+
+    padding:30px;
+
+}
+
+/* ================= PAGE TITLE ================= */
 
 .page-title{
-    margin-bottom:20px;
+
+    margin-bottom:22px;
+
 }
 
-.page-title h2{
-    font-size:24px;
-    color:#1e3a8a;
+.page-title h1{
+
+    color:#500454;
+
+    font-size:27px;
+
+    margin-bottom:7px;
+
 }
 
 .page-title p{
-    margin-top:6px;
-    color:#6b7280;
+
+    color:#666;
+
     font-size:14px;
+
 }
 
-/* ================= STAFF INFO ================= */
+/* ================= STAFF CARD ================= */
 
 .staff-card{
+
     background:white;
-    border-radius:12px;
-    padding:20px;
-    box-shadow:0 3px 12px rgba(0,0,0,.08);
+
+    padding:22px;
+
+    border-radius:10px;
+
+    box-shadow:0 0 10px rgba(0,0,0,.12);
+
     margin-bottom:20px;
+
 }
 
-.staff-card h3{
-    color:#1e3a8a;
-    margin-bottom:15px;
-    font-size:17px;
+.staff-card h2{
+
+    color:#500454;
+
+    margin-bottom:18px;
+
+    font-size:19px;
+
 }
 
 .staff-grid{
+
     display:grid;
-    grid-template-columns:repeat(4,1fr);
+
+    grid-template-columns:
+    repeat(3,1fr);
+
     gap:15px;
+
 }
 
 .info-box{
-    background:#f8fafc;
-    border:1px solid #e5e7eb;
-    padding:12px;
+
+    background:#f8f8f8;
+
+    border:1px solid #e5e5e5;
+
     border-radius:8px;
+
+    padding:14px;
+
 }
 
 .info-box label{
+
     display:block;
-    color:#6b7280;
-    font-size:11px;
-    margin-bottom:5px;
-    text-transform:uppercase;
+
+    font-size:12px;
+
+    color:#777;
+
+    margin-bottom:6px;
+
+    font-weight:bold;
+
 }
 
 .info-box strong{
-    font-size:14px;
-    color:#111827;
+
+    color:#333;
+
+    font-size:15px;
+
+}
+
+/* ================= FORM CARD ================= */
+
+.form-card{
+
+    background:white;
+
+    padding:25px;
+
+    border-radius:10px;
+
+    box-shadow:0 0 10px rgba(0,0,0,.12);
+
+    margin-bottom:20px;
+
+}
+
+.form-card h2{
+
+    color:#500454;
+
+    margin-bottom:20px;
+
+    font-size:20px;
+
 }
 
 /* ================= FORM ================= */
 
-.form-card{
-    background:white;
-    border-radius:12px;
-    padding:25px;
-    box-shadow:0 3px 12px rgba(0,0,0,.08);
-}
-
-.form-card h3{
-    color:#1e3a8a;
-    margin-bottom:20px;
-    font-size:18px;
-}
-
 .form-grid{
+
     display:grid;
-    grid-template-columns:repeat(3,1fr);
+
+    grid-template-columns:
+    repeat(3,1fr);
+
     gap:18px;
+
 }
 
 .form-group{
+
     display:flex;
+
     flex-direction:column;
+
 }
 
 .form-group.full{
+
     grid-column:1 / -1;
+
 }
 
 .form-group label{
+
     font-size:13px;
+
     font-weight:bold;
+
     margin-bottom:7px;
-    color:#374151;
+
+    color:#444;
+
 }
 
-.form-group label span{
-    color:#dc2626;
+.required{
+
+    color:red;
+
 }
 
 input,
 select,
 textarea{
+
     width:100%;
+
     padding:11px 12px;
-    border:1px solid #d1d5db;
-    border-radius:7px;
+
+    border:1px solid #ccc;
+
+    border-radius:6px;
+
     outline:none;
+
     font-size:14px;
+
     background:white;
-    color:#111827;
+
 }
 
 input:focus,
 select:focus,
 textarea:focus{
-    border-color:#2563eb;
-    box-shadow:0 0 0 2px rgba(37,99,235,.1);
+
+    border-color:#500454;
+
+    box-shadow:
+    0 0 0 2px rgba(80,4,84,.08);
+
 }
 
 input[readonly]{
-    background:#f3f4f6;
-    cursor:not-allowed;
+
+    background:#f1f1f1;
+
+    color:#555;
+
 }
 
 textarea{
-    min-height:90px;
+
+    min-height:100px;
+
     resize:vertical;
+
 }
 
-.submit-area{
-    margin-top:25px;
+/* ================= BUTTONS ================= */
+
+.button-area{
+
     display:flex;
-    justify-content:flex-end;
-    gap:10px;
-}
 
-.clear-btn,
-.submit-btn{
-    border:none;
-    padding:12px 22px;
-    border-radius:7px;
-    font-weight:bold;
-    cursor:pointer;
-    font-size:14px;
+    justify-content:flex-end;
+
+    gap:12px;
+
+    margin-top:25px;
+
 }
 
 .clear-btn{
-    background:#e5e7eb;
-    color:#374151;
+
+    padding:12px 22px;
+
+    border:none;
+
+    border-radius:7px;
+
+    background:#ddd;
+
+    color:#333;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
 }
 
 .clear-btn:hover{
-    background:#d1d5db;
+
+    background:#ccc;
+
 }
 
 .submit-btn{
-    background:#1e3a8a;
+
+    padding:12px 24px;
+
+    border:none;
+
+    border-radius:7px;
+
+    background:#500454;
+
     color:white;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
 }
 
 .submit-btn:hover{
-    background:#172554;
+
+    background:#6e0a75;
+
 }
 
 .submit-btn:disabled{
-    background:#9ca3af;
+
+    background:#999;
+
     cursor:not-allowed;
+
+}
+
+/* ================= MESSAGE ================= */
+
+.message{
+
+    display:none;
+
+    padding:13px 15px;
+
+    border-radius:7px;
+
+    margin-bottom:18px;
+
+    font-size:14px;
+
+    font-weight:bold;
+
+}
+
+.message.success{
+
+    display:block;
+
+    background:#dcfce7;
+
+    color:#166534;
+
+    border:1px solid #bbf7d0;
+
+}
+
+.message.error{
+
+    display:block;
+
+    background:#fee2e2;
+
+    color:#991b1b;
+
+    border:1px solid #fecaca;
+
 }
 
 /* ================= REQUESTS ================= */
 
 .requests-card{
+
     background:white;
-    border-radius:12px;
+
     padding:25px;
-    margin-top:20px;
-    box-shadow:0 3px 12px rgba(0,0,0,.08);
+
+    border-radius:10px;
+
+    box-shadow:0 0 10px rgba(0,0,0,.12);
+
 }
 
 .requests-header{
+
     display:flex;
+
     justify-content:space-between;
+
     align-items:center;
-    margin-bottom:15px;
+
+    margin-bottom:18px;
+
 }
 
-.requests-header h3{
-    color:#1e3a8a;
+.requests-header h2{
+
+    color:#500454;
+
+    font-size:20px;
+
 }
 
 .refresh-btn{
+
+    padding:9px 16px;
+
     border:none;
-    background:#2563eb;
-    color:white;
-    padding:8px 14px;
+
     border-radius:6px;
+
+    background:#500454;
+
+    color:white;
+
     cursor:pointer;
+
+    font-weight:bold;
+
 }
 
+.refresh-btn:hover{
+
+    background:#6e0a75;
+
+}
+
+/* ================= TABLE ================= */
+
 .table-wrapper{
+
+    width:100%;
+
     overflow-x:auto;
+
 }
 
 table{
+
     width:100%;
+
     border-collapse:collapse;
-    min-width:850px;
+
+    min-width:950px;
+
+}
+
+thead{
+
+    background:#500454;
+
+    color:white;
+
 }
 
 th{
-    background:#eff6ff;
-    color:#1e3a8a;
-    font-size:12px;
-    text-align:left;
+
     padding:12px;
-    border-bottom:1px solid #dbeafe;
+
+    text-align:left;
+
+    font-size:13px;
+
+    white-space:nowrap;
+
 }
 
 td{
+
     padding:11px 12px;
-    border-bottom:1px solid #e5e7eb;
+
+    border-bottom:1px solid #eee;
+
     font-size:13px;
+
+    white-space:nowrap;
+
 }
 
+tbody tr:hover{
+
+    background:#faf5fb;
+
+}
+
+/* ================= STATUS ================= */
+
 .status{
+
     display:inline-block;
-    padding:5px 9px;
+
+    padding:5px 10px;
+
     border-radius:20px;
+
     font-size:11px;
+
     font-weight:bold;
+
 }
 
 .status-pending{
-    background:#fef3c7;
-    color:#92400e;
+
+    background:#fff3cd;
+
+    color:#856404;
+
 }
 
 .status-assigned{
+
     background:#dbeafe;
-    color:#1e40af;
+
+    color:#1d4ed8;
+
 }
 
 .status-completed{
+
     background:#dcfce7;
+
     color:#166534;
+
 }
 
 .status-rejected{
+
     background:#fee2e2;
+
     color:#991b1b;
+
 }
 
+/* ================= EMPTY ================= */
+
 .empty{
+
     text-align:center;
+
     padding:30px;
-    color:#6b7280;
+
+    color:#777;
+
 }
 
 /* ================= LOADING ================= */
 
-.loading-overlay{
+.loading{
+
     position:fixed;
-    inset:0;
-    background:rgba(255,255,255,.88);
+
+    top:0;
+    left:0;
+    right:0;
+    bottom:0;
+
+    background:rgba(255,255,255,.85);
+
     display:flex;
+
     align-items:center;
+
     justify-content:center;
-    z-index:9999;
+
+    z-index:5000;
+
 }
 
 .loading-box{
+
     background:white;
+
     padding:25px 35px;
+
     border-radius:10px;
-    box-shadow:0 5px 25px rgba(0,0,0,.15);
+
+    box-shadow:0 5px 20px rgba(0,0,0,.2);
+
     text-align:center;
+
 }
 
 .spinner{
+
     width:35px;
+
     height:35px;
-    border:4px solid #e5e7eb;
-    border-top-color:#1e3a8a;
+
+    border:4px solid #ddd;
+
+    border-top-color:#500454;
+
     border-radius:50%;
+
+    margin:auto;
+
     animation:spin .8s linear infinite;
-    margin:0 auto 12px;
+
+}
+
+.loading-box p{
+
+    margin-top:12px;
+
+    color:#500454;
+
+    font-weight:bold;
+
 }
 
 @keyframes spin{
-    to{
+
+    100%{
         transform:rotate(360deg);
     }
-}
 
-/* ================= TOAST ================= */
-
-.toast{
-    position:fixed;
-    right:25px;
-    bottom:25px;
-    min-width:280px;
-    max-width:400px;
-    padding:15px 18px;
-    border-radius:8px;
-    color:white;
-    font-size:14px;
-    box-shadow:0 5px 20px rgba(0,0,0,.2);
-    transform:translateY(120px);
-    opacity:0;
-    transition:.3s;
-    z-index:10000;
-}
-
-.toast.show{
-    transform:translateY(0);
-    opacity:1;
-}
-
-.toast.success{
-    background:#16a34a;
-}
-
-.toast.error{
-    background:#dc2626;
 }
 
 /* ================= RESPONSIVE ================= */
@@ -406,167 +654,235 @@ td{
 @media(max-width:850px){
 
     .staff-grid{
-        grid-template-columns:repeat(2,1fr);
+
+        grid-template-columns:
+        repeat(2,1fr);
+
     }
 
     .form-grid{
-        grid-template-columns:repeat(2,1fr);
+
+        grid-template-columns:
+        repeat(2,1fr);
+
     }
 
-    .header{
-        padding:15px;
-    }
-
-    .header-right{
-        flex-direction:column;
-        align-items:flex-end;
-        gap:7px;
-    }
 }
 
 @media(max-width:600px){
 
+    .header{
+
+        padding:0 15px;
+
+    }
+
+    .header h2{
+
+        font-size:17px;
+
+    }
+
+    .user{
+
+        font-size:12px;
+
+    }
+
+    .main{
+
+        padding:15px;
+
+    }
+
     .staff-grid,
     .form-grid{
+
         grid-template-columns:1fr;
+
     }
 
     .form-group.full{
+
         grid-column:auto;
+
     }
 
-    .container{
-        padding:0 12px;
-    }
+    .button-area{
 
-    .header{
         flex-direction:column;
-        align-items:flex-start;
-        gap:12px;
-    }
 
-    .header-right{
-        width:100%;
-        flex-direction:row;
-        justify-content:space-between;
-        align-items:center;
-    }
-
-    .submit-area{
-        flex-direction:column;
     }
 
     .clear-btn,
     .submit-btn{
+
         width:100%;
+
     }
+
 }
+
 </style>
+
 </head>
 
 <body>
 
+
 <!-- ================= LOADING ================= -->
 
-<div class="loading-overlay" id="loadingOverlay">
+<div
+class="loading"
+id="loading">
+
     <div class="loading-box">
+
         <div class="spinner"></div>
-        <div id="loadingText">Checking login...</div>
+
+        <p id="loadingText">
+            Loading...
+        </p>
+
     </div>
+
 </div>
+
 
 <!-- ================= HEADER ================= -->
 
-<header class="header">
+<div class="header">
 
-    <div class="header-left">
-        <h1>Substitute Assignment Request</h1>
-        <p>Staff Substitute Request Portal</p>
-    </div>
+    <h2>
+        LAB STAFF PORTAL
+    </h2>
 
-    <div class="header-right">
+    <div class="user">
 
-        <div class="staff-badge" id="headerStaffName">
-            Loading...
-        </div>
+        Welcome
 
-        <button class="logout-btn" id="logoutBtn">
-            Logout
-        </button>
+        <b id="headerStaffName">
+        </b>
 
     </div>
 
-</header>
+</div>
 
 
 <!-- ================= MAIN ================= -->
 
-<main class="container">
+<div class="main">
+
+
+    <!-- ================= TITLE ================= -->
 
     <div class="page-title">
-        <h2>Request a Substitute</h2>
+
+        <h1>
+            Substitute Assignment Request
+        </h1>
+
         <p>
-            Submit a request when you are unable to handle an assigned period.
+            Submit a request when you need another staff member
+            to handle your assigned period.
         </p>
+
+    </div>
+
+
+    <!-- ================= MESSAGE ================= -->
+
+    <div
+    id="message"
+    class="message">
     </div>
 
 
     <!-- ================= STAFF INFORMATION ================= -->
 
-    <section class="staff-card">
+    <div class="staff-card">
 
-        <h3>Staff Information</h3>
+        <h2>
+            Staff Information
+        </h2>
 
         <div class="staff-grid">
 
             <div class="info-box">
-                <label>Staff ID</label>
-                <strong id="staffIdDisplay">-</strong>
+
+                <label>
+                    Staff ID
+                </label>
+
+                <strong id="staffIdDisplay">
+                    -
+                </strong>
+
             </div>
 
-            <div class="info-box">
-                <label>Staff Name</label>
-                <strong id="staffNameDisplay">-</strong>
-            </div>
 
             <div class="info-box">
-                <label>Department</label>
-                <strong id="departmentDisplay">-</strong>
+
+                <label>
+                    Staff Name
+                </label>
+
+                <strong id="staffNameDisplay">
+                    -
+                </strong>
+
             </div>
 
+
             <div class="info-box">
-                <label>Designation</label>
-                <strong id="designationDisplay">-</strong>
+
+                <label>
+                    Department
+                </label>
+
+                <strong id="departmentDisplay">
+                    -
+                </strong>
+
             </div>
 
         </div>
 
-    </section>
+    </div>
 
 
     <!-- ================= REQUEST FORM ================= -->
 
-    <section class="form-card">
+    <div class="form-card">
 
-        <h3>Substitute Request Details</h3>
+        <h2>
+            Substitute Request
+        </h2>
 
-        <form id="substituteRequestForm">
+
+        <form id="substituteForm">
 
             <div class="form-grid">
+
 
                 <!-- DATE -->
 
                 <div class="form-group">
 
                     <label>
-                        Date <span>*</span>
+
+                        Date
+
+                        <span class="required">
+                            *
+                        </span>
+
                     </label>
 
                     <input
-                        type="date"
-                        id="requestDate"
-                        required
-                    >
+                    type="date"
+                    id="requestDate"
+                    required>
 
                 </div>
 
@@ -576,21 +892,46 @@ td{
                 <div class="form-group">
 
                     <label>
-                        Day Order <span>*</span>
+
+                        Day Order
+
+                        <span class="required">
+                            *
+                        </span>
+
                     </label>
 
-                    <select id="dayOrder" required>
+                    <select
+                    id="dayOrder"
+                    required>
 
                         <option value="">
                             Select Day Order
                         </option>
 
-                        <option value="DAY 01">DAY 01</option>
-                        <option value="DAY 02">DAY 02</option>
-                        <option value="DAY 03">DAY 03</option>
-                        <option value="DAY 04">DAY 04</option>
-                        <option value="DAY 05">DAY 05</option>
-                        <option value="DAY 06">DAY 06</option>
+                        <option value="DAY 01">
+                            DAY 01
+                        </option>
+
+                        <option value="DAY 02">
+                            DAY 02
+                        </option>
+
+                        <option value="DAY 03">
+                            DAY 03
+                        </option>
+
+                        <option value="DAY 04">
+                            DAY 04
+                        </option>
+
+                        <option value="DAY 05">
+                            DAY 05
+                        </option>
+
+                        <option value="DAY 06">
+                            DAY 06
+                        </option>
 
                     </select>
 
@@ -602,10 +943,18 @@ td{
                 <div class="form-group">
 
                     <label>
-                        Session <span>*</span>
+
+                        Session
+
+                        <span class="required">
+                            *
+                        </span>
+
                     </label>
 
-                    <select id="session" required>
+                    <select
+                    id="session"
+                    required>
 
                         <option value="">
                             Select Session
@@ -629,20 +978,42 @@ td{
                 <div class="form-group">
 
                     <label>
-                        Hour <span>*</span>
+
+                        Hour
+
+                        <span class="required">
+                            *
+                        </span>
+
                     </label>
 
-                    <select id="hour" required>
+                    <select
+                    id="hour"
+                    required>
 
                         <option value="">
                             Select Hour
                         </option>
 
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                        <option value="3">3</option>
-                        <option value="4">4</option>
-                        <option value="5">5</option>
+                        <option value="1">
+                            Hour 1
+                        </option>
+
+                        <option value="2">
+                            Hour 2
+                        </option>
+
+                        <option value="3">
+                            Hour 3
+                        </option>
+
+                        <option value="4">
+                            Hour 4
+                        </option>
+
+                        <option value="5">
+                            Hour 5
+                        </option>
 
                     </select>
 
@@ -654,15 +1025,13 @@ td{
                 <div class="form-group">
 
                     <label>
-                        Department <span>*</span>
+                        Department
                     </label>
 
                     <input
-                        type="text"
-                        id="requestDepartment"
-                        readonly
-                        required
-                    >
+                    type="text"
+                    id="requestDepartment"
+                    readonly>
 
                 </div>
 
@@ -672,10 +1041,18 @@ td{
                 <div class="form-group">
 
                     <label>
-                        Year <span>*</span>
+
+                        Year
+
+                        <span class="required">
+                            *
+                        </span>
+
                     </label>
 
-                    <select id="year" required>
+                    <select
+                    id="year"
+                    required>
 
                         <option value="">
                             Select Year
@@ -703,15 +1080,20 @@ td{
                 <div class="form-group">
 
                     <label>
-                        Class <span>*</span>
+
+                        Class
+
+                        <span class="required">
+                            *
+                        </span>
+
                     </label>
 
                     <input
-                        type="text"
-                        id="className"
-                        placeholder="Enter class"
-                        required
-                    >
+                    type="text"
+                    id="className"
+                    placeholder="Enter class"
+                    required>
 
                 </div>
 
@@ -721,15 +1103,20 @@ td{
                 <div class="form-group">
 
                     <label>
-                        Section <span>*</span>
+
+                        Section
+
+                        <span class="required">
+                            *
+                        </span>
+
                     </label>
 
                     <input
-                        type="text"
-                        id="section"
-                        placeholder="Enter section"
-                        required
-                    >
+                    type="text"
+                    id="section"
+                    placeholder="Enter section"
+                    required>
 
                 </div>
 
@@ -739,15 +1126,20 @@ td{
                 <div class="form-group">
 
                     <label>
-                        Room No <span>*</span>
+
+                        Room No
+
+                        <span class="required">
+                            *
+                        </span>
+
                     </label>
 
                     <input
-                        type="text"
-                        id="roomNo"
-                        placeholder="Enter room number"
-                        required
-                    >
+                    type="text"
+                    id="roomNo"
+                    placeholder="Enter room number"
+                    required>
 
                 </div>
 
@@ -757,15 +1149,20 @@ td{
                 <div class="form-group full">
 
                     <label>
-                        Subject <span>*</span>
+
+                        Subject
+
+                        <span class="required">
+                            *
+                        </span>
+
                     </label>
 
                     <input
-                        type="text"
-                        id="subject"
-                        placeholder="Enter subject"
-                        required
-                    >
+                    type="text"
+                    id="subject"
+                    placeholder="Enter subject"
+                    required>
 
                 </div>
 
@@ -775,61 +1172,76 @@ td{
                 <div class="form-group full">
 
                     <label>
-                        Reason for Substitute <span>*</span>
+
+                        Reason for Substitute
+
+                        <span class="required">
+                            *
+                        </span>
+
                     </label>
 
                     <textarea
-                        id="reason"
-                        placeholder="Enter reason for requesting substitute..."
-                        required
-                    ></textarea>
+                    id="reason"
+                    placeholder="Enter reason for requesting substitute..."
+                    required></textarea>
 
                 </div>
 
             </div>
 
 
-            <div class="submit-area">
+            <!-- ================= BUTTONS ================= -->
+
+            <div class="button-area">
 
                 <button
-                    type="button"
-                    class="clear-btn"
-                    id="clearBtn"
-                >
+                type="button"
+                class="clear-btn"
+                id="clearBtn">
+
                     Clear
+
                 </button>
 
+
                 <button
-                    type="submit"
-                    class="submit-btn"
-                    id="submitBtn"
-                >
+                type="submit"
+                class="submit-btn"
+                id="submitBtn">
+
                     Submit Substitute Request
+
                 </button>
 
             </div>
 
         </form>
 
-    </section>
+    </div>
 
 
     <!-- ================= MY REQUESTS ================= -->
 
-    <section class="requests-card">
+    <div class="requests-card">
 
         <div class="requests-header">
 
-            <h3>My Substitute Requests</h3>
+            <h2>
+                My Substitute Requests
+            </h2>
 
             <button
-                class="refresh-btn"
-                id="refreshBtn"
-            >
+            type="button"
+            class="refresh-btn"
+            id="refreshBtn">
+
                 Refresh
+
             </button>
 
         </div>
+
 
         <div class="table-wrapper">
 
@@ -839,14 +1251,45 @@ td{
 
                     <tr>
 
-                        <th>Date</th>
-                        <th>Day</th>
-                        <th>Session</th>
-                        <th>Hour</th>
-                        <th>Class</th>
-                        <th>Subject</th>
-                        <th>Room</th>
-                        <th>Status</th>
+                        <th>
+                            Date
+                        </th>
+
+                        <th>
+                            Day Order
+                        </th>
+
+                        <th>
+                            Session
+                        </th>
+
+                        <th>
+                            Hour
+                        </th>
+
+                        <th>
+                            Year
+                        </th>
+
+                        <th>
+                            Class
+                        </th>
+
+                        <th>
+                            Section
+                        </th>
+
+                        <th>
+                            Subject
+                        </th>
+
+                        <th>
+                            Room
+                        </th>
+
+                        <th>
+                            Status
+                        </th>
 
                     </tr>
 
@@ -855,9 +1298,15 @@ td{
                 <tbody id="requestsBody">
 
                     <tr>
-                        <td colspan="8" class="empty">
+
+                        <td
+                        colspan="10"
+                        class="empty">
+
                             Loading requests...
+
                         </td>
+
                     </tr>
 
                 </tbody>
@@ -866,569 +1315,244 @@ td{
 
         </div>
 
-    </section>
+    </div>
 
-</main>
-
-
-<!-- ================= TOAST ================= -->
-
-<div class="toast" id="toast"></div>
+</div>
 
 
 <!-- ================= FIREBASE ================= -->
 
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script type="module">
 
+import { db } from "./firebase-config.js";
 
-<script>
+import {
 
-/* =========================================================
-   FIREBASE CONFIGURATION
-   ========================================================= */
+    collection,
+    query,
+    where,
+    getDocs,
+    addDoc,
+    serverTimestamp
 
-const firebaseConfig = {
-
-    /*
-       PUT THE SAME FIREBASE CONFIGURATION USED
-       BY YOUR EXISTING MAASC-2026 PORTALS HERE.
-    */
-
-     apiKey: "AIzaSyAIv3091VM-gkmdwEAn7OhXWd9Cm2zh2bo",
-  authDomain: "maasc-2026.firebaseapp.com",
-  projectId: "maasc-2026",
-  storageBucket: "maasc-2026.appspot.com",
-  messagingSenderId: "585813001586",
-  appId: "1:585813001586:web:664e0e90ff0725d2e849eb"
-};
-
-
-/* =========================================================
-   INITIALIZE FIREBASE
-   ========================================================= */
-
-if(!firebase.apps.length){
-    firebase.initializeApp(firebaseConfig);
 }
 
-const auth = firebase.auth();
-const db = firebase.firestore();
+from
+"https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 
-/* =========================================================
-   GLOBAL VARIABLES
-   ========================================================= */
+/* =====================================================
+   EXISTING STAFF SESSION
+===================================================== */
 
-let currentUser = null;
-let currentStaff = null;
+const staffId =
+sessionStorage.getItem("staffId");
+
+const staffName =
+sessionStorage.getItem("staffName");
+
+const department =
+sessionStorage.getItem("department");
 
 
-/* =========================================================
-   DOM REFERENCES
-   ========================================================= */
+/* =====================================================
+   LOGIN CHECK
+===================================================== */
 
-const loadingOverlay =
-    document.getElementById("loadingOverlay");
+if(!staffId){
 
-const loadingText =
-    document.getElementById("loadingText");
+    alert("Please Login");
+
+    window.location.href =
+    "login.html";
+
+}
+
+
+/* =====================================================
+   DISPLAY STAFF
+===================================================== */
+
+document.getElementById(
+    "staffIdDisplay"
+).textContent =
+staffId || "-";
+
+
+document.getElementById(
+    "staffNameDisplay"
+).textContent =
+staffName || "-";
+
+
+document.getElementById(
+    "departmentDisplay"
+).textContent =
+department || "-";
+
+
+document.getElementById(
+    "headerStaffName"
+).textContent =
+staffName || staffId || "-";
+
+
+document.getElementById(
+    "requestDepartment"
+).value =
+department || "";
+
+
+/* =====================================================
+   ELEMENTS
+===================================================== */
 
 const form =
-    document.getElementById("substituteRequestForm");
+document.getElementById(
+    "substituteForm"
+);
 
 const submitBtn =
-    document.getElementById("submitBtn");
+document.getElementById(
+    "submitBtn"
+);
 
 const clearBtn =
-    document.getElementById("clearBtn");
-
-const logoutBtn =
-    document.getElementById("logoutBtn");
+document.getElementById(
+    "clearBtn"
+);
 
 const refreshBtn =
-    document.getElementById("refreshBtn");
+document.getElementById(
+    "refreshBtn"
+);
 
 const requestsBody =
-    document.getElementById("requestsBody");
+document.getElementById(
+    "requestsBody"
+);
+
+const loading =
+document.getElementById(
+    "loading"
+);
+
+const loadingText =
+document.getElementById(
+    "loadingText"
+);
+
+const message =
+document.getElementById(
+    "message"
+);
 
 
-/* =========================================================
-   TOAST
-   ========================================================= */
+/* =====================================================
+   MESSAGE
+===================================================== */
 
-function showToast(message, type = "success"){
+function showMessage(
+    text,
+    type
+){
 
-    const toast =
-        document.getElementById("toast");
+    message.textContent =
+    text;
 
-    toast.textContent = message;
-
-    toast.className =
-        "toast " + type + " show";
-
-    setTimeout(function(){
-
-        toast.classList.remove("show");
-
-    }, 3500);
+    message.className =
+    "message " + type;
 
 }
 
 
-/* =========================================================
+function hideMessage(){
+
+    message.textContent =
+    "";
+
+    message.className =
+    "message";
+
+}
+
+
+/* =====================================================
    LOADING
-   ========================================================= */
+===================================================== */
 
-function showLoading(message){
+function showLoading(
+    text
+){
 
-    loadingText.textContent = message;
+    loadingText.textContent =
+    text;
 
-    loadingOverlay.style.display = "flex";
+    loading.style.display =
+    "flex";
 
 }
 
 
 function hideLoading(){
 
-    loadingOverlay.style.display = "none";
+    loading.style.display =
+    "none";
 
 }
 
 
-/* =========================================================
-   NORMALIZE TEXT
-   ========================================================= */
+/* =====================================================
+   TODAY
+===================================================== */
 
-function clean(value){
+function setToday(){
 
-    if(value === undefined || value === null){
-        return "";
-    }
+    const today =
+    new Date();
 
-    return String(value).trim();
+    const yyyy =
+    today.getFullYear();
 
-}
+    const mm =
+    String(
+        today.getMonth() + 1
+    ).padStart(2,"0");
 
+    const dd =
+    String(
+        today.getDate()
+    ).padStart(2,"0");
 
-/* =========================================================
-   GET STAFF ID
-   ========================================================= */
-
-function getPossibleStaffId(user){
-
-    /*
-       Different portals may store Staff ID in different places.
-       We check the common possibilities.
-    */
-
-    const possibleIds = [
-
-        user.displayName,
-
-        user.email
-            ? user.email.split("@")[0]
-            : "",
-
-        sessionStorage.getItem("staffId"),
-
-        localStorage.getItem("staffId"),
-
-        sessionStorage.getItem("staffID"),
-
-        localStorage.getItem("staffID"),
-
-        sessionStorage.getItem("staff_id"),
-
-        localStorage.getItem("staff_id")
-
-    ];
-
-    for(const value of possibleIds){
-
-        if(value && String(value).trim()){
-
-            return String(value).trim().toUpperCase();
-
-        }
-
-    }
-
-    return "";
+    document.getElementById(
+        "requestDate"
+    ).value =
+    yyyy + "-" +
+    mm + "-" +
+    dd;
 
 }
 
+setToday();
 
-/* =========================================================
-   FIND STAFF PROFILE
-   ========================================================= */
 
-async function findStaffProfile(user){
-
-    let staffId = getPossibleStaffId(user);
-
-    console.log("Possible Staff ID:", staffId);
-
-
-    /*
-       FIRST:
-       Try staff document using Staff ID.
-    */
-
-    if(staffId){
-
-        try{
-
-            const directDoc =
-                await db
-                    .collection("staff")
-                    .doc(staffId)
-                    .get();
-
-            if(directDoc.exists){
-
-                return {
-                    id: directDoc.id,
-                    data: directDoc.data()
-                };
-
-            }
-
-        }catch(error){
-
-            console.warn(
-                "Direct staff lookup failed:",
-                error
-            );
-
-        }
-
-    }
-
-
-    /*
-       SECOND:
-       Search staff collection by staffId.
-    */
-
-    if(staffId){
-
-        try{
-
-            const snap =
-                await db
-                    .collection("staff")
-                    .where("staffId", "==", staffId)
-                    .limit(1)
-                    .get();
-
-            if(!snap.empty){
-
-                const doc = snap.docs[0];
-
-                return {
-                    id: doc.id,
-                    data: doc.data()
-                };
-
-            }
-
-        }catch(error){
-
-            console.warn(
-                "staffId query failed:",
-                error
-            );
-
-        }
-
-    }
-
-
-    /*
-       THIRD:
-       Search using email.
-    */
-
-    if(user.email){
-
-        try{
-
-            const email =
-                user.email.trim().toLowerCase();
-
-            const snap =
-                await db
-                    .collection("staff")
-                    .where("email", "==", email)
-                    .limit(1)
-                    .get();
-
-            if(!snap.empty){
-
-                const doc = snap.docs[0];
-
-                return {
-                    id: doc.id,
-                    data: doc.data()
-                };
-
-            }
-
-        }catch(error){
-
-            console.warn(
-                "Email staff lookup failed:",
-                error
-            );
-
-        }
-
-    }
-
-
-    return null;
-
-}
-
-
-/* =========================================================
-   LOAD STAFF
-   ========================================================= */
-
-async function loadStaff(user){
-
-    showLoading("Loading staff profile...");
-
-    try{
-
-        const result =
-            await findStaffProfile(user);
-
-        if(!result){
-
-            console.error(
-                "No staff profile found for:",
-                user.email
-            );
-
-            hideLoading();
-
-            showToast(
-                "Staff profile not found. Please contact administrator.",
-                "error"
-            );
-
-            disableForm();
-
-            return;
-
-        }
-
-
-        currentStaff = result.data;
-
-        currentStaff._documentId = result.id;
-
-
-        /*
-           Normalize staff fields.
-        */
-
-        const staffId =
-            clean(
-                currentStaff.staffId ||
-                currentStaff.staffID ||
-                currentStaff.id ||
-                result.id
-            );
-
-        const staffName =
-            clean(
-                currentStaff.name ||
-                currentStaff.staffName ||
-                currentStaff.fullName ||
-                currentStaff.displayName ||
-                user.displayName ||
-                staffId
-            );
-
-        const department =
-            clean(
-                currentStaff.department ||
-                currentStaff.dept ||
-                currentStaff.Department
-            );
-
-        const designation =
-            clean(
-                currentStaff.designation ||
-                currentStaff.role ||
-                currentStaff.position ||
-                ""
-            );
-
-
-        /*
-           Store session information.
-        */
-
-        sessionStorage.setItem(
-            "staffId",
-            staffId.toUpperCase()
-        );
-
-        sessionStorage.setItem(
-            "staffName",
-            staffName
-        );
-
-        sessionStorage.setItem(
-            "staffDepartment",
-            department
-        );
-
-
-        /*
-           Display staff information.
-        */
-
-        document.getElementById(
-            "staffIdDisplay"
-        ).textContent =
-            staffId || "-";
-
-        document.getElementById(
-            "staffNameDisplay"
-        ).textContent =
-            staffName || "-";
-
-        document.getElementById(
-            "departmentDisplay"
-        ).textContent =
-            department || "-";
-
-        document.getElementById(
-            "designationDisplay"
-        ).textContent =
-            designation || "-";
-
-        document.getElementById(
-            "headerStaffName"
-        ).textContent =
-            staffName || staffId;
-
-
-        /*
-           Department automatically fills request.
-        */
-
-        document.getElementById(
-            "requestDepartment"
-        ).value =
-            department;
-
-
-        /*
-           Set today's date by default.
-        */
-
-        const dateInput =
-            document.getElementById("requestDate");
-
-        if(!dateInput.value){
-
-            const today =
-                new Date();
-
-            const yyyy =
-                today.getFullYear();
-
-            const mm =
-                String(
-                    today.getMonth() + 1
-                ).padStart(2,"0");
-
-            const dd =
-                String(
-                    today.getDate()
-                ).padStart(2,"0");
-
-            dateInput.value =
-                `${yyyy}-${mm}-${dd}`;
-
-        }
-
-
-        hideLoading();
-
-        await loadMyRequests();
-
-    }catch(error){
-
-        console.error(
-            "Staff loading error:",
-            error
-        );
-
-        hideLoading();
-
-        showToast(
-            "Unable to load staff profile.",
-            "error"
-        );
-
-        disableForm();
-
-    }
-
-}
-
-
-/* =========================================================
-   DISABLE FORM
-   ========================================================= */
-
-function disableForm(){
-
-    submitBtn.disabled = true;
-
-    const elements =
-        form.querySelectorAll(
-            "input,select,textarea,button"
-        );
-
-    elements.forEach(function(element){
-
-        if(
-            element.id !== "clearBtn"
-        ){
-
-            element.disabled = true;
-
-        }
-
-    });
-
-}
-
-
-/* =========================================================
+/* =====================================================
    SUBMIT REQUEST
-   ========================================================= */
+===================================================== */
 
 form.addEventListener(
     "submit",
-    async function(event){
+    async function(e){
 
-        event.preventDefault();
+        e.preventDefault();
+
+        hideMessage();
 
 
-        if(!currentUser){
+        if(!staffId){
 
-            showToast(
-                "You are not logged in.",
+            showMessage(
+                "Please login again.",
                 "error"
             );
 
@@ -1436,22 +1560,6 @@ form.addEventListener(
 
         }
 
-
-        if(!currentStaff){
-
-            showToast(
-                "Staff profile is not loaded.",
-                "error"
-            );
-
-            return;
-
-        }
-
-
-        /*
-           Validate.
-        */
 
         if(!form.checkValidity()){
 
@@ -1462,214 +1570,209 @@ form.addEventListener(
         }
 
 
-        submitBtn.disabled = true;
+        /* ===============================
+           GET FORM VALUES
+        =============================== */
+
+        const requestDate =
+        document.getElementById(
+            "requestDate"
+        ).value;
+
+
+        const dayOrder =
+        document.getElementById(
+            "dayOrder"
+        ).value;
+
+
+        const session =
+        document.getElementById(
+            "session"
+        ).value;
+
+
+        const hour =
+        document.getElementById(
+            "hour"
+        ).value;
+
+
+        const year =
+        document.getElementById(
+            "year"
+        ).value;
+
+
+        const className =
+        document.getElementById(
+            "className"
+        ).value.trim();
+
+
+        const section =
+        document.getElementById(
+            "section"
+        ).value.trim();
+
+
+        const roomNo =
+        document.getElementById(
+            "roomNo"
+        ).value.trim();
+
+
+        const subject =
+        document.getElementById(
+            "subject"
+        ).value.trim();
+
+
+        const reason =
+        document.getElementById(
+            "reason"
+        ).value.trim();
+
+
+        submitBtn.disabled =
+        true;
 
         submitBtn.textContent =
-            "Submitting...";
+        "Submitting...";
 
 
         try{
 
-            const staffId =
-                clean(
-                    currentStaff.staffId ||
-                    currentStaff.staffID ||
-                    currentStaff.id ||
-                    currentStaff._documentId
-                ).toUpperCase();
-
-            const staffName =
-                clean(
-                    currentStaff.name ||
-                    currentStaff.staffName ||
-                    currentStaff.fullName ||
-                    currentStaff.displayName ||
-                    currentUser.displayName
-                );
-
-            const department =
-                clean(
-                    currentStaff.department ||
-                    currentStaff.dept ||
-                    currentStaff.Department
-                );
-
-
-            /*
-               Form values.
-            */
-
-            const requestDate =
-                document.getElementById(
-                    "requestDate"
-                ).value;
-
-            const dayOrder =
-                document.getElementById(
-                    "dayOrder"
-                ).value;
-
-            const session =
-                document.getElementById(
-                    "session"
-                ).value;
-
-            const hour =
-                document.getElementById(
-                    "hour"
-                ).value;
-
-            const year =
-                document.getElementById(
-                    "year"
-                ).value;
-
-            const className =
-                clean(
-                    document.getElementById(
-                        "className"
-                    ).value
-                );
-
-            const section =
-                clean(
-                    document.getElementById(
-                        "section"
-                    ).value
-                );
-
-            const roomNo =
-                clean(
-                    document.getElementById(
-                        "roomNo"
-                    ).value
-                );
-
-            const subject =
-                clean(
-                    document.getElementById(
-                        "subject"
-                    ).value
-                );
-
-            const reason =
-                clean(
-                    document.getElementById(
-                        "reason"
-                    ).value
-                );
-
-
-            /*
-               Create request object.
-            */
+            /* ===============================
+               FIRESTORE DATA
+            =============================== */
 
             const requestData = {
 
-                staffId: staffId,
+                staffId:
+                staffId,
 
-                staffName: staffName,
+                staffName:
+                staffName || "",
 
-                department: department,
+                department:
+                department || "",
 
-                staffUid: currentUser.uid,
+                requestDate:
+                requestDate,
 
-                staffEmail:
-                    currentUser.email || "",
+                dayOrder:
+                dayOrder,
 
-                requestDate: requestDate,
+                session:
+                session,
 
-                dayOrder: dayOrder,
+                hour:
+                Number(hour),
 
-                session: session,
+                year:
+                year,
 
-                hour: Number(hour),
+                className:
+                className,
 
-                year: year,
+                section:
+                section,
 
-                className: className,
+                roomNo:
+                roomNo,
 
-                section: section,
+                subject:
+                subject,
 
-                roomNo: roomNo,
+                reason:
+                reason,
 
-                subject: subject,
+                status:
+                "Pending",
 
-                reason: reason,
+                substituteStaffId:
+                "",
 
-                status: "Pending",
+                substituteStaffName:
+                "",
 
-                substituteStaffId: "",
+                assignedBy:
+                "",
 
-                substituteStaffName: "",
+                assignedAt:
+                null,
 
-                assignedBy: "",
+                completedAt:
+                null,
 
-                assignedAt: null,
+                rejectedBy:
+                "",
 
-                completedAt: null,
+                rejectedAt:
+                null,
 
-                rejectedBy: "",
-
-                rejectedAt: null,
-
-                rejectionReason: "",
+                rejectionReason:
+                "",
 
                 createdAt:
-                    firebase.firestore.FieldValue.serverTimestamp(),
+                serverTimestamp(),
 
                 updatedAt:
-                    firebase.firestore.FieldValue.serverTimestamp()
+                serverTimestamp()
 
             };
 
 
-            /*
-               Store in Firestore.
-            */
+            /* ===============================
+               SAVE
+            =============================== */
 
             const docRef =
-                await db
-                    .collection(
-                        "substituteRequests"
-                    )
-                    .add(requestData);
+            await addDoc(
+
+                collection(
+                    db,
+                    "substituteRequests"
+                ),
+
+                requestData
+
+            );
 
 
             console.log(
-                "Substitute request created:",
+                "Substitute request saved:",
                 docRef.id
             );
 
 
-            showToast(
+            /* ===============================
+               SUCCESS
+            =============================== */
+
+            showMessage(
                 "Substitute request submitted successfully.",
                 "success"
             );
 
 
-            /*
-               Clear form after successful submission.
-            */
+            clearRequestFields();
 
-            resetRequestFields();
-
-
-            /*
-               Reload request history.
-            */
 
             await loadMyRequests();
 
 
-        }catch(error){
+        }
+        catch(error){
 
             console.error(
-                "Submit request error:",
+                "SUBSTITUTE REQUEST ERROR:",
                 error
             );
 
-            showToast(
+
+            showMessage(
                 "Unable to submit request: " +
                 error.message,
                 "error"
@@ -1678,81 +1781,95 @@ form.addEventListener(
         }
 
 
-        submitBtn.disabled = false;
+        submitBtn.disabled =
+        false;
 
         submitBtn.textContent =
-            "Submit Substitute Request";
+        "Submit Substitute Request";
 
     }
 );
 
 
-/* =========================================================
-   RESET REQUEST FIELDS
-   ========================================================= */
+/* =====================================================
+   CLEAR FIELDS
+===================================================== */
 
-function resetRequestFields(){
+function clearRequestFields(){
 
     document.getElementById(
         "dayOrder"
     ).value = "";
 
+
     document.getElementById(
         "session"
     ).value = "";
+
 
     document.getElementById(
         "hour"
     ).value = "";
 
+
     document.getElementById(
         "year"
     ).value = "";
+
 
     document.getElementById(
         "className"
     ).value = "";
 
+
     document.getElementById(
         "section"
     ).value = "";
+
 
     document.getElementById(
         "roomNo"
     ).value = "";
 
+
     document.getElementById(
         "subject"
     ).value = "";
+
 
     document.getElementById(
         "reason"
     ).value = "";
 
+
+    setToday();
+
 }
 
 
-/* =========================================================
+/* =====================================================
    CLEAR BUTTON
-   ========================================================= */
+===================================================== */
 
 clearBtn.addEventListener(
     "click",
     function(){
 
-        resetRequestFields();
+        clearRequestFields();
+
+        hideMessage();
 
     }
 );
 
 
-/* =========================================================
+/* =====================================================
    LOAD MY REQUESTS
-   ========================================================= */
+===================================================== */
 
 async function loadMyRequests(){
 
-    if(!currentUser || !currentStaff){
+    if(!staffId){
 
         return;
 
@@ -1762,9 +1879,15 @@ async function loadMyRequests(){
     requestsBody.innerHTML = `
 
         <tr>
-            <td colspan="8" class="empty">
+
+            <td
+            colspan="10"
+            class="empty">
+
                 Loading requests...
+
             </td>
+
         </tr>
 
     `;
@@ -1772,73 +1895,79 @@ async function loadMyRequests(){
 
     try{
 
-        const staffId =
-            clean(
-                currentStaff.staffId ||
-                currentStaff.staffID ||
-                currentStaff.id ||
-                currentStaff._documentId
-            ).toUpperCase();
+        const q =
+        query(
 
+            collection(
+                db,
+                "substituteRequests"
+            ),
 
-        /*
-           Query using Staff ID.
+            where(
+                "staffId",
+                "==",
+                staffId
+            )
 
-           We intentionally do not use orderBy here.
-           This avoids requiring a Firestore composite index.
-        */
+        );
+
 
         const snapshot =
-            await db
-                .collection(
-                    "substituteRequests"
-                )
-                .where(
-                    "staffId",
-                    "==",
-                    staffId
-                )
-                .limit(100)
-                .get();
+        await getDocs(q);
 
 
         const requests = [];
 
 
-        snapshot.forEach(function(doc){
+        snapshot.forEach(
+            function(doc){
 
-            const data =
-                doc.data();
+                requests.push({
 
-            requests.push({
+                    id:
+                    doc.id,
 
-                id: doc.id,
+                    ...doc.data()
 
-                ...data
+                });
 
-            });
+            }
+        );
 
-        });
 
-
-        /*
-           Sort locally by created time.
-        */
+        /* ===============================
+           SORT NEWEST FIRST
+        =============================== */
 
         requests.sort(
             function(a,b){
 
-                const aTime =
+                let aTime = 0;
+
+                let bTime = 0;
+
+
+                if(
                     a.createdAt &&
                     a.createdAt.toMillis
-                    ? a.createdAt.toMillis()
-                    : 0;
+                ){
 
-                const bTime =
+                    aTime =
+                    a.createdAt.toMillis();
+
+                }
+
+
+                if(
                     b.createdAt &&
                     b.createdAt.toMillis
-                    ? b.createdAt.toMillis()
-                    : 0;
+                ){
+
+                    bTime =
+                    b.createdAt.toMillis();
+
+                }
+
 
                 return bTime - aTime;
 
@@ -1846,13 +1975,16 @@ async function loadMyRequests(){
         );
 
 
-        renderRequests(requests);
+        renderRequests(
+            requests
+        );
 
 
-    }catch(error){
+    }
+    catch(error){
 
         console.error(
-            "Load requests error:",
+            "LOAD REQUEST ERROR:",
             error
         );
 
@@ -1860,9 +1992,15 @@ async function loadMyRequests(){
         requestsBody.innerHTML = `
 
             <tr>
-                <td colspan="8" class="empty">
+
+                <td
+                colspan="10"
+                class="empty">
+
                     Unable to load requests.
+
                 </td>
+
             </tr>
 
         `;
@@ -1872,11 +2010,13 @@ async function loadMyRequests(){
 }
 
 
-/* =========================================================
+/* =====================================================
    RENDER REQUESTS
-   ========================================================= */
+===================================================== */
 
-function renderRequests(requests){
+function renderRequests(
+    requests
+){
 
     if(!requests.length){
 
@@ -1885,10 +2025,11 @@ function renderRequests(requests){
             <tr>
 
                 <td
-                    colspan="8"
-                    class="empty"
-                >
+                colspan="10"
+                class="empty">
+
                     No substitute requests found.
+
                 </td>
 
             </tr>
@@ -1900,314 +2041,306 @@ function renderRequests(requests){
     }
 
 
-    requestsBody.innerHTML = "";
+    requestsBody.innerHTML =
+    "";
 
 
-    requests.forEach(function(request){
+    requests.forEach(
+        function(request){
 
-        const row =
-            document.createElement("tr");
-
-
-        const status =
-            clean(
-                request.status
-            ) || "Pending";
+            const row =
+            document.createElement(
+                "tr"
+            );
 
 
-        let statusClass =
+            const status =
+            request.status ||
+            "Pending";
+
+
+            let statusClass =
             "status-pending";
 
 
-        if(status === "Assigned"){
+            if(
+                status ===
+                "Assigned"
+            ){
 
-            statusClass =
+                statusClass =
                 "status-assigned";
 
-        }
+            }
 
-        else if(status === "Completed"){
 
-            statusClass =
+            if(
+                status ===
+                "Completed"
+            ){
+
+                statusClass =
                 "status-completed";
 
-        }
+            }
 
-        else if(status === "Rejected"){
 
-            statusClass =
+            if(
+                status ===
+                "Rejected"
+            ){
+
+                statusClass =
                 "status-rejected";
 
+            }
+
+
+            row.innerHTML = `
+
+                <td>
+                    ${escapeHtml(
+                        formatDate(
+                            request.requestDate
+                        )
+                    )}
+                </td>
+
+                <td>
+                    ${escapeHtml(
+                        request.dayOrder ||
+                        "-"
+                    )}
+                </td>
+
+                <td>
+                    ${escapeHtml(
+                        request.session ||
+                        "-"
+                    )}
+                </td>
+
+                <td>
+                    ${escapeHtml(
+                        String(
+                            request.hour ||
+                            "-"
+                        )
+                    )}
+                </td>
+
+                <td>
+                    ${escapeHtml(
+                        request.year ||
+                        "-"
+                    )}
+                </td>
+
+                <td>
+                    ${escapeHtml(
+                        request.className ||
+                        "-"
+                    )}
+                </td>
+
+                <td>
+                    ${escapeHtml(
+                        request.section ||
+                        "-"
+                    )}
+                </td>
+
+                <td>
+                    ${escapeHtml(
+                        request.subject ||
+                        "-"
+                    )}
+                </td>
+
+                <td>
+                    ${escapeHtml(
+                        request.roomNo ||
+                        "-"
+                    )}
+                </td>
+
+                <td>
+
+                    <span
+                    class="status
+                    ${statusClass}">
+
+                        ${escapeHtml(
+                            status
+                        )}
+
+                    </span>
+
+                </td>
+
+            `;
+
+
+            requestsBody.appendChild(
+                row
+            );
+
         }
-
-
-        row.innerHTML = `
-
-            <td>
-                ${escapeHtml(
-                    formatDate(
-                        request.requestDate
-                    )
-                )}
-            </td>
-
-            <td>
-                ${escapeHtml(
-                    request.dayOrder || "-"
-                )}
-            </td>
-
-            <td>
-                ${escapeHtml(
-                    request.session || "-"
-                )}
-            </td>
-
-            <td>
-                ${escapeHtml(
-                    String(
-                        request.hour || "-"
-                    )
-                )}
-            </td>
-
-            <td>
-                ${escapeHtml(
-                    buildClassName(request)
-                )}
-            </td>
-
-            <td>
-                ${escapeHtml(
-                    request.subject || "-"
-                )}
-            </td>
-
-            <td>
-                ${escapeHtml(
-                    request.roomNo || "-"
-                )}
-            </td>
-
-            <td>
-                <span class="
-                    status
-                    ${statusClass}
-                ">
-                    ${escapeHtml(status)}
-                </span>
-            </td>
-
-        `;
-
-
-        requestsBody.appendChild(row);
-
-    });
-
-}
-
-
-/* =========================================================
-   BUILD CLASS
-   ========================================================= */
-
-function buildClassName(request){
-
-    const parts = [];
-
-    if(request.className){
-        parts.push(request.className);
-    }
-
-    if(request.year){
-        parts.push(request.year);
-    }
-
-    if(request.section){
-        parts.push(
-            "Sec " + request.section
-        );
-    }
-
-    return parts.length
-        ? parts.join(" / ")
-        : "-";
-
-}
-
-
-/* =========================================================
-   FORMAT DATE
-   ========================================================= */
-
-function formatDate(value){
-
-    if(!value){
-        return "-";
-    }
-
-    const parts =
-        String(value).split("-");
-
-    if(parts.length !== 3){
-        return value;
-    }
-
-    return (
-        parts[2] +
-        "-" +
-        parts[1] +
-        "-" +
-        parts[0]
     );
 
 }
 
 
-/* =========================================================
-   ESCAPE HTML
-   ========================================================= */
+/* =====================================================
+   FORMAT DATE
+===================================================== */
 
-function escapeHtml(value){
+function formatDate(
+    value
+){
 
-    return String(value)
-        .replace(/&/g,"&amp;")
-        .replace(/</g,"&lt;")
-        .replace(/>/g,"&gt;")
-        .replace(/"/g,"&quot;")
-        .replace(/'/g,"&#039;");
+    if(!value){
+
+        return "-";
+
+    }
+
+
+    const parts =
+    String(value).split("-");
+
+
+    if(
+        parts.length !== 3
+    ){
+
+        return value;
+
+    }
+
+
+    return (
+
+        parts[2] +
+        "-" +
+        parts[1] +
+        "-" +
+        parts[0]
+
+    );
 
 }
 
 
-/* =========================================================
+/* =====================================================
+   ESCAPE HTML
+===================================================== */
+
+function escapeHtml(
+    value
+){
+
+    return String(value)
+
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+
+        .replace(
+            /</g,
+            "&lt;"
+        )
+
+        .replace(
+            />/g,
+            "&gt;"
+        )
+
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+
+        .replace(
+            /'/g,
+            "&#039;"
+        );
+
+}
+
+
+/* =====================================================
    REFRESH
-   ========================================================= */
+===================================================== */
 
 refreshBtn.addEventListener(
     "click",
     async function(){
 
-        refreshBtn.disabled = true;
+        refreshBtn.disabled =
+        true;
 
         refreshBtn.textContent =
-            "Loading...";
+        "Loading...";
+
 
         await loadMyRequests();
 
-        refreshBtn.disabled = false;
+
+        refreshBtn.disabled =
+        false;
 
         refreshBtn.textContent =
-            "Refresh";
+        "Refresh";
 
     }
 );
 
 
-/* =========================================================
-   LOGOUT
-   ========================================================= */
-
-logoutBtn.addEventListener(
-    "click",
-    async function(){
-
-        try{
-
-            await auth.signOut();
-
-            sessionStorage.removeItem(
-                "staffId"
-            );
-
-            sessionStorage.removeItem(
-                "staffName"
-            );
-
-            sessionStorage.removeItem(
-                "staffDepartment"
-            );
-
-            window.location.href =
-                "login.html";
-
-        }catch(error){
-
-            console.error(
-                "Logout error:",
-                error
-            );
-
-            showToast(
-                "Unable to logout.",
-                "error"
-            );
-
-        }
-
-    }
-);
-
-
-/* =========================================================
-   AUTH STATE
-   ========================================================= */
-
-auth.onAuthStateChanged(
-    async function(user){
-
-        console.log(
-            "Firebase Auth State:",
-            user
-        );
-
-
-        if(!user){
-
-            hideLoading();
-
-            /*
-               Change this only if your existing
-               login page has another filename.
-            */
-
-            window.location.href =
-                "login.html";
-
-            return;
-
-        }
-
-
-        currentUser = user;
-
-        console.log(
-            "Logged in Firebase UID:",
-            user.uid
-        );
-
-        console.log(
-            "Logged in email:",
-            user.email
-        );
-
-
-        await loadStaff(user);
-
-    }
-);
-
-
-/* =========================================================
-   START
-   ========================================================= */
+/* =====================================================
+   INITIAL LOAD
+===================================================== */
 
 showLoading(
-    "Checking login..."
+    "Loading substitute requests..."
+);
+
+
+loadMyRequests()
+.then(
+    function(){
+
+        hideLoading();
+
+    }
+)
+.catch(
+    function(error){
+
+        console.error(error);
+
+        hideLoading();
+
+    }
+);
+
+
+/* =====================================================
+   AUTO REFRESH
+===================================================== */
+
+setInterval(
+    function(){
+
+        loadMyRequests();
+
+    },
+    30000
 );
 
 </script>
 
 </body>
+
 </html>
