@@ -1891,93 +1891,95 @@ function render(){
    APPROVE REQUEST
 ===================================================== */
 
-async function approveRequest(
-    id,
-    button
-){
+async function approveRequest(id, button){
 
-    if(
-        !confirm(
-            "Approve this substitute request?"
-        )
-    ){
-
+    if(!confirm(
+        "Approve this substitute assignment?\n\n" +
+        "The substitute staff will become active for this slot."
+    )){
         return;
-
     }
 
-
-    button.disabled =
-    true;
-
+    button.disabled = true;
 
     try{
 
-        /*
-         * Reload the current request.
-         */
+        /* ==========================================
+           GET CURRENT REQUEST
+        ========================================== */
 
-        const snap =
-        await getDocs(
-            collection(
-                db,
-                "substituteRequests"
-            )
+        const requestRef = doc(db, "substituteRequests", id);
+        const requestSnap = await getDocs(
+            collection(db, "substituteRequests")
         );
 
-
-        const current =
-        snap.docs.find(
-            x =>
-            x.id === id
+        const current = requestSnap.docs.find(
+            x => x.id === id
         );
-
 
         if(!current){
-
-            throw new Error(
-                "Request no longer exists."
-            );
-
+            throw new Error("Substitute request no longer exists.");
         }
 
+        const r = current.data();
 
-        const r =
-        current.data();
+        console.log("APPROVAL REQUEST DATA:", r);
 
+        /* ==========================================
+           EXACT FIELDS FROM ASSIGNMENT PROGRAM
+        ========================================== */
 
-        /*
-         * Department protection.
-         */
+        const requestDate = clean(r.date);
+        const requestDay = normalizeDay(r.day);
+        const requestSession = normalizeSession(r.session);
+        const requestHour = Number(r.hour);
 
-        if(
-            headDepartment &&
-            upper(
-                r.department
-            ) !==
-            upper(
-                headDepartment
-            )
-        ){
-
-            throw new Error(
-                "This request does not belong to your department."
-            );
-
-        }
-
-
-        const status =
-        upper(
-            r.status ||
-            "Pending"
+        const substituteId = clean(
+            r.substituteStaffId
         );
 
+        const substituteName = clean(
+            r.substituteStaffName
+        );
+
+        /* ==========================================
+           VALIDATE REQUIRED FIELDS
+        ========================================== */
 
         if(
-            status ===
-            "APPROVED"
+            !requestDate ||
+            !requestDay ||
+            !requestSession ||
+            !requestHour ||
+            !substituteId
         ){
+
+            console.error(
+                "INVALID SUBSTITUTE REQUEST:",
+                {
+                    date:r.date,
+                    day:r.day,
+                    session:r.session,
+                    hour:r.hour,
+                    substituteStaffId:r.substituteStaffId,
+                    fullRequest:r
+                }
+            );
+
+            throw new Error(
+                "Request is missing Date, Day Order, Session, Hour or Substitute Staff."
+            );
+        }
+
+        /* ==========================================
+           ONLY PENDING REQUEST CAN BE APPROVED
+        ========================================== */
+
+        const currentStatus = upper(
+            r.status || "PENDING_APPROVAL"
+        );
+
+        if(currentStatus === "APPROVED"){
 
             show(
                 "This request is already approved.",
@@ -1985,16 +1987,10 @@ async function approveRequest(
             );
 
             await loadRequests();
-
             return;
-
         }
 
-
-        if(
-            status ===
-            "REJECTED"
-        ){
+        if(currentStatus === "REJECTED"){
 
             show(
                 "This request has already been rejected.",
@@ -2002,356 +1998,209 @@ async function approveRequest(
             );
 
             await loadRequests();
-
             return;
-
         }
 
+        /* ==========================================
+           CHECK TIMETABLE CONFLICT
+        ========================================== */
 
-        const substituteId =
-        clean(
-            r.substituteStaffId
+        const timetableSnap = await getDocs(
+            collection(db, "timetableAssignments")
         );
 
+        const timetableConflict =
+            timetableSnap.docs.some(x => {
 
-        const requestDate =
-        getRequestDate(r);
+                const t = x.data();
 
-
-        const requestDay =
-        getRequestDay(r);
-
-
-        const requestSession =
-        normalizeSession(
-            r.session
-        );
-
-
-        const requestHour =
-        Number(
-            r.hour ??
-            0
-        );
-
-
-        if(
-            !substituteId ||
-            !requestDate ||
-            !requestDay ||
-            !requestSession ||
-            !requestHour
-        ){
-
-            throw new Error(
-                "Request is missing Date, Day Order, Session, Hour or Substitute Staff."
-            );
-
-        }
-
-
-        /* =================================================
-           CHECK CURRENT STAFF TIMETABLE
-        ================================================= */
-
-        const timetableSnap =
-        await getDocs(
-            collection(
-                db,
-                "timetableAssignments"
-            )
-        );
-
-
-        const busy =
-        timetableSnap.docs.some(
-            x => {
-
-                const t =
-                x.data()
-                || {};
-
-
-                const tid =
-                clean(
+                const staffId = clean(
                     t.staffId ??
                     t.staffID ??
                     t.staff ??
                     t.staff_id
                 );
 
-
-                const day =
-                normalizeDay(
+                const day = normalizeDay(
                     t.day ??
-                    t.dayOrder ??
                     t.dayName ??
-                    t.dayNo
+                    t.dayNo ??
+                    t.dayOrder
                 );
 
-
-                const session =
-                normalizeSession(
+                const session = normalizeSession(
                     t.session
                 );
 
-
-                const hour =
-                Number(
+                const hour = Number(
                     t.hour ??
                     t.period ??
                     t.hourNo ??
-                    t.periodNo ??
-                    0
+                    t.periodNo
                 );
 
-
-                return
-
-                    upper(tid) ===
+                return (
+                    upper(staffId) ===
                     upper(substituteId)
 
                     &&
 
-                    day ===
-                    requestDay
+                    day === requestDay
 
                     &&
 
-                    session ===
-                    requestSession
+                    session === requestSession
 
                     &&
 
-                    hour ===
-                    requestHour;
+                    hour === requestHour
+                );
 
-            }
-        );
+            });
 
 
-        if(busy){
+        if(timetableConflict){
 
             show(
-                "Cannot approve: the selected substitute staff already has a timetable entry for this Day Order / Session / Hour.",
+                "Cannot approve: " +
+                substituteName +
+                " already has a timetable entry for this slot.",
                 "err"
             );
 
-
             await loadRequests();
-
             return;
-
         }
 
 
-        /* =================================================
-           CHECK OTHER SUBSTITUTE REQUESTS
-        ================================================= */
+        /* ==========================================
+           CHECK OTHER SUBSTITUTE REQUEST CONFLICT
+        ========================================== */
 
-        const conflicts =
-        snap.docs.some(
-            x => {
+        const requestConflict =
+            requestSnap.docs.some(x => {
 
-                /*
-                 * Ignore the current request.
-                 */
-
-                if(
-                    x.id === id
-                ){
-
+                if(x.id === id){
                     return false;
-
                 }
 
+                const q = x.data();
 
-                const q =
-                x.data()
-                || {};
-
-
-                const qs =
-                upper(
-                    q.status ||
-                    "Pending"
+                const status = upper(
+                    q.status || ""
                 );
 
-
-                /*
-                 * Only active requests
-                 * create conflicts.
-                 */
-
                 const active =
-
-                    qs === "APPROVED"
-                    ||
-                    qs === "PENDING"
-                    ||
-                    qs === "PENDING_APPROVAL"
-                    ||
-                    qs === "ALLOTTED";
-
+                    status === "APPROVED" ||
+                    status === "PENDING_APPROVAL" ||
+                    status === "PENDING" ||
+                    status === "ALLOTTED";
 
                 if(!active){
-
                     return false;
-
                 }
 
-
-                const qSubstitute =
-                clean(
+                const qDate = clean(q.date);
+                const qDay = normalizeDay(q.day);
+                const qSession = normalizeSession(q.session);
+                const qHour = Number(q.hour);
+                const qSubstitute = clean(
                     q.substituteStaffId
                 );
 
+                return (
 
-                const qDate =
-                getRequestDate(q);
+                    upper(qSubstitute) ===
+                    upper(substituteId)
 
+                    &&
 
-                const qDay =
-                getRequestDay(q);
+                    qDate === requestDate
 
+                    &&
 
-                const qSession =
-                normalizeSession(
-                    q.session
+                    qDay === requestDay
+
+                    &&
+
+                    qSession === requestSession
+
+                    &&
+
+                    qHour === requestHour
                 );
 
-
-                const qHour =
-                Number(
-                    q.hour ??
-                    0
-                );
+            });
 
 
-                return
-
-                    upper(
-                        qSubstitute
-                    ) ===
-                    upper(
-                        substituteId
-                    )
-
-                    &&
-
-                    qDate ===
-                    requestDate
-
-                    &&
-
-                    qDay ===
-                    requestDay
-
-                    &&
-
-                    qSession ===
-                    requestSession
-
-                    &&
-
-                    qHour ===
-                    requestHour;
-
-            }
-        );
-
-
-        if(conflicts){
+        if(requestConflict){
 
             show(
-                "Cannot approve: this substitute staff is already assigned to another substitute request for the same Date / Day Order / Session / Hour.",
+                "Cannot approve: " +
+                substituteName +
+                " is already assigned to another substitute request for the same slot.",
                 "err"
             );
 
-
             await loadRequests();
-
             return;
-
         }
 
 
-        /* =================================================
-           APPROVE
-        ================================================= */
+        /* ==========================================
+           APPROVE REQUEST
+        ========================================== */
 
         await updateDoc(
-
-            doc(
-                db,
-                "substituteRequests",
-                id
-            ),
-
+            requestRef,
             {
 
-                status:
-                "Approved",
+                status:"APPROVED",
 
                 approvedBy:
-                headId ||
-                "HEAD",
+                    headId || "HEAD",
 
                 approvedByName:
-                headName ||
-                "Department Head",
-
-                approvedByDepartment:
-                headDepartment ||
-                r.department ||
-                "",
+                    headName || "Department Head",
 
                 approvedAt:
-                serverTimestamp(),
+                    serverTimestamp(),
 
-                rejectionReason:
-                null,
-
-                updatedAt:
-                serverTimestamp()
+                rejectionReason:null
 
             }
-
         );
 
+
+        /* ==========================================
+           SUCCESS
+        ========================================== */
 
         show(
             "Substitute request approved successfully.",
             "ok"
         );
 
-
         await loadRequests();
 
-    }
-    catch(err){
+
+    }catch(err){
 
         console.error(
             "APPROVE ERROR:",
             err
         );
 
-
         show(
-            "Approval failed: " +
-            err.message,
+            "Approval failed: " + err.message,
             "err"
         );
 
-
-        button.disabled =
-        false;
+        button.disabled = false;
 
     }
 
 }
-
-
 /* =====================================================
    OPEN REJECT
 ===================================================== */
