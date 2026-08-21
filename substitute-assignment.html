@@ -1959,26 +1959,11 @@ function getSection(data){
 
 }
 
-
 function getRoom(data){
 
-    return clean(
-        firstValue(
-
-            data.roomNo,
-            data.room_no,
-            data.room,
-            data.roomNumber,
-            data.room_number,
-            data.RoomNo,
-            data.Room,
-            data.classRoom,
-            data.classroom,
-            data.roomName,
-            data.room_name
-
-        )
-    );
+    return String(
+        data.roomNo ?? ""
+    ).trim();
 
 }
 
@@ -1987,97 +1972,52 @@ function getRoom(data){
    NORMALIZE TIMETABLE
 ===================================================== */
 
-function normalizeTimetableRecord(
-    id,
-    data
-){
+function normalizeTimetableRecord(id, data){
 
     return {
 
-        id:
+        id: id,
 
-        id,
+        staffId: getStaffId(data, id),
 
-        staffId:
+        staffName: getStaffName(data),
 
-        getStaffId(
-            data,
-            id
-        ),
+        department: getDepartment(data),
 
-        staffName:
-
-        getStaffName(
-            data
-        ),
-
-        department:
-
-        getDepartment(
-            data
-        ),
-
-        day:
-
-        normalizeDay(
+        day: normalizeDay(
             firstValue(
-
                 data.day,
                 data.dayName,
                 data.dayNo,
                 data.dayNumber,
                 data.dayOrder,
                 data.day_order
-
             )
         ),
 
-        session:
-
-        normalizeSession(
+        session: normalizeSession(
             firstValue(
-
                 data.session,
                 data.shift,
                 data.sessionName
-
             )
         ),
 
-        hour:
+        hour: getHour(data),
 
-        getHour(
-            data
-        ),
+        subject: getSubject(data),
 
-        subject:
+        classYear: getClassYear(data),
 
-        getSubject(
-            data
-        ),
+        section: getSection(data),
 
-        classYear:
-
-        getClassYear(
-            data
-        ),
-
-        section:
-
-        getSection(
-            data
-        ),
-
-        room:
-
-        getRoom(
-            data
-        )
+        room: String(
+            data.roomNo ?? ""
+        ).trim()
 
     };
 
 }
-
 
 /* =====================================================
    MESSAGE
