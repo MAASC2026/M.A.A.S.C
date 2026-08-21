@@ -1,399 +1,2667 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+<meta
+name="viewport"
+content="width=device-width,initial-scale=1.0">
+
 <title>Substitute Approval</title>
+
 <style>
-*{box-sizing:border-box;margin:0;padding:0;font-family:Arial,Helvetica,sans-serif}
-body{background:#f4f7fb;color:#1f2937}
-.header{background:#1e3a8a;color:#fff;padding:22px 30px}
-.header h1{font-size:25px;margin-bottom:5px}.header p{font-size:14px;opacity:.9}
-.container{max-width:1500px;margin:25px auto;padding:0 18px}
-.card{background:#fff;border-radius:12px;padding:22px;margin-bottom:20px;box-shadow:0 3px 14px rgba(0,0,0,.08)}
-.title{font-size:20px;font-weight:bold;color:#1e3a8a;margin-bottom:18px}
-.filters{display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:14px}
-label{display:block;font-size:13px;font-weight:bold;margin-bottom:7px}
-input,select{width:100%;padding:11px;border:1px solid #d1d5db;border-radius:7px;background:#fff}
-button{border:0;border-radius:7px;padding:10px 15px;cursor:pointer;font-weight:bold}
-.primary{background:#2563eb;color:#fff}.approve{background:#16a34a;color:#fff}.reject{background:#dc2626;color:#fff}.secondary{background:#e5e7eb}
-button:disabled{opacity:.5;cursor:not-allowed}
-.message{display:none;margin-top:14px;padding:12px;border-radius:7px;font-size:14px}
-.message.show{display:block}.ok{background:#dcfce7;color:#166534}.err{background:#fee2e2;color:#991b1b}.info{background:#dbeafe;color:#1e40af}
-.table-wrap{overflow:auto}
-table{width:100%;border-collapse:collapse;min-width:1150px}
-th,td{padding:11px 10px;border-bottom:1px solid #e5e7eb;text-align:left;font-size:13px;vertical-align:top}
-th{background:#eff6ff;color:#1e3a8a;font-weight:bold;position:sticky;top:0}
-.status{display:inline-block;padding:5px 9px;border-radius:15px;font-size:11px;font-weight:bold}
-.pending{background:#fef3c7;color:#92400e}.approved{background:#dcfce7;color:#166534}.rejected{background:#fee2e2;color:#991b1b}
-.actions{display:flex;gap:7px;flex-wrap:wrap}
-.small{font-size:12px;color:#6b7280;margin-top:4px}
-.loading{text-align:center;padding:35px;color:#6b7280}
-.empty{text-align:center;padding:35px;color:#6b7280;background:#f9fafb}
-.summary{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px}
-.stat{padding:10px 15px;border-radius:8px;background:#eff6ff;color:#1e40af;font-size:13px;font-weight:bold}
-.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);align-items:center;justify-content:center;padding:20px;z-index:10}
-.modal.show{display:flex}.modal-box{background:#fff;width:min(500px,100%);border-radius:12px;padding:22px}
-.modal-box h2{color:#1e3a8a;margin-bottom:15px}
-textarea{width:100%;min-height:100px;padding:11px;border:1px solid #d1d5db;border-radius:7px;resize:vertical}
-.modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:15px}
-@media(max-width:850px){.filters{grid-template-columns:1fr}}
+
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+    font-family:Arial,Helvetica,sans-serif;
+}
+
+body{
+    background:#f4f7fb;
+    color:#1f2937;
+}
+
+/* ================= HEADER ================= */
+
+.header{
+    background:#1e3a8a;
+    color:#fff;
+    padding:22px 30px;
+}
+
+.header h1{
+    font-size:25px;
+    margin-bottom:5px;
+}
+
+.header p{
+    font-size:14px;
+    opacity:.9;
+}
+
+/* ================= CONTAINER ================= */
+
+.container{
+    max-width:1500px;
+    margin:25px auto;
+    padding:0 18px;
+}
+
+/* ================= CARD ================= */
+
+.card{
+    background:#fff;
+    border-radius:12px;
+    padding:22px;
+    margin-bottom:20px;
+    box-shadow:0 3px 14px rgba(0,0,0,.08);
+}
+
+.title{
+    font-size:20px;
+    font-weight:bold;
+    color:#1e3a8a;
+    margin-bottom:18px;
+}
+
+/* ================= FILTERS ================= */
+
+.filters{
+    display:grid;
+    grid-template-columns:
+        1fr
+        1fr
+        1fr
+        auto;
+
+    gap:14px;
+}
+
+label{
+    display:block;
+    font-size:13px;
+    font-weight:bold;
+    margin-bottom:7px;
+}
+
+input,
+select{
+    width:100%;
+    padding:11px;
+    border:1px solid #d1d5db;
+    border-radius:7px;
+    background:#fff;
+}
+
+button{
+    border:0;
+    border-radius:7px;
+    padding:10px 15px;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+.primary{
+    background:#2563eb;
+    color:#fff;
+}
+
+.approve{
+    background:#16a34a;
+    color:#fff;
+}
+
+.reject{
+    background:#dc2626;
+    color:#fff;
+}
+
+.secondary{
+    background:#e5e7eb;
+}
+
+button:disabled{
+    opacity:.5;
+    cursor:not-allowed;
+}
+
+/* ================= MESSAGE ================= */
+
+.message{
+    display:none;
+    margin-top:14px;
+    padding:12px;
+    border-radius:7px;
+    font-size:14px;
+}
+
+.message.show{
+    display:block;
+}
+
+.ok{
+    background:#dcfce7;
+    color:#166534;
+}
+
+.err{
+    background:#fee2e2;
+    color:#991b1b;
+}
+
+.info{
+    background:#dbeafe;
+    color:#1e40af;
+}
+
+/* ================= TABLE ================= */
+
+.table-wrap{
+    overflow:auto;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    min-width:1450px;
+}
+
+th,
+td{
+    padding:11px 10px;
+    border-bottom:1px solid #e5e7eb;
+    text-align:left;
+    font-size:13px;
+    vertical-align:top;
+}
+
+th{
+    background:#eff6ff;
+    color:#1e3a8a;
+    font-weight:bold;
+    position:sticky;
+    top:0;
+    z-index:2;
+}
+
+/* ================= STATUS ================= */
+
+.status{
+    display:inline-block;
+    padding:5px 9px;
+    border-radius:15px;
+    font-size:11px;
+    font-weight:bold;
+}
+
+.pending{
+    background:#fef3c7;
+    color:#92400e;
+}
+
+.approved{
+    background:#dcfce7;
+    color:#166534;
+}
+
+.rejected{
+    background:#fee2e2;
+    color:#991b1b;
+}
+
+/* ================= ACTIONS ================= */
+
+.actions{
+    display:flex;
+    gap:7px;
+    flex-wrap:wrap;
+}
+
+.small{
+    font-size:12px;
+    color:#6b7280;
+    margin-top:4px;
+}
+
+.loading{
+    text-align:center;
+    padding:35px;
+    color:#6b7280;
+}
+
+.empty{
+    text-align:center;
+    padding:35px;
+    color:#6b7280;
+    background:#f9fafb;
+}
+
+/* ================= SUMMARY ================= */
+
+.summary{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    margin-bottom:18px;
+}
+
+.stat{
+    padding:10px 15px;
+    border-radius:8px;
+    background:#eff6ff;
+    color:#1e40af;
+    font-size:13px;
+    font-weight:bold;
+}
+
+/* ================= MODAL ================= */
+
+.modal{
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.45);
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+    z-index:10;
+}
+
+.modal.show{
+    display:flex;
+}
+
+.modal-box{
+    background:#fff;
+    width:min(500px,100%);
+    border-radius:12px;
+    padding:22px;
+}
+
+.modal-box h2{
+    color:#1e3a8a;
+    margin-bottom:15px;
+}
+
+textarea{
+    width:100%;
+    min-height:100px;
+    padding:11px;
+    border:1px solid #d1d5db;
+    border-radius:7px;
+    resize:vertical;
+}
+
+.modal-actions{
+    display:flex;
+    justify-content:flex-end;
+    gap:8px;
+    margin-top:15px;
+}
+
+/* ================= RESPONSIVE ================= */
+
+@media(max-width:850px){
+
+    .filters{
+        grid-template-columns:1fr;
+    }
+
+}
+
 </style>
+
 </head>
+
 <body>
+
+<!-- =====================================================
+     HEADER
+===================================================== -->
+
 <div class="header">
-  <h1>Substitute Approval</h1>
-  <p>Department Head approval for substitute staff requests</p>
+
+    <h1>
+        Substitute Approval
+    </h1>
+
+    <p>
+        Department Head approval for substitute staff requests
+    </p>
+
 </div>
+
 
 <div class="container">
-  <div class="card">
-    <div class="title">Approval Controls</div>
+
+<!-- =====================================================
+     APPROVAL CONTROLS
+===================================================== -->
+
+<div class="card">
+
+    <div class="title">
+        Approval Controls
+    </div>
+
     <div class="filters">
-      <div>
-        <label>Date</label>
-        <input type="date" id="filterDate">
-      </div>
-      <div>
-        <label>Status</label>
-        <select id="filterStatus">
-          <option value="PENDING_APPROVAL">Pending Approval</option>
-          <option value="ALL">All</option>
-          <option value="APPROVED">Approved</option>
-          <option value="REJECTED">Rejected</option>
-        </select>
-      </div>
-      <div>
-        <label>Search</label>
-        <input id="searchBox" placeholder="Staff ID, name, class, subject">
-      </div>
-      <div style="display:flex;align-items:end">
-        <button class="primary" id="refreshBtn">Refresh</button>
-      </div>
-    </div>
-    <div id="message" class="message"></div>
-  </div>
 
-  <div class="card">
+        <div>
+
+            <label>
+                Date
+            </label>
+
+            <input
+                type="date"
+                id="filterDate">
+
+        </div>
+
+
+        <div>
+
+            <label>
+                Status
+            </label>
+
+            <select id="filterStatus">
+
+                <option value="Pending">
+                    Pending
+                </option>
+
+                <option value="ALL">
+                    All
+                </option>
+
+                <option value="Approved">
+                    Approved
+                </option>
+
+                <option value="Rejected">
+                    Rejected
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <div>
+
+            <label>
+                Search
+            </label>
+
+            <input
+                id="searchBox"
+                placeholder="Staff ID, name, class, subject">
+
+        </div>
+
+
+        <div
+        style="
+        display:flex;
+        align-items:end">
+
+            <button
+                class="primary"
+                id="refreshBtn">
+
+                Refresh
+
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <div
+        id="message"
+        class="message">
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     SUMMARY
+===================================================== -->
+
+<div class="card">
+
     <div class="summary">
-      <div class="stat">Pending: <span id="pendingCount">0</span></div>
-      <div class="stat">Approved: <span id="approvedCount">0</span></div>
-      <div class="stat">Rejected: <span id="rejectedCount">0</span></div>
+
+        <div class="stat">
+
+            Pending:
+            <span id="pendingCount">
+                0
+            </span>
+
+        </div>
+
+        <div class="stat">
+
+            Approved:
+            <span id="approvedCount">
+                0
+            </span>
+
+        </div>
+
+        <div class="stat">
+
+            Rejected:
+            <span id="rejectedCount">
+                0
+            </span>
+
+        </div>
+
     </div>
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th>S.No</th>
-            <th>Date / Day</th>
-            <th>Session / Hour</th>
-            <th>Class / Subject</th>
-            <th>Requesting Staff</th>
-            <th>Substitute Staff</th>
-            <th>Reason</th>
-            <th>Status</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody id="requestTable">
-          <tr><td colspan="9" class="loading">Loading requests...</td></tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
+
+
+<!-- =====================================================
+     TABLE
+===================================================== -->
+
+<div class="table-wrap">
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>
+S.No
+</th>
+
+<th>
+Date / Day
+</th>
+
+<th>
+Session / Hour
+</th>
+
+<th>
+Class / Section
+</th>
+
+<th>
+Subject
+</th>
+
+<th>
+Room
+</th>
+
+<th>
+Requesting Staff
+</th>
+
+<th>
+Substitute Staff
+</th>
+
+<th>
+Reason
+</th>
+
+<th>
+Status
+</th>
+
+<th>
+Action
+</th>
+
+</tr>
+
+</thead>
+
+
+<tbody id="requestTable">
+
+<tr>
+
+<td
+colspan="11"
+class="loading">
+
+Loading requests...
+
+</td>
+
+</tr>
+
+</tbody>
+
+</table>
+
 </div>
 
-<div class="modal" id="rejectModal">
-  <div class="modal-box">
-    <h2>Reject Substitute Request</h2>
-    <p style="font-size:13px;color:#6b7280;margin-bottom:10px">Enter the reason for rejection.</p>
-    <textarea id="rejectReason" placeholder="Rejection reason"></textarea>
-    <div class="modal-actions">
-      <button class="secondary" id="cancelReject">Cancel</button>
-      <button class="reject" id="confirmReject">Reject Request</button>
-    </div>
-  </div>
 </div>
+
+</div>
+
+
+<!-- =====================================================
+     REJECT MODAL
+===================================================== -->
+
+<div
+    class="modal"
+    id="rejectModal">
+
+    <div class="modal-box">
+
+        <h2>
+            Reject Substitute Request
+        </h2>
+
+        <p
+            style="
+            font-size:13px;
+            color:#6b7280;
+            margin-bottom:10px">
+
+            Enter the reason for rejection.
+
+        </p>
+
+
+        <textarea
+            id="rejectReason"
+            placeholder="Rejection reason">
+        </textarea>
+
+
+        <div class="modal-actions">
+
+            <button
+                class="secondary"
+                id="cancelReject">
+
+                Cancel
+
+            </button>
+
+
+            <button
+                class="reject"
+                id="confirmReject">
+
+                Reject Request
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     FIREBASE
+===================================================== -->
 
 <script type="module">
-import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
 import {
-  getFirestore,collection,getDocs,doc,updateDoc,serverTimestamp
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    initializeApp
+}
+from
+"https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
-const firebaseConfig={
-  apiKey:"AIzaSyAIv3091VM-gkmdwEAn7OhXWd9Cm2zh2bo",
-  authDomain:"maasc-2026.firebaseapp.com",
-  projectId:"maasc-2026",
-  storageBucket:"maasc-2026.appspot.com",
-  messagingSenderId:"585813001586",
-  appId:"1:585813001586:web:664e0e90ff0725d2e849eb"
+
+import {
+    getFirestore,
+    collection,
+    getDocs,
+    doc,
+    updateDoc,
+    serverTimestamp
+}
+from
+"https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+
+/* =====================================================
+   FIREBASE CONFIG
+===================================================== */
+
+const firebaseConfig = {
+
+    apiKey:
+    "AIzaSyAIv3091VM-gkmdwEAn7OhXWd9Cm2zh2bo",
+
+    authDomain:
+    "maasc-2026.firebaseapp.com",
+
+    projectId:
+    "maasc-2026",
+
+    storageBucket:
+    "maasc-2026.appspot.com",
+
+    messagingSenderId:
+    "585813001586",
+
+    appId:
+    "1:585813001586:web:664e0e90ff0725d2e849eb"
+
 };
-const app=initializeApp(firebaseConfig);
-const db=getFirestore(app);
 
-let requests=[];
-let rejectId=null;
 
-const $=id=>document.getElementById(id);
-const clean=v=>String(v??"").trim();
-const upper=v=>clean(v).toUpperCase();
+const app =
+initializeApp(firebaseConfig);
+
+
+const db =
+getFirestore(app);
+
+
+/* =====================================================
+   VARIABLES
+===================================================== */
+
+let requests = [];
+
+let rejectId = null;
+
+let headDepartment = "";
+
+let headId = "";
+
+let headName = "";
+
+
+/* =====================================================
+   HELPERS
+===================================================== */
+
+const $ =
+id =>
+document.getElementById(id);
+
+
+const clean =
+v =>
+String(v ?? "").trim();
+
+
+const upper =
+v =>
+clean(v).toUpperCase();
+
+
+/* =====================================================
+   ESCAPE HTML
+===================================================== */
 
 function esc(v){
- return String(v??"").replace(/&/g,"&amp;").replace(/</g,"&lt;")
- .replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;");
+
+    return String(v ?? "")
+
+    .replace(/&/g,"&amp;")
+
+    .replace(/</g,"&lt;")
+
+    .replace(/>/g,"&gt;")
+
+    .replace(/"/g,"&quot;")
+
+    .replace(/'/g,"&#039;");
+
 }
+
+
+/* =====================================================
+   NORMALIZE DAY
+===================================================== */
+
 function normalizeDay(v){
- const x=upper(v),m=x.match(/DAY\s*0?([1-6])/);
- if(m)return "DAY "+String(Number(m[1])).padStart(2,"0");
- if(/^[1-6]$/.test(x))return "DAY "+x.padStart(2,"0");
- const old={MONDAY:"DAY 01",TUESDAY:"DAY 02",WEDNESDAY:"DAY 03",
- THURSDAY:"DAY 04",FRIDAY:"DAY 05",SATURDAY:"DAY 06"};
- return old[x]||x;
+
+    const x =
+    upper(v);
+
+
+    const m =
+    x.match(
+        /DAY\s*0?([1-6])/
+    );
+
+
+    if(m){
+
+        return
+        "DAY " +
+        String(
+            Number(m[1])
+        ).padStart(2,"0");
+
+    }
+
+
+    if(/^[1-6]$/.test(x)){
+
+        return
+        "DAY " +
+        x.padStart(2,"0");
+
+    }
+
+
+    const old = {
+
+        MONDAY:"DAY 01",
+
+        TUESDAY:"DAY 02",
+
+        WEDNESDAY:"DAY 03",
+
+        THURSDAY:"DAY 04",
+
+        FRIDAY:"DAY 05",
+
+        SATURDAY:"DAY 06"
+
+    };
+
+
+    return old[x] || x;
+
 }
-function normalizeSession(v){return upper(v)}
+
+
+/* =====================================================
+   NORMALIZE SESSION
+===================================================== */
+
+function normalizeSession(v){
+
+    return upper(v);
+
+}
+
+
+/* =====================================================
+   MESSAGE
+===================================================== */
+
 function show(text,type){
- $("message").textContent=text;
- $("message").className="message show "+type;
+
+    $("message").textContent =
+    text;
+
+    $("message").className =
+    "message show " + type;
+
 }
-function hideMessage(){$("message").className="message"}
+
+
+function hideMessage(){
+
+    $("message").className =
+    "message";
+
+}
+
+
+/* =====================================================
+   GET DEPARTMENT HEAD SESSION
+===================================================== */
 
 function getHeadSession(){
- const keys=["staffSession","staff_session","loggedInStaff","currentStaff","staffData","userData","user"];
- for(const k of keys){
-   try{
-     const raw=localStorage.getItem(k)||sessionStorage.getItem(k);
-     if(!raw)continue;
-     const x=JSON.parse(raw);
-     if(x&&typeof x==="object")return x;
-   }catch(e){}
- }
- return {};
+
+    const keys = [
+
+        "staffSession",
+
+        "staff_session",
+
+        "loggedInStaff",
+
+        "currentStaff",
+
+        "staffData",
+
+        "userData",
+
+        "user"
+
+    ];
+
+
+    for(
+        const key of keys
+    ){
+
+        try{
+
+            const raw =
+            sessionStorage.getItem(key)
+            ||
+            localStorage.getItem(key);
+
+
+            if(!raw){
+
+                continue;
+
+            }
+
+
+            const x =
+            JSON.parse(raw);
+
+
+            if(
+                x &&
+                typeof x === "object"
+            ){
+
+                return x;
+
+            }
+
+        }
+        catch(e){}
+
+    }
+
+
+    return {};
+
 }
 
-const head=getHeadSession();
-const headId=clean(head.staffId??head.staffID??head.staff??head.staff_id??head.id);
-const headName=clean(head.staffName??head.name??head.displayName??head.staff_name);
+
+/* =====================================================
+   LOAD HEAD SESSION
+===================================================== */
+
+function initializeHead(){
+
+    const head =
+    getHeadSession();
+
+
+    headId =
+    clean(
+        head.staffId ??
+        head.staffID ??
+        head.staff ??
+        head.staff_id ??
+        head.id
+    );
+
+
+    headName =
+    clean(
+        head.staffName ??
+        head.name ??
+        head.displayName ??
+        head.staff_name
+    );
+
+
+    headDepartment =
+    clean(
+        head.department ??
+        head.dept ??
+        head.departmentName ??
+        head.department_name
+    );
+
+
+    /*
+     * Also support the dashboard-style
+     * sessionStorage fields.
+     */
+
+    if(!headId){
+
+        headId =
+        clean(
+            sessionStorage.getItem(
+                "staffId"
+            )
+        );
+
+    }
+
+
+    if(!headName){
+
+        headName =
+        clean(
+            sessionStorage.getItem(
+                "staffName"
+            )
+        );
+
+    }
+
+
+    if(!headDepartment){
+
+        headDepartment =
+        clean(
+            sessionStorage.getItem(
+                "department"
+            )
+        );
+
+    }
+
+
+    console.log(
+        "HEAD SESSION:",
+        {
+            headId,
+            headName,
+            headDepartment
+        }
+    );
+
+}
+
+
+/* =====================================================
+   GET REQUEST ROOM
+===================================================== */
+
+function getRequestRoom(r){
+
+    /*
+     * Your requested Firestore field is roomNo.
+     *
+     * room is retained only for older
+     * substituteRequests documents.
+     */
+
+    return clean(
+        r.roomNo ??
+        r.room ??
+        ""
+    );
+
+}
+
+
+/* =====================================================
+   GET REQUEST DATE
+===================================================== */
+
+function getRequestDate(r){
+
+    return clean(
+        r.requestDate ??
+        r.date ??
+        ""
+    );
+
+}
+
+
+/* =====================================================
+   GET REQUEST DAY
+===================================================== */
+
+function getRequestDay(r){
+
+    return normalizeDay(
+        r.dayOrder ??
+        r.day ??
+        ""
+    );
+
+}
+
+
+/* =====================================================
+   GET REQUESTING STAFF
+===================================================== */
+
+function getRequestingStaffId(r){
+
+    return clean(
+        r.staffId ??
+        r.requestingStaffId ??
+        ""
+    );
+
+}
+
+
+function getRequestingStaffName(r){
+
+    return clean(
+        r.staffName ??
+        r.requestingStaffName ??
+        ""
+    );
+
+}
+
+
+/* =====================================================
+   GET REASON
+===================================================== */
+
+function getRequestReason(r){
+
+    return clean(
+        r.reason ??
+        r.remarks ??
+        ""
+    );
+
+}
+
+
+/* =====================================================
+   LOAD REQUESTS
+===================================================== */
 
 async function loadRequests(){
- $("requestTable").innerHTML='<tr><td colspan="9" class="loading">Loading substitute requests...</td></tr>';
- hideMessage();
- try{
-   const snap=await getDocs(collection(db,"substituteRequests"));
-   requests=[];
-   snap.forEach(x=>requests.push({id:x.id,...x.data()}));
 
-   requests.sort((a,b)=>{
-     const ad=clean(a.date),bd=clean(b.date);
-     if(ad!==bd)return bd.localeCompare(ad);
-     return String(b.requestedAt?.seconds||0).localeCompare(String(a.requestedAt?.seconds||0));
-   });
+    $("requestTable").innerHTML =
 
-   updateCounts();
-   render();
- }catch(err){
-   console.error("APPROVAL LOAD ERROR:",err);
-   $("requestTable").innerHTML='<tr><td colspan="9" class="empty">Unable to load requests: '+esc(err.message)+'</td></tr>';
-   show("Unable to load substitute requests. Check Firestore permissions.","err");
- }
+    `
+        <tr>
+
+            <td
+                colspan="11"
+                class="loading">
+
+                Loading substitute requests...
+
+            </td>
+
+        </tr>
+    `;
+
+
+    hideMessage();
+
+
+    try{
+
+        const snap =
+        await getDocs(
+            collection(
+                db,
+                "substituteRequests"
+            )
+        );
+
+
+        requests = [];
+
+
+        snap.forEach(
+            documentSnapshot => {
+
+                const data =
+                documentSnapshot.data()
+                || {};
+
+
+                /*
+                 * IMPORTANT:
+                 * Department Head should only see
+                 * requests from his/her department.
+                 */
+
+                if(
+                    headDepartment &&
+                    upper(
+                        data.department
+                    ) !==
+                    upper(
+                        headDepartment
+                    )
+                ){
+
+                    return;
+
+                }
+
+
+                requests.push({
+
+                    id:
+                    documentSnapshot.id,
+
+                    ...data
+
+                });
+
+            }
+        );
+
+
+        requests.sort(
+            (a,b) => {
+
+                const ad =
+                getRequestDate(a);
+
+                const bd =
+                getRequestDate(b);
+
+
+                if(
+                    ad !== bd
+                ){
+
+                    return
+                    bd.localeCompare(ad);
+
+                }
+
+
+                const aTime =
+                a.createdAt &&
+                a.createdAt.toMillis
+                ?
+                a.createdAt.toMillis()
+                :
+                0;
+
+
+                const bTime =
+                b.createdAt &&
+                b.createdAt.toMillis
+                ?
+                b.createdAt.toMillis()
+                :
+                0;
+
+
+                return bTime - aTime;
+
+            }
+        );
+
+
+        updateCounts();
+
+        render();
+
+
+    }
+    catch(err){
+
+        console.error(
+            "APPROVAL LOAD ERROR:",
+            err
+        );
+
+
+        $("requestTable").innerHTML =
+
+        `
+            <tr>
+
+                <td
+                    colspan="11"
+                    class="empty">
+
+                    Unable to load requests:
+                    ${esc(err.message)}
+
+                </td>
+
+            </tr>
+        `;
+
+
+        show(
+            "Unable to load substitute requests. Check Firestore permissions.",
+            "err"
+        );
+
+    }
+
 }
+
+
+/* =====================================================
+   UPDATE COUNTS
+===================================================== */
 
 function updateCounts(){
- let p=0,a=0,r=0;
- requests.forEach(x=>{
-   const s=upper(x.status);
-   if(s==="PENDING_APPROVAL"||s==="PENDING"||s==="ALLOTTED")p++;
-   else if(s==="APPROVED")a++;
-   else if(s==="REJECTED")r++;
- });
- $("pendingCount").textContent=p;
- $("approvedCount").textContent=a;
- $("rejectedCount").textContent=r;
+
+    let pending = 0;
+
+    let approved = 0;
+
+    let rejected = 0;
+
+
+    requests.forEach(
+        r => {
+
+            const s =
+            upper(
+                r.status ||
+                "Pending"
+            );
+
+
+            if(
+                s === "PENDING"
+                ||
+                s === "PENDING_APPROVAL"
+                ||
+                s === "ALLOTTED"
+            ){
+
+                pending++;
+
+            }
+
+
+            else if(
+                s === "APPROVED"
+            ){
+
+                approved++;
+
+            }
+
+
+            else if(
+                s === "REJECTED"
+            ){
+
+                rejected++;
+
+            }
+
+        }
+    );
+
+
+    $("pendingCount").textContent =
+    pending;
+
+
+    $("approvedCount").textContent =
+    approved;
+
+
+    $("rejectedCount").textContent =
+    rejected;
+
 }
+
+
+/* =====================================================
+   FILTER
+===================================================== */
 
 function filtered(){
- const status=upper($("filterStatus").value);
- const date=$("filterDate").value;
- const term=upper($("searchBox").value);
 
- return requests.filter(r=>{
-   const s=upper(r.status||"PENDING_APPROVAL");
-   if(status!=="ALL"){
-     if(status==="PENDING_APPROVAL"){
-       if(!(s==="PENDING_APPROVAL"||s==="PENDING"||s==="ALLOTTED"))return false;
-     }else if(s!==status)return false;
-   }
-   if(date&&clean(r.date)!==date)return false;
-   if(term){
-     const text=upper([
-       r.requestingStaffId,r.requestingStaffName,r.substituteStaffId,
-       r.substituteStaffName,r.className,r.subject,r.day,r.session
-     ].join(" "));
-     if(!text.includes(term))return false;
-   }
-   return true;
- });
+    const status =
+    upper(
+        $("filterStatus").value
+    );
+
+
+    const date =
+    $("filterDate").value;
+
+
+    const term =
+    upper(
+        $("searchBox").value
+    );
+
+
+    return requests.filter(
+        r => {
+
+            const s =
+            upper(
+                r.status ||
+                "Pending"
+            );
+
+
+            /*
+             * STATUS
+             */
+
+            if(
+                status !== "ALL"
+            ){
+
+                if(
+                    status ===
+                    "PENDING"
+                ){
+
+                    if(
+                        !(
+                            s === "PENDING"
+                            ||
+                            s === "PENDING_APPROVAL"
+                            ||
+                            s === "ALLOTTED"
+                        )
+                    ){
+
+                        return false;
+
+                    }
+
+                }
+                else
+                if(
+                    s !== status
+                ){
+
+                    return false;
+
+                }
+
+            }
+
+
+            /*
+             * DATE
+             */
+
+            if(
+                date &&
+                getRequestDate(r) !== date
+            ){
+
+                return false;
+
+            }
+
+
+            /*
+             * SEARCH
+             */
+
+            if(term){
+
+                const text =
+                upper(
+
+                    [
+
+                        getRequestingStaffId(r),
+
+                        getRequestingStaffName(r),
+
+                        r.substituteStaffId,
+
+                        r.substituteStaffName,
+
+                        r.classYear,
+
+                        r.year,
+
+                        r.section,
+
+                        r.subject,
+
+                        getRequestDay(r),
+
+                        r.session,
+
+                        getRequestRoom(r),
+
+                        getRequestReason(r)
+
+                    ].join(" ")
+
+                );
+
+
+                if(
+                    !text.includes(term)
+                ){
+
+                    return false;
+
+                }
+
+            }
+
+
+            return true;
+
+        }
+    );
+
 }
+
+
+/* =====================================================
+   RENDER
+===================================================== */
 
 function render(){
- const data=filtered();
- const body=$("requestTable");
- if(!data.length){
-   body.innerHTML='<tr><td colspan="9" class="empty">No requests found.</td></tr>';
-   return;
- }
- body.innerHTML=data.map((r,i)=>{
-   const s=upper(r.status||"PENDING_APPROVAL");
-   const cls=s==="APPROVED"?"approved":s==="REJECTED"?"rejected":"pending";
-   let actions="";
-   if(s==="PENDING_APPROVAL"||s==="PENDING"||s==="ALLOTTED"){
-     actions=`<div class="actions">
-       <button class="approve" data-action="approve" data-id="${esc(r.id)}">Approve</button>
-       <button class="reject" data-action="reject" data-id="${esc(r.id)}">Reject</button>
-     </div>`;
-   }else{
-     actions='<span class="small">Completed</span>';
-   }
-   return `<tr>
-     <td>${i+1}</td>
-     <td><b>${esc(r.date||"-")}</b><div class="small">${esc(normalizeDay(r.day))}</div></td>
-     <td><b>${esc(normalizeSession(r.session)||"-")}</b><div class="small">Hour ${esc(r.hour||"-")}</div></td>
-     <td><b>${esc(r.className||"-")}</b><div class="small">${esc(r.subject||"-")}</div></td>
-     <td><b>${esc(r.requestingStaffName||"-")}</b><div class="small">${esc(r.requestingStaffId||"")}</div></td>
-     <td><b>${esc(r.substituteStaffName||"-")}</b><div class="small">${esc(r.substituteStaffId||"")}</div></td>
-     <td>${esc(r.remarks||"-")}</td>
-     <td><span class="status ${cls}">${esc(s)}</span>
-       ${s==="REJECTED"&&r.rejectionReason?'<div class="small">Reason: '+esc(r.rejectionReason)+'</div>':''}
-     </td>
-     <td>${actions}</td>
-   </tr>`;
- }).join("");
 
- body.querySelectorAll("[data-action='approve']").forEach(b=>{
-   b.addEventListener("click",()=>approveRequest(b.dataset.id,b));
- });
- body.querySelectorAll("[data-action='reject']").forEach(b=>{
-   b.addEventListener("click",()=>openReject(b.dataset.id));
- });
+    const data =
+    filtered();
+
+
+    const body =
+    $("requestTable");
+
+
+    if(
+        !data.length
+    ){
+
+        body.innerHTML =
+
+        `
+            <tr>
+
+                <td
+                    colspan="11"
+                    class="empty">
+
+                    No substitute requests found.
+
+                </td>
+
+            </tr>
+        `;
+
+        return;
+
+    }
+
+
+    body.innerHTML =
+    data.map(
+        (r,i) => {
+
+            const s =
+            upper(
+                r.status ||
+                "Pending"
+            );
+
+
+            const cls =
+            s === "APPROVED"
+            ?
+            "approved"
+            :
+            s === "REJECTED"
+            ?
+            "rejected"
+            :
+            "pending";
+
+
+            let actions = "";
+
+
+            /*
+             * ONLY PENDING REQUESTS
+             * CAN BE APPROVED OR REJECTED.
+             */
+
+            if(
+                s === "PENDING"
+                ||
+                s === "PENDING_APPROVAL"
+                ||
+                s === "ALLOTTED"
+            ){
+
+                actions =
+
+                `
+                    <div class="actions">
+
+                        <button
+                            class="approve"
+                            data-action="approve"
+                            data-id="${esc(r.id)}">
+
+                            Approve
+
+                        </button>
+
+
+                        <button
+                            class="reject"
+                            data-action="reject"
+                            data-id="${esc(r.id)}">
+
+                            Reject
+
+                        </button>
+
+                    </div>
+                `;
+
+            }
+            else{
+
+                actions =
+                `
+                    <span class="small">
+                        Completed
+                    </span>
+                `;
+
+            }
+
+
+            const room =
+            getRequestRoom(r);
+
+
+            const requestDate =
+            getRequestDate(r);
+
+
+            const day =
+            getRequestDay(r);
+
+
+            const requestingName =
+            getRequestingStaffName(r);
+
+
+            const requestingId =
+            getRequestingStaffId(r);
+
+
+            const classYear =
+            clean(
+                r.classYear ??
+                r.year ??
+                ""
+            );
+
+
+            return `
+
+                <tr>
+
+                    <td>
+                        ${i + 1}
+                    </td>
+
+
+                    <td>
+
+                        <b>
+                            ${esc(
+                                requestDate ||
+                                "-"
+                            )}
+                        </b>
+
+                        <div class="small">
+
+                            ${esc(
+                                day ||
+                                "-"
+                            )}
+
+                        </div>
+
+                    </td>
+
+
+                    <td>
+
+                        <b>
+
+                            ${esc(
+                                normalizeSession(
+                                    r.session
+                                ) ||
+                                "-"
+                            )}
+
+                        </b>
+
+                        <div class="small">
+
+                            Hour
+                            ${esc(
+                                r.hour ??
+                                "-"
+                            )}
+
+                        </div>
+
+                    </td>
+
+
+                    <td>
+
+                        <b>
+
+                            ${esc(
+                                classYear ||
+                                "-"
+                            )}
+
+                        </b>
+
+
+                        <div class="small">
+
+                            Section:
+                            ${esc(
+                                r.section ||
+                                "-"
+                            )}
+
+                        </div>
+
+                    </td>
+
+
+                    <td>
+
+                        ${esc(
+                            r.subject ||
+                            "-"
+                        )}
+
+                    </td>
+
+
+                    <td>
+
+                        ${esc(
+                            room ||
+                            "-"
+                        )}
+
+                    </td>
+
+
+                    <td>
+
+                        <b>
+
+                            ${esc(
+                                requestingName ||
+                                "-"
+                            )}
+
+                        </b>
+
+
+                        <div class="small">
+
+                            ${esc(
+                                requestingId ||
+                                ""
+                            )}
+
+                        </div>
+
+
+                        <div class="small">
+
+                            ${esc(
+                                r.department ||
+                                ""
+                            )}
+
+                        </div>
+
+                    </td>
+
+
+                    <td>
+
+                        <b>
+
+                            ${esc(
+                                r.substituteStaffName ||
+                                "-"
+                            )}
+
+                        </b>
+
+
+                        <div class="small">
+
+                            ${esc(
+                                r.substituteStaffId ||
+                                ""
+                            )}
+
+                        </div>
+
+
+                        <div class="small">
+
+                            ${esc(
+                                r.substituteStaffDepartment ||
+                                ""
+                            )}
+
+                        </div>
+
+                    </td>
+
+
+                    <td>
+
+                        ${esc(
+                            getRequestReason(r) ||
+                            "-"
+                        )}
+
+                    </td>
+
+
+                    <td>
+
+                        <span
+                            class="status ${cls}">
+
+                            ${esc(
+                                s
+                            )}
+
+                        </span>
+
+
+                        ${
+                            s === "REJECTED"
+                            &&
+                            r.rejectionReason
+                            ?
+
+                            `
+                                <div
+                                    class="small">
+
+                                    Reason:
+                                    ${esc(
+                                        r.rejectionReason
+                                    )}
+
+                                </div>
+                            `
+
+                            :
+
+                            ""
+                        }
+
+                    </td>
+
+
+                    <td>
+
+                        ${actions}
+
+                    </td>
+
+                </tr>
+
+            `;
+
+        }
+    ).join("");
+
+
+    /*
+     * APPROVE BUTTONS
+     */
+
+    body
+    .querySelectorAll(
+        "[data-action='approve']"
+    )
+    .forEach(
+        button => {
+
+            button.addEventListener(
+                "click",
+                () => {
+
+                    approveRequest(
+                        button.dataset.id,
+                        button
+                    );
+
+                }
+            );
+
+        }
+    );
+
+
+    /*
+     * REJECT BUTTONS
+     */
+
+    body
+    .querySelectorAll(
+        "[data-action='reject']"
+    )
+    .forEach(
+        button => {
+
+            button.addEventListener(
+                "click",
+                () => {
+
+                    openReject(
+                        button.dataset.id
+                    );
+
+                }
+            );
+
+        }
+    );
+
 }
 
-async function approveRequest(id,button){
- if(!confirm("Approve this substitute assignment? It will become visible in the substitute staff timetable."))return;
- button.disabled=true;
- try{
-   const snap=await getDocs(collection(db,"substituteRequests"));
-   const current=snap.docs.find(x=>x.id===id);
-   if(!current)throw new Error("Request no longer exists.");
-   const r=current.data();
-   const status=upper(r.status);
-   if(status==="APPROVED"){
-     show("This request is already approved.","info");
-     await loadRequests();return;
-   }
-   if(status==="REJECTED"){
-     show("This request has already been rejected.","err");
-     await loadRequests();return;
-   }
 
-   // Final conflict check: the substitute must still be free.
-   const tt=await getDocs(collection(db,"timetableAssignments"));
-   const busy=tt.docs.some(x=>{
-     const t=x.data();
-     const tid=clean(t.staffId??t.staffID??t.staff??t.staff_id);
-     const day=normalizeDay(t.day??t.dayName??t.dayNo);
-     const session=normalizeSession(t.session);
-     const hour=Number(t.hour??t.period??t.hourNo??t.periodNo??0);
-     return upper(tid)===upper(r.substituteStaffId) &&
-       day===normalizeDay(r.day) &&
-       session===normalizeSession(r.session) &&
-       hour===Number(r.hour);
-   });
-   if(busy){
-     show("Cannot approve: the selected substitute staff now has a timetable entry for this slot.","err");
-     await loadRequests();return;
-   }
+/* =====================================================
+   APPROVE REQUEST
+===================================================== */
 
-   // Prevent another active substitute request from taking the same staff slot.
-   const conflicts=snap.docs.some(x=>{
-     if(x.id===id)return false;
-     const q=x.data(),qs=upper(q.status);
-     return (qs==="APPROVED"||qs==="PENDING_APPROVAL"||qs==="PENDING"||qs==="ALLOTTED") &&
-       upper(q.substituteStaffId)===upper(r.substituteStaffId) &&
-       clean(q.date)===clean(r.date) &&
-       normalizeDay(q.day)===normalizeDay(r.day) &&
-       normalizeSession(q.session)===normalizeSession(r.session) &&
-       Number(q.hour)===Number(r.hour);
-   });
-   if(conflicts){
-     show("Cannot approve: this substitute staff is already assigned to another request for the same slot.","err");
-     await loadRequests();return;
-   }
+async function approveRequest(
+    id,
+    button
+){
 
-   await updateDoc(doc(db,"substituteRequests",id),{
-     status:"APPROVED",
-     approvedBy:headId||"HEAD",
-     approvedByName:headName||"Department Head",
-     approvedAt:serverTimestamp(),
-     rejectionReason:null
-   });
+    if(
+        !confirm(
+            "Approve this substitute request?"
+        )
+    ){
 
-   show("Substitute request approved successfully. It will now appear in the substitute staff timetable.","ok");
-   await loadRequests();
- }catch(err){
-   console.error("APPROVE ERROR:",err);
-   show("Approval failed: "+err.message,"err");
-   button.disabled=false;
- }
+        return;
+
+    }
+
+
+    button.disabled =
+    true;
+
+
+    try{
+
+        /*
+         * Reload the current request.
+         */
+
+        const snap =
+        await getDocs(
+            collection(
+                db,
+                "substituteRequests"
+            )
+        );
+
+
+        const current =
+        snap.docs.find(
+            x =>
+            x.id === id
+        );
+
+
+        if(!current){
+
+            throw new Error(
+                "Request no longer exists."
+            );
+
+        }
+
+
+        const r =
+        current.data();
+
+
+        /*
+         * Department protection.
+         */
+
+        if(
+            headDepartment &&
+            upper(
+                r.department
+            ) !==
+            upper(
+                headDepartment
+            )
+        ){
+
+            throw new Error(
+                "This request does not belong to your department."
+            );
+
+        }
+
+
+        const status =
+        upper(
+            r.status ||
+            "Pending"
+        );
+
+
+        if(
+            status ===
+            "APPROVED"
+        ){
+
+            show(
+                "This request is already approved.",
+                "info"
+            );
+
+            await loadRequests();
+
+            return;
+
+        }
+
+
+        if(
+            status ===
+            "REJECTED"
+        ){
+
+            show(
+                "This request has already been rejected.",
+                "err"
+            );
+
+            await loadRequests();
+
+            return;
+
+        }
+
+
+        const substituteId =
+        clean(
+            r.substituteStaffId
+        );
+
+
+        const requestDate =
+        getRequestDate(r);
+
+
+        const requestDay =
+        getRequestDay(r);
+
+
+        const requestSession =
+        normalizeSession(
+            r.session
+        );
+
+
+        const requestHour =
+        Number(
+            r.hour ??
+            0
+        );
+
+
+        if(
+            !substituteId ||
+            !requestDate ||
+            !requestDay ||
+            !requestSession ||
+            !requestHour
+        ){
+
+            throw new Error(
+                "Request is missing Date, Day Order, Session, Hour or Substitute Staff."
+            );
+
+        }
+
+
+        /* =================================================
+           CHECK CURRENT STAFF TIMETABLE
+        ================================================= */
+
+        const timetableSnap =
+        await getDocs(
+            collection(
+                db,
+                "timetableAssignments"
+            )
+        );
+
+
+        const busy =
+        timetableSnap.docs.some(
+            x => {
+
+                const t =
+                x.data()
+                || {};
+
+
+                const tid =
+                clean(
+                    t.staffId ??
+                    t.staffID ??
+                    t.staff ??
+                    t.staff_id
+                );
+
+
+                const day =
+                normalizeDay(
+                    t.day ??
+                    t.dayOrder ??
+                    t.dayName ??
+                    t.dayNo
+                );
+
+
+                const session =
+                normalizeSession(
+                    t.session
+                );
+
+
+                const hour =
+                Number(
+                    t.hour ??
+                    t.period ??
+                    t.hourNo ??
+                    t.periodNo ??
+                    0
+                );
+
+
+                return
+
+                    upper(tid) ===
+                    upper(substituteId)
+
+                    &&
+
+                    day ===
+                    requestDay
+
+                    &&
+
+                    session ===
+                    requestSession
+
+                    &&
+
+                    hour ===
+                    requestHour;
+
+            }
+        );
+
+
+        if(busy){
+
+            show(
+                "Cannot approve: the selected substitute staff already has a timetable entry for this Day Order / Session / Hour.",
+                "err"
+            );
+
+
+            await loadRequests();
+
+            return;
+
+        }
+
+
+        /* =================================================
+           CHECK OTHER SUBSTITUTE REQUESTS
+        ================================================= */
+
+        const conflicts =
+        snap.docs.some(
+            x => {
+
+                /*
+                 * Ignore the current request.
+                 */
+
+                if(
+                    x.id === id
+                ){
+
+                    return false;
+
+                }
+
+
+                const q =
+                x.data()
+                || {};
+
+
+                const qs =
+                upper(
+                    q.status ||
+                    "Pending"
+                );
+
+
+                /*
+                 * Only active requests
+                 * create conflicts.
+                 */
+
+                const active =
+
+                    qs === "APPROVED"
+                    ||
+                    qs === "PENDING"
+                    ||
+                    qs === "PENDING_APPROVAL"
+                    ||
+                    qs === "ALLOTTED";
+
+
+                if(!active){
+
+                    return false;
+
+                }
+
+
+                const qSubstitute =
+                clean(
+                    q.substituteStaffId
+                );
+
+
+                const qDate =
+                getRequestDate(q);
+
+
+                const qDay =
+                getRequestDay(q);
+
+
+                const qSession =
+                normalizeSession(
+                    q.session
+                );
+
+
+                const qHour =
+                Number(
+                    q.hour ??
+                    0
+                );
+
+
+                return
+
+                    upper(
+                        qSubstitute
+                    ) ===
+                    upper(
+                        substituteId
+                    )
+
+                    &&
+
+                    qDate ===
+                    requestDate
+
+                    &&
+
+                    qDay ===
+                    requestDay
+
+                    &&
+
+                    qSession ===
+                    requestSession
+
+                    &&
+
+                    qHour ===
+                    requestHour;
+
+            }
+        );
+
+
+        if(conflicts){
+
+            show(
+                "Cannot approve: this substitute staff is already assigned to another substitute request for the same Date / Day Order / Session / Hour.",
+                "err"
+            );
+
+
+            await loadRequests();
+
+            return;
+
+        }
+
+
+        /* =================================================
+           APPROVE
+        ================================================= */
+
+        await updateDoc(
+
+            doc(
+                db,
+                "substituteRequests",
+                id
+            ),
+
+            {
+
+                status:
+                "Approved",
+
+                approvedBy:
+                headId ||
+                "HEAD",
+
+                approvedByName:
+                headName ||
+                "Department Head",
+
+                approvedByDepartment:
+                headDepartment ||
+                r.department ||
+                "",
+
+                approvedAt:
+                serverTimestamp(),
+
+                rejectionReason:
+                null,
+
+                updatedAt:
+                serverTimestamp()
+
+            }
+
+        );
+
+
+        show(
+            "Substitute request approved successfully.",
+            "ok"
+        );
+
+
+        await loadRequests();
+
+    }
+    catch(err){
+
+        console.error(
+            "APPROVE ERROR:",
+            err
+        );
+
+
+        show(
+            "Approval failed: " +
+            err.message,
+            "err"
+        );
+
+
+        button.disabled =
+        false;
+
+    }
+
 }
+
+
+/* =====================================================
+   OPEN REJECT
+===================================================== */
 
 function openReject(id){
- rejectId=id;
- $("rejectReason").value="";
- $("rejectModal").classList.add("show");
- $("rejectReason").focus();
+
+    rejectId =
+    id;
+
+
+    $("rejectReason").value =
+    "";
+
+
+    $("rejectModal")
+    .classList
+    .add("show");
+
+
+    $("rejectReason")
+    .focus();
+
 }
 
-$("cancelReject").addEventListener("click",()=>{
- rejectId=null;$("rejectModal").classList.remove("show");
-});
 
-$("confirmReject").addEventListener("click",rejectRequest);
+/* =====================================================
+   CANCEL REJECT
+===================================================== */
+
+$("cancelReject")
+.addEventListener(
+    "click",
+    () => {
+
+        rejectId =
+        null;
+
+
+        $("rejectModal")
+        .classList
+        .remove("show");
+
+    }
+);
+
+
+/* =====================================================
+   CONFIRM REJECT
+===================================================== */
+
+$("confirmReject")
+.addEventListener(
+    "click",
+    rejectRequest
+);
+
+
+/* =====================================================
+   REJECT REQUEST
+===================================================== */
 
 async function rejectRequest(){
- if(!rejectId)return;
- const reason=clean($("rejectReason").value);
- if(!reason){
-   alert("Please enter the rejection reason.");
-   return;
- }
- const id=rejectId;
- $("confirmReject").disabled=true;
- try{
-   await updateDoc(doc(db,"substituteRequests",id),{
-     status:"REJECTED",
-     approvedBy:headId||"HEAD",
-     approvedByName:headName||"Department Head",
-     approvedAt:serverTimestamp(),
-     rejectionReason:reason
-   });
-   $("rejectModal").classList.remove("show");
-   rejectId=null;
-   show("Substitute request rejected.","ok");
-   await loadRequests();
- }catch(err){
-   console.error("REJECT ERROR:",err);
-   show("Rejection failed: "+err.message,"err");
- }finally{
-   $("confirmReject").disabled=false;
- }
+
+    if(!rejectId){
+
+        return;
+
+    }
+
+
+    const reason =
+    clean(
+        $("rejectReason").value
+    );
+
+
+    if(!reason){
+
+        alert(
+            "Please enter the rejection reason."
+        );
+
+        return;
+
+    }
+
+
+    const id =
+    rejectId;
+
+
+    $("confirmReject")
+    .disabled =
+    true;
+
+
+    try{
+
+        /*
+         * Check request exists.
+         */
+
+        const snap =
+        await getDocs(
+            collection(
+                db,
+                "substituteRequests"
+            )
+        );
+
+
+        const current =
+        snap.docs.find(
+            x =>
+            x.id === id
+        );
+
+
+        if(!current){
+
+            throw new Error(
+                "Request no longer exists."
+            );
+
+        }
+
+
+        const r =
+        current.data();
+
+
+        /*
+         * Department protection.
+         */
+
+        if(
+            headDepartment &&
+            upper(
+                r.department
+            ) !==
+            upper(
+                headDepartment
+            )
+        ){
+
+            throw new Error(
+                "This request does not belong to your department."
+            );
+
+        }
+
+
+        const status =
+        upper(
+            r.status ||
+            "Pending"
+        );
+
+
+        if(
+            status ===
+            "APPROVED"
+        ){
+
+            throw new Error(
+                "This request is already approved."
+            );
+
+        }
+
+
+        if(
+            status ===
+            "REJECTED"
+        ){
+
+            throw new Error(
+                "This request is already rejected."
+            );
+
+        }
+
+
+        await updateDoc(
+
+            doc(
+                db,
+                "substituteRequests",
+                id
+            ),
+
+            {
+
+                status:
+                "Rejected",
+
+                approvedBy:
+                headId ||
+                "HEAD",
+
+                approvedByName:
+                headName ||
+                "Department Head",
+
+                approvedByDepartment:
+                headDepartment ||
+                r.department ||
+                "",
+
+                approvedAt:
+                serverTimestamp(),
+
+                rejectionReason:
+                reason,
+
+                updatedAt:
+                serverTimestamp()
+
+            }
+
+        );
+
+
+        $("rejectModal")
+        .classList
+        .remove("show");
+
+
+        rejectId =
+        null;
+
+
+        show(
+            "Substitute request rejected successfully.",
+            "ok"
+        );
+
+
+        await loadRequests();
+
+    }
+    catch(err){
+
+        console.error(
+            "REJECT ERROR:",
+            err
+        );
+
+
+        show(
+            "Rejection failed: " +
+            err.message,
+            "err"
+        );
+
+    }
+    finally{
+
+        $("confirmReject")
+        .disabled =
+        false;
+
+    }
+
 }
 
-$("refreshBtn").addEventListener("click",loadRequests);
-$("filterStatus").addEventListener("change",render);
-$("filterDate").addEventListener("change",render);
-$("searchBox").addEventListener("input",render);
+
+/* =====================================================
+   FILTER EVENTS
+===================================================== */
+
+$("refreshBtn")
+.addEventListener(
+    "click",
+    loadRequests
+);
+
+
+$("filterStatus")
+.addEventListener(
+    "change",
+    render
+);
+
+
+$("filterDate")
+.addEventListener(
+    "change",
+    render
+);
+
+
+$("searchBox")
+.addEventListener(
+    "input",
+    render
+);
+
+
+/* =====================================================
+   INITIALIZE
+===================================================== */
+
+initializeHead();
+
 
 loadRequests();
+
 </script>
+
 </body>
+
 </html>
