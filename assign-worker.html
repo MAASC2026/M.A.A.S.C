@@ -1274,11 +1274,42 @@ async function verifyHead() {
     // GET DEPARTMENT
     // =================================================
 
-    const department =
-        clean(
-            staff.serviceHeadDepartment ||
-            staff.department
-        );
+   const headDepartments = Array.isArray(
+    staff.serviceHeadDepartments
+)
+    ? staff.serviceHeadDepartments
+        .map(clean)
+        .filter(Boolean)
+    : [];
+
+// Backward compatibility with old Firestore field
+if (
+    !headDepartments.length &&
+    clean(staff.serviceHeadDepartment)
+) {
+    headDepartments.push(
+        clean(staff.serviceHeadDepartment)
+    );
+}
+
+// Final fallback
+if (
+    !headDepartments.length &&
+    clean(staff.department)
+) {
+    headDepartments.push(
+        clean(staff.department)
+    );
+}
+
+if (!headDepartments.length) {
+
+    showAccessViolation(
+        "Department Head department was not found."
+    );
+
+    return;
+}
 
 
     if (!department) {
