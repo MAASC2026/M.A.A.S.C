@@ -1274,45 +1274,46 @@ async function verifyHead() {
     // GET DEPARTMENT
     // =================================================
 
-   const headDepartments = Array.isArray(
-    staff.serviceHeadDepartments
-)
-    ? staff.serviceHeadDepartments
-        .map(clean)
-        .filter(Boolean)
-    : [];
+    // =================================================
+    // GET ALL DEPARTMENTS WHERE THIS PERSON IS HEAD
+    // =================================================
 
-// Backward compatibility with old Firestore field
-if (
-    !headDepartments.length &&
-    clean(staff.serviceHeadDepartment)
-) {
-    headDepartments.push(
+    let headDepartments = Array.isArray(
+        staff.serviceHeadDepartments
+    )
+        ? staff.serviceHeadDepartments
+            .map(clean)
+            .filter(Boolean)
+        : [];
+
+    // Backward compatibility with the old single-department field.
+    if (
+        !headDepartments.length &&
         clean(staff.serviceHeadDepartment)
-    );
-}
+    ) {
+        headDepartments = [
+            clean(staff.serviceHeadDepartment)
+        ];
+    }
 
-// Final fallback
-if (
-    !headDepartments.length &&
-    clean(staff.department)
-) {
-    headDepartments.push(
+    // Final fallback to the staff's normal department.
+    if (
+        !headDepartments.length &&
         clean(staff.department)
-    );
-}
+    ) {
+        headDepartments = [
+            clean(staff.department)
+        ];
+    }
 
-if (!headDepartments.length) {
+    // Remove duplicate department names.
+    headDepartments = [
+        ...new Map(
+            headDepartments.map(dep => [normalize(dep), dep])
+        ).values()
+    ];
 
-    showAccessViolation(
-        "Department Head department was not found."
-    );
-
-    return;
-}
-
-
-    if (!department) {
+    if (!headDepartments.length) {
 
         showAccessViolation(
             "Department Head department was not found."
@@ -1348,8 +1349,10 @@ if (!headDepartments.length) {
         );
 
 
+    // If the Head has more than one department, use the first assigned
+    // department for this page. All Head departments are preserved.
     currentDepartment =
-        department;
+        headDepartments[0];
 
 
     console.log(
@@ -1401,7 +1404,9 @@ if (!headDepartments.length) {
         "headDepartment"
     ).textContent =
         "Department: " +
-        currentDepartment;
+        (headDepartments.length > 1
+            ? headDepartments.join(" / ")
+            : currentDepartment);
 
 
     document.getElementById(
@@ -1419,7 +1424,9 @@ if (!headDepartments.length) {
     document.getElementById(
         "infoDepartment"
     ).textContent =
-        currentDepartment;
+        headDepartments.length > 1
+            ? headDepartments.join(" / ")
+            : currentDepartment;
 
 
     // =================================================
