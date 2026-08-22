@@ -1,703 +1,703 @@
-<!DOCTYPE html>
-<html lang="en">
+ <!DOCTYPE html>
+ <html lang="en">
 
-<head>
+ <head>
 
-<meta charset="UTF-8">
+ <meta charset="UTF-8">
 
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Internal Mark Entry</title>
+ <title>Internal Mark Entry</title>
 
 
-<style>
+ <style>
 
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:Arial, Helvetica, sans-serif;
-}
+ *{
+     margin:0;
+     padding:0;
+     box-sizing:border-box;
+     font-family:Arial, Helvetica, sans-serif;
+ }
 
 
-body{
+ body{
 
-    background:#f4f6f9;
+     background:#f4f6f9;
 
-    padding:20px;
+     padding:20px;
 
-}
+ }
 
 
 
-.container{
+ .container{
 
-    max-width:1400px;
+     max-width:1400px;
 
-    margin:auto;
+     margin:auto;
 
-    background:white;
+     background:white;
 
-    padding:25px;
+     padding:25px;
 
-    border-radius:12px;
+     border-radius:12px;
 
-    box-shadow:0 5px 20px rgba(0,0,0,0.15);
+     box-shadow:0 5px 20px rgba(0,0,0,0.15);
 
-}
+ }
 
 
 
-.header{
+ .header{
 
-    text-align:center;
+     text-align:center;
 
-    margin-bottom:25px;
+     margin-bottom:25px;
 
-}
+ }
 
 
 
-.header h2{
+ .header h2{
 
-    color:#1d3557;
+     color:#1d3557;
 
-    font-size:28px;
+     font-size:28px;
 
-}
+ }
 
 
 
 
-.filters{
+ .filters{
 
-    display:grid;
+     display:grid;
 
-    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+     grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
 
-    gap:20px;
+     gap:20px;
 
-    margin-bottom:25px;
+     margin-bottom:25px;
 
-}
+ }
 
 
 
 
-.form-group{
+ .form-group{
 
-    display:flex;
+     display:flex;
 
-    flex-direction:column;
+     flex-direction:column;
 
-}
+ }
 
 
 
-.form-group label{
+ .form-group label{
 
-    font-weight:bold;
+     font-weight:bold;
 
-    margin-bottom:8px;
+     margin-bottom:8px;
 
-}
+ }
 
 
 
 
-.form-group select,
-.form-group input{
+ .form-group select,
+ .form-group input{
 
-    padding:10px;
+     padding:10px;
 
-    border:1px solid #bbb;
+     border:1px solid #bbb;
 
-    border-radius:6px;
+     border-radius:6px;
 
-    font-size:15px;
+     font-size:15px;
 
-}
+ }
 
 
 
-.button-area,
-.save-area{
+ .button-area,
+ .save-area{
 
-    text-align:center;
+     text-align:center;
 
-    margin:20px 0;
+     margin:20px 0;
 
-}
+ }
 
 
 
 
-button{
+ button{
 
-    background:#2563eb;
+     background:#2563eb;
 
-    color:white;
+     color:white;
 
-    border:none;
+     border:none;
 
-    padding:12px 30px;
+     padding:12px 30px;
 
-    border-radius:8px;
+     border-radius:8px;
 
-    font-size:16px;
+     font-size:16px;
 
-    cursor:pointer;
+     cursor:pointer;
 
-}
+ }
 
 
 
-button:hover{
+ button:hover{
 
-    background:#1d4ed8;
+     background:#1d4ed8;
 
-}
+ }
 
 
 
 
-table{
+ table{
 
-    width:100%;
+     width:100%;
 
-    border-collapse:collapse;
+     border-collapse:collapse;
 
-    margin-top:20px;
+     margin-top:20px;
 
-}
+ }
 
 
 
 
-thead{
+ thead{
 
-    background:#1d3557;
+     background:#1d3557;
 
-    color:white;
+     color:white;
 
-}
+ }
 
 
 
-th{
+ th{
 
-    padding:12px;
+     padding:12px;
 
-}
+ }
 
 
 
-td{
+ td{
 
-    padding:10px;
+     padding:10px;
 
-    text-align:center;
+     text-align:center;
 
-    border-bottom:1px solid #ddd;
+     border-bottom:1px solid #ddd;
 
-}
+ }
 
 
 
-tbody tr:hover{
+ tbody tr:hover{
 
-    background:#f1f5f9;
+     background:#f1f5f9;
 
-}
+ }
 
 
 
 
-.mark{
+ .mark{
 
-    width:100px;
+     width:100px;
 
-    padding:8px;
+     padding:8px;
 
-    text-align:center;
+     text-align:center;
 
-    border:1px solid #aaa;
+     border:1px solid #aaa;
 
-    border-radius:5px;
+     border-radius:5px;
 
-}
+ }
 
 
 
-@media(max-width:768px){
+ @media(max-width:768px){
 
 
-table{
+ table{
 
-    display:block;
+     display:block;
 
-    overflow-x:auto;
+     overflow-x:auto;
 
-}
+ }
 
 
-button{
+ button{
 
-    width:100%;
+     width:100%;
 
-}
+ }
 
 
-}
+ }
 
 
-</style>
+ </style>
 
 
-</head>
+ </head>
 
 
 
-<body>
+ <body>
 
 
-<div class="container">
+ <div class="container">
 
 
 
-<div class="header">
+ <div class="header">
 
-<h2>
-Internal Mark Entry
-</h2>
+ <h2>
+ Internal Mark Entry
+ </h2>
 
-</div>
+ </div>
 
 
 
 
 
-<div class="filters">
+ <div class="filters">
 
 
 
-<div class="form-group">
+ <div class="form-group">
 
-<label>Department</label>
+ <label>Department</label>
 
 
-<select id="department">
+ <select id="department">
 
 
-<option value="">
-Select Department
-</option>
+ <option value="">
+ Select Department
+ </option>
 
 
-<option value="B.Com General">
-B.Com General
-</option>
+ <option value="B.Com General">
+ B.Com General
+ </option>
 
 
-<option value="B.Com BM">
-B.Com BM
-</option>
+ <option value="B.Com BM">
+ B.Com BM
+ </option>
 
 
-<option value="B.Com MM">
-B.Com MM
-</option>
+ <option value="B.Com MM">
+ B.Com MM
+ </option>
 
 
-<option value="B.Com CS">
-B.Com CS
-</option>
+ <option value="B.Com CS">
+ B.Com CS
+ </option>
 
 
-<option value="B.Com A&F">
-B.Com A&F
-</option>
+ <option value="B.Com A&F">
+ B.Com A&F
+ </option>
 
 
-<option value="B.Com ISM">
-B.Com ISM
-</option>
+ <option value="B.Com ISM">
+ B.Com ISM
+ </option>
 
 
-<option value="B.Com CA">
-B.Com CA
-</option>
+ <option value="B.Com CA">
+ B.Com CA
+ </option>
 
 
-<option value="B.Com BUS.AD">
-B.Com BUS.AD
-</option>
+ <option value="B.Com BUS.AD">
+ B.Com BUS.AD
+ </option>
 
 
 
-<option value="B.A DEFENCE">
-B.A DEFENCE
-</option>
+ <option value="B.A DEFENCE">
+ B.A DEFENCE
+ </option>
 
 
-<option value="B.A PUB.AD">
-B.A PUB.AD
-</option>
+ <option value="B.A PUB.AD">
+ B.A PUB.AD
+ </option>
 
 
-<option value="B.A TAMIL">
-B.A TAMIL
-</option>
+ <option value="B.A TAMIL">
+ B.A TAMIL
+ </option>
 
 
-<option value="B.A TOURISM">
-B.A TOURISM
-</option>
+ <option value="B.A TOURISM">
+ B.A TOURISM
+ </option>
 
 
 
-<option value="B.Sc CS">
-B.Sc CS
-</option>
+ <option value="B.Sc CS">
+ B.Sc CS
+ </option>
 
 
-<option value="B.Sc CS WITH AI">
-B.Sc CS WITH AI
-</option>
+ <option value="B.Sc CS WITH AI">
+ B.Sc CS WITH AI
+ </option>
 
 
-<option value="B.Sc CRIMINOLOGY">
-B.Sc CRIMINOLOGY
-</option>
+ <option value="B.Sc CRIMINOLOGY">
+ B.Sc CRIMINOLOGY
+ </option>
 
 
-<option value="B.Sc SA">
-B.Sc SA
-</option>
+ <option value="B.Sc SA">
+ B.Sc SA
+ </option>
 
 
-<option value="B.Sc PHYS WITH CA">
-B.Sc PHYS WITH CA
-</option>
+ <option value="B.Sc PHYS WITH CA">
+ B.Sc PHYS WITH CA
+ </option>
 
 
-<option value="B.Sc MATHS WITH CA">
-B.Sc MATHS WITH CA
-</option>
+ <option value="B.Sc MATHS WITH CA">
+ B.Sc MATHS WITH CA
+ </option>
 
 
-<option value="B.Sc ELECTRONICS WITH AI">
-B.Sc ELECTRONICS WITH AI
-</option>
+ <option value="B.Sc ELECTRONICS WITH AI">
+ B.Sc ELECTRONICS WITH AI
+ </option>
 
 
-<option value="B.Sc VISCOM">
-B.Sc VISCOM
-</option>
+ <option value="B.Sc VISCOM">
+ B.Sc VISCOM
+ </option>
 
 
-<option value="B.Sc ELECTRONIC MEDIA">
-B.Sc ELECTRONIC MEDIA
-</option>
+ <option value="B.Sc ELECTRONIC MEDIA">
+ B.Sc ELECTRONIC MEDIA
+ </option>
 
 
-<option value="B.Sc IDD">
-B.Sc IDD
-</option>
+ <option value="B.Sc IDD">
+ B.Sc IDD
+ </option>
 
 
-<option value="B.Sc PHYSICS">
-B.Sc PHYSICS
-</option>
+ <option value="B.Sc PHYSICS">
+ B.Sc PHYSICS
+ </option>
 
 
 
-<option value="BCA COMPUTER APPLICATION">
-BCA COMPUTER APPLICATION
-</option>
+ <option value="BCA COMPUTER APPLICATION">
+ BCA COMPUTER APPLICATION
+ </option>
 
 
-</select>
+ </select>
 
 
-</div>
+ </div>
 
 
 
 
 
-<div class="form-group">
+ <div class="form-group">
 
-<label>Class</label>
+ <label>Class</label>
 
 
-<select id="year">
+ <select id="year">
 
 
-<option value="">
-Select Year
-</option>
+ <option value="">
+ Select Year
+ </option>
 
 
-<option value="I">
-I Year
-</option>
+ <option value="I">
+ I Year
+ </option>
 
 
-<option value="II">
-II Year
-</option>
+ <option value="II">
+ II Year
+ </option>
 
 
-<option value="III">
-III Year
-</option>
+ <option value="III">
+ III Year
+ </option>
 
 
-</select>
+ </select>
 
 
-</div>
+ </div>
 
 
 
 
 
-<div class="form-group">
+ <div class="form-group">
 
 
-<label>Section</label>
+ <label>Section</label>
 
 
-<select id="section">
+ <select id="section">
 
 
-<option value="">
-Select Section
-</option>
+ <option value="">
+ Select Section
+ </option>
 
 
-<option value="A">
-A
-</option>
+ <option value="A">
+ A
+ </option>
 
 
-<option value="B">
-B
-</option>
+ <option value="B">
+ B
+ </option>
 
 
-<option value="C">
-C
-</option>
+ <option value="C">
+ C
+ </option>
 
 
-<option value="D">
-D
-</option>
+ <option value="D">
+ D
+ </option>
 
 
-</select>
+ </select>
 
 
-</div>
+ </div>
 
 
 
 
 
-<div class="form-group">
+ <div class="form-group">
 
 
-<label>Subject</label>
+ <label>Subject</label>
 
 
-<select id="subject">
+ <select id="subject">
 
 
-<option value="">
-Select Subject
-</option>
+ <option value="">
+ Select Subject
+ </option>
 
 
-<option>
-Data Structure Programming
-</option>
+ <option>
+ Data Structure Programming
+ </option>
 
 
-<option>
-Web Technology
-</option>
+ <option>
+ Web Technology
+ </option>
 
 
-<option>
-RDBMS - SA
-</option>
+ <option>
+ RDBMS - SA
+ </option>
 
 
-<option>
-ASP.NET - SA
-</option>
+ <option>
+ ASP.NET - SA
+ </option>
 
 
-</select>
+ </select>
 
 
-</div>
+ </div>
 
 
 
 
 
-<div class="form-group">
+ <div class="form-group">
 
 
-<label>Program Number</label>
+ <label>Program Number</label>
 
 
-<select id="examType">
+ <select id="examType">
 
 
-<option value="">
-Select Exam
-</option>
+ <option value="">
+ Select Exam
+ </option>
 
-<option>
-PG 1
-</option>
+ <option>
+ PG 1
+ </option>
 
-<option>
-PRG 1
-</option>
+ <option>
+ PRG 1
+ </option>
 
 
-<option>
-PRG 2
-</option>
+ <option>
+ PRG 2
+ </option>
 
 
-<option>
-PRG 3
-</option>
+ <option>
+ PRG 3
+ </option>
 
 
-<option>
-PRG 4
-</option>
+ <option>
+ PRG 4
+ </option>
 
 
-<option>
-PRG 5
-</option>
+ <option>
+ PRG 5
+ </option>
 
 
-</select>
+ </select>
 
 
-</div>
+ </div>
 
 
 
 
 
-<div class="form-group">
+ <div class="form-group">
 
 
-<label>
-Maximum Mark
-</label>
+ <label>
+ Maximum Mark
+ </label>
 
 
-<input 
-type="number"
-id="maxMark"
-value="50">
+ <input
+ type="number"
+ id="maxMark"
+ value="50">
 
 
-</div>
+ </div>
 
 
 
 
 
-<div class="form-group">
+ <div class="form-group">
 
 
-<label>
-Date
-</label>
+ <label>
+ Date
+ </label>
 
 
-<input 
-type="date"
-id="date">
+ <input
+ type="date"
+ id="date">
 
 
-</div>
+ </div>
 
 
-</div>
+ </div>
 
-<div class="button-area">
+ <div class="button-area">
 
-<button onclick="loadStudents()">
+ <button onclick="loadStudents()">
 
-Load Students
+ Load Students
 
-</button>
+ </button>
 
-</div>
+ </div>
 
 
 
 
 
-<table>
+ <table>
 
 
-<thead>
+ <thead>
 
-<tr>
+ <tr>
 
-<th>S.No</th>
+ <th>S.No</th>
 
-<th>Roll No</th>
+ <th>Roll No</th>
 
-<th>Student Name</th>
+ <th>Student Name</th>
 
-<th>Mark</th>
+ <th>Mark</th>
 
-</tr>
+ </tr>
 
-</thead>
+ </thead>
 
 
 
-<tbody id="studentBody">
+ <tbody id="studentBody">
 
 
-</tbody>
+ </tbody>
 
 
-</table>
+ </table>
 
 
 
 
 
-<div class="save-area">
+ <div class="save-area">
 
-<button onclick="saveMarks()">
+ <button onclick="saveMarks()">
 
-Save Marks
+ Save Marks
 
-</button>
+ </button>
 
-</div>
+ </div>
 
 
 
-</div>
+ </div>
 
 
 
@@ -705,27 +705,27 @@ Save Marks
 
 
 
-<script type="module">
+ <script type="module">
 
 
-import { initializeApp } 
-from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+ import { initializeApp }
+ from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
 
 
-import {
+ import {
 
-getFirestore,
-collection,
-getDocs,
-query,
-where,
-addDoc,
-serverTimestamp
+ getFirestore,
+ collection,
+ getDocs,
+ query,
+ where,
+ addDoc,
+ serverTimestamp
 
-}
+ }
 
-from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+ from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 
 
@@ -733,45 +733,45 @@ from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 
 
-// FIREBASE CONFIG
+ // FIREBASE CONFIG
 
 
-const firebaseConfig = {
+ const firebaseConfig = {
 
 
-apiKey: "AIzaSyAIv3091VM-gkmdwEAn7OhXWd9Cm2zh2bo",
+ apiKey: "AIzaSyAIv3091VM-gkmdwEAn7OhXWd9Cm2zh2bo",
 
-authDomain: "maasc-2026.firebaseapp.com",
+ authDomain: "maasc-2026.firebaseapp.com",
 
-projectId: "maasc-2026",
+ projectId: "maasc-2026",
 
-storageBucket: "maasc-2026.appspot.com",
+ storageBucket: "maasc-2026.appspot.com",
 
-messagingSenderId: "585813001586",
+ messagingSenderId: "585813001586",
 
-appId: "1:585813001586:web:664e0e90ff0725d2e849eb"
+ appId: "1:585813001586:web:664e0e90ff0725d2e849eb"
 
 
-};
+ };
 
 
 
 
 
-const app = initializeApp(firebaseConfig);
+ const app = initializeApp(firebaseConfig);
 
 
-const db = getFirestore(app);
+ const db = getFirestore(app);
 
 
 
 
 
 
-// CURRENT DATE
+ // CURRENT DATE
 
 
-document.getElementById("date").valueAsDate = new Date();
+ document.getElementById("date").valueAsDate = new Date();
 
 
 
@@ -779,109 +779,109 @@ document.getElementById("date").valueAsDate = new Date();
 
 
 
-// =================================
-// LOAD STUDENTS
-// =================================
+ // =================================
+ // LOAD STUDENTS
+ // =================================
 
 
-window.loadStudents = async function(){
+ window.loadStudents = async function(){
 
 
 
-let department =
-document.getElementById("department").value;
+ let department =
+ document.getElementById("department").value;
 
 
-let year =
-document.getElementById("year").value;
+ let year =
+ document.getElementById("year").value;
 
 
-let section =
-document.getElementById("section").value;
+ let section =
+ document.getElementById("section").value;
 
 
-let subject =
-document.getElementById("subject").value;
+ let subject =
+ document.getElementById("subject").value;
 
 
-let examType =
-document.getElementById("examType").value;
+ let examType =
+ document.getElementById("examType").value;
 
 
 
 
 
-if(
+ if(
 
-department=="" ||
+ department=="" ||
 
-year=="" ||
+ year=="" ||
 
-section=="" ||
+ section=="" ||
 
-subject=="" ||
+ subject=="" ||
 
-examType==""
+ examType==""
 
-)
+ )
 
-{
+ {
 
-alert("Select all fields");
+ alert("Select all fields");
 
-return;
+ return;
 
-}
+ }
 
 
 
 
 
 
-let tbody =
-document.getElementById("studentBody");
+ let tbody =
+ document.getElementById("studentBody");
 
 
-tbody.innerHTML="";
+ tbody.innerHTML="";
 
 
 
 
 
 
-try{
+ try{
 
 
 
 
 
-// GET STUDENTS
+ // GET STUDENTS
 
 
-const studentQuery = query(
+ const studentQuery = query(
 
 
-collection(db,"students"),
+ collection(db,"students"),
 
 
-where("department","==",department),
+ where("department","==",department),
 
 
-where("year","==",year),
+ where("year","==",year),
 
 
-where("section","==",section)
+ where("section","==",section)
 
 
-);
+ );
 
 
 
 
 
 
-const studentSnapshot =
-await getDocs(studentQuery);
+ const studentSnapshot =
+ await getDocs(studentQuery);
 
 
 
@@ -889,20 +889,20 @@ await getDocs(studentQuery);
 
 
 
-// CONVERT FIRESTORE DATA TO ARRAY
+ // CONVERT FIRESTORE DATA TO ARRAY
 
 
-let students=[];
+ let students=[];
 
 
 
-studentSnapshot.forEach(doc=>{
+ studentSnapshot.forEach(doc=>{
 
 
-students.push(doc.data());
+ students.push(doc.data());
 
 
-});
+ });
 
 
 
@@ -910,30 +910,30 @@ students.push(doc.data());
 
 
 
-// SORT ROLL NUMBER
+ // SORT ROLL NUMBER
 
 
-students.sort((a,b)=>{
+ students.sort((a,b)=>{
 
 
-return a.rollNo.localeCompare(
+ return a.rollNo.localeCompare(
 
-b.rollNo,
+ b.rollNo,
 
-undefined,
+ undefined,
 
-{
+ {
 
-numeric:true,
+ numeric:true,
 
-sensitivity:"base"
+ sensitivity:"base"
 
-}
+ }
 
-);
+ );
 
 
-});
+ });
 
 
 
@@ -941,38 +941,38 @@ sensitivity:"base"
 
 
 
-// GET EXISTING MARKS
+ // GET EXISTING MARKS
 
 
-const markQuery=query(
+ const markQuery=query(
 
 
-collection(db,"internalMarks"),
+ collection(db,"internalMarks"),
 
 
-where("department","==",department),
+ where("department","==",department),
 
 
-where("year","==",year),
+ where("year","==",year),
 
 
-where("section","==",section),
+ where("section","==",section),
 
 
-where("subject","==",subject),
+ where("subject","==",subject),
 
 
-where("examType","==",examType)
+ where("examType","==",examType)
 
 
-);
+ );
 
 
 
 
 
-const markSnapshot =
-await getDocs(markQuery);
+ const markSnapshot =
+ await getDocs(markQuery);
 
 
 
@@ -980,20 +980,20 @@ await getDocs(markQuery);
 
 
 
-let markList={};
+ let markList={};
 
 
 
-markSnapshot.forEach(doc=>{
+ markSnapshot.forEach(doc=>{
 
 
-let data=doc.data();
+ let data=doc.data();
 
 
-markList[data.rollNo]=data.mark;
+ markList[data.rollNo]=data.mark;
 
 
-});
+ });
 
 
 
@@ -1001,172 +1001,172 @@ markList[data.rollNo]=data.mark;
 
 
 
-// DISPLAY STUDENTS
+ // DISPLAY STUDENTS
 
 
-let sno=1;
+ let sno=1;
 
 
 
-students.forEach(student=>{
+ students.forEach(student=>{
 
 
-let oldMark =
-markList[student.rollNo];
+ let oldMark =
+ markList[student.rollNo];
 
 
 
 
 
-tbody.innerHTML += `
+ tbody.innerHTML += `
 
 
-<tr>
+ <tr>
 
 
-<td>
+ <td>
 
-${sno++}
+ ${sno++}
 
-</td>
+ </td>
 
 
-<td>
+ <td>
 
-${student.rollNo}
+ ${student.rollNo}
 
-</td>
+ </td>
 
 
 
-<td>
+ <td>
 
-${student.studentName}
+ ${student.studentName}
 
-</td>
+ </td>
 
 
 
-<td>
+ <td>
 
 
-<input
+ <input
 
-type="number"
+ type="number"
 
-class="mark"
+ class="mark"
 
-data-roll="${student.rollNo}"
+ data-roll="${student.rollNo}"
 
-value="${oldMark ?? ''}"
+ value="${oldMark ?? ''}"
 
-placeholder="Enter Mark"
+ placeholder="Enter Mark"
 
 
->
+ >
 
 
-</td>
+ </td>
 
 
 
-</tr>
+ </tr>
 
 
-`;
+ `;
 
 
 
-});
+ });
 
 
 
 
 
-}
+ }
 
-catch(error){
+ catch(error){
 
 
-console.error(error);
+ console.error(error);
 
 
-alert(error.message);
+ alert(error.message);
 
 
-}
+ }
 
 
 
-}
+ }
 
 
-// =================================
-// SAVE MARKS
-// =================================
+ // =================================
+ // SAVE MARKS
+ // =================================
 
 
-window.saveMarks = async function(){
+ window.saveMarks = async function(){
 
 
 
-let department =
-document.getElementById("department").value;
+ let department =
+ document.getElementById("department").value;
 
 
-let year =
-document.getElementById("year").value;
+ let year =
+ document.getElementById("year").value;
 
 
-let section =
-document.getElementById("section").value;
+ let section =
+ document.getElementById("section").value;
 
 
-let subject =
-document.getElementById("subject").value;
+ let subject =
+ document.getElementById("subject").value;
 
 
-let examType =
-document.getElementById("examType").value;
+ let examType =
+ document.getElementById("examType").value;
 
 
-let maxMark =
-Number(document.getElementById("maxMark").value);
+ let maxMark =
+ Number(document.getElementById("maxMark").value);
 
 
-let date =
-document.getElementById("date").value;
+ let date =
+ document.getElementById("date").value;
 
 
 
 
 
 
-if(
+ if(
 
-department=="" ||
+ department=="" ||
 
-year=="" ||
+ year=="" ||
 
-section=="" ||
+ section=="" ||
 
-subject=="" ||
+ subject=="" ||
 
-examType=="" ||
+ examType=="" ||
 
-maxMark==0 ||
+ maxMark==0 ||
 
-date==""
+ date==""
 
-)
+ )
 
-{
+ {
 
-alert("Please fill all fields");
+ alert("Please fill all fields");
 
-return;
+ return;
 
-}
+ }
 
 
 
@@ -1174,22 +1174,22 @@ return;
 
 
 
-let marks =
-document.querySelectorAll(".mark");
+ let marks =
+ document.querySelectorAll(".mark");
 
 
 
 
 
-if(marks.length==0)
+ if(marks.length==0)
 
-{
+ {
 
-alert("Load students first");
+ alert("Load students first");
 
-return;
+ return;
 
-}
+ }
 
 
 
@@ -1197,25 +1197,20 @@ return;
 
 
 
-try{
+ try{
 
 
-for(let input of marks){
+ for(let input of marks){
 
 
 
-let mark=input.value;
+ let mark=input.value;
 
 
 
-if(mark==""){
+ if(mark==""){
 
-
-alert("Enter marks for all students");
-
-
-return;
-
+continue;
 
 }
 
@@ -1225,16 +1220,16 @@ return;
 
 
 
-if(Number(mark)>maxMark){
+ if(Number(mark)>maxMark){
 
 
-alert("Mark cannot exceed maximum mark");
+ alert("Mark cannot exceed maximum mark");
 
 
-return;
+ return;
 
 
-}
+ }
 
 
 
@@ -1242,17 +1237,17 @@ return;
 
 
 
-let row=input.closest("tr");
+ let row=input.closest("tr");
 
 
 
-let rollNo =
-row.cells[1].innerText;
+ let rollNo =
+ row.cells[1].innerText;
 
 
 
-let studentName =
-row.cells[2].innerText;
+ let studentName =
+ row.cells[2].innerText;
 
 
 
@@ -1260,97 +1255,97 @@ row.cells[2].innerText;
 
 
 
-await addDoc(
+ await addDoc(
 
-collection(db,"internalMarks"),
+ collection(db,"internalMarks"),
 
 
-{
+ {
 
 
-department:department,
+ department:department,
 
 
-year:year,
+ year:year,
 
 
-section:section,
+ section:section,
 
 
-subject:subject,
+ subject:subject,
 
 
-examType:examType,
+ examType:examType,
 
 
-maxMark:maxMark,
+ maxMark:maxMark,
 
 
-date:date,
+ date:date,
 
 
-rollNo:rollNo,
+ rollNo:rollNo,
 
 
-studentName:studentName,
+ studentName:studentName,
 
 
-mark:Number(mark),
+ mark:Number(mark),
 
 
-createdAt:serverTimestamp()
+ createdAt:serverTimestamp()
 
 
-}
+ }
 
 
 
-);
+ );
 
 
 
-}
+ }
 
 
 
 
 
 
-alert("Internal Marks Saved Successfully");
+ alert("Internal Marks Saved Successfully");
 
 
 
 
 
-}
+ }
 
 
 
-catch(error){
+ catch(error){
 
 
-console.error(error);
+ console.error(error);
 
 
-alert(error.message);
+ alert(error.message);
 
 
-}
+ }
 
 
 
-}
+ }
 
 
 
 
 
-</script>
+ </script>
 
 
 
 
-</body>
+ </body>
 
 
-</html>
+ </html>
