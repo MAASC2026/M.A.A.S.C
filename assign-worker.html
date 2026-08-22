@@ -1234,41 +1234,8 @@ async function verifyHead() {
     // Firestore uses serviceRole
     // =================================================
 
-    const serviceRole =
-        normalize(
-            staff.serviceRole
-        );
-
-
-    const serviceHeadActive =
-        staff.serviceHeadActive === true;
-
-
-    if (
-        serviceRole !== "department_head" ||
-        serviceHeadActive !== true
-    ) {
-
-        console.error(
-            "HEAD CHECK FAILED:",
-            {
-                serviceRole:
-                    staff.serviceRole,
-
-                serviceHeadActive:
-                    staff.serviceHeadActive
-            }
-        );
-
-
-        showAccessViolation(
-            "Access denied. Only active Department Heads can assign workers."
-        );
-
-        return;
-
-    }
-
+    // HEAD ACCESS CHECK REMOVED
+    // Access is no longer restricted by serviceRole or serviceHeadActive.
 
     // =================================================
     // GET DEPARTMENT
